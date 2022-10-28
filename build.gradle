@@ -26,10 +26,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'mysql:mysql-connector-java'
-    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.0.8'
+    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
@@ -43,6 +44,8 @@ dependencies {
 
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 tasks.named('test') {

@@ -1,0 +1,37 @@
+version: '3'
+services:
+  mariadb:
+    container_name: mariadb
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pw
+      MYSQL_DATABASE: test_db
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test_pw
+    ports:
+      - "3305:3306"
+    networks:
+      - db_network
+    restart: always
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - "6378:6379"
+    networks:
+      - db_network
+    restart: always
+  spring-boot:
+    container_name: nanal-server
+    build: .
+    restart: always
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mariadb
+      - redis
+    networks:
+      - db_network
+networks:
+  db_network:
+    driver: bridge

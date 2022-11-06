@@ -44,20 +44,18 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build -x test
       ## 배포용 application.yml 설정
-      - name: create application.yml
+      - name: create application-prod.yml
         run: |
           cd ./src/main/resources
-          touch ./application.yml
+          touch ./application-prod.yml
           echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.yml
         shell: bash
       ##CD
       #빌드(테스트 스킵)
       - name: Build With Gradle
-        if: contains(github.ref, 'main')
         run: ./gradlew build -x test
       #도커 빌드 & 푸시
       - name: docker build and push
-        if: contains(github.ref, 'main')
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -f Dockerfile -t nanal .
@@ -67,7 +65,6 @@ jobs:
       - name: Deploy
         uses: appleboy/ssh-action@master
         id: deploy-prod
-        if: contains(github.ref, 'main')
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}

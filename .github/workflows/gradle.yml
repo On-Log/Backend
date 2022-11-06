@@ -58,7 +58,7 @@ jobs:
       - name: docker build and push
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -f Dockerfile -t nanal .
+          docker build -f Dockerfile-prod -t nanal .
           docker tag nanal ${{ secrets.DOCKER_USERNAME }}/nanal
           docker push ${{ secrets.DOCKER_USERNAME }}/nanal
       #배포

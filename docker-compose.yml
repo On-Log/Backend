@@ -10,7 +10,9 @@ services:
     restart: always
   spring-boot:
     container_name: nanal-server
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
     restart: always
     ports:
       - "8081:8080"

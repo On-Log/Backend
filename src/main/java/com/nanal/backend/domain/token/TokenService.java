@@ -23,16 +23,16 @@ import java.util.concurrent.TimeUnit;
 public class TokenService {
 
     // Access : 3분
-    @Value("${jwt.token.access-period")
-    private Long accessPeriod;
+    @Value("${jwt.token.access-period}")
+    private long accessPeriod;
     // Refresh : 10분
-    @Value("${jwt.token.refresh-period")
-    private Long refreshPeriod;
+    @Value("${jwt.token.refresh-period}")
+    private long refreshPeriod;
 
-    @Value("${jwt.token.reissue-period")
-    private Long reissuePeriod;
+    @Value("${jwt.token.reissue-period}")
+    private long reissuePeriod;
     @Value("${jwt.token.refresh-token-storage-period}")
-    private Long refreshTokenStoragePeriod;
+    private long refreshTokenStoragePeriod;
     @Value("${jwt.token.secret}")
     private String secretKey;
     
@@ -45,8 +45,6 @@ public class TokenService {
     }
 
     public Token generateToken(String uid) {
-
-
         // claim 에 email 정보 추가
         Claims claims = Jwts.claims().setSubject(uid);
 

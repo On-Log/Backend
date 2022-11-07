@@ -6,10 +6,8 @@ build/
 !**/src/test/**/build/
 
 ### CUSTOM ###
-/src/main/resources/*.yml
-docker-compose.yml
+application-dev.yml
 Dockerfile-dev
-Dockerfile-prod
 
 ### STS ###
 .apt_generated

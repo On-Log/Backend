@@ -5,6 +5,10 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+### CUSTOM ###
+application-dev.yml
+Dockerfile-dev
+
 ### STS ###
 .apt_generated
 .classpath
@@ -37,5 +41,4 @@ out/
 ### VS Code ###
 .vscode/
 
-### properties ###
-/src/main/resources/application.yml
+

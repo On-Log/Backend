@@ -22,8 +22,17 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class TokenService {
 
-    @Value("${jwt.token.refresh-token-expire-length}")
-    private long refresh_token_expire_time;
+    // Access : 3분
+    @Value("${jwt.token.access-period")
+    private Long accessPeriod;
+    // Refresh : 10분
+    @Value("${jwt.token.refresh-period")
+    private Long refreshPeriod;
+
+    @Value("${jwt.token.reissue-period")
+    private Long reissuePeriod;
+    @Value("${jwt.token.refresh-token-storage-period}")
+    private Long refreshTokenStoragePeriod;
     @Value("${jwt.token.secret}")
     private String secretKey;
     
@@ -36,9 +45,7 @@ public class TokenService {
     }
 
     public Token generateToken(String uid) {
-        // Access : 10분 / Refresh : 3주
-        long tokenPeriod = 1000L * 60L * 10L;
-        long refreshPeriod = 1000L * 60L * 60L * 24L * 21L;
+
 
         // claim 에 email 정보 추가
         Claims claims = Jwts.claims().setSubject(uid);
@@ -53,7 +60,7 @@ public class TokenService {
                 Jwts.builder()
                         .setClaims(claims)
                         .setIssuedAt(now)
-                        .setExpiration(new Date(now.getTime() + tokenPeriod))
+                        .setExpiration(new Date(now.getTime() + accessPeriod))
                         .signWith(SignatureAlgorithm.HS256, secretKey)
                         .compact(),
                 Jwts.builder()
@@ -90,8 +97,8 @@ public class TokenService {
         Date expireDate = getExpiration(token);
         Date currentDate = new Date();
         // refreshToken 기간이 얼마남지 않았을 경우 (3일 미만)
-        log.info("remain time = {} < {}", expireDate.getTime() - currentDate.getTime(), 1000 * 60 * 60 * 24 * 3);
-        if (expireDate.getTime() - currentDate.getTime() < 1000 * 60 * 60 * 24 * 3) storeRefreshToken(email, newToken);
+        log.info("remain time = {} < {}", expireDate.getTime() - currentDate.getTime(), reissuePeriod);
+        if (expireDate.getTime() - currentDate.getTime() < reissuePeriod) storeRefreshToken(email, newToken);
         // refreshToken 의 유효기간이 3일 이상 남았을 경우 (refreshToken NULL 값으로 설정함으로써 전송하지 않음)
         else newToken.setRefreshToken(null);
 
@@ -110,7 +117,7 @@ public class TokenService {
         redisTemplate.opsForValue().set(
                 email,
                 token.getRefreshToken(),
-                refresh_token_expire_time,
+                refreshTokenStoragePeriod,
                 TimeUnit.SECONDS
         );
     }

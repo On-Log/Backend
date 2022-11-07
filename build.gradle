@@ -8,6 +8,10 @@ group = 'com.nanal'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
+jar {
+    enabled = false
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -20,7 +24,6 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'

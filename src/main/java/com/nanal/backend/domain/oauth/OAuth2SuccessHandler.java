@@ -3,6 +3,8 @@ package com.nanal.backend.domain.oauth;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nanal.backend.domain.oauth.entity.Member;
 import com.nanal.backend.domain.oauth.repository.MemberRepository;
+import com.nanal.backend.domain.token.Token;
+import com.nanal.backend.domain.token.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -64,8 +66,6 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     private void writeTokenResponse(HttpServletResponse response, Token token)
             throws IOException {
 
-        response.addHeader("Token", token.getToken());
-        response.addHeader("RefreshToken", token.getRefreshToken());
         response.setContentType("application/json;charset=UTF-8");
 
         // Httpbody에 json 형태로 토큰 내용 추가

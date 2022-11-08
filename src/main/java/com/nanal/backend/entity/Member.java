@@ -1,4 +1,4 @@
-package com.nanal.backend.domain.oauth.entity;
+package com.nanal.backend.entity;
 
 import lombok.*;
 
@@ -9,10 +9,12 @@ import java.time.DayOfWeek;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "member")
 @Entity
 public class Member {
 
     @Id @GeneratedValue
+    @Column(name = "member_id")
     private Long memberId;
 
     @Column(unique = true, nullable = false, length = 40)

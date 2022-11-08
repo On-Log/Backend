@@ -1,7 +1,7 @@
 package com.nanal.backend.domain.oauth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nanal.backend.domain.oauth.entity.Member;
+import com.nanal.backend.entity.Member;
 import com.nanal.backend.domain.oauth.repository.MemberRepository;
 import com.nanal.backend.domain.token.Token;
 import com.nanal.backend.domain.token.TokenService;

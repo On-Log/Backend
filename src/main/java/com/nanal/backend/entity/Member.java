@@ -1,18 +1,22 @@
-package com.nanal.backend.domain.oauth.entity;
+package com.nanal.backend.entity;
 
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "member")
 @Entity
 public class Member {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_id")
     private Long memberId;
 
     @Column(unique = true, nullable = false, length = 40)
@@ -37,6 +41,9 @@ public class Member {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Diary> diaries = new ArrayList<>();
 
     @Getter
     @RequiredArgsConstructor

@@ -2,15 +2,17 @@ package com.nanal.backend.domain.diary.controller;
 
 import com.nanal.backend.config.response.CommonResponse;
 import com.nanal.backend.config.response.ErrorCode;
+import com.nanal.backend.domain.diary.dto.ReqGetCalendarDto;
 import com.nanal.backend.domain.diary.dto.ReqSaveDiaryDto;
+import com.nanal.backend.domain.diary.dto.RespGetCalendarDto;
 import com.nanal.backend.domain.diary.service.DiaryService;
 import com.nanal.backend.domain.oauth.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @RestController
@@ -22,11 +24,15 @@ public class DiaryController {
      * 일기 탭 화면
      * [GET] /diary
      * 작성자 : 장동호
-     * 수정일 :
+     * 수정일 : 2022-11-09
      */
     @GetMapping("/diary")
-    public void getCalendar() {
+    public CommonResponse<RespGetCalendarDto> getCalendar(@AuthenticationPrincipal UserDto userDto, ReqGetCalendarDto reqGetCalendarDto) {
 
+        // 요청 정보 기반으로 해당 날짜에 맞는 정보 조회
+        RespGetCalendarDto respGetCalendarDto = diaryService.getCalendar(userDto.getEmail(), reqGetCalendarDto);
+
+        return new CommonResponse<>(respGetCalendarDto);
     }
 
     /**

@@ -1,17 +1,19 @@
 package com.nanal.backend.domain.diary.service;
 
-import com.nanal.backend.domain.diary.dto.KeywordDto;
-import com.nanal.backend.domain.diary.dto.KeywordEmotionDto;
-import com.nanal.backend.domain.diary.dto.ReqSaveDiaryDto;
+import com.nanal.backend.domain.diary.dto.*;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
 import com.nanal.backend.domain.diary.repository.KeywordRepository;
 import com.nanal.backend.domain.oauth.repository.MemberRepository;
 import com.nanal.backend.entity.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +24,6 @@ public class DiaryService {
 
     private final MemberRepository memberRepository;
     private final DiaryRepository diaryRepository;
-    private final KeywordRepository keywordRepository;
 
     public void saveDiary(String email, ReqSaveDiaryDto reqSaveDiaryDto) {
         // email 로 유저정보 가져오기
@@ -32,6 +33,42 @@ public class DiaryService {
         createDiary(member, reqSaveDiaryDto);
     }
 
+    public RespGetCalendarDto getCalendar(String email, ReqGetCalendarDto reqGetCalendarDto) {
+        // email 로 유저정보 가져오기
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+
+        LocalDateTime currentDate = reqGetCalendarDto.getCurrentDate();
+        LocalDateTime selectDate = reqGetCalendarDto.getSelectDate();
+
+        /*
+        현재는 like 절을 이용해서 Diary 의 전체 컬럼을 뽑아온 다음 작업하는 방식.
+        추후 부등호를 이용해서 write_date 컬럼만 뽑아오는 방식으로 변환 (like 절과 부등호를 뽑아는 방식 성능 비교)
+         */
+
+        // 요청된 기간내 기록이 존재하는 날 조회
+        List<Integer> existDiaryDate = getExistDiaryDate(member, selectDate);
+
+        // 회고 요일과 현재 날짜 로 일기 작성 가능주 구하기
+        LocalDateTime nextDayOfPrevRetroDate = getNextDayOfPrevRetroDate(member.getRetrospectDay(), currentDate);
+        LocalDateTime postRetroDate = getPostRetroDate(member.getRetrospectDay(), currentDate);
+
+        return new RespGetCalendarDto(existDiaryDate, nextDayOfPrevRetroDate.getDayOfMonth(), postRetroDate.getDayOfMonth());
+    }
+
+    private static LocalDateTime getPostRetroDate(DayOfWeek retrospectDay, LocalDateTime currentTime) {
+        // 다음 회고일
+        return currentTime.with(TemporalAdjusters.nextOrSame(retrospectDay));
+    }
+
+    private static LocalDateTime getNextDayOfPrevRetroDate(DayOfWeek retrospectDay, LocalDateTime currentTime) {
+        // 이전 회고일
+        LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(retrospectDay));
+        // 해당 주는 이전 회고일 다음날부터 다음 회고 일까지이므로 '이전 회고일 + 1' 을 해줘야함
+        return prevRetroDate.plusDays(1);
+    }
+
+
+    //===편의 메서드===//
     private void createDiary(Member member, ReqSaveDiaryDto reqSaveDiaryDto) {
         // Diary 생성에 필요한 Keyword 리스트 생성
         List<Keyword> keywords = new ArrayList<>();
@@ -58,4 +95,22 @@ public class DiaryService {
         // Diary 저장
         diaryRepository.save(diary);
     }
+
+    private List<Integer> getExistDiaryDate(Member member, LocalDateTime selectTime) {
+        // 질의할 sql 의 Like 절에 해당하게끔 변환
+        String yearMonth = selectTime.format(DateTimeFormatter.ofPattern("yyyy-MM")) + "%";
+
+        // 선택한 yyyy-MM 에 존재하는 작성날짜 가져오기
+        List<Diary> writeDates = diaryRepository.findByMemberAndWriteDate(
+                member.getMemberId(),
+                yearMonth);
+
+        // 가져온 작성날짜 일 단위로 파싱해서 List 삽입
+        List<Integer> existDiaryDate = new ArrayList<>();
+        for (Diary t : writeDates) {
+            existDiaryDate.add(t.getWriteDate().getDayOfMonth());
+        }
+        return existDiaryDate;
+    }
+
 }

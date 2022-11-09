@@ -1,9 +1,6 @@
 package com.nanal.backend.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -12,8 +9,7 @@ import javax.persistence.*;
 @Entity
 public class Emotion {
 
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "emotion_id")
     private Long emotionId;
 

@@ -4,16 +4,13 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
-public class ReqSaveDiaryDto {
+public class ReqGetCalendarDto {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime date;
+    private LocalDateTime currentDate;
 
-    private String content;
-
-    private List<KeywordDto> keywords;
-
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime selectDate;
 }

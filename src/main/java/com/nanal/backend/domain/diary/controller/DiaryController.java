@@ -5,14 +5,15 @@ import com.nanal.backend.config.response.ErrorCode;
 import com.nanal.backend.domain.diary.dto.ReqGetCalendarDto;
 import com.nanal.backend.domain.diary.dto.ReqSaveDiaryDto;
 import com.nanal.backend.domain.diary.dto.RespGetCalendarDto;
+import com.nanal.backend.domain.diary.dto.RespGetEmotionDto;
 import com.nanal.backend.domain.diary.service.DiaryService;
 import com.nanal.backend.domain.oauth.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
+
 
 @RequiredArgsConstructor
 @RestController
@@ -62,13 +63,28 @@ public class DiaryController {
     }
 
     /**
-     * 감정어 조회
-     * [GET] /diary/emotion
+     * 일기 수정
+     * [PUT] /diary/view
      * 작성자 : 장동호
      * 수정일 :
      */
-    @GetMapping("/diary/emotion")
-    public void getEmotion() {
+    @PutMapping("/diary")
+    public void editDiary() {
 
+    }
+
+    /**
+     * 감정어 조회
+     * [GET] /diary/emotion
+     * 작성자 : 장동호
+     * 수정일 : 2022-11-09
+     */
+    @GetMapping("/diary/emotion")
+    public CommonResponse<RespGetEmotionDto> getEmotion() {
+
+        // 감정어 조회
+        RespGetEmotionDto respGetEmotionDto = diaryService.getEmotion();
+
+        return new CommonResponse<>(respGetEmotionDto);
     }
 }

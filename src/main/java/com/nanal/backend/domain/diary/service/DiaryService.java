@@ -2,6 +2,7 @@ package com.nanal.backend.domain.diary.service;
 
 import com.nanal.backend.domain.diary.dto.*;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
+import com.nanal.backend.domain.diary.repository.EmotionRepository;
 import com.nanal.backend.domain.diary.repository.KeywordRepository;
 import com.nanal.backend.domain.oauth.repository.MemberRepository;
 import com.nanal.backend.entity.*;
@@ -24,9 +25,10 @@ public class DiaryService {
 
     private final MemberRepository memberRepository;
     private final DiaryRepository diaryRepository;
+    private final EmotionRepository emotionRepository;
 
     public void saveDiary(String email, ReqSaveDiaryDto reqSaveDiaryDto) {
-        // email 로 유저정보 가져오기
+        // email 로 유저 조회
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
 
         // 일기 저장
@@ -34,7 +36,7 @@ public class DiaryService {
     }
 
     public RespGetCalendarDto getCalendar(String email, ReqGetCalendarDto reqGetCalendarDto) {
-        // email 로 유저정보 가져오기
+        // email 로 유저 조회
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
 
         LocalDateTime currentDate = reqGetCalendarDto.getCurrentDate();
@@ -55,17 +57,16 @@ public class DiaryService {
         return new RespGetCalendarDto(existDiaryDate, nextDayOfPrevRetroDate.getDayOfMonth(), postRetroDate.getDayOfMonth());
     }
 
-    private static LocalDateTime getPostRetroDate(DayOfWeek retrospectDay, LocalDateTime currentTime) {
-        // 다음 회고일
-        return currentTime.with(TemporalAdjusters.nextOrSame(retrospectDay));
+    public RespGetEmotionDto getEmotion() {
+        // 감정어 조회
+        List<Emotion> emotions = emotionRepository.findAll();
+
+        RespGetEmotionDto respGetEmotionDto = getRespGetEmotionDto(emotions);
+
+        return respGetEmotionDto;
     }
 
-    private static LocalDateTime getNextDayOfPrevRetroDate(DayOfWeek retrospectDay, LocalDateTime currentTime) {
-        // 이전 회고일
-        LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(retrospectDay));
-        // 해당 주는 이전 회고일 다음날부터 다음 회고 일까지이므로 '이전 회고일 + 1' 을 해줘야함
-        return prevRetroDate.plusDays(1);
-    }
+
 
 
     //===편의 메서드===//
@@ -113,4 +114,26 @@ public class DiaryService {
         return existDiaryDate;
     }
 
+    private LocalDateTime getPostRetroDate(DayOfWeek retrospectDay, LocalDateTime currentTime) {
+        // 다음 회고일
+        return currentTime.with(TemporalAdjusters.nextOrSame(retrospectDay));
+    }
+
+    private LocalDateTime getNextDayOfPrevRetroDate(DayOfWeek retrospectDay, LocalDateTime currentTime) {
+        // 이전 회고일
+        LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(retrospectDay));
+        // 해당 주는 이전 회고일 다음날부터 다음 회고 일까지이므로 '이전 회고일 + 1' 을 해줘야함
+        return prevRetroDate.plusDays(1);
+    }
+
+    private RespGetEmotionDto getRespGetEmotionDto(List<Emotion> emotions) {
+        List<String> emotionWords = new ArrayList<>();
+        for (Emotion t : emotions) {
+            emotionWords.add(t.getEmotion());
+        }
+
+        RespGetEmotionDto respGetEmotionDto = new RespGetEmotionDto();
+        respGetEmotionDto.setEmotion(emotionWords);
+        return respGetEmotionDto;
+    }
 }

@@ -1,11 +1,14 @@
 package com.nanal.backend.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Getter
-@Table(name = "keyword_emotion")
+@Table(name = "emotion")
 @Entity
 public class Emotion {
 

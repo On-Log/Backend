@@ -4,6 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Builder
@@ -13,7 +15,7 @@ import java.time.DayOfWeek;
 @Entity
 public class Member {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long memberId;
 
@@ -39,6 +41,9 @@ public class Member {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Diary> diaries = new ArrayList<>();
 
     @Getter
     @RequiredArgsConstructor

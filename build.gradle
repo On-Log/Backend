@@ -34,6 +34,7 @@ dependencies {
     implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -47,10 +48,9 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api'
 
     // Swagger
-    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
-    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.9'
 
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
 }
 
 tasks.named('test') {

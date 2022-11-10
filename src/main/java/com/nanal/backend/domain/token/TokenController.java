@@ -1,5 +1,6 @@
 package com.nanal.backend.domain.token;
 
+import com.nanal.backend.config.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,13 +14,8 @@ public class TokenController {
 
     private final TokenService tokenService;
 
-    @GetMapping("/token/expired")
-    public String auth() {
-        throw new RuntimeException();
-    }
-
     @GetMapping("/token/reissue")
-    public Token refreshAuth(HttpServletRequest request, HttpServletResponse response) {
+    public CommonResponse<Token> refreshAuth(HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("RefreshToken");
 
         // refresh 토큰이 유효한지 확인
@@ -28,7 +24,7 @@ public class TokenController {
             // 토큰 새로 받아오기
             Token reissueToken = tokenService.tokenReissue(token);
 
-            return reissueToken;
+            return new CommonResponse<>(reissueToken);
         }
 
         // refresh 토큰이 유효하지 않을 경우

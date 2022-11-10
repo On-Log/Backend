@@ -55,7 +55,7 @@ public class DiaryController {
      * 수정일 : 2022-11-10
      */
     @GetMapping("/diary/view")
-    public CommonResponse<?> getDiary(@AuthenticationPrincipal UserDto userDto, ReqGetDiaryDto reqGetDiaryDto) {
+    public CommonResponse<RespGetDiaryDto> getDiary(@AuthenticationPrincipal UserDto userDto, ReqGetDiaryDto reqGetDiaryDto) {
 
         // 요청 날짜 기반으로 일기 조회
         RespGetDiaryDto respGetDiaryDto = diaryService.getDiary(userDto.getEmail(), reqGetDiaryDto);

@@ -3,7 +3,6 @@ package com.nanal.backend.domain.diary.service;
 import com.nanal.backend.domain.diary.dto.*;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
 import com.nanal.backend.domain.diary.repository.EmotionRepository;
-import com.nanal.backend.domain.diary.repository.KeywordRepository;
 import com.nanal.backend.domain.oauth.repository.MemberRepository;
 import com.nanal.backend.entity.*;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
@@ -54,7 +52,11 @@ public class DiaryService {
         LocalDateTime nextDayOfPrevRetroDate = getNextDayOfPrevRetroDate(member.getRetrospectDay(), currentDate);
         LocalDateTime postRetroDate = getPostRetroDate(member.getRetrospectDay(), currentDate);
 
-        return new RespGetCalendarDto(existDiaryDate, nextDayOfPrevRetroDate.getDayOfMonth(), postRetroDate.getDayOfMonth());
+        return RespGetCalendarDto.builder()
+                .existDiaryDate(existDiaryDate)
+                .prevRetroDate(nextDayOfPrevRetroDate.getDayOfMonth())
+                .postRetroDate(postRetroDate.getDayOfMonth())
+                .build();
     }
 
     public RespGetEmotionDto getEmotion() {
@@ -64,6 +66,20 @@ public class DiaryService {
         RespGetEmotionDto respGetEmotionDto = getRespGetEmotionDto(emotions);
 
         return respGetEmotionDto;
+    }
+
+    public RespGetDiaryDto getDiary(String email, ReqGetDiaryDto reqGetDiaryDto) {
+        // email 로 유저 조회
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        // 질의할 sql 의 Like 절에 해당하게끔 변환
+        String yearMonthDay = reqGetDiaryDto.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
+        // 선택한 yyyy-MM-dd 에 작성한 일기리스트 조회
+        Diary selectDiary = diaryRepository.findByMemberAndWriteDate(member.getMemberId(), yearMonthDay).get(0);
+
+        // 조회한 일기로 반환값 생성
+        RespGetDiaryDto respGetDiaryDto = RespGetDiaryDto.makeRespGetDiaryDto(selectDiary);
+
+        return respGetDiaryDto;
     }
 
 
@@ -81,17 +97,17 @@ public class DiaryService {
 
             // KeywordEmotion 리스트에 KeywordEmotion 생성하여 삽입.
             for(KeywordEmotionDto keywordEmotionDto : keywordDto.getKeywordEmotions()){
-                KeywordEmotion keywordEmotion = KeywordEmotion.createKeywordEmotion(keywordEmotionDto.getEmotion());
+                KeywordEmotion keywordEmotion = KeywordEmotion.makeKeywordEmotion(keywordEmotionDto.getEmotion());
                 keywordEmotions.add(keywordEmotion);
             }
 
             // Keyword 리스트에 KeywordEmotion 리스트를 이용하여 생성한 Keyword 삽입.
-            Keyword keyword = Keyword.createKeyword(keywordDto.getKeyword(), keywordEmotions);
+            Keyword keyword = Keyword.makeKeyword(keywordDto.getKeyword(), keywordEmotions);
             keywords.add(keyword);
         }
 
         // Keyword 리스트를 이용하여 Diary 생성
-        Diary diary = Diary.createDiary(member, keywords, reqSaveDiaryDto.getContent(), reqSaveDiaryDto.getDate());
+        Diary diary = Diary.makeDiary(member, keywords, reqSaveDiaryDto.getContent(), reqSaveDiaryDto.getDate());
 
         // Diary 저장
         diaryRepository.save(diary);
@@ -101,7 +117,7 @@ public class DiaryService {
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonth = selectTime.format(DateTimeFormatter.ofPattern("yyyy-MM")) + "%";
 
-        // 선택한 yyyy-MM 에 존재하는 작성날짜 가져오기
+        // 선택한 yyyy-MM 에 작성한 일기리스트 조회
         List<Diary> writeDates = diaryRepository.findByMemberAndWriteDate(
                 member.getMemberId(),
                 yearMonth);
@@ -136,4 +152,6 @@ public class DiaryService {
         respGetEmotionDto.setEmotion(emotionWords);
         return respGetEmotionDto;
     }
+
+
 }

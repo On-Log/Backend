@@ -39,7 +39,7 @@ public class KeywordEmotion {
 
 
     //==생성 메서드==//
-    public static KeywordEmotion createKeywordEmotion(String emotion) {
+    public static KeywordEmotion makeKeywordEmotion(String emotion) {
         KeywordEmotion keywordEmotion = new KeywordEmotion();
         keywordEmotion.changeEmotion(emotion);
         return keywordEmotion;

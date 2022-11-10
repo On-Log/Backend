@@ -2,10 +2,7 @@ package com.nanal.backend.domain.diary.controller;
 
 import com.nanal.backend.config.response.CommonResponse;
 import com.nanal.backend.config.response.ErrorCode;
-import com.nanal.backend.domain.diary.dto.ReqGetCalendarDto;
-import com.nanal.backend.domain.diary.dto.ReqSaveDiaryDto;
-import com.nanal.backend.domain.diary.dto.RespGetCalendarDto;
-import com.nanal.backend.domain.diary.dto.RespGetEmotionDto;
+import com.nanal.backend.domain.diary.dto.*;
 import com.nanal.backend.domain.diary.service.DiaryService;
 import com.nanal.backend.domain.oauth.UserDto;
 import lombok.RequiredArgsConstructor;
@@ -55,11 +52,15 @@ public class DiaryController {
      * 일기 조회
      * [GET] /diary/view
      * 작성자 : 장동호
-     * 수정일 :
+     * 수정일 : 2022-11-10
      */
     @GetMapping("/diary/view")
-    public void getDiary() {
+    public CommonResponse<?> getDiary(@AuthenticationPrincipal UserDto userDto, ReqGetDiaryDto reqGetDiaryDto) {
 
+        // 요청 날짜 기반으로 일기 조회
+        RespGetDiaryDto respGetDiaryDto = diaryService.getDiary(userDto.getEmail(), reqGetDiaryDto);
+
+        return new CommonResponse<>(respGetDiaryDto);
     }
 
     /**

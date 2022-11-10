@@ -55,7 +55,7 @@ public class Diary {
     }
 
     //==생성 메서드==//
-    public static Diary createDiary(Member member, List<Keyword> keywords, String content, LocalDateTime writeDate) {
+    public static Diary makeDiary(Member member, List<Keyword> keywords, String content, LocalDateTime writeDate) {
 
         Diary diary = new Diary();
 

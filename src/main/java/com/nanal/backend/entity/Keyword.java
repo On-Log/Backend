@@ -49,7 +49,7 @@ public class Keyword {
     }
 
     //==생성 메서드==//
-    public static Keyword createKeyword(String word, List<KeywordEmotion> keywordEmotions) {
+    public static Keyword makeKeyword(String word, List<KeywordEmotion> keywordEmotions) {
         Keyword keyword = new Keyword();
 
         for (KeywordEmotion keywordEmotion : keywordEmotions) {

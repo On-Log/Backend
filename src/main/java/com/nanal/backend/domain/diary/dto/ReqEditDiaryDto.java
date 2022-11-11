@@ -7,9 +7,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class ReqEditDiary {
+public class ReqEditDiaryDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime date;
+    private LocalDateTime editDate;
 
     private String content;
 

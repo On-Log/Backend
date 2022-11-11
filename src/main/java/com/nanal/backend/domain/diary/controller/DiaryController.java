@@ -63,15 +63,31 @@ public class DiaryController {
 
     /**
      * 일기 수정
-     * [PUT] /diary/view
+     * [PUT] /diary
      * 작성자 : 장동호
      * 수정일 :
      */
     @PutMapping("/diary")
-    public void editDiary() {
+    public CommonResponse<?> editDiary(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqEditDiaryDto reqEditDiary) {
 
+        diaryService.editDiary(userDto.getEmail(), reqEditDiary);
+
+        return new CommonResponse<>(ErrorCode.SUCCESS);
     }
 
+    /**
+     * 일기 삭제
+     * [PUT] /diary
+     * 작성자 : 장동호
+     * 수정일 :
+     */
+    @DeleteMapping("/diary")
+    public CommonResponse<?> deleteDiary(@AuthenticationPrincipal UserDto userDto, ReqDeleteDiaryDto reqDeleteDiaryDto) {
+
+        diaryService.deleteDiary(userDto.getEmail(), reqDeleteDiaryDto);
+
+        return new CommonResponse<>(ErrorCode.SUCCESS);
+    }
     /**
      * 감정어 조회
      * [GET] /diary/emotion

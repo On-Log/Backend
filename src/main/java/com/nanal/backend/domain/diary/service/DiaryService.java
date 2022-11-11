@@ -78,7 +78,7 @@ public class DiaryService {
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonthDay = reqGetDiaryDto.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
         // 선택한 yyyy-MM-dd 에 작성한 일기리스트 조회
-        Diary selectDiary = diaryRepository.findByMemberAndWriteDate(member.getMemberId(), yearMonthDay).get(0);
+        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
 
         // 조회한 일기로 반환값 생성
         RespGetDiaryDto respGetDiaryDto = RespGetDiaryDto.makeRespGetDiaryDto(selectDiary);
@@ -97,7 +97,7 @@ public class DiaryService {
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonthDay = reqEditDiary.getEditDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
         // 선택한 yyyy-MM-dd 에 작성한 일기 조회
-        Diary selectDiary = diaryRepository.findByMemberAndWriteDate(member.getMemberId(), yearMonthDay).get(0);
+        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
         // 기존 일기 삭제
         diaryRepository.delete(selectDiary);
 
@@ -117,9 +117,10 @@ public class DiaryService {
         /*
         일기와 해당 일기의 키워드, 감정어등을 삭제하고자 할 때, 일기 Entity 를 가져온 다음에 해당 Entity 를 삭제하는 식으로 이루어 짐.
         추후에 한 번의 쿼리만으로 Cascade 로직이 정상적으로 작동할 수 있도록 수정 필요
+        diaryRepository.deleteByMemberAndWriteDate(member.getMemberId(), reqDeleteDiaryDto.getDeleteDate());
          */
         // 선택한 yyyy-MM-dd 에 작성한 일기 조회
-        Diary selectDiary = diaryRepository.findByMemberAndWriteDate(member.getMemberId(), yearMonthDay).get(0);
+        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
         // 기존 일기 삭제
         diaryRepository.delete(selectDiary);
     }
@@ -163,7 +164,7 @@ public class DiaryService {
         String yearMonth = selectTime.format(DateTimeFormatter.ofPattern("yyyy-MM")) + "%";
 
         // 선택한 yyyy-MM 에 작성한 일기리스트 조회
-        List<Diary> writeDates = diaryRepository.findByMemberAndWriteDate(
+        List<Diary> writeDates = diaryRepository.findListByMemberAndWriteDate(
                 member.getMemberId(),
                 yearMonth);
 

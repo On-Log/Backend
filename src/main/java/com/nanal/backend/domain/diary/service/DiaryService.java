@@ -31,6 +31,7 @@ public class DiaryService {
 
         // 일기 Entity 생성
         Diary diary = createDiary(member, reqSaveDiaryDto.getContent(), reqSaveDiaryDto.getDate(), reqSaveDiaryDto.getKeywords());
+
         // 일기 저장
         diaryRepository.save(diary);
     }

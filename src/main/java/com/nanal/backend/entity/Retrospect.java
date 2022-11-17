@@ -28,7 +28,7 @@ public class Retrospect {
 
     private Boolean editStatus;
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 30, nullable = false)
     private String goal;
     @OneToMany(mappedBy = "retrospect", cascade = CascadeType.ALL)
     private List<RetrospectKeyword> retrospectKeywords = new ArrayList<>();

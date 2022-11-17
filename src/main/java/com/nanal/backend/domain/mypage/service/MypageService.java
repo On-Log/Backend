@@ -74,7 +74,7 @@ public class MypageService {
         // 그냥,, 안됨 Member member = memberRepository.findByEmail(email); //memberrepository 사용하지 않기.. - findOne으로 이메일 찾기 - findOne 안됨. 그냥 memberrepo로..
         Member member = memberRepository.findByEmail(userDto.getEmail()).orElseThrow(() -> new RuntimeException());
         System.out.println("---------service 단 "+"1. UserDto getemail 확인: "+userDto.getEmail()+"2. getNickname 확인: "+reqEditNickname.getNickname());
-        member.update(reqEditNickname.getNickname()); //member 업데이트 진행. -> UserDto로 변경. -> member로.
+        member.changeNickname(reqEditNickname.getNickname()); //member 업데이트 진행. -> UserDto로 변경. -> member로.
 
         // return member;
         return RespEditNicknameDto.builder()
@@ -91,7 +91,7 @@ public class MypageService {
         Member member = memberRepository.findByEmail(userDto.getEmail()).orElseThrow(() -> new RuntimeException());
 
         System.out.println("---------service 단 "+"1. UserDto getemail 확인: "+userDto.getEmail()+"2. getNickname 확인: "+reqEditRetrospectDay.getRetrospectDay());
-        member.updateRetrospectDay(reqEditRetrospectDay.getRetrospectDay()); //member 업데이트 진행. -> UserDto로 변경.
+        member.changeRetrospectDay(reqEditRetrospectDay.getRetrospectDay()); //member 업데이트 진행. -> UserDto로 변경.
 
         return RespEditRetrospectDayDto.builder()
                 .userRetrospectDay(member.getRetrospectDay())

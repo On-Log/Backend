@@ -24,7 +24,7 @@ public class RetrospectKeyword {
     @JoinColumn(name = "retrospect_id")
     private Retrospect retrospect;
 
-    @Column(length = 30, nullable = false)
+    @Column(length = 5, nullable = false)
     private String keyword;
 
     @Column(length = 20, nullable = false)

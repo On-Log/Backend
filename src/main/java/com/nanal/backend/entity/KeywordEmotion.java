@@ -24,6 +24,7 @@ public class KeywordEmotion {
     @JoinColumn(name = "keyword_id")
     private Keyword keyword;
 
+    @Column(nullable = false, length = 5)
     private String emotion;
 
     //==설정 메서드==//

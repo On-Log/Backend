@@ -29,11 +29,11 @@ public class CommonExceptionHandler {
         return new CommonResponse<>(ErrorCode.MEMBER_NOT_FOUND);
     }
 
+
     @ExceptionHandler(DiaryNotFoundException.class)
-    public CommonResponse<?> memberNotFoundError(DiaryNotFoundException e) {
+    public CommonResponse<?> diaryNotFoundError(DiaryNotFoundException e) {
         log.error("[" + e.getClass().getSimpleName() + "] " + e.getMessage());
         return new CommonResponse<>(ErrorCode.DIARY_NOT_FOUND);
     }
-
 
 }

@@ -1,7 +1,7 @@
 package com.nanal.backend.domain.token;
 
+import com.nanal.backend.domain.mypage.repository.MemberRepository;
 import com.nanal.backend.entity.Member;
-import com.nanal.backend.domain.oauth.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;

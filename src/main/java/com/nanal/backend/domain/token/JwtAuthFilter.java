@@ -1,9 +1,8 @@
 package com.nanal.backend.domain.token;
 
+import com.nanal.backend.domain.mypage.repository.MemberRepository;
 import com.nanal.backend.domain.oauth.UserDto;
 import com.nanal.backend.entity.Member;
-import com.nanal.backend.domain.oauth.repository.MemberRepository;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

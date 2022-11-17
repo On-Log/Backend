@@ -19,7 +19,7 @@ public class Member {
     @Column(name = "member_id")
     private Long memberId;
 
-    @Column(unique = true, nullable = false, length = 40)
+    @Column(unique = true, nullable = false, length = 30)
     private String email;
 
     @Column(nullable = false, length = 10)
@@ -28,7 +28,7 @@ public class Member {
     @Column(nullable = false, length = 10)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private String nickname;
 
     @Column(nullable = false)

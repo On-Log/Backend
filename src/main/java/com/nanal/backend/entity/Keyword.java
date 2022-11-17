@@ -23,7 +23,7 @@ public class Keyword {
     private Long keywordId;
 
     // word -> keyword 로 테스트
-    @Column(length = 30, nullable = false)
+    @Column(nullable = false, length = 5)
     private String word;
 
     @ManyToOne(fetch = FetchType.LAZY)

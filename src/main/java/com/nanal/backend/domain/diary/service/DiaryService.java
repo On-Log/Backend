@@ -40,7 +40,7 @@ public class DiaryService {
     @Transactional(readOnly = true)
     public RespGetCalendarDto getCalendar(String email, ReqGetCalendarDto reqGetCalendarDto) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("일기 탭 화면 요청"));
 
         LocalDateTime currentDate = reqGetCalendarDto.getCurrentDate();
         LocalDateTime selectDate = reqGetCalendarDto.getSelectDate();
@@ -52,7 +52,7 @@ public class DiaryService {
         // 요청된 기간내 기록이 존재하는 날 조회
         List<Integer> existDiaryDate = getExistDiaryDate(member, selectDate);
 
-        // 회고 요일과 현재 날짜 로 일기 작성 가능주 구하기
+        // 회고 요일과 현재 날짜로 일기 작성 가능주 구하기
         LocalDateTime nextDayOfPrevRetroDate = getNextDayOfPrevRetroDate(member.getRetrospectDay(), currentDate);
         LocalDateTime postRetroDate = getPostRetroDate(member.getRetrospectDay(), currentDate);
 
@@ -80,7 +80,7 @@ public class DiaryService {
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonthDay = reqGetDiaryDto.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
         // 선택한 yyyy-MM-dd 에 작성한 일기리스트 조회
-        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
+        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay).orElseThrow();
 
         // 조회한 일기로 반환값 생성
         RespGetDiaryDto respGetDiaryDto = RespGetDiaryDto.makeRespGetDiaryDto(selectDiary);
@@ -99,7 +99,7 @@ public class DiaryService {
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonthDay = reqEditDiary.getEditDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
         // 선택한 yyyy-MM-dd 에 작성한 일기 조회
-        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
+        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay).orElseThrow();
         // 기존 일기 삭제
         diaryRepository.delete(selectDiary);
 
@@ -122,7 +122,7 @@ public class DiaryService {
         diaryRepository.deleteByMemberAndWriteDate(member.getMemberId(), reqDeleteDiaryDto.getDeleteDate());
          */
         // 선택한 yyyy-MM-dd 에 작성한 일기 조회
-        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
+        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay).orElseThrow();
         // 기존 일기 삭제
         diaryRepository.delete(selectDiary);
     }

@@ -23,7 +23,7 @@ public class Member {
     @Column(unique = true, nullable = false, length = 50)
     private String email;
 
-    @Column(nullable = false, length = 5)
+    @Column(nullable = false, length = 10)
     private String provider;
 
     @Column(nullable = false, length = 20)

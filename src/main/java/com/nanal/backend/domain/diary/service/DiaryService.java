@@ -1,5 +1,6 @@
 package com.nanal.backend.domain.diary.service;
 
+import com.nanal.backend.config.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.diary.dto.*;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
 import com.nanal.backend.domain.diary.repository.EmotionRepository;
@@ -27,7 +28,7 @@ public class DiaryService {
 
     public void saveDiary(String email, ReqSaveDiaryDto reqSaveDiaryDto) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("일기 기록 요청"));
 
         // 일기 Entity 생성
         Diary diary = createDiary(member, reqSaveDiaryDto.getContent(), reqSaveDiaryDto.getDate(), reqSaveDiaryDto.getKeywords());

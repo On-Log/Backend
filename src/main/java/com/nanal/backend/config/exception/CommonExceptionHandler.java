@@ -1,5 +1,6 @@
 package com.nanal.backend.config.exception;
 
+import com.nanal.backend.config.exception.customexception.MemberAuthException;
 import com.nanal.backend.config.response.CommonResponse;
 import com.nanal.backend.config.response.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +22,11 @@ public class CommonExceptionHandler {
         return new CommonResponse<>(ErrorCode.INVALID_INPUT_VALUE);
     }
 
-    @ExceptionHandler(CustomException.class)
-    public CommonResponse<?> processNotFoundError(CustomException exception) {
-        log.error(exception.getMessage(), exception);
-        return new CommonResponse<>(ErrorCode.INVALID_REQUEST);
+    @ExceptionHandler(MemberAuthException.class)
+    public CommonResponse<?> memberNotFoundError(MemberAuthException e) {
+        log.error("[" + e.getClass().getSimpleName() + "] " + e.getMessage());
+        return new CommonResponse<>(ErrorCode.MEMBER_NOT_FOUND);
     }
+
+
 }

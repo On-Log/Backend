@@ -14,7 +14,10 @@ public enum ErrorCode {
     // 토큰이 없거나 유효하지 않은 상태에서 정보를 요청할 때.
     INVALID_JWT(false, 4001, "토큰이 없거나, 유효하지 않습니다. 로그인을 해주세요."),
     // 특정 정보를 권한이 없는 유저가 요청하거나, 존재하지 않는 정보를 요청할 때.
-    INVALID_REQUEST(false, 4002, "잘못된 요청입니다.");
+    INVALID_REQUEST(false, 4002, "잘못된 요청입니다."),
+
+    // Auth
+    MEMBER_NOT_FOUND(false, 4003, "존재하지 않는 사용자입니다.");
 
     // Diary
 

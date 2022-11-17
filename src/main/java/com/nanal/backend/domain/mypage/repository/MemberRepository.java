@@ -13,4 +13,6 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByEmail(String email);
     Optional<Member> findByRetrospectDay(DayOfWeek retrospectDay);
+
+    boolean existsByRetrospectDay(DayOfWeek retrospectDay);
 }

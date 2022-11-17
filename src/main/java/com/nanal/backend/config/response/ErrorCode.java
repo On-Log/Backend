@@ -14,7 +14,7 @@ public enum ErrorCode {
     // 토큰이 없거나 유효하지 않은 상태에서 정보를 요청할 때.
     INVALID_JWT(false, 4001, "토큰이 없거나, 유효하지 않습니다. 로그인을 해주세요."),
     // 특정 정보를 권한이 없는 유저가 요청하거나, 존재하지 않는 정보를 요청할 때.
-    INVALID_REQUEST(false, 4002, "잘못된 요청입니다.");
+    INVALID_REQUEST(false, 4002, "잘못된 요청입니다."),
 
     // Diary
 
@@ -23,6 +23,10 @@ public enum ErrorCode {
 
 
     // MyPage
+    RETROSPECTDAY_DUPLICATION(false, 4003, "중복된 회고일입니다."),
+    // 중복된 회고일을 입력할 때.
+    RESETAVAIL_FALSE(false, 4004, "지금은 회고일을 변경 할 수 없습니다.");
+    //resetavail이 false일 때. (= 회고일 변경으로부터 한 달이 지나지 않아 변경할 수 없을 때.)
 
 
     private Boolean isSuccess;

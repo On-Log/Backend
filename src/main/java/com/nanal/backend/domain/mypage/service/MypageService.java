@@ -57,32 +57,35 @@ public class MypageService {
 
     /** retrospectDay - **/
 
-    /*public boolean checkRetrospectDay(String email, DayOfWeek retrospectDay) {
-
-        if(memberRepository.existsByRetrospectDay(retrospectDay )){
-            if(memberRepository.findByRetrospectDay(retrospectDay).getId() == member_id){ - 변경
+    public boolean checkRetrospectDay(String email, DayOfWeek retrospectDay) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        System.out.println("받는 값: "+member.getRetrospectDay()+"---- 그냥 retrospect"+retrospectDay);
+        if(member.getRetrospectDay().equals(retrospectDay)) //기존 값이 받은 값과 같으면
                 return true;
-        }
-    }*/
+        return false;
+    }
 
+    public boolean checkResetAvail(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        System.out.println("-------- 회고일 받기: "+member.getResetAvail());
+        if(member.getResetAvail() == false)
+            return true;
 
-    //public Member findOne(String nickname) { return memberRepository.findByNickName(nickname);}
+        System.out.println("-------- 회고일 받기: "+member.getResetAvail());
+        member.setResetAvail(false);
+        return false;
+    }
 
     @Transactional
-    public RespEditNicknameDto update(UserDto userDto, ReqEditNicknameDto reqEditNickname) { //reqEditNickname string으로 변경함. -> 다시 dto.. ReqEditNicknameDto reqEditNickname 이거 아닌듯..?
+    public RespEditNicknameDto update(UserDto userDto, ReqEditNicknameDto reqEditNickname) {
         // email 로 유저 조회
-        // 그냥,, 안됨 Member member = memberRepository.findByEmail(email); //memberrepository 사용하지 않기.. - findOne으로 이메일 찾기 - findOne 안됨. 그냥 memberrepo로..
         Member member = memberRepository.findByEmail(userDto.getEmail()).orElseThrow(() -> new RuntimeException());
         System.out.println("---------service 단 "+"1. UserDto getemail 확인: "+userDto.getEmail()+"2. getNickname 확인: "+reqEditNickname.getNickname());
-        member.update(reqEditNickname.getNickname()); //member 업데이트 진행. -> UserDto로 변경. -> member로.
+        member.update(reqEditNickname.getNickname());
 
-        // return member;
         return RespEditNicknameDto.builder()
                 .userNickname(member.getNickname())
                 .build();
-
-        //System.out.println("reqEdit 맵핑 확인: "+member.getName()+"\n 매핑 이름 확인"+nickname); //닉네임 못받음. -> controller단 문제? reqEditNickname.getNickname() 이거 버림.
-        //.. member.setNickname(nickname);
     }
 
     @Transactional
@@ -96,6 +99,5 @@ public class MypageService {
         return RespEditRetrospectDayDto.builder()
                 .userRetrospectDay(member.getRetrospectDay())
                 .build();
-        // return member;
     }
 }

@@ -28,7 +28,7 @@ public class MypageController {
      * 마이페이지 정보
      * [GET] /mypage
      * 작성자 : 김유빈
-     * 수정일 : 2022-11-11
+     * 수정일 : 2022-11-16
      */
     @GetMapping("/mypage")
     public CommonResponse<RespGetUserDto> getUser(@AuthenticationPrincipal UserDto userDto, ReqGetUserDto reqGetUserDto) {
@@ -43,13 +43,11 @@ public class MypageController {
      * 닉네임 변경
      * [PUT] /mypage/nickname
      * 작성자 : 김유빈
-     * 수정일 : 2022-11-16
+     * 수정일 : 2022-11-17
      */
-    @PutMapping("/mypage/nickname") //putmapping을 통해 url 매핑.
-    public CommonResponse<RespEditNicknameDto> update(@AuthenticationPrincipal UserDto userDto, @RequestBody @Valid ReqEditNicknameDto reqEditNickname) { //일단 보류 ResEditMemberDto -> UserDto 가 아닌가,,?
-        System.out.println("------Controller단 1. userDto 확인: "+userDto+" 2. req확인"+reqEditNickname);
-        mypageService.update(userDto, reqEditNickname); //remove return
-
+    @PutMapping("/mypage/nickname")
+    public CommonResponse<RespEditNicknameDto> update(@AuthenticationPrincipal UserDto userDto, @RequestBody @Valid ReqEditNicknameDto reqEditNickname) {
+        mypageService.update(userDto, reqEditNickname);
         RespEditNicknameDto respEditNicknameDto = mypageService.getNickname(userDto.getEmail(), reqEditNickname);
 
         return new CommonResponse<>(respEditNicknameDto);
@@ -59,21 +57,22 @@ public class MypageController {
      * 회고요일 변경
      * [PUT] /mypage/day
      * 작성자 : 김유빈
-     * 수정일 : 2022-11-16
+     * 수정일 : 2022-11-17
      */
     @PutMapping("/mypage/day") //putmapping을 통해 url 매핑.
-    public CommonResponse<RespEditRetrospectDayDto> updateRetrospectDay(@AuthenticationPrincipal UserDto userDto, @RequestBody @Valid ReqEditRetrospectDayDto reqEditRetrospectDayDto) { //일단 보류 ResEditMemberDto -> UserDto 가 아닌가,,?
-        System.out.println("------Controller단 1. userDto 확인: " + userDto + " 2. req확인" + reqEditRetrospectDayDto);
-
-        /*if(mypageService.checkRetrospectDay(userDto.getEmail(), reqEditRetrospectDayDto.getRetrospectDay())){
-            //log.info("same retrospectDay");
-            return new CommonResponse(true);*/
-
+    public CommonResponse<RespEditRetrospectDayDto> updateRetrospectDay(@AuthenticationPrincipal UserDto userDto, @RequestBody @Valid ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
+        if (mypageService.checkRetrospectDay(userDto.getEmail(), reqEditRetrospectDayDto.getRetrospectDay())) {
+            // 회고일이 같은 경우, error.
+            return new CommonResponse(ErrorCode.RETROSPECTDAY_DUPLICATION);
+        }
+        if (mypageService.checkResetAvail(userDto.getEmail())) {
+            // resetAvail이 false일 때(= 회고일 변경으로부터 한 달이 지나지 않아 변경할 수 없을 때.), error.
+            return new CommonResponse(ErrorCode.RESETAVAIL_FALSE);
+        }
         mypageService.updateRetrospectDay(userDto, reqEditRetrospectDayDto);
-
         RespEditRetrospectDayDto respEditRetrospectDayDto = mypageService.getRetrospectDay(userDto.getEmail(), reqEditRetrospectDayDto);
-
         return new CommonResponse<>(respEditRetrospectDayDto);
+
     }
 
 }

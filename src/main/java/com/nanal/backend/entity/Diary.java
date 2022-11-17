@@ -22,7 +22,7 @@ public class Diary {
     @Column(name = "diary_id")
     private Long diaryId;
 
-    @Column(length = 300, nullable = true)
+    @Column(length = 500, nullable = true)
     private String content;
 
     private LocalDateTime writeDate;

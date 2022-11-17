@@ -23,7 +23,7 @@ public class RetrospectContent {
     @JoinColumn(name = "retrospect_id")
     private Retrospect retrospect;
 
-    @Column(length = 200, nullable = false)
+    @Column(length = 100, nullable = false)
     private String question;
 
     @Column(length = 300)

@@ -24,5 +24,8 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     @Query(value = "DELETE FROM Diary d WHERE d.member.memberId = :memberId AND d.writeDate = :writeDate")
     void deleteByMemberAndWriteDate(Long memberId, LocalDateTime writeDate);
 
+    @Query(value = "SELECT * FROM diary d WHERE d.member_id = :memberId AND (DATE(write_date) BETWEEN :firstDate AND :lastDate)", nativeQuery = true)
+    List<Diary> findListByMemberBetweenWriteDate(Long memberId, LocalDate firstDate, LocalDate lastDate);
+
     //List<LocalDateTime> findByMemberIdAndAllByWriteDateBetween(Long memberId, LocalDate firstDate, LocalDate lastDate);
 }

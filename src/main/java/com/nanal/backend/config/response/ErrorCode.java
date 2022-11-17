@@ -17,10 +17,10 @@ public enum ErrorCode {
     INVALID_REQUEST(false, 4002, "잘못된 요청입니다."),
 
     // Auth
-    MEMBER_NOT_FOUND(false, 4003, "존재하지 않는 사용자입니다.");
+    MEMBER_NOT_FOUND(false, 4003, "존재하지 않는 사용자입니다."),
 
     // Diary
-
+    DIARY_NOT_FOUND(false, 4004, "해당 날짜에 작성된 일기가 없습니다.");
 
     // Retrospect
 

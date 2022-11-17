@@ -1,5 +1,6 @@
 package com.nanal.backend.config.exception;
 
+import com.nanal.backend.config.exception.customexception.DiaryNotFoundException;
 import com.nanal.backend.config.exception.customexception.MemberAuthException;
 import com.nanal.backend.config.response.CommonResponse;
 import com.nanal.backend.config.response.ErrorCode;
@@ -26,6 +27,12 @@ public class CommonExceptionHandler {
     public CommonResponse<?> memberNotFoundError(MemberAuthException e) {
         log.error("[" + e.getClass().getSimpleName() + "] " + e.getMessage());
         return new CommonResponse<>(ErrorCode.MEMBER_NOT_FOUND);
+    }
+
+    @ExceptionHandler(DiaryNotFoundException.class)
+    public CommonResponse<?> memberNotFoundError(DiaryNotFoundException e) {
+        log.error("[" + e.getClass().getSimpleName() + "] " + e.getMessage());
+        return new CommonResponse<>(ErrorCode.DIARY_NOT_FOUND);
     }
 
 

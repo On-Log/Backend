@@ -1,5 +1,6 @@
 package com.nanal.backend.domain.diary.service;
 
+import com.nanal.backend.config.exception.customexception.DiaryNotFoundException;
 import com.nanal.backend.config.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.diary.dto.*;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
@@ -76,11 +77,12 @@ public class DiaryService {
     @Transactional(readOnly = true)
     public RespGetDiaryDto getDiary(String email, ReqGetDiaryDto reqGetDiaryDto) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("일기 조회 요청"));
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonthDay = reqGetDiaryDto.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
-        // 선택한 yyyy-MM-dd 에 작성한 일기리스트 조회
-        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay).orElseThrow();
+        // 선택한 yyyy-MM-dd 에 작성한 일기 조회
+        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay)
+                .orElseThrow(() -> new DiaryNotFoundException("일기 조회 요청"));
 
         // 조회한 일기로 반환값 생성
         RespGetDiaryDto respGetDiaryDto = RespGetDiaryDto.makeRespGetDiaryDto(selectDiary);

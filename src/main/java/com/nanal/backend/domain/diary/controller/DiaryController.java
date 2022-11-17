@@ -20,7 +20,7 @@ public class DiaryController {
      * 일기 탭 화면
      * [GET] /diary
      * 작성자 : 장동호
-     * 수정일 : 2022-11-09
+     * 수정일 : 2022-11-17
      */
     @GetMapping("/diary")
     public CommonResponse<RespGetCalendarDto> getCalendar(@AuthenticationPrincipal UserDto userDto, ReqGetCalendarDto reqGetCalendarDto) {
@@ -35,7 +35,7 @@ public class DiaryController {
      * 일기 기록
      * [POST] /diary
      * 작성자 : 장동호
-     * 수정일 : 2022-11-09
+     * 수정일 : 2022-11-17
      */
     @PostMapping("/diary")
     public CommonResponse<?> saveDiary(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqSaveDiaryDto reqSaveDiaryDto) {

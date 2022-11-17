@@ -1,7 +1,5 @@
 package com.nanal.backend.entity;
 
-import com.nanal.backend.domain.mypage.dto.ReqEditNicknameDto;
-import com.nanal.backend.domain.mypage.service.MypageService;
 import lombok.*;
 
 import javax.persistence.*;

@@ -46,8 +46,8 @@ public class MypageController {
      * 수정일 : 2022-11-17
      */
     @PutMapping("/mypage/nickname")
-    public CommonResponse<RespEditNicknameDto> update(@AuthenticationPrincipal UserDto userDto, @RequestBody @Valid ReqEditNicknameDto reqEditNickname) {
-        mypageService.update(userDto, reqEditNickname);
+    public CommonResponse<RespEditNicknameDto> updateNickname(@AuthenticationPrincipal UserDto userDto, @RequestBody @Valid ReqEditNicknameDto reqEditNickname) {
+        mypageService.updateNickname(userDto, reqEditNickname);
         RespEditNicknameDto respEditNicknameDto = mypageService.getNickname(userDto.getEmail(), reqEditNickname);
 
         return new CommonResponse<>(respEditNicknameDto);
@@ -59,7 +59,7 @@ public class MypageController {
      * 작성자 : 김유빈
      * 수정일 : 2022-11-17
      */
-    @PutMapping("/mypage/day") //putmapping을 통해 url 매핑.
+    @PutMapping("/mypage/day")
     public CommonResponse<RespEditRetrospectDayDto> updateRetrospectDay(@AuthenticationPrincipal UserDto userDto, @RequestBody @Valid ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
         if (mypageService.checkRetrospectDay(userDto.getEmail(), reqEditRetrospectDayDto.getRetrospectDay())) {
             // 회고일이 같은 경우, error.

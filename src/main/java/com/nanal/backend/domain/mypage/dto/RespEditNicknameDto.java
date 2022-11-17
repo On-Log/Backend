@@ -12,7 +12,6 @@ import java.time.DayOfWeek;
 @NoArgsConstructor
 @Data
 public class RespEditNicknameDto {
-    // 마이페이지에 필요한 닉네임, 이메일, 회고일
     private String userNickname;
 
 }

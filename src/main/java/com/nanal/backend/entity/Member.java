@@ -50,9 +50,7 @@ public class Member {
 
     // update created by yubin
     
-    public void update(String nickname) {
-        this.nickname = nickname;
-    }
+    public void updateNickname(String nickname) { this.nickname = nickname; }
 
     public void updateRetrospectDay(DayOfWeek retrospectDay) {
         this.retrospectDay = retrospectDay;

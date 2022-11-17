@@ -45,6 +45,9 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Diary> diaries = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Retrospect> retrospects = new ArrayList<>();
+
     // update created by yubin
     
     public void update(String nickname) { //member내에서는 닉네임의 update만 발생.

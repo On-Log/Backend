@@ -176,7 +176,7 @@ public class DiaryService {
         return existDiaryDate;
     }
 
-    private LocalDateTime getPostRetroDate(DayOfWeek retrospectDay, LocalDateTime currentTime) {
+    public LocalDateTime getPostRetroDate(DayOfWeek retrospectDay, LocalDateTime currentTime) {
         // 다음 회고일
         return currentTime.with(TemporalAdjusters.nextOrSame(retrospectDay));
     }

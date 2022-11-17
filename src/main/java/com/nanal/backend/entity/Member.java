@@ -7,7 +7,7 @@ import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
+@Getter @Setter //setter 추가.
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -44,6 +44,18 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Diary> diaries = new ArrayList<>();
+
+    // update created by yubin
+    
+    public void update(String nickname) { //member내에서는 닉네임의 update만 발생.
+        System.out.println("-------member 내 update확인: "+nickname+" | this값 확인: "+this.nickname);
+        this.nickname = nickname;
+    }
+
+    public void updateRetrospectDay(DayOfWeek retrospectDay) { //member내에서는 닉네임의 update만 발생.
+        System.out.println("-------member 내 update확인: "+retrospectDay+" | this값 확인: "+this.retrospectDay);
+        this.retrospectDay = retrospectDay;
+    }
 
     @Getter
     @RequiredArgsConstructor

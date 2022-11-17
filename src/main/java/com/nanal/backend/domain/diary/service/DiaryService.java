@@ -3,7 +3,7 @@ package com.nanal.backend.domain.diary.service;
 import com.nanal.backend.domain.diary.dto.*;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
 import com.nanal.backend.domain.diary.repository.EmotionRepository;
-import com.nanal.backend.domain.oauth.repository.MemberRepository;
+import com.nanal.backend.domain.mypage.repository.MemberRepository;
 import com.nanal.backend.entity.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

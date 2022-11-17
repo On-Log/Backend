@@ -114,7 +114,7 @@ public class DiaryService {
 
     public void deleteDiary(String email, ReqDeleteDiaryDto reqDeleteDiaryDto) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("일기 삭제 요청"));
 
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonthDay = reqDeleteDiaryDto.getDeleteDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
@@ -125,7 +125,8 @@ public class DiaryService {
         diaryRepository.deleteByMemberAndWriteDate(member.getMemberId(), reqDeleteDiaryDto.getDeleteDate());
          */
         // 선택한 yyyy-MM-dd 에 작성한 일기 조회
-        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay).orElseThrow();
+        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay)
+                .orElseThrow(() -> new DiaryNotFoundException("일기 삭제 요청"));
         // 기존 일기 삭제
         diaryRepository.delete(selectDiary);
     }

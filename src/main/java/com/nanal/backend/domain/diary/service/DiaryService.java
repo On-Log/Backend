@@ -92,7 +92,7 @@ public class DiaryService {
 
     public void editDiary(String email, ReqEditDiaryDto reqEditDiary) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("일기 수정 요청"));
 
         /*
         현재는 수정요청 들어오면 기존 일기삭제 후, 다시 저장하는 방식
@@ -101,7 +101,8 @@ public class DiaryService {
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonthDay = reqEditDiary.getEditDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
         // 선택한 yyyy-MM-dd 에 작성한 일기 조회
-        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay).orElseThrow();
+        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay)
+                .orElseThrow(() -> new DiaryNotFoundException("일기 수정 요청"));
         // 기존 일기 삭제
         diaryRepository.delete(selectDiary);
 

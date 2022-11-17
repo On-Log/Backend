@@ -95,10 +95,10 @@ public class DiaryController {
      * 수정일 : 2022-11-09
      */
     @GetMapping("/diary/emotion")
-    public CommonResponse<RespGetEmotionDto> getEmotion() {
+    public CommonResponse<RespGetEmotionDto> getEmotion(@AuthenticationPrincipal UserDto userDto) {
 
         // 감정어 조회
-        RespGetEmotionDto respGetEmotionDto = diaryService.getEmotion();
+        RespGetEmotionDto respGetEmotionDto = diaryService.getEmotion(userDto.getEmail());
 
         return new CommonResponse<>(respGetEmotionDto);
     }

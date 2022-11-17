@@ -1,7 +1,5 @@
 package com.nanal.backend.entity;
 
-import com.nanal.backend.domain.mypage.dto.ReqEditNicknameDto;
-import com.nanal.backend.domain.mypage.service.MypageService;
 import lombok.*;
 
 import javax.persistence.*;
@@ -46,6 +44,9 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Diary> diaries = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Retrospect> retrospects = new ArrayList<>();
 
     // update created by yubin
     

@@ -1,0 +1,53 @@
+package com.nanal.backend.entity;
+
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
+@Getter
+@Table(name = "retrospect_keyword")
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity
+public class RetrospectKeyword {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "retrospect_keyword_id")
+    private Long retrospectKeywordId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "retrospect_id")
+    private Retrospect retrospect;
+
+    @Column(length = 30, nullable = false)
+    private String keyword;
+
+    @Column(length = 20, nullable = false)
+    private String classify;
+
+    //==수정 메서드==//
+    public void changeRetrospect(Retrospect retrospect) {
+        this.retrospect = retrospect;
+    }
+
+    public void changeKeyWord(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public void changeClassify(String classify){ this.classify = classify; }
+
+    //==연관관계 메서드==//
+
+    //==생성 메서드==//
+    public static RetrospectKeyword makeRetrospectKeyword(String keyword, String classify) {
+        RetrospectKeyword retrospectKeyword = new RetrospectKeyword();
+        retrospectKeyword.changeKeyWord(keyword);
+        retrospectKeyword.changeClassify(classify);
+        return retrospectKeyword;
+    }
+}

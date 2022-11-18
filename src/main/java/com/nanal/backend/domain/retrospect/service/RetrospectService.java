@@ -69,6 +69,28 @@ public class RetrospectService {
         retrospectRepository.save(retrospect);
     }
 
+    @Transactional
+    public RespGetRetroDto getRetro(String email, ReqGetRetroDto reqGetRetroDto) {
+        // email 로 유저 조회
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+
+        LocalDateTime currentTime = reqGetRetroDto.getCurrentDate();
+        LocalDateTime selectDate = reqGetRetroDto.getSelectDate();
+        // 선택한 yyyy-MM 에 작성한 회고리스트 조회
+        List<Retrospect> getretrospects = getExistRetrospect(member, selectDate);
+
+        // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
+        RespGetRetroDto respGetRetroDto = RespGetRetroDto.makeRespGetRetroDto(getretrospects.get(reqGetRetroDto.getWeek()));
+
+        //수정 기간 지나면 수정 못하게 editstatus 변경
+        LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
+        if(currentTime.isAfter(prevRetroDate.plusDays(1).withHour(7).withMinute(00).withSecond(00))==true) {
+            getretrospects.get(reqGetRetroDto.getWeek()).updateEditStatus(false);
+        }
+
+        return respGetRetroDto;
+    }
+
     //===편의 메서드===//
     private Retrospect createRetrospect(Member member, String goal, LocalDateTime date, List<RetrospectKeywordDto> keywordDtos, List<RetrospectContentDto> contentDtos) {
         // Retrospect 생성에 필요한 keyword, content 리스트 생성

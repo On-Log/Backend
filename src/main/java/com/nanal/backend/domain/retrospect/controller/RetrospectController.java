@@ -45,4 +45,21 @@ public class RetrospectController {
         return new CommonResponse<>(ErrorCode.SUCCESS);
     }
 
+    /**
+     * 회고 조회
+     * [GET] /retrospect/view
+     * 작성자 : 장세은
+     * 수정일 :
+     */
+    @GetMapping("/retrospect/view")
+    public CommonResponse<RespGetRetroDto> getRetrospect(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqGetRetroDto reqGetRetroDto) {
+
+        //     요청 날짜 기반으로 회고 조회
+        RespGetRetroDto respGetRetroDto = retrospectService.getRetro(userDto.getEmail(), reqGetRetroDto);
+
+        return new CommonResponse<>(respGetRetroDto);
+    }
+
+
+
 }

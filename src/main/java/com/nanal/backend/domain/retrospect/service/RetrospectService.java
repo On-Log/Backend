@@ -37,7 +37,7 @@ public class RetrospectService {
     @Transactional(readOnly = true)
     public RespGetInfoDto getInfo(String email, ReqGetInfoDto reqGetInfoDto) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("회고 탭 화면"));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("회고 탭 화면 요청"));
         LocalDateTime currentDate = reqGetInfoDto.getCurrentDate();
         LocalDateTime selectDate = reqGetInfoDto.getSelectDate();
 
@@ -64,7 +64,7 @@ public class RetrospectService {
 
     public void saveRetrospect(String email, ReqSaveRetroDto reqSaveRetroDto) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("회고 기록 요청"));
         // 회고 Entity 생성
         Retrospect retrospect = createRetrospect(member, reqSaveRetroDto.getGoal(), reqSaveRetroDto.getDate(), reqSaveRetroDto.getKeywords(), reqSaveRetroDto.getContents());
         // 회고 저장

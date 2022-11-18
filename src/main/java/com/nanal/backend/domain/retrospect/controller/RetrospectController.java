@@ -39,7 +39,7 @@ public class RetrospectController {
     @PostMapping("/retrospect")
     public CommonResponse<?> saveRetrospect(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqSaveRetroDto reqSaveRetroDto) {
 
-//     요청 정보 기반으로 일기 저장
+        //     요청 날짜 기반으로 회고 기록
         retrospectService.saveRetrospect(userDto.getEmail(), reqSaveRetroDto);
 
         return new CommonResponse<>(ErrorCode.SUCCESS);
@@ -54,7 +54,7 @@ public class RetrospectController {
     @GetMapping("/retrospect/view")
     public CommonResponse<RespGetRetroDto> getRetrospect(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqGetRetroDto reqGetRetroDto) {
 
-//     요청 날짜 기반으로 회고 조회
+        //     요청 날짜 기반으로 회고 조회
         RespGetRetroDto respGetRetroDto = retrospectService.getRetro(userDto.getEmail(), reqGetRetroDto);
 
         return new CommonResponse<>(respGetRetroDto);
@@ -74,7 +74,7 @@ public class RetrospectController {
     }
 
     /**
-     * 키워드+감정어 조회
+     * 일기 작성 날짜+키워드+감정어 조회
      * [GET] /retrospect/keyword
      * 작성자 : 장세은
      * 수정일 :
@@ -82,7 +82,7 @@ public class RetrospectController {
     @GetMapping("/retrospect/keyword")
     public CommonResponse<RespGetKeywordAndEmotionDto> getKeywordAndEmotion(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqGetKeywordAndEmotionDto reqGetKeywordAndEmotionDto) {
 
-        // 키워드,감정어 조회
+        // 일기 작성 날짜+키워드+감정어 조회
         RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = retrospectService.getKeywordAndEmotion(userDto.getEmail(), reqGetKeywordAndEmotionDto);
 
         return new CommonResponse<>(respGetKeywordAndEmotionDto);
@@ -102,4 +102,5 @@ public class RetrospectController {
 
         return new CommonResponse<>(respGetQuestionAndHelp);
     }
+
 }

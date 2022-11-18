@@ -60,6 +60,7 @@ public class RetrospectService {
                 .build();
     }
 
+
     public void saveRetrospect(String email, ReqSaveRetroDto reqSaveRetroDto) {
         // email 로 유저 조회
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
@@ -92,6 +93,7 @@ public class RetrospectService {
         return respGetRetroDto;
     }
 
+
     public void editRetrospect(String email, ReqEditRetroDto reqEditRetroDto) {
         // email 로 유저 조회
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
@@ -107,6 +109,7 @@ public class RetrospectService {
         retrospectContents.get(reqEditRetroDto.getIndex()).changeAnswer(reqEditRetroDto.getAnswer());
     }
 
+
     public RespGetKeywordAndEmotionDto getKeywordAndEmotion(String email, ReqGetKeywordAndEmotionDto reqGetKeywordAndEmotionDto){
         // email 로 유저 조회
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
@@ -117,6 +120,7 @@ public class RetrospectService {
         RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.makeRespGetKeywordAndEmotionDto(diaries);
         return respGetKeywordAndEmotionDto;
     }
+
 
     @Transactional(readOnly = true)
     public RespGetQuestionAndHelpDto getQuestionAndHelp() {
@@ -150,6 +154,7 @@ public class RetrospectService {
 
         return retrospect;
     }
+
 
     private List<Retrospect> getExistRetrospect(Member member, LocalDateTime selectTime) {
         System.out.println(selectTime);
@@ -215,7 +220,6 @@ public class RetrospectService {
 
         return keywordList;
     }
-
     private RespGetQuestionAndHelpDto getRespGetQuestionAndHelpDto(List<RetrospectQuestion> retrospectQuestions) {
         List<String> questionAndHelp = new ArrayList<>();
 

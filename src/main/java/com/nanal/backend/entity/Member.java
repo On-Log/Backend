@@ -19,16 +19,17 @@ public class Member {
     @Column(name = "member_id")
     private Long memberId;
 
-    @Column(unique = true, nullable = false, length = 40)
+    // RFC 표준상 최대 320자.
+    @Column(unique = true, nullable = false, length = 50)
     private String email;
 
     @Column(nullable = false, length = 10)
     private String provider;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 20)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private String nickname;
 
     @Column(nullable = false)
@@ -48,20 +49,20 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Retrospect> retrospects = new ArrayList<>();
 
-    // update created by yubin
-    
-    public void updateNickname(String nickname) { this.nickname = nickname; }
-
-    public void updateRetrospectDay(DayOfWeek retrospectDay) {
-        this.retrospectDay = retrospectDay;
-    }
-
     @Getter
     @RequiredArgsConstructor
     public enum Role {
         USER("ROLE_USER"), ADMIN("ROLE_ADMIN");
 
         private final String key;
+    }
+
+    // update created by yubin
+    
+    public void updateNickname(String nickname) { this.nickname = nickname; }
+
+    public void updateRetrospectDay(DayOfWeek retrospectDay) {
+        this.retrospectDay = retrospectDay;
     }
 }
 

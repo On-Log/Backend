@@ -1,5 +1,7 @@
 package com.nanal.backend.domain.diary.service;
 
+import com.nanal.backend.config.exception.customexception.DiaryNotFoundException;
+import com.nanal.backend.config.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.diary.dto.*;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
 import com.nanal.backend.domain.diary.repository.EmotionRepository;
@@ -27,10 +29,11 @@ public class DiaryService {
 
     public void saveDiary(String email, ReqSaveDiaryDto reqSaveDiaryDto) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("일기 기록 요청"));
 
         // 일기 Entity 생성
         Diary diary = createDiary(member, reqSaveDiaryDto.getContent(), reqSaveDiaryDto.getDate(), reqSaveDiaryDto.getKeywords());
+
         // 일기 저장
         diaryRepository.save(diary);
     }
@@ -38,7 +41,7 @@ public class DiaryService {
     @Transactional(readOnly = true)
     public RespGetCalendarDto getCalendar(String email, ReqGetCalendarDto reqGetCalendarDto) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("일기 탭 화면 요청"));
 
         LocalDateTime currentDate = reqGetCalendarDto.getCurrentDate();
         LocalDateTime selectDate = reqGetCalendarDto.getSelectDate();
@@ -50,7 +53,7 @@ public class DiaryService {
         // 요청된 기간내 기록이 존재하는 날 조회
         List<Integer> existDiaryDate = getExistDiaryDate(member, selectDate);
 
-        // 회고 요일과 현재 날짜 로 일기 작성 가능주 구하기
+        // 회고 요일과 현재 날짜로 일기 작성 가능주 구하기
         LocalDateTime nextDayOfPrevRetroDate = getNextDayOfPrevRetroDate(member.getRetrospectDay(), currentDate);
         LocalDateTime postRetroDate = getPostRetroDate(member.getRetrospectDay(), currentDate);
 
@@ -62,7 +65,9 @@ public class DiaryService {
     }
 
     @Transactional(readOnly = true)
-    public RespGetEmotionDto getEmotion() {
+    public RespGetEmotionDto getEmotion(String email) {
+        // email 로 유저 조회
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("감정어 조회 요청"));
         // 감정어 조회
         List<Emotion> emotions = emotionRepository.findAll();
 
@@ -74,11 +79,12 @@ public class DiaryService {
     @Transactional(readOnly = true)
     public RespGetDiaryDto getDiary(String email, ReqGetDiaryDto reqGetDiaryDto) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("일기 조회 요청"));
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonthDay = reqGetDiaryDto.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
-        // 선택한 yyyy-MM-dd 에 작성한 일기리스트 조회
-        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
+        // 선택한 yyyy-MM-dd 에 작성한 일기 조회
+        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay)
+                .orElseThrow(() -> new DiaryNotFoundException("일기 조회 요청"));
 
         // 조회한 일기로 반환값 생성
         RespGetDiaryDto respGetDiaryDto = RespGetDiaryDto.makeRespGetDiaryDto(selectDiary);
@@ -88,7 +94,7 @@ public class DiaryService {
 
     public void editDiary(String email, ReqEditDiaryDto reqEditDiary) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("일기 수정 요청"));
 
         /*
         현재는 수정요청 들어오면 기존 일기삭제 후, 다시 저장하는 방식
@@ -97,7 +103,8 @@ public class DiaryService {
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonthDay = reqEditDiary.getEditDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
         // 선택한 yyyy-MM-dd 에 작성한 일기 조회
-        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
+        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay)
+                .orElseThrow(() -> new DiaryNotFoundException("일기 수정 요청"));
         // 기존 일기 삭제
         diaryRepository.delete(selectDiary);
 
@@ -109,7 +116,7 @@ public class DiaryService {
 
     public void deleteDiary(String email, ReqDeleteDiaryDto reqDeleteDiaryDto) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("일기 삭제 요청"));
 
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonthDay = reqDeleteDiaryDto.getDeleteDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
@@ -120,7 +127,8 @@ public class DiaryService {
         diaryRepository.deleteByMemberAndWriteDate(member.getMemberId(), reqDeleteDiaryDto.getDeleteDate());
          */
         // 선택한 yyyy-MM-dd 에 작성한 일기 조회
-        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
+        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay)
+                .orElseThrow(() -> new DiaryNotFoundException("일기 삭제 요청"));
         // 기존 일기 삭제
         diaryRepository.delete(selectDiary);
     }

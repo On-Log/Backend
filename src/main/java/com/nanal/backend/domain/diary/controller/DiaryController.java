@@ -20,7 +20,7 @@ public class DiaryController {
      * 일기 탭 화면
      * [GET] /diary
      * 작성자 : 장동호
-     * 수정일 : 2022-11-09
+     * 수정일 : 2022-11-18
      */
     @GetMapping("/diary")
     public CommonResponse<RespGetCalendarDto> getCalendar(@AuthenticationPrincipal UserDto userDto, ReqGetCalendarDto reqGetCalendarDto) {
@@ -35,7 +35,7 @@ public class DiaryController {
      * 일기 기록
      * [POST] /diary
      * 작성자 : 장동호
-     * 수정일 : 2022-11-09
+     * 수정일 : 2022-11-18
      */
     @PostMapping("/diary")
     public CommonResponse<?> saveDiary(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqSaveDiaryDto reqSaveDiaryDto) {
@@ -50,7 +50,7 @@ public class DiaryController {
      * 일기 조회
      * [GET] /diary/view
      * 작성자 : 장동호
-     * 수정일 : 2022-11-10
+     * 수정일 : 2022-11-18
      */
     @GetMapping("/diary/view")
     public CommonResponse<RespGetDiaryDto> getDiary(@AuthenticationPrincipal UserDto userDto, ReqGetDiaryDto reqGetDiaryDto) {
@@ -65,7 +65,7 @@ public class DiaryController {
      * 일기 수정
      * [PUT] /diary
      * 작성자 : 장동호
-     * 수정일 :
+     * 수정일 : 2022-11-18
      */
     @PutMapping("/diary")
     public CommonResponse<?> editDiary(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqEditDiaryDto reqEditDiary) {
@@ -79,7 +79,7 @@ public class DiaryController {
      * 일기 삭제
      * [PUT] /diary
      * 작성자 : 장동호
-     * 수정일 :
+     * 수정일 : 2022-11-18
      */
     @DeleteMapping("/diary")
     public CommonResponse<?> deleteDiary(@AuthenticationPrincipal UserDto userDto, ReqDeleteDiaryDto reqDeleteDiaryDto) {
@@ -92,13 +92,13 @@ public class DiaryController {
      * 감정어 조회
      * [GET] /diary/emotion
      * 작성자 : 장동호
-     * 수정일 : 2022-11-09
+     * 수정일 : 2022-11-18
      */
     @GetMapping("/diary/emotion")
-    public CommonResponse<RespGetEmotionDto> getEmotion() {
+    public CommonResponse<RespGetEmotionDto> getEmotion(@AuthenticationPrincipal UserDto userDto) {
 
         // 감정어 조회
-        RespGetEmotionDto respGetEmotionDto = diaryService.getEmotion();
+        RespGetEmotionDto respGetEmotionDto = diaryService.getEmotion(userDto.getEmail());
 
         return new CommonResponse<>(respGetEmotionDto);
     }

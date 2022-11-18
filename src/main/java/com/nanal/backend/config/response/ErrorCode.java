@@ -16,8 +16,11 @@ public enum ErrorCode {
     // 특정 정보를 권한이 없는 유저가 요청하거나, 존재하지 않는 정보를 요청할 때.
     INVALID_REQUEST(false, 4002, "잘못된 요청입니다."),
 
-    // Diary
+    // Auth
+    MEMBER_NOT_FOUND(false, 4003, "존재하지 않는 사용자입니다."),
 
+    // Diary
+    DIARY_NOT_FOUND(false, 4004, "해당 날짜에 작성된 일기가 없습니다.");
 
     // Retrospect
 

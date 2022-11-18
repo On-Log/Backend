@@ -1,5 +1,6 @@
 package com.nanal.backend.domain.token;
 
+import com.nanal.backend.config.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.mypage.repository.MemberRepository;
 import com.nanal.backend.domain.oauth.UserDto;
 import com.nanal.backend.entity.Member;
@@ -35,12 +36,12 @@ public class JwtAuthFilter extends GenericFilterBean { // GenericFilterBean => O
             String email = tokenService.getUid(token);
 
             // 토큰에 저장된 email 정보와 일치하는 사용자 정보를 DB 에서 가져오기
-            Member existMember = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+            //Member existMember = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("토큰 처리"));
 
             // Authentication 정보 만들기
             UserDto userDto = UserDto.builder()
-                    .email(existMember.getEmail())
-                    .name(existMember.getName())
+                    .email(email)
+                    //.name(existMember.getName())
                     .build();
 
             // ContextHolder 에 Authentication 정보 저장

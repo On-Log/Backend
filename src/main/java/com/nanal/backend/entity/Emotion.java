@@ -13,6 +13,6 @@ public class Emotion {
     @Column(name = "emotion_id")
     private Long emotionId;
 
-    @Column(length = 20, nullable = false)
+    @Column(nullable = false, length = 5)
     private String emotion;
 }

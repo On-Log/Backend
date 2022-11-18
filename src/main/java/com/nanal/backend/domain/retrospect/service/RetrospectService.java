@@ -121,6 +121,18 @@ public class RetrospectService {
         return respGetKeywordAndEmotionDto;
     }
 
+
+    @Transactional(readOnly = true)
+    public RespGetQuestionAndHelpDto getQuestionAndHelp() {
+        // 감정어 조회
+        List<RetrospectQuestion> retrospectQuestions = retrospectQuestionRepository.findAll();
+
+        RespGetQuestionAndHelpDto respGetQuestionAndHelpDto = getRespGetQuestionAndHelpDto(retrospectQuestions);
+
+        return respGetQuestionAndHelpDto;
+    }
+
+
     //===편의 메서드===//
     private Retrospect createRetrospect(Member member, String goal, LocalDateTime date, List<RetrospectKeywordDto> keywordDtos, List<RetrospectContentDto> contentDtos) {
         // Retrospect 생성에 필요한 keyword, content 리스트 생성
@@ -208,5 +220,17 @@ public class RetrospectService {
 
         return keywordList;
     }
+    private RespGetQuestionAndHelpDto getRespGetQuestionAndHelpDto(List<RetrospectQuestion> retrospectQuestions) {
+        List<String> questionAndHelp = new ArrayList<>();
 
+        for (RetrospectQuestion t : retrospectQuestions) {
+            String str = "";
+            str = t.getQuestion() + " " + t.getHelp();
+            questionAndHelp.add(str);
+        }
+
+        RespGetQuestionAndHelpDto respGetQuestionAndHelpDto = new RespGetQuestionAndHelpDto();
+        respGetQuestionAndHelpDto.setQuestionAndHelp(questionAndHelp);
+        return respGetQuestionAndHelpDto;
+    }
 }

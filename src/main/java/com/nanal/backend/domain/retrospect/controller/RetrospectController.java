@@ -88,5 +88,19 @@ public class RetrospectController {
         return new CommonResponse<>(respGetKeywordAndEmotionDto);
     }
 
+    /**
+     * 회고 질문 + 도움말
+     * [GET] /retrospect/question
+     * 작성자 : 장세은
+     * 수정일 :
+     */
+    @GetMapping("/retrospect/question")
+    public CommonResponse<RespGetQuestionAndHelpDto> getQuestionAndHelp() {
+
+        // 회고질문 + 도움말 조회
+        RespGetQuestionAndHelpDto respGetQuestionAndHelp = retrospectService.getQuestionAndHelp();
+
+        return new CommonResponse<>(respGetQuestionAndHelp);
+    }
 
 }

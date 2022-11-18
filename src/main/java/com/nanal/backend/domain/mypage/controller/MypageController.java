@@ -33,7 +33,7 @@ public class MypageController {
     @GetMapping("/mypage")
     public CommonResponse<RespGetUserDto> getUser(@AuthenticationPrincipal UserDto userDto, ReqGetUserDto reqGetUserDto) {
 
-        // 유저 정보 조회 - diary와 동일.
+        // 유저 정보 조회
         RespGetUserDto respGetUserDto = mypageService.getUser(userDto.getEmail(), reqGetUserDto);
 
         return new CommonResponse<>(respGetUserDto);
@@ -47,8 +47,9 @@ public class MypageController {
      */
     @PutMapping("/mypage/nickname")
     public CommonResponse<RespEditNicknameDto> updateNickname(@AuthenticationPrincipal UserDto userDto, @RequestBody @Valid ReqEditNicknameDto reqEditNickname) {
-        mypageService.updateNickname(userDto, reqEditNickname);
-        RespEditNicknameDto respEditNicknameDto = mypageService.getNickname(userDto.getEmail(), reqEditNickname);
+
+        // 닉네임 변경
+        RespEditNicknameDto respEditNicknameDto = mypageService.updateNickname(userDto, reqEditNickname);
 
         return new CommonResponse<>(respEditNicknameDto);
     }
@@ -61,18 +62,11 @@ public class MypageController {
      */
     @PutMapping("/mypage/day")
     public CommonResponse<RespEditRetrospectDayDto> updateRetrospectDay(@AuthenticationPrincipal UserDto userDto, @RequestBody @Valid ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
-        if (mypageService.checkRetrospectDay(userDto.getEmail(), reqEditRetrospectDayDto.getRetrospectDay())) {
-            // 회고일이 같은 경우, error.
-            return new CommonResponse(ErrorCode.RETROSPECTDAY_DUPLICATION);
-        }
-        if (mypageService.checkResetAvail(userDto.getEmail())) {
-            // resetAvail이 false일 때(= 회고일 변경으로부터 한 달이 지나지 않아 변경할 수 없을 때.), error.
-            return new CommonResponse(ErrorCode.RESETAVAIL_FALSE);
-        }
-        mypageService.updateRetrospectDay(userDto, reqEditRetrospectDayDto);
-        RespEditRetrospectDayDto respEditRetrospectDayDto = mypageService.getRetrospectDay(userDto.getEmail(), reqEditRetrospectDayDto);
-        return new CommonResponse<>(respEditRetrospectDayDto);
 
+        // 회고요일 변경
+        RespEditRetrospectDayDto respEditRetrospectDayDto = mypageService.updateRetrospectDay(userDto, reqEditRetrospectDayDto);
+
+        return new CommonResponse<>(respEditRetrospectDayDto);
     }
 
 }

@@ -57,11 +57,10 @@ public class Member {
         private final String key;
     }
 
-    // update created by yubin
-    
-    public void updateNickname(String nickname) { this.nickname = nickname; }
+    //==수정 메서드==//
+    public void changeNickname(String nickname) { this.nickname = nickname; }
 
-    public void updateRetrospectDay(DayOfWeek retrospectDay) {
+    public void changeRetrospectDay(DayOfWeek retrospectDay) {
         this.retrospectDay = retrospectDay;
     }
 }

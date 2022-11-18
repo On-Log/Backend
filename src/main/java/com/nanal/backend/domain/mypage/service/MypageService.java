@@ -73,7 +73,7 @@ public class MypageService {
         // email 로 유저 조회
         Member member = memberRepository.findByEmail(userDto.getEmail()).orElseThrow(() -> new RuntimeException());
 
-        member.updateNickname(reqEditNickname.getNickname());
+        member.changeNickname(reqEditNickname.getNickname());
 
         return RespEditNicknameDto.builder()
                 .userNickname(member.getNickname())
@@ -85,7 +85,7 @@ public class MypageService {
         // email 로 유저 조회
         Member member = memberRepository.findByEmail(userDto.getEmail()).orElseThrow(() -> new RuntimeException());
 
-        member.updateRetrospectDay(reqEditRetrospectDay.getRetrospectDay());
+        member.changeRetrospectDay(reqEditRetrospectDay.getRetrospectDay());
 
         return RespEditRetrospectDayDto.builder()
                 .userRetrospectDay(member.getRetrospectDay())

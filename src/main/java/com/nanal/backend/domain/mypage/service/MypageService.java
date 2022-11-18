@@ -1,5 +1,6 @@
 package com.nanal.backend.domain.mypage.service;
 
+import com.nanal.backend.config.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.mypage.controller.MypageController;
 import com.nanal.backend.domain.mypage.dto.*;
 import com.nanal.backend.domain.mypage.repository.MemberRepository;
@@ -22,7 +23,7 @@ public class MypageService {
     public RespGetUserDto getUser(String email, ReqGetUserDto reqGetUserDto) {
 
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("마이페이지 정보 요청"));
 
         return RespGetUserDto.builder()
                 .userEmail(member.getEmail())

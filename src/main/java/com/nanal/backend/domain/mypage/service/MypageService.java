@@ -32,16 +32,6 @@ public class MypageService {
                 .build();
     }
 
-    public RespEditNicknameDto getNickname(String email, ReqEditNicknameDto reqEditNicknameDto) {
-
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
-
-        return RespEditNicknameDto.builder()
-                .userNickname(member.getNickname())
-                .build();
-    }
-
     public RespEditRetrospectDayDto getRetrospectDay(String email, ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
 
         // email 로 유저 조회
@@ -52,27 +42,10 @@ public class MypageService {
                 .build();
     }
 
-    public boolean checkRetrospectDay(String email, DayOfWeek retrospectDay) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
-        if(member.getRetrospectDay().equals(retrospectDay)) //기존 값이 받은 값과 같으면
-                return true;
-        return false;
-    }
-
-    public boolean checkResetAvail(String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
-
-        if(member.getResetAvail() == false)
-            return true;
-
-        member.setResetAvail(false);
-        return false;
-    }
-
     @Transactional
     public RespEditNicknameDto updateNickname(UserDto userDto, ReqEditNicknameDto reqEditNickname) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(userDto.getEmail()).orElseThrow(() -> new RuntimeException());
+        Member member = memberRepository.findByEmail(userDto.getEmail()).orElseThrow(() -> new MemberAuthException("닉네임 변경 요청"));
 
         member.changeNickname(reqEditNickname.getNickname());
 
@@ -91,5 +64,24 @@ public class MypageService {
         return RespEditRetrospectDayDto.builder()
                 .userRetrospectDay(member.getRetrospectDay())
                 .build();
+    }
+
+    //===편의 메서드===//
+
+    public boolean checkRetrospectDay(String email, DayOfWeek retrospectDay) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        if(member.getRetrospectDay().equals(retrospectDay)) //기존 값이 받은 값과 같으면
+            return true;
+        return false;
+    }
+
+    public boolean checkResetAvail(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+
+        if(member.getResetAvail() == false)
+            return true;
+
+        member.setResetAvail(false);
+        return false;
     }
 }

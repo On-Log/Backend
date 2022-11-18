@@ -33,7 +33,7 @@ public class MypageController {
     @GetMapping("/mypage")
     public CommonResponse<RespGetUserDto> getUser(@AuthenticationPrincipal UserDto userDto, ReqGetUserDto reqGetUserDto) {
 
-        // 유저 정보 조회 - diary와 동일.
+        // 유저 정보 조회
         RespGetUserDto respGetUserDto = mypageService.getUser(userDto.getEmail(), reqGetUserDto);
 
         return new CommonResponse<>(respGetUserDto);
@@ -47,8 +47,9 @@ public class MypageController {
      */
     @PutMapping("/mypage/nickname")
     public CommonResponse<RespEditNicknameDto> updateNickname(@AuthenticationPrincipal UserDto userDto, @RequestBody @Valid ReqEditNicknameDto reqEditNickname) {
-        mypageService.updateNickname(userDto, reqEditNickname);
-        RespEditNicknameDto respEditNicknameDto = mypageService.getNickname(userDto.getEmail(), reqEditNickname);
+
+        // 닉네임 변경
+        RespEditNicknameDto respEditNicknameDto = mypageService.updateNickname(userDto, reqEditNickname);
 
         return new CommonResponse<>(respEditNicknameDto);
     }

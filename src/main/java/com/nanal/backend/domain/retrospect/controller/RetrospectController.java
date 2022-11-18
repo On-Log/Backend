@@ -73,5 +73,20 @@ public class RetrospectController {
         return new CommonResponse<>(ErrorCode.SUCCESS);
     }
 
+    /**
+     * 일기 작성 날짜+키워드+감정어 조회
+     * [GET] /retrospect/keyword
+     * 작성자 : 장세은
+     * 수정일 :
+     */
+    @GetMapping("/retrospect/keyword")
+    public CommonResponse<RespGetKeywordAndEmotionDto> getKeywordAndEmotion(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqGetKeywordAndEmotionDto reqGetKeywordAndEmotionDto) {
+
+        // 일기 작성 날짜+키워드+감정어 조회
+        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = retrospectService.getKeywordAndEmotion(userDto.getEmail(), reqGetKeywordAndEmotionDto);
+
+        return new CommonResponse<>(respGetKeywordAndEmotionDto);
+    }
+
 
 }

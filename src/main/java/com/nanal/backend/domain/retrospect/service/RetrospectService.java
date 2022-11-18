@@ -110,6 +110,17 @@ public class RetrospectService {
     }
 
 
+    public RespGetKeywordAndEmotionDto getKeywordAndEmotion(String email, ReqGetKeywordAndEmotionDto reqGetKeywordAndEmotionDto){
+        // email 로 유저 조회
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        LocalDateTime currentTime = reqGetKeywordAndEmotionDto.getCurrentDate();
+        LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
+        //일주일 일기 리스트 조회
+        List<Diary> diaries = diaryRepository.findListByMemberBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(7), currentTime.toLocalDate());
+        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.makeRespGetKeywordAndEmotionDto(diaries);
+        return respGetKeywordAndEmotionDto;
+    }
+
     //===편의 메서드===//
     private Retrospect createRetrospect(Member member, String goal, LocalDateTime date, List<RetrospectKeywordDto> keywordDtos, List<RetrospectContentDto> contentDtos) {
         // Retrospect 생성에 필요한 keyword, content 리스트 생성

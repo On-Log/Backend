@@ -98,7 +98,7 @@ public class DiaryController {
     public CommonResponse<RespGetEmotionDto> getEmotion(@AuthenticationPrincipal UserDto userDto) {
 
         // 감정어 조회
-        RespGetEmotionDto respGetEmotionDto = diaryService.getEmotion(userDto.getEmail());
+        RespGetEmotionDto respGetEmotionDto = diaryService.getEmotion();
 
         return new CommonResponse<>(respGetEmotionDto);
     }

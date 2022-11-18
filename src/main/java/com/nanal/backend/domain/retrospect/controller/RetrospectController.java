@@ -39,7 +39,7 @@ public class RetrospectController {
     @PostMapping("/retrospect")
     public CommonResponse<?> saveRetrospect(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqSaveRetroDto reqSaveRetroDto) {
 
-        //     요청 날짜 기반으로 회고 기록
+        // 요청 날짜 기반으로 회고 기록
         retrospectService.saveRetrospect(userDto.getEmail(), reqSaveRetroDto);
 
         return new CommonResponse<>(ErrorCode.SUCCESS);
@@ -54,7 +54,7 @@ public class RetrospectController {
     @GetMapping("/retrospect/view")
     public CommonResponse<RespGetRetroDto> getRetrospect(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqGetRetroDto reqGetRetroDto) {
 
-        //     요청 날짜 기반으로 회고 조회
+        // 요청 날짜 기반으로 회고 조회
         RespGetRetroDto respGetRetroDto = retrospectService.getRetro(userDto.getEmail(), reqGetRetroDto);
 
         return new CommonResponse<>(respGetRetroDto);
@@ -69,7 +69,9 @@ public class RetrospectController {
     @PutMapping("/retrospect")
     public CommonResponse<?> editRetrospect(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqEditRetroDto reqEditRetroDto) {
 
+        // 요청 날짜 기반으로 회고 수정
         retrospectService.editRetrospect(userDto.getEmail(), reqEditRetroDto);
+
         return new CommonResponse<>(ErrorCode.SUCCESS);
     }
 

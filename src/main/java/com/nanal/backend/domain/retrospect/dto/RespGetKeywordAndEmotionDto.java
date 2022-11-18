@@ -35,6 +35,7 @@ public class RespGetKeywordAndEmotionDto {
         RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.builder()
                 .KeywordAndEmotion(KeywordAndEmotion)
                 .build();
+
         return respGetKeywordAndEmotionDto;
     }
 

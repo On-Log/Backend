@@ -113,12 +113,16 @@ public class RetrospectService {
 
     public RespGetKeywordAndEmotionDto getKeywordAndEmotion(String email, ReqGetKeywordAndEmotionDto reqGetKeywordAndEmotionDto){
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("일기 작성 날짜+키워드+감정어 조회"));
+
         LocalDateTime currentTime = reqGetKeywordAndEmotionDto.getCurrentDate();
         LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
+
         //일주일 일기 리스트 조회
-        List<Diary> diaries = diaryRepository.findListByMemberBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(7), currentTime.toLocalDate());
+        List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(7), currentTime.toLocalDate());
+
         RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.makeRespGetKeywordAndEmotionDto(diaries);
+
         return respGetKeywordAndEmotionDto;
     }
 

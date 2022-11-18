@@ -19,7 +19,7 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     Optional<Diary> findDiaryByMemberAndWriteDate(Long memberId, String likeFormat);
 
     @Query(value = "SELECT * FROM diary d WHERE d.member_id = :memberId AND (DATE(write_date) BETWEEN :firstDate AND :lastDate)", nativeQuery = true)
-    List<Diary> findListByMemberBetweenWriteDate(Long memberId, LocalDate firstDate, LocalDate lastDate);
+    List<Diary> findListByMemberAndBetweenWriteDate(Long memberId, LocalDate firstDate, LocalDate lastDate);
 
     //List<LocalDateTime> findByMemberIdAndAllByWriteDateBetween(Long memberId, LocalDate firstDate, LocalDate lastDate);
 }

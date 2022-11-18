@@ -58,14 +58,10 @@ public class Member {
     }
 
     // update created by yubin
+    
+    public void updateNickname(String nickname) { this.nickname = nickname; }
 
-    public void changeNickname(String nickname) { //member내에서는 닉네임의 update만 발생.
-        System.out.println("-------member 내 update확인: "+nickname+" | this값 확인: "+this.nickname);
-        this.nickname = nickname;
-    }
-
-    public void changeRetrospectDay(DayOfWeek retrospectDay) { //member내에서는 닉네임의 update만 발생.
-        System.out.println("-------member 내 update확인: "+retrospectDay+" | this값 확인: "+this.retrospectDay);
+    public void updateRetrospectDay(DayOfWeek retrospectDay) {
         this.retrospectDay = retrospectDay;
     }
 }

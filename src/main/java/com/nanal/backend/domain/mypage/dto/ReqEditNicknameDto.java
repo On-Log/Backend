@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 
 @Data
-public class ReqEditNicknameDto { //일단 disable - Enable하고 controller 단에 있던것 삭제.
+public class ReqEditNicknameDto {
     private String nickname;
-    //private String email; - email 전송하면 안될듯?
 }

@@ -60,6 +60,18 @@ public class RetrospectController {
         return new CommonResponse<>(respGetRetroDto);
     }
 
+    /**
+     * 회고 수정
+     * [PUT] /retrospect
+     * 작성자 : 장세은
+     * 수정일 :
+     */
+    @PutMapping("/retrospect")
+    public CommonResponse<?> editRetrospect(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqEditRetroDto reqEditRetroDto) {
+
+        retrospectService.editRetrospect(userDto.getEmail(), reqEditRetroDto);
+        return new CommonResponse<>(ErrorCode.SUCCESS);
+    }
 
 
 }

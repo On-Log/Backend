@@ -7,5 +7,12 @@ import java.time.LocalDateTime;
 
 @Data
 public class ReqEditRetroDto {
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime editDate;
 
+    private String answer;
+
+    private int week;
+
+    private int index;
 }

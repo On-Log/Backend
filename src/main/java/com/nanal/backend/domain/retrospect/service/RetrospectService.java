@@ -60,6 +60,7 @@ public class RetrospectService {
                 .build();
     }
 
+
     public void saveRetrospect(String email, ReqSaveRetroDto reqSaveRetroDto) {
         // email 로 유저 조회
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
@@ -68,6 +69,7 @@ public class RetrospectService {
         // 회고 저장
         retrospectRepository.save(retrospect);
     }
+
 
     @Transactional
     public RespGetRetroDto getRetro(String email, ReqGetRetroDto reqGetRetroDto) {
@@ -90,6 +92,23 @@ public class RetrospectService {
 
         return respGetRetroDto;
     }
+
+
+    public void editRetrospect(String email, ReqEditRetroDto reqEditRetroDto) {
+        // email 로 유저 조회
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+
+        LocalDateTime selectDate = reqEditRetroDto.getEditDate();
+        // 선택한 yyyy-MM 에 작성한 회고리스트 조회
+        List<Retrospect> getretrospects = getExistRetrospect(member, selectDate);
+        //몇번째 회고인지
+        Retrospect retrospect = getretrospects.get(reqEditRetroDto.getWeek());
+        // 회고에서 어떤 질문에 대한 답을 수정했는지
+        List<RetrospectContent> retrospectContents = retrospect.getRetrospectContents();
+        //내용 수정
+        retrospectContents.get(reqEditRetroDto.getIndex()).changeAnswer(reqEditRetroDto.getAnswer());
+    }
+
 
     //===편의 메서드===//
     private Retrospect createRetrospect(Member member, String goal, LocalDateTime date, List<RetrospectKeywordDto> keywordDtos, List<RetrospectContentDto> contentDtos) {

@@ -1,6 +1,10 @@
 package com.nanal.backend.domain.mypage.service;
 
 import com.nanal.backend.config.exception.customexception.MemberAuthException;
+import com.nanal.backend.config.exception.customexception.ResetAvailException;
+import com.nanal.backend.config.exception.customexception.RetrospectDayDupException;
+import com.nanal.backend.config.response.CommonResponse;
+import com.nanal.backend.config.response.ErrorCode;
 import com.nanal.backend.domain.mypage.controller.MypageController;
 import com.nanal.backend.domain.mypage.dto.*;
 import com.nanal.backend.domain.mypage.repository.MemberRepository;
@@ -32,16 +36,6 @@ public class MypageService {
                 .build();
     }
 
-    public RespEditRetrospectDayDto getRetrospectDay(String email, ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
-
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
-
-        return RespEditRetrospectDayDto.builder()
-                .userRetrospectDay(member.getRetrospectDay())
-                .build();
-    }
-
     @Transactional
     public RespEditNicknameDto updateNickname(UserDto userDto, ReqEditNicknameDto reqEditNickname) {
         // email 로 유저 조회
@@ -55,11 +49,17 @@ public class MypageService {
     }
 
     @Transactional
-    public RespEditRetrospectDayDto updateRetrospectDay(UserDto userDto, ReqEditRetrospectDayDto reqEditRetrospectDay) { //reqEditNickname string으로 변경함. -> 다시 dto.. ReqEditNicknameDto reqEditNickname 이거 아닌듯..?
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(userDto.getEmail()).orElseThrow(() -> new RuntimeException());
+    public RespEditRetrospectDayDto updateRetrospectDay(UserDto userDto, ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
 
-        member.changeRetrospectDay(reqEditRetrospectDay.getRetrospectDay());
+        // email 로 유저 조회
+        Member member = memberRepository.findByEmail(userDto.getEmail()).orElseThrow(() -> new MemberAuthException("회고요일 변경 요청"));
+
+        // 회고일이 같은 경우, error.
+        if (checkRetrospectDay(member, reqEditRetrospectDayDto.getRetrospectDay())) {throw new RetrospectDayDupException("회고요일 변경 요청");}
+        // resetAvail이 false일 때(= 회고일 변경으로부터 한 달이 지나지 않아 변경할 수 없을 때.), error.
+        if (checkResetAvail(member)) {throw new ResetAvailException("회고요일 변경 요청");}
+
+        member.changeRetrospectDay(reqEditRetrospectDayDto.getRetrospectDay());
 
         return RespEditRetrospectDayDto.builder()
                 .userRetrospectDay(member.getRetrospectDay())
@@ -68,18 +68,14 @@ public class MypageService {
 
     //===편의 메서드===//
 
-    public boolean checkRetrospectDay(String email, DayOfWeek retrospectDay) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+    public boolean checkRetrospectDay(Member member, DayOfWeek retrospectDay) {
         if(member.getRetrospectDay().equals(retrospectDay)) //기존 값이 받은 값과 같으면
             return true;
         return false;
     }
 
-    public boolean checkResetAvail(String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
-
-        if(member.getResetAvail() == false)
-            return true;
+    public boolean checkResetAvail(Member member) {
+        if(member.getResetAvail() == false) return true;
 
         member.setResetAvail(false);
         return false;

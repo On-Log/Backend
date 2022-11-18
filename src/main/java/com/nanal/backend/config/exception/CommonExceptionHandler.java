@@ -2,6 +2,8 @@ package com.nanal.backend.config.exception;
 
 import com.nanal.backend.config.exception.customexception.DiaryNotFoundException;
 import com.nanal.backend.config.exception.customexception.MemberAuthException;
+import com.nanal.backend.config.exception.customexception.ResetAvailException;
+import com.nanal.backend.config.exception.customexception.RetrospectDayDupException;
 import com.nanal.backend.config.response.CommonResponse;
 import com.nanal.backend.config.response.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,18 @@ public class CommonExceptionHandler {
     public CommonResponse<?> diaryNotFoundError(DiaryNotFoundException e) {
         log.error("[" + e.getClass().getSimpleName() + "] " + e.getMessage());
         return new CommonResponse<>(ErrorCode.DIARY_NOT_FOUND);
+    }
+
+    @ExceptionHandler(RetrospectDayDupException.class)
+    public CommonResponse<?> retrospectDayDupError(RetrospectDayDupException e) {
+        log.error("[" + e.getClass().getSimpleName() + "] " + e.getMessage());
+        return new CommonResponse<>(ErrorCode.RETROSPECTDAY_DUPLICATION);
+    }
+
+    @ExceptionHandler(ResetAvailException.class)
+    public CommonResponse<?> resetAvailError(ResetAvailException e) {
+        log.error("[" + e.getClass().getSimpleName() + "] " + e.getMessage());
+        return new CommonResponse<>(ErrorCode.RESETAVAIL_FALSE);
     }
 
 }

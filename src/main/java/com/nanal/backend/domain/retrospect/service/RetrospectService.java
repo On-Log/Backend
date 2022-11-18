@@ -60,7 +60,38 @@ public class RetrospectService {
                 .build();
     }
 
+    public void saveRetrospect(String email, ReqSaveRetroDto reqSaveRetroDto) {
+        // email 로 유저 조회
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        // 회고 Entity 생성
+        Retrospect retrospect = createRetrospect(member, reqSaveRetroDto.getGoal(), reqSaveRetroDto.getDate(), reqSaveRetroDto.getKeywords(), reqSaveRetroDto.getContents());
+        // 회고 저장
+        retrospectRepository.save(retrospect);
+    }
+
     //===편의 메서드===//
+    private Retrospect createRetrospect(Member member, String goal, LocalDateTime date, List<RetrospectKeywordDto> keywordDtos, List<RetrospectContentDto> contentDtos) {
+        // Retrospect 생성에 필요한 keyword, content 리스트 생성
+        List<RetrospectKeyword> keywords = new ArrayList<>();
+        List<RetrospectContent> contents = new ArrayList<>();
+
+        for (RetrospectKeywordDto retrospectKeywordDto : keywordDtos) {
+            RetrospectKeyword retrospectKeyword = RetrospectKeyword.makeRetrospectKeyword(retrospectKeywordDto.getKeyword(), retrospectKeywordDto.getClassify());
+            keywords.add(retrospectKeyword);
+        }
+
+        for (RetrospectContentDto retrospectContentDto : contentDtos) {
+            RetrospectContent retrospectContent = RetrospectContent.makeRetrospectContent(retrospectContentDto.getQuestion(), retrospectContentDto.getAnswer());
+            contents.add(retrospectContent);
+        }
+
+        // keyword 리스트와 content리스트 이용하여 Retrosepct 생성
+        Retrospect retrospect = Retrospect.makeRetrospect(member, keywords,contents, goal, date);
+
+        return retrospect;
+    }
+
+
     private List<Retrospect> getExistRetrospect(Member member, LocalDateTime selectTime) {
         System.out.println(selectTime);
         // 질의할 sql 의 Like 절에 해당하게끔 변환

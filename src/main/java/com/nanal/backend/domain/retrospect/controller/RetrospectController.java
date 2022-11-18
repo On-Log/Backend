@@ -29,4 +29,20 @@ public class RetrospectController {
 
         return new CommonResponse<>(respGetInfoDto);
     }
+
+    /**
+     * 회고 기록
+     * [POST] /retrospect
+     * 작성자 : 장세은
+     * 수정일 :
+     */
+    @PostMapping("/retrospect")
+    public CommonResponse<?> saveRetrospect(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqSaveRetroDto reqSaveRetroDto) {
+
+        //     요청 날짜 기반으로 회고 기록
+        retrospectService.saveRetrospect(userDto.getEmail(), reqSaveRetroDto);
+
+        return new CommonResponse<>(ErrorCode.SUCCESS);
+    }
+
 }

@@ -60,97 +60,7 @@ public class RetrospectService {
                 .build();
     }
 
-    public void saveRetrospect(String email, ReqSaveRetroDto reqSaveRetroDto) {
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
-        // 회고 Entity 생성
-        Retrospect retrospect = createRetrospect(member, reqSaveRetroDto.getGoal(), reqSaveRetroDto.getDate(), reqSaveRetroDto.getKeywords(), reqSaveRetroDto.getContents());
-        // 회고 저장
-        retrospectRepository.save(retrospect);
-    }
-
-
-    @Transactional
-    public RespGetRetroDto getRetro(String email, ReqGetRetroDto reqGetRetroDto) {
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
-
-        LocalDateTime currentTime = reqGetRetroDto.getCurrentDate();
-        LocalDateTime selectDate = reqGetRetroDto.getSelectDate();
-        // 선택한 yyyy-MM 에 작성한 회고리스트 조회
-        List<Retrospect> getretrospects = getExistRetrospect(member, selectDate);
-
-        // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
-        RespGetRetroDto respGetRetroDto = RespGetRetroDto.makeRespGetRetroDto(getretrospects.get(reqGetRetroDto.getWeek()));
-
-        //수정 기간 지나면 수정 못하게 editstatus 변경
-        LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
-        if(currentTime.isAfter(prevRetroDate.plusDays(1).withHour(7).withMinute(00).withSecond(00))==true) {
-            getretrospects.get(reqGetRetroDto.getWeek()).updateEditStatus(false);
-        }
-
-        return respGetRetroDto;
-    }
-
-    public void editRetrospect(String email, ReqEditRetroDto reqEditRetroDto) {
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
-
-        LocalDateTime selectDate = reqEditRetroDto.getEditDate();
-        // 선택한 yyyy-MM 에 작성한 회고리스트 조회
-        List<Retrospect> getretrospects = getExistRetrospect(member, selectDate);
-        //몇번째 회고인지
-        Retrospect retrospect = getretrospects.get(reqEditRetroDto.getWeek());
-        // 회고에서 어떤 질문에 대한 답을 수정했는지
-        List<RetrospectContent> retrospectContents = retrospect.getRetrospectContents();
-        //내용 수정
-        retrospectContents.get(reqEditRetroDto.getIndex()).changeAnswer(reqEditRetroDto.getAnswer());
-    }
-
-    public RespGetKeywordAndEmotionDto getKeywordAndEmotion(String email, ReqGetKeywordAndEmotionDto reqGetKeywordAndEmotionDto){
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
-        LocalDateTime currentTime = reqGetKeywordAndEmotionDto.getCurrentDate();
-        LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
-        //일주일 일기 리스트 조회
-        List<Diary> diaries = diaryRepository.findListByMemberBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(7), currentTime.toLocalDate());
-        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.makeRespGetKeywordAndEmotionDto(diaries);
-        return respGetKeywordAndEmotionDto;
-    }
-
-    @Transactional(readOnly = true)
-    public RespGetQuestionAndHelpDto getQuestionAndHelp() {
-        // 감정어 조회
-        List<RetrospectQuestion> retrospectQuestions = retrospectQuestionRepository.findAll();
-
-        RespGetQuestionAndHelpDto respGetQuestionAndHelpDto = getRespGetQuestionAndHelpDto(retrospectQuestions);
-
-        return respGetQuestionAndHelpDto;
-    }
-
-
     //===편의 메서드===//
-    private Retrospect createRetrospect(Member member, String goal, LocalDateTime date, List<RetrospectKeywordDto> keywordDtos, List<RetrospectContentDto> contentDtos) {
-        // Retrospect 생성에 필요한 keyword, content 리스트 생성
-        List<RetrospectKeyword> keywords = new ArrayList<>();
-        List<RetrospectContent> contents = new ArrayList<>();
-
-        for (RetrospectKeywordDto retrospectKeywordDto : keywordDtos) {
-            RetrospectKeyword retrospectKeyword = RetrospectKeyword.makeRetrospectKeyword(retrospectKeywordDto.getKeyword(), retrospectKeywordDto.getClassify());
-            keywords.add(retrospectKeyword);
-        }
-
-        for (RetrospectContentDto retrospectContentDto : contentDtos) {
-            RetrospectContent retrospectContent = RetrospectContent.makeRetrospectContent(retrospectContentDto.getQuestion(), retrospectContentDto.getAnswer());
-            contents.add(retrospectContent);
-        }
-
-        // keyword 리스트와 content리스트 이용하여 Retrosepct 생성
-        Retrospect retrospect = Retrospect.makeRetrospect(member, keywords,contents, goal, date);
-
-        return retrospect;
-    }
-
     private List<Retrospect> getExistRetrospect(Member member, LocalDateTime selectTime) {
         System.out.println(selectTime);
         // 질의할 sql 의 Like 절에 해당하게끔 변환
@@ -216,17 +126,4 @@ public class RetrospectService {
         return keywordList;
     }
 
-    private RespGetQuestionAndHelpDto getRespGetQuestionAndHelpDto(List<RetrospectQuestion> retrospectQuestions) {
-        List<String> questionAndHelp = new ArrayList<>();
-
-        for (RetrospectQuestion t : retrospectQuestions) {
-            String str = "";
-            str = t.getQuestion() + " " + t.getHelp();
-            questionAndHelp.add(str);
-        }
-
-        RespGetQuestionAndHelpDto respGetQuestionAndHelpDto = new RespGetQuestionAndHelpDto();
-        respGetQuestionAndHelpDto.setQuestionAndHelp(questionAndHelp);
-        return respGetQuestionAndHelpDto;
-    }
 }

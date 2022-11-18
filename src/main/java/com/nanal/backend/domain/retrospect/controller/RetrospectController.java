@@ -69,7 +69,9 @@ public class RetrospectController {
     @PutMapping("/retrospect")
     public CommonResponse<?> editRetrospect(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqEditRetroDto reqEditRetroDto) {
 
+        // 요청 날짜 기반으로 회고 수정
         retrospectService.editRetrospect(userDto.getEmail(), reqEditRetroDto);
+
         return new CommonResponse<>(ErrorCode.SUCCESS);
     }
 

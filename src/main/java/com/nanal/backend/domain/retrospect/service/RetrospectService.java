@@ -97,16 +97,16 @@ public class RetrospectService {
 
     public void editRetrospect(String email, ReqEditRetroDto reqEditRetroDto) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("회고 수정 요청"));
 
         LocalDateTime selectDate = reqEditRetroDto.getEditDate();
         // 선택한 yyyy-MM 에 작성한 회고리스트 조회
-        List<Retrospect> getretrospects = getExistRetrospect(member, selectDate);
-        //몇번째 회고인지
-        Retrospect retrospect = getretrospects.get(reqEditRetroDto.getWeek());
+        List<Retrospect> getRetrospects = getExistRetrospect(member, selectDate);
+        // 몇번째 회고인지
+        Retrospect retrospect = getRetrospects.get(reqEditRetroDto.getWeek());
         // 회고에서 어떤 질문에 대한 답을 수정했는지
         List<RetrospectContent> retrospectContents = retrospect.getRetrospectContents();
-        //내용 수정
+        // 내용 수정
         retrospectContents.get(reqEditRetroDto.getIndex()).changeAnswer(reqEditRetroDto.getAnswer());
     }
 
@@ -150,7 +150,7 @@ public class RetrospectService {
             contents.add(retrospectContent);
         }
 
-        // keyword 리스트와 content리스트 이용하여 Retrosepct 생성
+        // keyword 리스트와 content리스트 이용하여 Retrospect 생성
         Retrospect retrospect = Retrospect.makeRetrospect(member, keywords,contents, goal, date);
 
         return retrospect;
@@ -194,7 +194,7 @@ public class RetrospectService {
         String yearMonth = selectTime.format(DateTimeFormatter.ofPattern("yyyy-MM")) + "%";
 
         // 선택한 yyyy-MM 에 작성한 회고 리스트 조회
-        List<Retrospect> writeretrospect = retrospectRepository.findListByMemberAndWriteDate(
+        List<Retrospect> writeRetrospect = retrospectRepository.findListByMemberAndWriteDate(
                 member.getMemberId(),
                 yearMonth);
 
@@ -207,7 +207,7 @@ public class RetrospectService {
 
         for (int i = 0; i < keyWordClass.size(); i++) {
             List<List<String>> klist = new ArrayList<>();
-            for (Retrospect t : writeretrospect) {
+            for (Retrospect t : writeRetrospect) {
                 List<RetrospectKeyword> classifiedKeyword = retrospectKeywordRepository.findListByRetroAndClassify(t.getRetrospectId(), keyWordClass.get(i));
                //t번째 회고의 i번째 분류 키워드
                 List<String> keyword = new ArrayList<>();

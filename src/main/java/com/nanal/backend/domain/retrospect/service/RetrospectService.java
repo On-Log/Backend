@@ -1,5 +1,6 @@
 package com.nanal.backend.domain.retrospect.service;
 
+import com.nanal.backend.config.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
 import com.nanal.backend.domain.diary.service.DiaryService;
 import com.nanal.backend.domain.mypage.repository.MemberRepository;
@@ -36,14 +37,14 @@ public class RetrospectService {
     @Transactional(readOnly = true)
     public RespGetInfoDto getInfo(String email, ReqGetInfoDto reqGetInfoDto) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException());
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("회고 탭 화면"));
         LocalDateTime currentDate = reqGetInfoDto.getCurrentDate();
         LocalDateTime selectDate = reqGetInfoDto.getSelectDate();
 
         // 선택한 월에 있는 회고 기록 ( 어떤 회고 목적을 선택했는가 )
-        List<Retrospect> getretrospects = getExistRetrospect(member, selectDate);
+        List<Retrospect> getRetrospects = getExistRetrospect(member, selectDate);
         List<String> existRetrospect = new ArrayList<>();
-        for (Retrospect t : getretrospects) {
+        for (Retrospect t : getRetrospects) {
             existRetrospect.add(t.getGoal());
         }
 

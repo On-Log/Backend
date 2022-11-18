@@ -21,7 +21,4 @@ public class RespGetInfoDto {
     //키워드 분류하고, 주차별로 나누기
     List<List<List<String>>> existRetrospectKeyword;
 
-
-
-
 }

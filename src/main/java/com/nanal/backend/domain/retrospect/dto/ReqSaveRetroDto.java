@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 @Data
 public class ReqSaveRetroDto {
-
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime date;
 
@@ -16,5 +15,4 @@ public class ReqSaveRetroDto {
     private List<RetrospectContentDto> contents;
 
     private List<RetrospectKeywordDto> keywords;
-
 }

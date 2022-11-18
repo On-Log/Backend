@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RequiredArgsConstructor
 @RestController
 public class RetrospectController {
@@ -37,7 +39,7 @@ public class RetrospectController {
      * 수정일 :
      */
     @PostMapping("/retrospect")
-    public CommonResponse<?> saveRetrospect(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqSaveRetroDto reqSaveRetroDto) {
+    public CommonResponse<?> saveRetrospect(@AuthenticationPrincipal UserDto userDto, @RequestBody @Valid ReqSaveRetroDto reqSaveRetroDto) {
 
         // 요청 날짜 기반으로 회고 기록
         retrospectService.saveRetrospect(userDto.getEmail(), reqSaveRetroDto);
@@ -67,7 +69,7 @@ public class RetrospectController {
      * 수정일 :
      */
     @PutMapping("/retrospect")
-    public CommonResponse<?> editRetrospect(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqEditRetroDto reqEditRetroDto) {
+    public CommonResponse<?> editRetrospect(@AuthenticationPrincipal UserDto userDto, @RequestBody @Valid ReqEditRetroDto reqEditRetroDto) {
 
         // 요청 날짜 기반으로 회고 수정
         retrospectService.editRetrospect(userDto.getEmail(), reqEditRetroDto);

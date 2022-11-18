@@ -129,7 +129,7 @@ public class RetrospectService {
 
     @Transactional(readOnly = true)
     public RespGetQuestionAndHelpDto getQuestionAndHelp() {
-        // 감정어 조회
+        // 회고 질문 + 도움말 조회
         List<RetrospectQuestion> retrospectQuestions = retrospectQuestionRepository.findAll();
 
         RespGetQuestionAndHelpDto respGetQuestionAndHelpDto = getRespGetQuestionAndHelpDto(retrospectQuestions);

@@ -65,9 +65,7 @@ public class DiaryService {
     }
 
     @Transactional(readOnly = true)
-    public RespGetEmotionDto getEmotion(String email) {
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("감정어 조회 요청"));
+    public RespGetEmotionDto getEmotion() {
         // 감정어 조회
         List<Emotion> emotions = emotionRepository.findAll();
 

@@ -1,4 +1,4 @@
-package com.nanal.backend.config.response;
+package com.nanal.backend.global.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;

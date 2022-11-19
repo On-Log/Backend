@@ -1,8 +1,8 @@
-package com.nanal.backend.config;
+package com.nanal.backend.global.config;
 
-import com.nanal.backend.domain.oauth.CustomOAuth2UserService;
-import com.nanal.backend.domain.oauth.OAuth2SuccessHandler;
-import com.nanal.backend.domain.token.JwtAuthFilter;
+import com.nanal.backend.global.auth.oauth.CustomOAuth2UserService;
+import com.nanal.backend.global.auth.oauth.OAuth2SuccessHandler;
+import com.nanal.backend.global.auth.token.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

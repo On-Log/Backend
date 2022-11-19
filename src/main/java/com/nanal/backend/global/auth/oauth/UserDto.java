@@ -1,13 +1,10 @@
-package com.nanal.backend.domain.oauth;
+package com.nanal.backend.global.auth.oauth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.stereotype.Component;
-
-import java.time.DayOfWeek;
 
 @Builder
 @AllArgsConstructor

@@ -1,4 +1,4 @@
-package com.nanal.backend.domain.oauth;
+package com.nanal.backend.global.auth.oauth;
 
 import lombok.AccessLevel;
 import lombok.Builder;

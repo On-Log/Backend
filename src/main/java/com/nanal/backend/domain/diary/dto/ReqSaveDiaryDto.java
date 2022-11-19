@@ -15,7 +15,7 @@ public class ReqSaveDiaryDto {
     private LocalDateTime date;
 
     @NotNull(message = "내용은 비어있을 수 없습니다.")
-    @Max(value = 300, message="최대 300개의 문자만 입력 가능합니다.")
+    //@Max(value = 300, message="최대 300개의 문자만 입력 가능합니다.")
     private String content;
 
     @NotNull(message = "키워드는 비어있을 수 없습니다.")

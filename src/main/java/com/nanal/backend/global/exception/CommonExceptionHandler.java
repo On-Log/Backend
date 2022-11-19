@@ -1,18 +1,17 @@
-package com.nanal.backend.config.exception;
+package com.nanal.backend.global.exception;
 
-import com.nanal.backend.config.exception.customexception.DiaryNotFoundException;
-import com.nanal.backend.config.exception.customexception.MemberAuthException;
-import com.nanal.backend.config.exception.customexception.ResetAvailException;
-import com.nanal.backend.config.exception.customexception.RetrospectDayDupException;
-import com.nanal.backend.config.response.CommonResponse;
-import com.nanal.backend.config.response.ErrorCode;
+import com.nanal.backend.global.exception.customexception.DiaryNotFoundException;
+import com.nanal.backend.global.exception.customexception.MemberAuthException;
+import com.nanal.backend.global.exception.customexception.ResetAvailException;
+import com.nanal.backend.global.exception.customexception.RetrospectDayDupException;
+import com.nanal.backend.global.response.CommonResponse;
+import com.nanal.backend.global.response.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 @Slf4j

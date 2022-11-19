@@ -1,6 +1,6 @@
-package com.nanal.backend.domain.token;
+package com.nanal.backend.global.auth.token;
 
-import com.nanal.backend.config.response.CommonResponse;
+import com.nanal.backend.global.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

@@ -1,4 +1,4 @@
-package com.nanal.backend.domain.token;
+package com.nanal.backend.global.auth.token;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;

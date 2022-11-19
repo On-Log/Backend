@@ -1,16 +1,10 @@
 package com.nanal.backend.domain.mypage.controller;
 
-import com.nanal.backend.config.response.CommonResponse;
-import com.nanal.backend.config.response.ErrorCode;
-import com.nanal.backend.domain.diary.dto.*;
-import com.nanal.backend.domain.diary.service.DiaryService;
+import com.nanal.backend.global.response.CommonResponse;
 // import com.nanal.backend.domain.mypage.dto.ReqEditNicknameDto; - 현재 미사용
 import com.nanal.backend.domain.mypage.dto.*;
 import com.nanal.backend.domain.mypage.service.MypageService;
-import com.nanal.backend.domain.oauth.UserDto;
-import com.nanal.backend.entity.Member;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.nanal.backend.global.auth.oauth.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

@@ -43,13 +43,10 @@ public class Diary {
         this.editStatus = editStatus;
     }
 
-    public void editContent(String content) {
-        this.content = content;
+    public void changeEditStatus(Boolean editStatus) {
+        this.editStatus = editStatus;
     }
 
-    public void editKeywords(List<Keyword> keywords) {
-        this.keywords = keywords;
-    }
 
     //==연관관계 메서드==//
     public void setMember(Member member) {

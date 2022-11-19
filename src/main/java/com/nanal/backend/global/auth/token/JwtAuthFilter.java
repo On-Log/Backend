@@ -1,9 +1,7 @@
-package com.nanal.backend.domain.token;
+package com.nanal.backend.global.auth.token;
 
-import com.nanal.backend.config.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.mypage.repository.MemberRepository;
-import com.nanal.backend.domain.oauth.UserDto;
-import com.nanal.backend.entity.Member;
+import com.nanal.backend.global.auth.oauth.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

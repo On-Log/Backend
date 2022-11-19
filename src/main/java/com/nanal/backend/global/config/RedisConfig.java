@@ -1,4 +1,4 @@
-package com.nanal.backend.config;
+package com.nanal.backend.global.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

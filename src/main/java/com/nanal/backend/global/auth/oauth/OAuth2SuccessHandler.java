@@ -1,10 +1,10 @@
-package com.nanal.backend.domain.oauth;
+package com.nanal.backend.global.auth.oauth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nanal.backend.domain.mypage.repository.MemberRepository;
 import com.nanal.backend.entity.Member;
-import com.nanal.backend.domain.token.Token;
-import com.nanal.backend.domain.token.TokenService;
+import com.nanal.backend.global.auth.token.Token;
+import com.nanal.backend.global.auth.token.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;

@@ -1,4 +1,4 @@
-package com.nanal.backend.domain.oauth;
+package com.nanal.backend.global.auth.oauth;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;

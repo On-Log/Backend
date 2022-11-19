@@ -15,8 +15,8 @@ import java.util.List;
 @Data
 public class RespGetInfoDto {
     //회고 목적
-    List<String> existRetrospect
-            ;
+    List<String> existRetrospect;
+
     //다음 회고까지 남은 시간
     @JsonInclude(JsonInclude.Include.NON_NULL)
     Integer betweenDate;

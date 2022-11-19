@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class ReqGetCalendarDto {
-    @Schema(description = "현재 날짜" , example = "0")
+    // @Schema(description = "현재 날짜" , example = "0")
     @NotNull(message = "내용은 비어있을 수 없습니다.")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime currentDate;

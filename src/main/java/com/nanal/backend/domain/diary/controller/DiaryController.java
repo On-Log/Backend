@@ -1,13 +1,10 @@
 package com.nanal.backend.domain.diary.controller;
 
-import com.nanal.backend.config.response.CommonResponse;
-import com.nanal.backend.config.response.ErrorCode;
+import com.nanal.backend.global.response.CommonResponse;
+import com.nanal.backend.global.response.ErrorCode;
 import com.nanal.backend.domain.diary.dto.*;
 import com.nanal.backend.domain.diary.service.DiaryService;
-import com.nanal.backend.domain.oauth.UserDto;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.nanal.backend.global.auth.oauth.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package com.nanal.backend.config.exception;
+package com.nanal.backend.global.exception;
 
 
 public class CustomException extends RuntimeException{

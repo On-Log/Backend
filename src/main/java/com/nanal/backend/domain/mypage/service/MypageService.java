@@ -1,14 +1,11 @@
 package com.nanal.backend.domain.mypage.service;
 
-import com.nanal.backend.config.exception.customexception.MemberAuthException;
-import com.nanal.backend.config.exception.customexception.ResetAvailException;
-import com.nanal.backend.config.exception.customexception.RetrospectDayDupException;
-import com.nanal.backend.config.response.CommonResponse;
-import com.nanal.backend.config.response.ErrorCode;
-import com.nanal.backend.domain.mypage.controller.MypageController;
+import com.nanal.backend.global.exception.customexception.MemberAuthException;
+import com.nanal.backend.global.exception.customexception.ResetAvailException;
+import com.nanal.backend.global.exception.customexception.RetrospectDayDupException;
 import com.nanal.backend.domain.mypage.dto.*;
 import com.nanal.backend.domain.mypage.repository.MemberRepository;
-import com.nanal.backend.domain.oauth.UserDto;
+import com.nanal.backend.global.auth.oauth.UserDto;
 import com.nanal.backend.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

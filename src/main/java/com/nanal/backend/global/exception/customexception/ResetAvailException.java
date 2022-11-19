@@ -1,6 +1,6 @@
-package com.nanal.backend.config.exception.customexception;
+package com.nanal.backend.global.exception.customexception;
 
-import com.nanal.backend.config.exception.CustomException;
+import com.nanal.backend.global.exception.CustomException;
 
 public class ResetAvailException extends CustomException {
     public ResetAvailException(String message) {

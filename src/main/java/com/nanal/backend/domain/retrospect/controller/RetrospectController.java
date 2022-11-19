@@ -1,8 +1,8 @@
 package com.nanal.backend.domain.retrospect.controller;
 
-import com.nanal.backend.config.response.CommonResponse;
-import com.nanal.backend.config.response.ErrorCode;
-import com.nanal.backend.domain.oauth.UserDto;
+import com.nanal.backend.global.response.CommonResponse;
+import com.nanal.backend.global.response.ErrorCode;
+import com.nanal.backend.global.auth.oauth.UserDto;
 import com.nanal.backend.domain.retrospect.dto.*;
 import com.nanal.backend.domain.retrospect.service.RetrospectService;
 import io.swagger.v3.oas.annotations.Operation;

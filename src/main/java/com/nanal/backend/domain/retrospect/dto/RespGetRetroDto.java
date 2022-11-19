@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.nanal.backend.entity.Retrospect;
 import com.nanal.backend.entity.RetrospectContent;
 import com.nanal.backend.entity.RetrospectKeyword;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class RespGetRetroDto {
+    @Schema(description = "작성 날짜" , example = "2022-10-11")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime writeDate;
 

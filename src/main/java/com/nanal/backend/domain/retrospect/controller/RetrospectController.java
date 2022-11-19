@@ -5,6 +5,9 @@ import com.nanal.backend.global.response.ErrorCode;
 import com.nanal.backend.global.auth.oauth.UserDto;
 import com.nanal.backend.domain.retrospect.dto.*;
 import com.nanal.backend.domain.retrospect.service.RetrospectService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +16,8 @@ import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
+@Tag(name = "RetrospectController", description = "회고 관련 api")
+
 public class RetrospectController {
 
     private final RetrospectService retrospectService;
@@ -22,9 +27,10 @@ public class RetrospectController {
      * [GET] /retrospect
      * 작성자 : 장세은
      * 수정일 :
-     //     */
+     */
+    @Operation(summary="회고 탭 화면 조회", description="해당 날짜에 맞는 정보 조회")
     @GetMapping("/retrospect")
-    public CommonResponse<RespGetInfoDto> getInfo(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqGetInfoDto reqGetInfoDto) {
+    public CommonResponse<RespGetInfoDto> getInfo(@Parameter @AuthenticationPrincipal UserDto userDto, @RequestBody ReqGetInfoDto reqGetInfoDto) {
 
         // 요청 정보 기반으로 해당 날짜에 맞는 정보 조회
         RespGetInfoDto respGetInfoDto = retrospectService.getInfo(userDto.getEmail(), reqGetInfoDto);
@@ -38,8 +44,9 @@ public class RetrospectController {
      * 작성자 : 장세은
      * 수정일 :
      */
+    @Operation(summary="회고 정보 저장", description="해당 날짜에 맞는 정보 조회")
     @PostMapping("/retrospect")
-    public CommonResponse<?> saveRetrospect(@AuthenticationPrincipal UserDto userDto, @RequestBody @Valid ReqSaveRetroDto reqSaveRetroDto) {
+    public CommonResponse<?> saveRetrospect(@Parameter @AuthenticationPrincipal UserDto userDto, @RequestBody @Valid ReqSaveRetroDto reqSaveRetroDto) {
 
         // 요청 날짜 기반으로 회고 기록
         retrospectService.saveRetrospect(userDto.getEmail(), reqSaveRetroDto);
@@ -53,8 +60,9 @@ public class RetrospectController {
      * 작성자 : 장세은
      * 수정일 :
      */
+    @Operation(summary="회고 정보 조회", description="요청 날짜 기반으로 회고 조회")
     @GetMapping("/retrospect/view")
-    public CommonResponse<RespGetRetroDto> getRetrospect(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqGetRetroDto reqGetRetroDto) {
+    public CommonResponse<RespGetRetroDto> getRetrospect(@Parameter @AuthenticationPrincipal UserDto userDto, @RequestBody ReqGetRetroDto reqGetRetroDto) {
 
         // 요청 날짜 기반으로 회고 조회
         RespGetRetroDto respGetRetroDto = retrospectService.getRetro(userDto.getEmail(), reqGetRetroDto);
@@ -68,8 +76,9 @@ public class RetrospectController {
      * 작성자 : 장세은
      * 수정일 :
      */
+    @Operation(summary="회고 정보 수정", description="요청 날짜 기반으로 회고 수정")
     @PutMapping("/retrospect")
-    public CommonResponse<?> editRetrospect(@AuthenticationPrincipal UserDto userDto, @RequestBody @Valid ReqEditRetroDto reqEditRetroDto) {
+    public CommonResponse<?> editRetrospect(@Parameter @AuthenticationPrincipal UserDto userDto, @RequestBody @Valid ReqEditRetroDto reqEditRetroDto) {
 
         // 요청 날짜 기반으로 회고 수정
         retrospectService.editRetrospect(userDto.getEmail(), reqEditRetroDto);
@@ -83,8 +92,9 @@ public class RetrospectController {
      * 작성자 : 장세은
      * 수정일 :
      */
+    @Operation(summary="일기 작성 날짜+키워드+감정어 조회")
     @GetMapping("/retrospect/keyword")
-    public CommonResponse<RespGetKeywordAndEmotionDto> getKeywordAndEmotion(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqGetKeywordAndEmotionDto reqGetKeywordAndEmotionDto) {
+    public CommonResponse<RespGetKeywordAndEmotionDto> getKeywordAndEmotion(@Parameter @AuthenticationPrincipal UserDto userDto, @RequestBody ReqGetKeywordAndEmotionDto reqGetKeywordAndEmotionDto) {
 
         // 일기 작성 날짜+키워드+감정어 조회
         RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = retrospectService.getKeywordAndEmotion(userDto.getEmail(), reqGetKeywordAndEmotionDto);
@@ -98,6 +108,7 @@ public class RetrospectController {
      * 작성자 : 장세은
      * 수정일 :
      */
+    @Operation(summary="회고 질문+도움말", description="회고질문+도움말 조회")
     @GetMapping("/retrospect/question")
     public CommonResponse<RespGetQuestionAndHelpDto> getQuestionAndHelp() {
 

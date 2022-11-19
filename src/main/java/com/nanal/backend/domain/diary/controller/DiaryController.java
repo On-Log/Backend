@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 
 @RequiredArgsConstructor
 @RestController
@@ -23,7 +25,7 @@ public class DiaryController {
      * 수정일 : 2022-11-18
      */
     @GetMapping("/diary")
-    public CommonResponse<RespGetCalendarDto> getCalendar(@AuthenticationPrincipal UserDto userDto, ReqGetCalendarDto reqGetCalendarDto) {
+    public CommonResponse<RespGetCalendarDto> getCalendar(@AuthenticationPrincipal UserDto userDto, @Valid ReqGetCalendarDto reqGetCalendarDto) {
 
         // 요청 정보 기반으로 해당 날짜에 맞는 정보 조회
         RespGetCalendarDto respGetCalendarDto = diaryService.getCalendar(userDto.getEmail(), reqGetCalendarDto);
@@ -38,7 +40,7 @@ public class DiaryController {
      * 수정일 : 2022-11-18
      */
     @PostMapping("/diary")
-    public CommonResponse<?> saveDiary(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqSaveDiaryDto reqSaveDiaryDto) {
+    public CommonResponse<?> saveDiary(@AuthenticationPrincipal UserDto userDto, @RequestBody @Valid ReqSaveDiaryDto reqSaveDiaryDto) {
 
         // 요청 정보 기반으로 일기 저장
         diaryService.saveDiary(userDto.getEmail(), reqSaveDiaryDto);
@@ -68,7 +70,7 @@ public class DiaryController {
      * 수정일 : 2022-11-18
      */
     @PutMapping("/diary")
-    public CommonResponse<?> editDiary(@AuthenticationPrincipal UserDto userDto, @RequestBody ReqEditDiaryDto reqEditDiary) {
+    public CommonResponse<?> editDiary(@AuthenticationPrincipal UserDto userDto, @RequestBody @Valid ReqEditDiaryDto reqEditDiary) {
 
         diaryService.editDiary(userDto.getEmail(), reqEditDiary);
 

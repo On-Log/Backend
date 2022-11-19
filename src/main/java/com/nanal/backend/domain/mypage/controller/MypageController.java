@@ -31,7 +31,7 @@ public class MypageController {
      * 수정일 : 2022-11-16
      */
     @GetMapping("/mypage")
-    public CommonResponse<RespGetUserDto> getUser(@AuthenticationPrincipal UserDto userDto, ReqGetUserDto reqGetUserDto) {
+    public CommonResponse<RespGetUserDto> getUser(@AuthenticationPrincipal UserDto userDto, @Valid ReqGetUserDto reqGetUserDto) {
 
         // 유저 정보 조회
         RespGetUserDto respGetUserDto = mypageService.getUser(userDto.getEmail(), reqGetUserDto);

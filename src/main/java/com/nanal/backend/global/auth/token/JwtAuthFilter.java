@@ -26,16 +26,19 @@ import java.util.Arrays;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final RequestMatcher ignoredPaths = new AntPathRequestMatcher("/auth/**");
+    private final String[] ignoredPaths = {"/auth/**", "/swagger-ui/**", "/v3/api-docs/**"};
 
     private final TokenUtil tokenService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         // "/auth/**" url 로 요청시, 해당 필터 스킵.
-        if (this.ignoredPaths.matches(request)) {
-            chain.doFilter(request, response);
-            return;
+        for(String path : ignoredPaths){
+            RequestMatcher ignoredPath = new AntPathRequestMatcher(path);
+            if (ignoredPath.matches(request)) {
+                chain.doFilter(request, response);
+                return;
+            }
         }
 
         String token = ((HttpServletRequest)request).getHeader("Token");

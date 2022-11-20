@@ -2,7 +2,7 @@ package com.nanal.backend.domain.retrospect.controller;
 
 import com.nanal.backend.global.response.CommonResponse;
 import com.nanal.backend.global.response.ErrorCode;
-import com.nanal.backend.global.auth.oauth.UserDto;
+import com.nanal.backend.global.auth.UserDto;
 import com.nanal.backend.domain.retrospect.dto.*;
 import com.nanal.backend.domain.retrospect.service.RetrospectService;
 import io.swagger.v3.oas.annotations.Operation;

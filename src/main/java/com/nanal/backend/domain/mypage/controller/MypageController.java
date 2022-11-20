@@ -4,7 +4,7 @@ import com.nanal.backend.global.response.CommonResponse;
 // import com.nanal.backend.domain.mypage.dto.ReqEditNicknameDto; - 현재 미사용
 import com.nanal.backend.domain.mypage.dto.*;
 import com.nanal.backend.domain.mypage.service.MypageService;
-import com.nanal.backend.global.auth.oauth.UserDto;
+import com.nanal.backend.global.auth.UserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

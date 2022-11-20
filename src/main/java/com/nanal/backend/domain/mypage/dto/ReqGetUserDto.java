@@ -15,15 +15,16 @@ import javax.validation.constraints.Size;
 @Data
 public class ReqGetUserDto {
     @Schema(description = "닉네임" , example = "nanal123")
-    @NotBlank(message = "닉네임은 비어있을 수 없습니다.")
-    @Size(max = 20, message="최대 20개의 문자만 입력 가능합니다.")
+    @NotBlank(message = "nickname 은 비어있을 수 없습니다.")
+    @Size(max = 20, message="nickname 은 최대 20개의 문자만 입력 가능합니다.")
     private String userNickName;
 
     @Schema(description = "이메일" , example = "nanal123@gmail.com")
-    @NotBlank(message = "이메일은 비어있을 수 없습니다.")
-    @Size(max = 50, message="최대 50개의 문자만 입력 가능합니다.")
+    @NotBlank(message = "email 은 비어있을 수 없습니다.")
+    @Size(max = 50, message="email 은 최대 50개의 문자만 입력 가능합니다.")
     private String userEmail;
 
+    @NotBlank(message = "retrospectDay 는 비어있을 수 없습니다.")
     @Schema(description = "회고일" , example = "TUESDAY")
     private DayOfWeek retrospectDay;
 }

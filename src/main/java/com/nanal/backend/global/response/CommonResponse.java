@@ -28,4 +28,11 @@ public class CommonResponse<T> {
         this.code = errorCode.getCode();
         this.message = errorCode.getMessage();
     }
+
+    public CommonResponse(ErrorCode errorCode, T result) {
+        this.isSuccess = errorCode.getIsSuccess();
+        this.code = errorCode.getCode();
+        this.message = errorCode.getMessage();
+        this.result = result;
+    }
 }

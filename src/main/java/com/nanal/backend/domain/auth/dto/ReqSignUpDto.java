@@ -8,12 +8,12 @@ import javax.validation.constraints.Size;
 @Data
 public class ReqSignUpDto {
 
-    @NotBlank(message = "이메일은 비어있을 수 없습니다.")
-    @Size(max = 50, message="이메일의 길이는 최대 50자 입니다.")
+    @NotBlank(message = "email 은 비어있을 수 없습니다.")
+    @Size(max = 50, message="email 길이는 최대 50자 입니다.")
     private String email;
 
-    @NotBlank(message = "이름은 비어있을 수 없습니다.")
-    @Size(max = 20, message="이름의 길이는 최대 20자 입니다.")
+    @NotBlank(message = "name 은 비어있을 수 없습니다.")
+    @Size(max = 20, message="name 길이는 최대 20자 입니다.")
     private String name;
 
     @NotBlank(message = "provider 는 비어있을 수 없습니다.")

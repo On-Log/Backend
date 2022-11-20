@@ -29,7 +29,7 @@ public class DiaryService {
 
     public void saveDiary(String email, ReqSaveDiaryDto reqSaveDiaryDto) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("일기 기록 요청"));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         // 일기 Entity 생성
         Diary diary = createDiary(member, reqSaveDiaryDto.getContent(), reqSaveDiaryDto.getDate(), reqSaveDiaryDto.getKeywords());
@@ -41,7 +41,7 @@ public class DiaryService {
     @Transactional(readOnly = true)
     public RespGetCalendarDto getCalendar(String email, ReqGetCalendarDto reqGetCalendarDto) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("일기 탭 화면 요청"));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         LocalDateTime currentDate = reqGetCalendarDto.getCurrentDate();
         LocalDateTime selectDate = reqGetCalendarDto.getSelectDate();
@@ -77,12 +77,12 @@ public class DiaryService {
     @Transactional(readOnly = true)
     public RespGetDiaryDto getDiary(String email, ReqGetDiaryDto reqGetDiaryDto) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("일기 조회 요청"));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonthDay = reqGetDiaryDto.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
         // 선택한 yyyy-MM-dd 에 작성한 일기 조회
         Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay)
-                .orElseThrow(() -> new DiaryNotFoundException("일기 조회 요청"));
+                .orElseThrow(() -> new DiaryNotFoundException("해당 날짜에 작성한 일기가 존재하지 않습니다."));
 
         // 조회한 일기로 반환값 생성
         RespGetDiaryDto respGetDiaryDto = RespGetDiaryDto.makeRespGetDiaryDto(selectDiary);
@@ -92,7 +92,7 @@ public class DiaryService {
 
     public void editDiary(String email, ReqEditDiaryDto reqEditDiary) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("일기 수정 요청"));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         /*
         현재는 수정요청 들어오면 기존 일기삭제 후, 다시 저장하는 방식
@@ -102,7 +102,7 @@ public class DiaryService {
         String yearMonthDay = reqEditDiary.getEditDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
         // 선택한 yyyy-MM-dd 에 작성한 일기 조회
         Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay)
-                .orElseThrow(() -> new DiaryNotFoundException("일기 수정 요청"));
+                .orElseThrow(() -> new DiaryNotFoundException("해당 날짜에 작성한 일기가 존재하지 않습니다."));
         // 기존 일기 삭제
         diaryRepository.delete(selectDiary);
 
@@ -114,7 +114,7 @@ public class DiaryService {
 
     public void deleteDiary(String email, ReqDeleteDiaryDto reqDeleteDiaryDto) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("일기 삭제 요청"));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonthDay = reqDeleteDiaryDto.getDeleteDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
@@ -126,7 +126,7 @@ public class DiaryService {
          */
         // 선택한 yyyy-MM-dd 에 작성한 일기 조회
         Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay)
-                .orElseThrow(() -> new DiaryNotFoundException("일기 삭제 요청"));
+                .orElseThrow(() -> new DiaryNotFoundException("해당 날짜에 작성한 일기가 존재하지 않습니다."));
         // 기존 일기 삭제
         diaryRepository.delete(selectDiary);
     }

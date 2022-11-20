@@ -37,7 +37,7 @@ public class RetrospectService {
     @Transactional(readOnly = true)
     public RespGetInfoDto getInfo(String email, ReqGetInfoDto reqGetInfoDto) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("회고 탭 화면 요청"));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
         LocalDateTime currentDate = reqGetInfoDto.getCurrentDate();
         LocalDateTime selectDate = reqGetInfoDto.getSelectDate();
 
@@ -64,7 +64,7 @@ public class RetrospectService {
 
     public void saveRetrospect(String email, ReqSaveRetroDto reqSaveRetroDto) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("회고 기록 요청"));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
         // 회고 Entity 생성
         Retrospect retrospect = createRetrospect(member, reqSaveRetroDto.getGoal(), reqSaveRetroDto.getDate(), reqSaveRetroDto.getKeywords(), reqSaveRetroDto.getContents());
         // 회고 저장
@@ -75,7 +75,7 @@ public class RetrospectService {
     @Transactional
     public RespGetRetroDto getRetro(String email, ReqGetRetroDto reqGetRetroDto) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("회고 조회 요청"));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         LocalDateTime currentTime = reqGetRetroDto.getCurrentDate();
         LocalDateTime selectDate = reqGetRetroDto.getSelectDate();
@@ -97,7 +97,7 @@ public class RetrospectService {
 
     public void editRetrospect(String email, ReqEditRetroDto reqEditRetroDto) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("회고 수정 요청"));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         LocalDateTime selectDate = reqEditRetroDto.getEditDate();
         // 선택한 yyyy-MM 에 작성한 회고리스트 조회
@@ -113,7 +113,7 @@ public class RetrospectService {
 
     public RespGetKeywordAndEmotionDto getKeywordAndEmotion(String email, ReqGetKeywordAndEmotionDto reqGetKeywordAndEmotionDto){
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("일기 작성 날짜+키워드+감정어 조회"));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         LocalDateTime currentTime = reqGetKeywordAndEmotionDto.getCurrentDate();
         LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));

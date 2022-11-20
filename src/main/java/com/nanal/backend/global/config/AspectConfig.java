@@ -32,16 +32,16 @@ public class AspectConfig {
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();
 
-        log.info("[{}]start - {}", email, methodName);
+        log.info("[{}]{} - START", email, methodName);
 
         stopWatch.start();
         Object result = joinPoint.proceed();
         stopWatch.stop();
         Long executionTime = stopWatch.getTotalTimeMillis();
 
-        log.info("[{}]finished - {}", email, methodName);
+        log.info("[{}]{} - FINISHED", email, methodName);
 
-        log.info("[{}]{} 실행 시간 => {}", email, methodName, executionTime);
+        log.info("[{}]{} - EXECUTION TIME => {}", email, methodName, executionTime);
 
         DiaryLog diaryLog = DiaryLog.builder()
                 .userEmail(email)
@@ -61,16 +61,16 @@ public class AspectConfig {
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();
 
-        log.info("[{}]start - {}", email, methodName);
+        log.info("[{}]{} - START", email, methodName);
 
         stopWatch.start();
         Object result = joinPoint.proceed();
         stopWatch.stop();
         Long executionTime = stopWatch.getTotalTimeMillis();
 
-        log.info("[{}]finished - {}", email, methodName);
+        log.info("[{}]{} - FINISHED", email, methodName);
 
-        log.info("[{}]{} 실행 시간 => {}", email, methodName, executionTime);
+        log.info("[{}]{} - EXECUTION TIME => {}", email, methodName, executionTime);
 
         MypageLog mypageLog = MypageLog.builder()
                 .userEmail(email)
@@ -90,16 +90,16 @@ public class AspectConfig {
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();
 
-        log.info("[{}]start - {}", email, methodName);
+        log.info("[{}]{} - START", email, methodName);
 
         stopWatch.start();
         Object result = joinPoint.proceed();
         stopWatch.stop();
         Long executionTime = stopWatch.getTotalTimeMillis();
 
-        log.info("[{}]finished - {}", email, methodName);
+        log.info("[{}]{} - FINISHED", email, methodName);
 
-        log.info("[{}]{} 실행 시간 => {}", email, methodName, executionTime);
+        log.info("[{}]{} - EXECUTION TIME => {}", email, methodName, executionTime);
 
         RetrospectLog retrospectLog = RetrospectLog.builder()
                 .userEmail(email)

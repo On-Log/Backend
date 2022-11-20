@@ -24,7 +24,7 @@ public class CommonExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public CommonResponse<?> inputValueInvalidError(HttpServletResponse response, MethodArgumentNotValidException e) throws IOException {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        log.error("[{}/{}} {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
+        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
 
         List<String> errorMessages = e.getBindingResult().getAllErrors().stream()
                 .map(objectError -> objectError.getDefaultMessage())
@@ -36,35 +36,35 @@ public class CommonExceptionHandler {
     @ExceptionHandler(MemberAuthException.class)
     public CommonResponse<?> memberNotFoundError(HttpServletResponse response, MemberAuthException e) throws IOException {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        log.error("[{}/{}} {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
+        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.MEMBER_NOT_FOUND);
     }
 
     @ExceptionHandler(DiaryNotFoundException.class)
     public CommonResponse<?> diaryNotFoundError(HttpServletResponse response, DiaryNotFoundException e) throws IOException {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        log.error("[" + e.getClass().getSimpleName() + "] " + e.getMessage());
+        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.DIARY_NOT_FOUND);
     }
 
     @ExceptionHandler(RetrospectDayDupException.class)
     public CommonResponse<?> retrospectDayDupError(HttpServletResponse response, RetrospectDayDupException e) throws IOException {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        log.error("[" + e.getClass().getSimpleName() + "] " + e.getMessage());
+        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.RETROSPECTDAY_DUPLICATION);
     }
 
     @ExceptionHandler(ResetAvailException.class)
     public CommonResponse<?> resetAvailError(HttpServletResponse response, ResetAvailException e) throws IOException {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        log.error("[" + e.getClass().getSimpleName() + "] " + e.getMessage());
+        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.RESETAVAIL_FALSE);
     }
 
     @ExceptionHandler(RefreshTokenInvalidException.class)
     public CommonResponse<?> refreshTokenInvalidError(HttpServletResponse response, RefreshTokenInvalidException e) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        log.error("[" + e.getClass().getSimpleName() + "] " + e.getMessage());
+        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.INVALID_REFRESH_TOKEN);
     }
 }

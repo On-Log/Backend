@@ -10,17 +10,14 @@ import java.time.LocalDateTime;
 public class ReqGetRetroDto {
     //현재 시간
     @Schema(description = "현재 날짜 및 시간" , example = "2022-11-19T05:33:42.387Z")
-    @NotBlank(message = "currentDate 는 비어있을 수 없습니다.")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime currentDate;
 
     //선택한 월
     @Schema(description = "" , example = "2022-10-17T05:33:42.387Z")
-    @NotBlank(message = "selectDate 는 비어있을 수 없습니다.")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime selectDate;
 
-    @NotBlank(message = "week 은 비어있을 수 없습니다.")
     @Schema(description = "week" , example = "3")
     private int week;
 }

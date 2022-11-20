@@ -24,7 +24,6 @@ public class ReqGetUserDto {
     @Size(max = 50, message="email 은 최대 50개의 문자만 입력 가능합니다.")
     private String userEmail;
 
-    @NotBlank(message = "retrospectDay 는 비어있을 수 없습니다.")
     @Schema(description = "회고일" , example = "TUESDAY")
     private DayOfWeek retrospectDay;
 }

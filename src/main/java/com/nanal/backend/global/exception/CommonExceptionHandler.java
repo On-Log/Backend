@@ -1,5 +1,6 @@
 package com.nanal.backend.global.exception;
 
+import com.nanal.backend.global.auth.AuthenticationUtil;
 import com.nanal.backend.global.exception.customexception.*;
 import com.nanal.backend.global.response.CommonResponse;
 import com.nanal.backend.global.response.ErrorCode;
@@ -23,7 +24,7 @@ public class CommonExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public CommonResponse<?> inputValueInvalidError(HttpServletResponse response, MethodArgumentNotValidException e) throws IOException {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        log.error("[" + e.getClass().getSimpleName() + "] " + e.getMessage());
+        log.error("[{}/{}} {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
 
         List<String> errorMessages = e.getBindingResult().getAllErrors().stream()
                 .map(objectError -> objectError.getDefaultMessage())
@@ -35,7 +36,7 @@ public class CommonExceptionHandler {
     @ExceptionHandler(MemberAuthException.class)
     public CommonResponse<?> memberNotFoundError(HttpServletResponse response, MemberAuthException e) throws IOException {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        log.error("[" + e.getClass().getSimpleName() + "] " + e.getMessage());
+        log.error("[{}/{}} {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.MEMBER_NOT_FOUND);
     }
 

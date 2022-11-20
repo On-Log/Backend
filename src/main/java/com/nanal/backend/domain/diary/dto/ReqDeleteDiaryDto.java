@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Data
 public class ReqDeleteDiaryDto {
 
-    @NotBlank(message = "deleteDate 는 비어있을 수 없습니다.")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime deleteDate;
 

@@ -9,7 +9,6 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class RespGetQuestionAndHelpDto {
-
     private List<String> questionAndHelp;
 
 }

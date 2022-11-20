@@ -23,7 +23,7 @@ import java.util.Arrays;
 public class JwtAuthFilter extends GenericFilterBean { // GenericFilterBean => OncePer~~ 로 변경
 
     private final MemberRepository memberRepository;
-    private final TokenService tokenService;
+    private final TokenUtil tokenService;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {

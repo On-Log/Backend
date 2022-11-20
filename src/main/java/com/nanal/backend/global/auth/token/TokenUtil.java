@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class TokenService {
+public class TokenUtil {
 
     // Access : 3분
     @Value("${jwt.token.access-period}")

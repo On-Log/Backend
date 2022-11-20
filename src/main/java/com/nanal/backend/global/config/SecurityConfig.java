@@ -20,9 +20,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtAuthFilter jwtAuthFilter;
-    private final CustomOAuth2UserService oAuth2UserService;
-    private final OAuth2SuccessHandler successHandler;
-    //private final AccessDeniedHandler accessDeniedHandler;
     private final AuthenticationEntryPoint authenticationEntryPoint;
 
     @Override
@@ -43,12 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/token/**", "/main").permitAll().and()
                 // Swagger 접속 정보
                 .authorizeRequests().antMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .anyRequest().authenticated()
-
-                .and()
-                .oauth2Login()
-                .successHandler(successHandler)
-                .userInfoEndpoint().userService(oAuth2UserService);
+                .anyRequest().authenticated();
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
     }

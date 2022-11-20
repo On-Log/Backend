@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nanal.backend.domain.mypage.repository.MemberRepository;
 import com.nanal.backend.entity.Member;
 import com.nanal.backend.global.auth.token.Token;
-import com.nanal.backend.global.auth.token.TokenService;
+import com.nanal.backend.global.auth.token.TokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -25,7 +25,7 @@ import java.time.LocalDate;
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private final MemberRepository memberRepository;
-    private final TokenService tokenService;
+    private final TokenUtil tokenService;
     private final ObjectMapper objectMapper;
     private final RedisTemplate<String, String> redisTemplate;
 

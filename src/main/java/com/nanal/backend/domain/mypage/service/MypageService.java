@@ -24,7 +24,7 @@ public class MypageService {
     public RespGetUserDto getUser(String email, ReqGetUserDto reqGetUserDto) {
 
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("마이페이지 정보 요청"));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         return RespGetUserDto.builder()
                 .userEmail(member.getEmail())
@@ -36,7 +36,7 @@ public class MypageService {
     @Transactional
     public RespEditNicknameDto updateNickname(UserDto userDto, ReqEditNicknameDto reqEditNickname) {
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(userDto.getEmail()).orElseThrow(() -> new MemberAuthException("닉네임 변경 요청"));
+        Member member = memberRepository.findByEmail(userDto.getEmail()).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         member.changeNickname(reqEditNickname.getNickname());
 
@@ -49,12 +49,12 @@ public class MypageService {
     public RespEditRetrospectDayDto updateRetrospectDay(UserDto userDto, ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
 
         // email 로 유저 조회
-        Member member = memberRepository.findByEmail(userDto.getEmail()).orElseThrow(() -> new MemberAuthException("회고요일 변경 요청"));
+        Member member = memberRepository.findByEmail(userDto.getEmail()).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         // 회고일이 같은 경우, error.
-        if (checkRetrospectDay(member, reqEditRetrospectDayDto.getRetrospectDay())) {throw new RetrospectDayDupException("회고요일 변경 요청");}
+        if (checkRetrospectDay(member, reqEditRetrospectDayDto.getRetrospectDay())) {throw new RetrospectDayDupException("이전 회고일과 같은 회고일을 선택했습니다.");}
         // resetAvail이 false일 때(= 회고일 변경으로부터 한 달이 지나지 않아 변경할 수 없을 때.), error.
-        if (checkResetAvail(member)) {throw new ResetAvailException("회고요일 변경 요청");}
+        if (checkResetAvail(member)) {throw new ResetAvailException("이번 달에 이미 회고일을 변경했습니다.");}
 
         member.changeRetrospectDay(reqEditRetrospectDayDto.getRetrospectDay());
 

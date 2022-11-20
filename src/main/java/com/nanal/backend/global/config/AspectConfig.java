@@ -1,4 +1,4 @@
-package com.nanal.backend.global.response;
+package com.nanal.backend.global.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;

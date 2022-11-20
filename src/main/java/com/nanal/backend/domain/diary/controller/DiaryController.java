@@ -1,5 +1,6 @@
 package com.nanal.backend.domain.diary.controller;
 
+import com.nanal.backend.global.exception.customexception.InputValueInvalidException;
 import com.nanal.backend.global.response.CommonResponse;
 import com.nanal.backend.global.response.ErrorCode;
 import com.nanal.backend.domain.diary.dto.*;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,7 +33,8 @@ public class DiaryController {
      */
     @Operation(summary="일기 탭 화면 조회", description="해당 날짜에 맞는 정보 조회")
     @GetMapping("/diary")
-    public CommonResponse<RespGetCalendarDto> getCalendar(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto, @Valid ReqGetCalendarDto reqGetCalendarDto) {
+    public CommonResponse<RespGetCalendarDto> getCalendar(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
+                                                          @Valid ReqGetCalendarDto reqGetCalendarDto) {
 
         // 요청 정보 기반으로 해당 날짜에 맞는 정보 조회
         RespGetCalendarDto respGetCalendarDto = diaryService.getCalendar(userDto.getEmail(), reqGetCalendarDto);
@@ -47,7 +50,8 @@ public class DiaryController {
      */
     @Operation(summary="일기 정보 저장", description="요청 정보 기반으로 일기 저장")
     @PostMapping("/diary")
-    public CommonResponse<?> saveDiary(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto, @RequestBody @Valid ReqSaveDiaryDto reqSaveDiaryDto) {
+    public CommonResponse<?> saveDiary(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
+                                       @RequestBody @Valid ReqSaveDiaryDto reqSaveDiaryDto) {
 
         // 요청 정보 기반으로 일기 저장
         diaryService.saveDiary(userDto.getEmail(), reqSaveDiaryDto);
@@ -63,7 +67,8 @@ public class DiaryController {
      */
     @Operation(summary="일기 정보 조회", description="요청 날짜 기반으로 일기 조회")
     @GetMapping("/diary/view")
-    public CommonResponse<RespGetDiaryDto> getDiary(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto, ReqGetDiaryDto reqGetDiaryDto) {
+    public CommonResponse<RespGetDiaryDto> getDiary(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
+                                                    ReqGetDiaryDto reqGetDiaryDto) {
 
         // 요청 날짜 기반으로 일기 조회
         RespGetDiaryDto respGetDiaryDto = diaryService.getDiary(userDto.getEmail(), reqGetDiaryDto);
@@ -79,7 +84,8 @@ public class DiaryController {
      */
     @Operation(summary="일기 수정")
     @PutMapping("/diary")
-    public CommonResponse<?> editDiary(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto, @RequestBody @Valid ReqEditDiaryDto reqEditDiary) {
+    public CommonResponse<?> editDiary(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
+                                       @RequestBody @Valid ReqEditDiaryDto reqEditDiary) {
 
         diaryService.editDiary(userDto.getEmail(), reqEditDiary);
 
@@ -94,7 +100,8 @@ public class DiaryController {
      */
     @Operation(summary="일기 삭제")
     @DeleteMapping("/diary")
-    public CommonResponse<?> deleteDiary(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto, ReqDeleteDiaryDto reqDeleteDiaryDto) {
+    public CommonResponse<?> deleteDiary(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
+                                         ReqDeleteDiaryDto reqDeleteDiaryDto) {
 
         diaryService.deleteDiary(userDto.getEmail(), reqDeleteDiaryDto);
 

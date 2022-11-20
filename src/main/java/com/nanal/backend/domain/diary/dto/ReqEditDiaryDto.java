@@ -13,7 +13,6 @@ import java.util.List;
 @Data
 public class ReqEditDiaryDto {
 
-    @NotBlank(message = "editDate 는 비어있을 수 없습니다.")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime editDate;
 

@@ -1,7 +1,6 @@
 package com.nanal.backend.domain.mypage.controller;
 
 import com.nanal.backend.global.response.CommonResponse;
-// import com.nanal.backend.domain.mypage.dto.ReqEditNicknameDto; - 현재 미사용
 import com.nanal.backend.domain.mypage.dto.*;
 import com.nanal.backend.domain.mypage.service.MypageService;
 import com.nanal.backend.global.auth.UserDto;

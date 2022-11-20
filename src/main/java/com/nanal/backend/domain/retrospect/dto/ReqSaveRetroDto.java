@@ -12,7 +12,6 @@ import java.util.List;
 @Data
 public class ReqSaveRetroDto {
     @Schema(description = "날짜" , example = "2022-11-19T05:33:42.387Z")
-    @NotBlank(message = "date 는 비어있을 수 없습니다.")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime date;
 

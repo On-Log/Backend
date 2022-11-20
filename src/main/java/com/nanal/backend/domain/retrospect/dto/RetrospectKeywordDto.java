@@ -1,16 +1,16 @@
 package com.nanal.backend.domain.retrospect.dto;
 
 import com.nanal.backend.entity.RetrospectKeyword;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 
 @Data
 public class RetrospectKeywordDto {
+    @Schema(description = "키워드" , example = "공부")
     String keyword;
 
+    @Schema(description = "분류" , example = "행복한 기억")
     String classify;
 
     public static RetrospectKeywordDto makeRetrospectKeywordDto(RetrospectKeyword retrospectKeyword) {

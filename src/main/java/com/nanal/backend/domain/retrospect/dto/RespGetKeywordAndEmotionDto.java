@@ -15,7 +15,6 @@ import java.util.List;
 @Builder
 @Data
 public class RespGetKeywordAndEmotionDto {
-
     private List<String> KeywordAndEmotion;
 
     public static RespGetKeywordAndEmotionDto makeRespGetKeywordAndEmotionDto(List<Diary> diaries) {

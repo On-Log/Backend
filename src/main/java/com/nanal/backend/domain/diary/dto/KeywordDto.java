@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 public class KeywordDto {
-    @Size(max = 5, message = "키워드는 최대 5개의 문자만 입력 가능합니다.")
+    @Size(max = 5, message = "keyword 는 최대 5개의 문자만 입력 가능합니다.")
     private String keyword;
 
     @Valid

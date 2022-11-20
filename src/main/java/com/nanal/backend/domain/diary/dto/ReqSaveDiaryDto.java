@@ -12,11 +12,12 @@ import java.util.List;
 @Data
 public class ReqSaveDiaryDto {
 
+    @NotBlank(message = "date 는 비어있을 수 없습니다.")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime date;
 
-    @NotBlank(message = "내용은 비어있을 수 없습니다.")
-    @Size(max = 300, message="내용은 최대 300개의 문자만 입력 가능합니다.")
+    @NotBlank(message = "content 는 비어있을 수 없습니다.")
+    @Size(max = 300, message="content 는 최대 300개의 문자만 입력 가능합니다.")
     private String content;
 
     @Valid

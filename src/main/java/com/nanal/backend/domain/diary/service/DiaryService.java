@@ -1,5 +1,6 @@
 package com.nanal.backend.domain.diary.service;
 
+import com.nanal.backend.global.exception.customexception.DiaryAlreadyExistException;
 import com.nanal.backend.global.exception.customexception.DiaryNotFoundException;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.diary.dto.*;
@@ -17,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Transactional
@@ -30,6 +32,13 @@ public class DiaryService {
     public void saveDiary(String email, ReqSaveDiaryDto reqSaveDiaryDto) {
         // email 로 유저 조회
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+
+        // 해당 날짜에 작성한 일기 존재하는지 체크
+        // 질의할 sql 의 Like 절에 해당하게끔 변환
+        String yearMonthDay = reqSaveDiaryDto.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
+        // 선택한 yyyy-MM-dd 에 작성한 일기 조회
+        List<Diary> existDiary = diaryRepository.findDiaryListByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
+        if(existDiary.size() == 1) throw new DiaryAlreadyExistException("이미 해당 날짜에 작성한 일기가 존재합니다.");
 
         // 일기 Entity 생성
         Diary diary = createDiary(member, reqSaveDiaryDto.getContent(), reqSaveDiaryDto.getDate(), reqSaveDiaryDto.getKeywords());

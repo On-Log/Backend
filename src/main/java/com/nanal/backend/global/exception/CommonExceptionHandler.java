@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class CommonExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public CommonResponse<?> inputValueInvalidError(HttpServletResponse response, MethodArgumentNotValidException e) throws IOException {
+    public CommonResponse<?> inputValueInvalidError(HttpServletResponse response, MethodArgumentNotValidException e) {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
 
@@ -34,35 +34,42 @@ public class CommonExceptionHandler {
     }
 
     @ExceptionHandler(MemberAuthException.class)
-    public CommonResponse<?> memberNotFoundError(HttpServletResponse response, MemberAuthException e) throws IOException {
+    public CommonResponse<?> memberNotFoundError(HttpServletResponse response, MemberAuthException e) {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.MEMBER_NOT_FOUND);
     }
 
     @ExceptionHandler(DiaryNotFoundException.class)
-    public CommonResponse<?> diaryNotFoundError(HttpServletResponse response, DiaryNotFoundException e) throws IOException {
+    public CommonResponse<?> diaryNotFoundError(HttpServletResponse response, DiaryNotFoundException e) {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.DIARY_NOT_FOUND);
     }
 
-    @ExceptionHandler(RetrospectDayDupException.class)
-    public CommonResponse<?> retrospectDayDupError(HttpServletResponse response, RetrospectDayDupException e) throws IOException {
+    @ExceptionHandler(DiaryAlreadyExistException.class)
+    public CommonResponse<?> diaryAlreadyExistError(HttpServletResponse response, DiaryAlreadyExistException e) {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
-        return new CommonResponse<>(ErrorCode.RETROSPECTDAY_DUPLICATION);
+        return new CommonResponse<>(ErrorCode.DIARY_ALREADY_EXIST);
+    }
+
+    @ExceptionHandler(RetrospectDayDupException.class)
+    public CommonResponse<?> retrospectDayDupError(HttpServletResponse response, RetrospectDayDupException e) {
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
+        return new CommonResponse<>(ErrorCode.RETROSPECT_DAY_DUPLICATION);
     }
 
     @ExceptionHandler(ResetAvailException.class)
-    public CommonResponse<?> resetAvailError(HttpServletResponse response, ResetAvailException e) throws IOException {
+    public CommonResponse<?> resetAvailError(HttpServletResponse response, ResetAvailException e) {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
-        return new CommonResponse<>(ErrorCode.RESETAVAIL_FALSE);
+        return new CommonResponse<>(ErrorCode.RESET_AVAIL_FALSE);
     }
 
     @ExceptionHandler(RefreshTokenInvalidException.class)
-    public CommonResponse<?> refreshTokenInvalidError(HttpServletResponse response, RefreshTokenInvalidException e) throws IOException {
+    public CommonResponse<?> refreshTokenInvalidError(HttpServletResponse response, RefreshTokenInvalidException e) {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.INVALID_REFRESH_TOKEN);

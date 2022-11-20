@@ -5,6 +5,7 @@ import com.nanal.backend.domain.mypage.repository.MemberRepository;
 import com.nanal.backend.entity.Member;
 import com.nanal.backend.global.auth.token.Token;
 import com.nanal.backend.global.auth.token.TokenUtil;
+import com.nanal.backend.global.exception.customexception.RefreshTokenInvalidException;
 import com.nanal.backend.global.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final TokenUtil tokenUtil;
 
-    public void signUp(ReqSignUpDto reqSignUpDto) {
+    public Token signUp(ReqSignUpDto reqSignUpDto) {
         // 최초 로그인이라면 회원가입 처리를 한다.
         if (memberRepository.findByEmail(reqSignUpDto.getEmail()).isEmpty()) {
             Member newMember = Member.builder()
@@ -44,7 +45,20 @@ public class AuthService {
         tokenUtil.storeRefreshToken(reqSignUpDto.getEmail(), token);
 
         log.info("Redis 저장 완료");
+
+        return token;
     }
 
+    public Token reissue(String token) {
+        // refresh 토큰이 유효한지 확인
+        if (token != null && tokenUtil.verifyToken(token)) {
+            String email = tokenUtil.getUid(token);
+            // 토큰 새로 받아오기
+            Token reissueToken = tokenUtil.tokenReissue(token);
 
+            return reissueToken;
+        }
+
+        throw new RefreshTokenInvalidException("Refresh Token 이 유효하지 않습니다.");
+    }
 }

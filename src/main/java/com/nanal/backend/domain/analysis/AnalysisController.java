@@ -4,6 +4,7 @@ package com.nanal.backend.domain.analysis;
 import com.nanal.backend.domain.analysis.dto.RespGetDauDto;
 import com.nanal.backend.domain.analysis.dto.RespGetMauDto;
 import com.nanal.backend.domain.analysis.dto.RespGetWauDto;
+import com.nanal.backend.domain.analysis.dto.RespGetWeekDayRetrospectDto;
 import com.nanal.backend.global.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,11 +37,12 @@ public class AnalysisController {
      * 주간 사용자 수 - 일요일 기준
      * [GET] /analysis/wau
      * 작성자 : 장동호
-     * 수정일 :
+     * 수정일 : 2022-11-21
      */
     @GetMapping("/analysis/wau")
     public CommonResponse<RespGetWauDto> getWau() {
 
+        // 주간 사용자 수 조회
         RespGetWauDto respGetWauDto = analysisService.getWau();
 
         return new CommonResponse<>(respGetWauDto);
@@ -50,24 +52,29 @@ public class AnalysisController {
      * 월간 사용자 수
      * [GET] /analysis/mau
      * 작성자 : 장동호
-     * 수정일 :
+     * 수정일 : 2022-11-21
      */
     @GetMapping("/analysis/mau")
     public CommonResponse<RespGetMauDto> getMau() {
 
+        // 월간 사용자 수 조회
         RespGetMauDto respGetMauDto = analysisService.getMau();
 
         return new CommonResponse<>(respGetMauDto);
     }
 
     /**
-     * 각 요일별 [회고탭] 이용자 수
-     * [GET] /analysis/retrospect
+     * 각 요일별 [회고탭] 이용자 수 - 일주일 기준
+     * [GET] /analysis/weekday/retrospect
      * 작성자 : 장동호
-     * 수정일 :
+     * 수정일 : 테스트 필요
      */
-    @GetMapping("/analysis/retrospect")
-    public void getRetrospect() {
+    @GetMapping("/analysis/weekday/retrospect")
+    public CommonResponse<RespGetWeekDayRetrospectDto> getWeekDayRetrospect() {
 
+        // 각 요일별 [회고탭] 이용자 수 - 일주일 기준
+        RespGetWeekDayRetrospectDto respGetWeekDayRetrospectDto = analysisService.getWeekDayRetrospect();
+
+        return new CommonResponse<>(respGetWeekDayRetrospectDto);
     }
 }

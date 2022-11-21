@@ -17,12 +17,12 @@ public class DiaryLog extends BaseTime {
     @Column(name = "diary_log_id")
     private Long DiaryLogId;
 
-    @Column(name = "user_email")
+    @Column(name = "user_email", nullable = false, length = 50)
     private String userEmail;
 
-    @Column(name = "service_name")
+    @Column(name = "service_name", nullable = false, length = 30)
     private String serviceName;
 
-    @Column(name = "execution_time")
+    @Column(name = "execution_time", nullable = false)
     private Long executionTime;
 }

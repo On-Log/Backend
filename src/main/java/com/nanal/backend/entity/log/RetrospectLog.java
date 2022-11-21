@@ -18,12 +18,12 @@ public class RetrospectLog extends BaseTime {
     @Column(name = "retrospect_log_id")
     private Long retrospectLogId;
 
-    @Column(name = "user_email")
+    @Column(name = "user_email", nullable = false, length = 50)
     private String userEmail;
 
-    @Column(name = "service_name")
+    @Column(name = "service_name", nullable = false, length = 30)
     private String serviceName;
 
-    @Column(name = "execution_time")
+    @Column(name = "execution_time", nullable = false)
     private Long executionTime;
 }

@@ -1,8 +1,10 @@
 package com.nanal.backend.global.config;
 
+import com.nanal.backend.entity.log.AuthLog;
 import com.nanal.backend.entity.log.DiaryLog;
 import com.nanal.backend.entity.log.MypageLog;
 import com.nanal.backend.entity.log.RetrospectLog;
+import com.nanal.backend.entity.log.repository.AuthLogRepository;
 import com.nanal.backend.entity.log.repository.DiaryLogRepository;
 import com.nanal.backend.entity.log.repository.MypageLogRepository;
 import com.nanal.backend.entity.log.repository.RetrospectLogRepository;
@@ -24,6 +26,7 @@ public class AspectConfig {
     private final DiaryLogRepository diaryLogRepository;
     private final MypageLogRepository mypageLogRepository;
     private final RetrospectLogRepository retrospectLogRepository;
+    private final AuthLogRepository authLogRepository;
 
     @Around("execution(* com..diary..*Service.*(..))")
     public Object diaryLogging(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -84,7 +87,7 @@ public class AspectConfig {
     }
 
     @Around("execution(* com..retrospect..*Service.*(..))")
-    public Object logging(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object retrospectLogging(ProceedingJoinPoint joinPoint) throws Throwable {
 
         StopWatch stopWatch = new StopWatch();
         String email = AuthenticationUtil.getCurrentUserEmail();
@@ -112,4 +115,23 @@ public class AspectConfig {
         return result;
     }
 
+    @Around("execution(* com..AuthController.signUp(..))")
+    public Object authLogging(ProceedingJoinPoint joinPoint) throws Throwable {
+
+        Object result = joinPoint.proceed();
+
+        String email = AuthenticationUtil.getCurrentUserEmail();
+        String methodName = joinPoint.getSignature().getName();
+
+        log.info("[{}] Token Issue", email);
+
+        AuthLog authLog = AuthLog.builder()
+                .userEmail(email)
+                .serviceName(methodName)
+                .build();
+
+        authLogRepository.save(authLog);
+
+        return result;
+    }
 }

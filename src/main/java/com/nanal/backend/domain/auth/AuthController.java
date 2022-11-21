@@ -19,7 +19,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/auth/signup")
-    public CommonResponse<?> signUp(@RequestBody @Valid ReqSignUpDto reqSignUpDto) {
+    public CommonResponse<?> signUp(@RequestBody ReqSignUpDto reqSignUpDto) {
 
         // 최초 로그인 - 회원가입 후 토큰 발행.
         // 기존 유저 - 토큰 발행.

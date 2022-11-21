@@ -3,12 +3,16 @@ package com.nanal.backend.domain.auth;
 import com.nanal.backend.domain.auth.dto.ReqSignUpDto;
 import com.nanal.backend.domain.mypage.repository.MemberRepository;
 import com.nanal.backend.entity.Member;
+import com.nanal.backend.global.auth.AuthenticationUtil;
+import com.nanal.backend.global.auth.UserDto;
 import com.nanal.backend.global.auth.token.Token;
 import com.nanal.backend.global.auth.token.TokenUtil;
 import com.nanal.backend.global.exception.customexception.RefreshTokenInvalidException;
 import com.nanal.backend.global.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -35,7 +39,12 @@ public class AuthService {
                     .role(Member.Role.USER)
                     .build();
             memberRepository.save(newMember);
+
+
         }
+
+        // 이메일로 Authentication 정보 생성
+        AuthenticationUtil.makeAuthentication(reqSignUpDto.getEmail());
 
         // 토큰 생성
         Token token = tokenUtil.generateToken(reqSignUpDto.getEmail());

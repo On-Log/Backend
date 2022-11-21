@@ -1,6 +1,7 @@
 package com.nanal.backend.global.auth.token;
 
 import com.nanal.backend.domain.mypage.repository.MemberRepository;
+import com.nanal.backend.global.auth.AuthenticationUtil;
 import com.nanal.backend.global.auth.UserDto;
 import com.nanal.backend.global.exception.customexception.TokenInvalidException;
 import lombok.RequiredArgsConstructor;
@@ -47,15 +48,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             // 토큰 파싱해서 email 정보 가져오기
             String email = tokenService.getUid(token);
 
-            // Authentication 정보 만들기
-            UserDto userDto = UserDto.builder()
-                    .email(email)
-                    //.name(existMember.getName())
-                    .build();
-
-            // ContextHolder 에 Authentication 정보 저장
-            Authentication auth = getAuthentication(userDto);
-            SecurityContextHolder.getContext().setAuthentication(auth);
+            // 이메일로 Authentication 정보 생성
+            AuthenticationUtil.makeAuthentication(email);
         }else{
             // 여기서 예외를 발생시켜야 JwtExceptionFilter 로 떨어짐.
             throw new TokenInvalidException("Token 이 유효하지 않습니다.");
@@ -64,8 +58,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         chain.doFilter(request, response);
     }
 
-    public Authentication getAuthentication(UserDto member) {
-        return new UsernamePasswordAuthenticationToken(member, "",
-                Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
-    }
+
+
+
 }

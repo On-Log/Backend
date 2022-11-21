@@ -27,7 +27,7 @@ import java.util.Arrays;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final String[] ignoredPaths = {"/auth/**", "/swagger-ui/**", "/v3/api-docs/**"};
+    private final String[] ignoredPaths = {"/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/analysis/**"};
 
     private final TokenUtil tokenService;
 

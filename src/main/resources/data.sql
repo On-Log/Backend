@@ -22,3 +22,4 @@ INSERT INTO emotion(emotion_id, emotion) VALUES (21, "행복");
 INSERT INTO emotion(emotion_id, emotion) VALUES (22, "복잡함");
 INSERT INTO emotion(emotion_id, emotion) VALUES (23, "어려움");
 INSERT INTO emotion(emotion_id, emotion) VALUES (24, "피곤함");
+

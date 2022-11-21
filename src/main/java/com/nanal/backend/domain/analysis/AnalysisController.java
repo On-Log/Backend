@@ -3,6 +3,7 @@ package com.nanal.backend.domain.analysis;
 
 import com.nanal.backend.domain.analysis.dto.RespGetDauDto;
 import com.nanal.backend.domain.analysis.dto.RespGetMauDto;
+import com.nanal.backend.domain.analysis.dto.RespGetWauDto;
 import com.nanal.backend.global.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,14 +33,17 @@ public class AnalysisController {
     }
 
     /**
-     * 주간 사용자 수
+     * 주간 사용자 수 - 일요일 기준
      * [GET] /analysis/wau
      * 작성자 : 장동호
      * 수정일 :
      */
     @GetMapping("/analysis/wau")
-    public void getWau() {
+    public CommonResponse<RespGetWauDto> getWau() {
 
+        RespGetWauDto respGetWauDto = analysisService.getWau();
+
+        return new CommonResponse<>(respGetWauDto);
     }
 
     /**

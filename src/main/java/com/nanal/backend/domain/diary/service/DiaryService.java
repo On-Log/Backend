@@ -18,7 +18,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Transactional
@@ -47,7 +46,6 @@ public class DiaryService {
         diaryRepository.save(diary);
     }
 
-    @Transactional(readOnly = true)
     public RespGetCalendarDto getCalendar(String email, ReqGetCalendarDto reqGetCalendarDto) {
         // email 로 유저 조회
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
@@ -73,7 +71,6 @@ public class DiaryService {
                 .build();
     }
 
-    @Transactional(readOnly = true)
     public RespGetEmotionDto getEmotion() {
         // 감정어 조회
         List<Emotion> emotions = emotionRepository.findAll();
@@ -83,7 +80,6 @@ public class DiaryService {
         return respGetEmotionDto;
     }
 
-    @Transactional(readOnly = true)
     public RespGetDiaryDto getDiary(String email, ReqGetDiaryDto reqGetDiaryDto) {
         // email 로 유저 조회
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));

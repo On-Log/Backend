@@ -4,21 +4,19 @@ import com.nanal.backend.domain.auth.dto.ReqSignUpDto;
 import com.nanal.backend.domain.mypage.repository.MemberRepository;
 import com.nanal.backend.entity.Member;
 import com.nanal.backend.global.auth.AuthenticationUtil;
-import com.nanal.backend.global.auth.UserDto;
 import com.nanal.backend.global.auth.token.Token;
 import com.nanal.backend.global.auth.token.TokenUtil;
 import com.nanal.backend.global.exception.customexception.RefreshTokenInvalidException;
-import com.nanal.backend.global.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class AuthService {
 

@@ -35,7 +35,6 @@ public class RetrospectService {
     private final RetrospectKeywordRepository retrospectKeywordRepository;
     private final RetrospectQuestionRepository retrospectQuestionRepository;
 
-    @Transactional(readOnly = true)
     public RespGetInfoDto getInfo(String email, ReqGetInfoDto reqGetInfoDto) {
         // email 로 유저 조회
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
@@ -73,7 +72,6 @@ public class RetrospectService {
     }
 
 
-    @Transactional
     public RespGetRetroDto getRetro(String email, ReqGetRetroDto reqGetRetroDto) {
         // email 로 유저 조회
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
@@ -135,7 +133,6 @@ public class RetrospectService {
     }
 
 
-    @Transactional(readOnly = true)
     public RespGetQuestionAndHelpDto getQuestionAndHelp() {
         // 회고 질문 + 도움말 조회
         List<RetrospectQuestion> retrospectQuestions = retrospectQuestionRepository.findAll();

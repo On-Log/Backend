@@ -2,6 +2,7 @@ package com.nanal.backend.domain.analysis;
 
 
 import com.nanal.backend.domain.analysis.dto.RespGetDauDto;
+import com.nanal.backend.domain.analysis.dto.RespGetMauDto;
 import com.nanal.backend.global.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,8 +49,11 @@ public class AnalysisController {
      * 수정일 :
      */
     @GetMapping("/analysis/mau")
-    public void getMau() {
+    public CommonResponse<RespGetMauDto> getMau() {
 
+        RespGetMauDto respGetMauDto = analysisService.getMau();
+
+        return new CommonResponse<>(respGetMauDto);
     }
 
     /**

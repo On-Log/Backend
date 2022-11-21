@@ -61,6 +61,13 @@ public class CommonExceptionHandler {
         return new CommonResponse<>(ErrorCode.RETROSPECT_DAY_DUPLICATION);
     }
 
+    @ExceptionHandler(RetrospectNotFoundException.class)
+    public CommonResponse<?> retrospectNotFoundError(HttpServletResponse response, RetrospectNotFoundException e) {
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
+        return new CommonResponse<>(ErrorCode.RETROSPECT_NOT_FOUND);
+    }
+
     @ExceptionHandler(ResetAvailException.class)
     public CommonResponse<?> resetAvailError(HttpServletResponse response, ResetAvailException e) {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

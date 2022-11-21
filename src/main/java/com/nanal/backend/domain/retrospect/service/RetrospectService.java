@@ -9,6 +9,7 @@ import com.nanal.backend.domain.retrospect.repository.RetrospectKeywordRepositor
 import com.nanal.backend.domain.retrospect.repository.RetrospectQuestionRepository;
 import com.nanal.backend.domain.retrospect.repository.RetrospectRepository;
 import com.nanal.backend.entity.*;
+import com.nanal.backend.global.exception.customexception.RetrospectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
@@ -81,6 +82,8 @@ public class RetrospectService {
         LocalDateTime selectDate = reqGetRetroDto.getSelectDate();
         // 선택한 yyyy-MM 에 작성한 회고리스트 조회
         List<Retrospect> getRetrospects = getExistRetrospect(member, selectDate);
+        // 선택한 yyyy-MM 에 작성한 회고 중, 조회하고자 하는 회고가 존재하지 않을 경우
+        if(getRetrospects.size() < reqGetRetroDto.getWeek()) throw new RetrospectNotFoundException("조회하고자 하는 회고가 존재하지 않습니다.");
 
         // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
         RespGetRetroDto respGetRetroDto = RespGetRetroDto.makeRespGetRetroDto(getRetrospects.get(reqGetRetroDto.getWeek()));
@@ -102,6 +105,8 @@ public class RetrospectService {
         LocalDateTime selectDate = reqEditRetroDto.getEditDate();
         // 선택한 yyyy-MM 에 작성한 회고리스트 조회
         List<Retrospect> getRetrospects = getExistRetrospect(member, selectDate);
+        // 선택한 yyyy-MM 에 작성한 회고 중, 수정하고자 하는 회고가 존재하지 않을 경우
+        if(getRetrospects.size() < reqEditRetroDto.getWeek()) throw new RetrospectNotFoundException("조회하고자 하는 회고가 존재하지 않습니다.");
         // 몇번째 회고인지
         Retrospect retrospect = getRetrospects.get(reqEditRetroDto.getWeek());
         // 회고에서 어떤 질문에 대한 답을 수정했는지
@@ -119,7 +124,10 @@ public class RetrospectService {
         LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
 
         //일주일 일기 리스트 조회
-        List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(7), currentTime.toLocalDate());
+        List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(
+                member.getMemberId(),
+                prevRetroDate.toLocalDate().minusDays(7),
+                currentTime.toLocalDate());
 
         RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.makeRespGetKeywordAndEmotionDto(diaries);
 

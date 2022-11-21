@@ -31,16 +31,15 @@ public enum ErrorCode {
     // 일기 저장시 해당 날짜에 일기가 이미 존재할 때.
     DIARY_ALREADY_EXIST(false, 4021, "이미 해당 날짜에 작성한 일기가 존재합니다."),
 
-    // Retrospect
-
 
     // MyPage
     // 중복된 회고일을 입력할 때.
     RETROSPECT_DAY_DUPLICATION(false, 4030, "중복된 회고일입니다."),
     // resetavail이 false일 때. (= 회고일 변경으로부터 한 달이 지나지 않아 변경할 수 없을 때.)
-    RESET_AVAIL_FALSE(false, 4031, "지금은 회고일을 변경 할 수 없습니다.");
+    RESET_AVAIL_FALSE(false, 4031, "지금은 회고일을 변경 할 수 없습니다."),
 
-
+    // Retrospect
+    RETROSPECT_NOT_FOUND(false, 4041, "조회하고자 하는 회고가 존재하지 않습니다.");
 
     private Boolean isSuccess;
     private int code;

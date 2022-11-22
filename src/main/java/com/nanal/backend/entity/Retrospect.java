@@ -41,7 +41,7 @@ public class Retrospect {
     private Member member;
 
     //==수정 메서드==//
-    public void updateEditStatus(Boolean editStatus) { this.editStatus = editStatus; }
+    public void changeEditStatus(Boolean editStatus) { this.editStatus = editStatus; }
 
     //==설정 메서드==//
     public void changeGoalAndWriteDateAndEditStatus(String goal, LocalDateTime writeDate, Boolean editStatus) {

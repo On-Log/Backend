@@ -66,9 +66,16 @@ public class RetrospectService {
         // email 로 유저 조회
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
         // 회고 Entity 생성
-        Retrospect retrospect = createRetrospect(member, reqSaveRetroDto.getGoal(), reqSaveRetroDto.getDate(), reqSaveRetroDto.getKeywords(), reqSaveRetroDto.getContents());
+        Retrospect retrospect = createRetrospect(member, reqSaveRetroDto.getGoal(), reqSaveRetroDto.getCurrentDate(), reqSaveRetroDto.getKeywords(), reqSaveRetroDto.getContents());
         // 회고 저장
         retrospectRepository.save(retrospect);
+        //회고 저장 후 일주일 일기 리스트 editstatus 변경
+        LocalDateTime currentTime = reqSaveRetroDto.getCurrentDate();
+        LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
+        List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate());
+        for(Diary t : diaries) {
+            t.changeEditStatus(false);
+        }
     }
 
 
@@ -76,7 +83,6 @@ public class RetrospectService {
         // email 로 유저 조회
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
-        LocalDateTime currentTime = reqGetRetroDto.getCurrentDate();
         LocalDateTime selectDate = reqGetRetroDto.getSelectDate();
         // 선택한 yyyy-MM 에 작성한 회고리스트 조회
         List<Retrospect> getRetrospects = getExistRetrospect(member, selectDate);
@@ -85,13 +91,6 @@ public class RetrospectService {
 
         // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
         RespGetRetroDto respGetRetroDto = RespGetRetroDto.makeRespGetRetroDto(getRetrospects.get(reqGetRetroDto.getWeek()));
-
-        // 수정 기간 지나면 수정 못하게 editStatus 변경
-        LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
-        if(currentTime.isAfter(prevRetroDate.plusDays(1).withHour(7).withMinute(00).withSecond(00))==true) {
-            getRetrospects.get(reqGetRetroDto.getWeek()).updateEditStatus(false);
-        }
-
         return respGetRetroDto;
     }
 

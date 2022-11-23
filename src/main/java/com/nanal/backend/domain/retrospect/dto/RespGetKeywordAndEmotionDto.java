@@ -2,7 +2,6 @@ package com.nanal.backend.domain.retrospect.dto;
 
 import com.nanal.backend.entity.Diary;
 import com.nanal.backend.entity.Keyword;
-import com.nanal.backend.entity.KeywordEmotion;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,24 +14,17 @@ import java.util.List;
 @Builder
 @Data
 public class RespGetKeywordAndEmotionDto {
-    private List<String> KeywordAndEmotion;
+    private List<KeywordStringsDto> keywords;
 
-    public static RespGetKeywordAndEmotionDto makeRespGetKeywordAndEmotionDto(List<Diary> diaries) {
-        //일기 정보를 담을 String 리스트
-        List<String> KeywordAndEmotion = new ArrayList<>();
-        String str = null;
+    public static RespGetKeywordAndEmotionDto makeRespGetKeywordAndEmotionDto(List<Diary> diaries){
+        List<KeywordStringsDto> keywords = new ArrayList<>();
         for(Diary d : diaries) {
-            for(Keyword k : d.getKeywords()){
-                str = d.getWriteDate() + " " + k.getWord() + " ";
-                for(KeywordEmotion e : k.getKeywordEmotions()){
-                    str += e.getEmotion() + " ";
-                }
-            }
-            KeywordAndEmotion.add(str);
-        }
+            KeywordStringsDto keywordStringsDto = KeywordStringsDto.makeKeywordStringsDto(d);
 
+            keywords.add(keywordStringsDto);
+        }
         RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.builder()
-                .KeywordAndEmotion(KeywordAndEmotion)
+                .keywords(keywords)
                 .build();
 
         return respGetKeywordAndEmotionDto;

@@ -123,7 +123,7 @@ public class RetrospectService {
         //일주일 일기 리스트 조회
         List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(
                 member.getMemberId(),
-                prevRetroDate.toLocalDate().minusDays(7),
+                prevRetroDate.toLocalDate().minusDays(6),
                 currentTime.toLocalDate());
 
         RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.makeRespGetKeywordAndEmotionDto(diaries);

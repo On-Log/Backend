@@ -83,6 +83,7 @@ public class DiaryService {
     public RespGetDiaryDto getDiary(String email, ReqGetDiaryDto reqGetDiaryDto) {
         // email 로 유저 조회
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+        System.out.println(reqGetDiaryDto.getDate());
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonthDay = reqGetDiaryDto.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
         // 선택한 yyyy-MM-dd 에 작성한 일기 조회

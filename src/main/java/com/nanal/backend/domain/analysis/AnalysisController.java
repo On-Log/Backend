@@ -1,10 +1,7 @@
 package com.nanal.backend.domain.analysis;
 
 
-import com.nanal.backend.domain.analysis.dto.RespGetDauDto;
-import com.nanal.backend.domain.analysis.dto.RespGetMauDto;
-import com.nanal.backend.domain.analysis.dto.RespGetWauDto;
-import com.nanal.backend.domain.analysis.dto.RespGetWeekDayRetrospectDto;
+import com.nanal.backend.domain.analysis.dto.*;
 import com.nanal.backend.global.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -76,5 +73,20 @@ public class AnalysisController {
         RespGetWeekDayRetrospectDto respGetWeekDayRetrospectDto = analysisService.getWeekDayRetrospect();
 
         return new CommonResponse<>(respGetWeekDayRetrospectDto);
+    }
+
+    /**
+     * 각 요일별 [지정회고일] 설정 비중
+     * [GET] /analysis/retrospect/designation
+     * 작성자 : 장동호
+     * 수정일 :
+     */
+    @GetMapping("/analysis/retrospect/designation")
+    public CommonResponse<RespGetDesignatedRetrospectDayDto> getDesignatedRetrospectDay() {
+
+        // 각 요일별 [지정회고일] 설정 비중
+        RespGetDesignatedRetrospectDayDto respGetDesignatedRetrospectDayDto = analysisService.getDesignatedRetrospectDay();
+
+        return new CommonResponse<>(respGetDesignatedRetrospectDayDto);
     }
 }

@@ -14,11 +14,11 @@ import java.util.List;
 @Data
 public class RespGetCalendarDto {
 
-    List<Integer> existDiaryDate;
+    private List<Integer> existDiaryDate;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    Integer prevRetroDate;
+    private Integer prevRetroDate;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    Integer postRetroDate;
+    private Integer postRetroDate;
 }

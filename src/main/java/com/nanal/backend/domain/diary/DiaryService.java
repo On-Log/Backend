@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
@@ -62,6 +63,7 @@ public class DiaryService {
 
         // 회고 요일과 현재 날짜로 일기 작성 가능주 구하기
         LocalDateTime nextDayOfPrevRetroDate = getNextDayOfPrevRetroDate(member.getRetrospectDay(), currentDate);
+
         LocalDateTime postRetroDate = getPostRetroDate(member.getRetrospectDay(), currentDate);
 
         return RespGetCalendarDto.builder()
@@ -193,7 +195,11 @@ public class DiaryService {
 
     private LocalDateTime getNextDayOfPrevRetroDate(DayOfWeek retrospectDay, LocalDateTime currentTime) {
         // 이전 회고일
-        LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(retrospectDay));
+        LocalDateTime prevRetroDate;
+        if(currentTime.toLocalDate().isEqual(LocalDate.now()))
+            prevRetroDate = currentTime.with(TemporalAdjusters.previous(retrospectDay));
+        else
+            prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(retrospectDay));
         // 해당 주는 이전 회고일 다음날부터 다음 회고 일까지이므로 '이전 회고일 + 1' 을 해줘야함
         return prevRetroDate.plusDays(1);
     }

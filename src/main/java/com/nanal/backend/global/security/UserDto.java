@@ -1,4 +1,4 @@
-package com.nanal.backend.global.auth;
+package com.nanal.backend.global.security;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

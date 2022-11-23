@@ -1,4 +1,4 @@
-package com.nanal.backend.global.auth;
+package com.nanal.backend.global.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nanal.backend.global.exception.customexception.TokenInvalidException;

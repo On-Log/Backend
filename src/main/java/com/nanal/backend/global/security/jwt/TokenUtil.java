@@ -1,4 +1,4 @@
-package com.nanal.backend.global.auth.token;
+package com.nanal.backend.global.security.jwt;
 
 import com.nanal.backend.domain.mypage.repository.MemberRepository;
 import com.nanal.backend.entity.Member;

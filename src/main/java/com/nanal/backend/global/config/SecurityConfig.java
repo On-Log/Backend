@@ -1,7 +1,7 @@
 package com.nanal.backend.global.config;
 
-import com.nanal.backend.global.auth.JwtExceptionFilter;
-import com.nanal.backend.global.auth.token.JwtAuthFilter;
+import com.nanal.backend.global.security.jwt.JwtExceptionFilter;
+import com.nanal.backend.global.security.jwt.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

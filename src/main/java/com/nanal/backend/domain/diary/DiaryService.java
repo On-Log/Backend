@@ -1,4 +1,4 @@
-package com.nanal.backend.domain.diary.service;
+package com.nanal.backend.domain.diary;
 
 import com.nanal.backend.global.exception.customexception.DiaryAlreadyExistException;
 import com.nanal.backend.global.exception.customexception.DiaryNotFoundException;

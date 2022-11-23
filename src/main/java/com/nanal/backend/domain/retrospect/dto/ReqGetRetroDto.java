@@ -2,8 +2,6 @@ package com.nanal.backend.domain.retrospect.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Data

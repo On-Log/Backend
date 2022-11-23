@@ -1,7 +1,6 @@
 package com.nanal.backend.domain.retrospect.dto;
 
 import com.nanal.backend.entity.Diary;
-import com.nanal.backend.entity.Keyword;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

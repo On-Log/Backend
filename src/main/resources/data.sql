@@ -1,3 +1,5 @@
+DELETE FROM emotion where emotion_id >= 1 and emotion_id <=24;
+
 INSERT INTO emotion(emotion_id, emotion) VALUES (1, "행복");
 INSERT INTO emotion(emotion_id, emotion) VALUES (2, "즐거움");
 INSERT INTO emotion(emotion_id, emotion) VALUES (3, "칭찬");

@@ -9,6 +9,5 @@ import java.time.LocalDateTime;
 @Data
 public class ReqGetDiaryDto {
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime date;
 }

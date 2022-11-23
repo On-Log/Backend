@@ -12,7 +12,6 @@ import java.util.List;
 @Data
 public class ReqSaveDiaryDto {
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime date;
 
     @NotBlank(message = "content 는 비어있을 수 없습니다.")

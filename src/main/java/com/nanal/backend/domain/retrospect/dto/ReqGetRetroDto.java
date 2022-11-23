@@ -8,9 +8,9 @@ import java.time.LocalDateTime;
 
 @Data
 public class ReqGetRetroDto {
+
     //선택한 월
     @Schema(description = "" , example = "2022-10-17T05:33:42.387Z")
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime selectDate;
 
     @Schema(description = "week" , example = "3")

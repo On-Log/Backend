@@ -3,6 +3,7 @@ package com.nanal.backend.domain.analysis;
 import com.nanal.backend.domain.analysis.dto.*;
 import com.nanal.backend.domain.analysis.repository.AuthLogRepository;
 import com.nanal.backend.domain.analysis.repository.RetrospectLogRepository;
+import com.nanal.backend.domain.mypage.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,8 @@ import java.util.List;
 public class AnalysisService {
 
     private final AuthLogRepository authLogRepository;
-
     private final RetrospectLogRepository retrospectLogRepository;
+    private final MemberRepository memberRepository;
 
     public RespGetDauDto getDau() {
         LocalDateTime currentDate = LocalDate.now().atStartOfDay();
@@ -87,4 +88,12 @@ public class AnalysisService {
     }
 
 
+    public RespGetDesignatedRetrospectDayDto getDesignatedRetrospectDay() {
+
+        List<DesignatedRetrospectDayDto> designatedRetrospectDayDtoList = memberRepository.designatedRetrospectDayQuery();
+
+        return RespGetDesignatedRetrospectDayDto.builder()
+                .designatedRetrospectDayDtoList(designatedRetrospectDayDtoList)
+                .build();
+    }
 }

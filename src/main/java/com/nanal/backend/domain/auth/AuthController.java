@@ -1,7 +1,7 @@
 package com.nanal.backend.domain.auth;
 
 import com.nanal.backend.domain.auth.dto.ReqSignUpDto;
-import com.nanal.backend.global.auth.token.Token;
+import com.nanal.backend.global.security.jwt.Token;
 import com.nanal.backend.global.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController

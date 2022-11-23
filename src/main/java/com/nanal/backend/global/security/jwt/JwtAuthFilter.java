@@ -1,15 +1,9 @@
-package com.nanal.backend.global.auth.token;
+package com.nanal.backend.global.security.jwt;
 
-import com.nanal.backend.domain.mypage.repository.MemberRepository;
-import com.nanal.backend.global.auth.AuthenticationUtil;
-import com.nanal.backend.global.auth.UserDto;
+import com.nanal.backend.global.security.AuthenticationUtil;
 import com.nanal.backend.global.exception.customexception.TokenInvalidException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
@@ -20,7 +14,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 
 @Slf4j
 @RequiredArgsConstructor

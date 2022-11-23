@@ -1,9 +1,8 @@
-package com.nanal.backend.domain.mypage.controller;
+package com.nanal.backend.domain.mypage;
 
 import com.nanal.backend.global.response.CommonResponse;
 import com.nanal.backend.domain.mypage.dto.*;
-import com.nanal.backend.domain.mypage.service.MypageService;
-import com.nanal.backend.global.auth.UserDto;
+import com.nanal.backend.global.security.UserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -1,4 +1,4 @@
-package com.nanal.backend.entity.log.repository;
+package com.nanal.backend.domain.analysis.repository;
 
 import com.nanal.backend.domain.analysis.dto.DayDto;
 import com.nanal.backend.domain.analysis.dto.RespGetMauDto;

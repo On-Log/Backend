@@ -1,8 +1,8 @@
-package com.nanal.backend.domain.retrospect.service;
+package com.nanal.backend.domain.retrospect;
 
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
-import com.nanal.backend.domain.diary.service.DiaryService;
+import com.nanal.backend.domain.diary.DiaryService;
 import com.nanal.backend.domain.mypage.repository.MemberRepository;
 import com.nanal.backend.domain.retrospect.dto.*;
 import com.nanal.backend.domain.retrospect.repository.RetrospectKeywordRepository;

@@ -1,7 +1,7 @@
 package com.nanal.backend.global.security.jwt;
 
 import com.nanal.backend.domain.mypage.repository.MemberRepository;
-import com.nanal.backend.entity.Member;
+import com.nanal.backend.domain.mypage.entity.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;

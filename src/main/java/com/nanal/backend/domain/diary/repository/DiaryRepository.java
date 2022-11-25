@@ -1,6 +1,6 @@
 package com.nanal.backend.domain.diary.repository;
 
-import com.nanal.backend.entity.Diary;
+import com.nanal.backend.domain.diary.entity.Diary;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

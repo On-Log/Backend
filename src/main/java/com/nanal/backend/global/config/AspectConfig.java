@@ -1,9 +1,9 @@
 package com.nanal.backend.global.config;
 
-import com.nanal.backend.entity.log.AuthLog;
-import com.nanal.backend.entity.log.DiaryLog;
-import com.nanal.backend.entity.log.MypageLog;
-import com.nanal.backend.entity.log.RetrospectLog;
+import com.nanal.backend.domain.analysis.entity.AuthLog;
+import com.nanal.backend.domain.analysis.entity.DiaryLog;
+import com.nanal.backend.domain.analysis.entity.MypageLog;
+import com.nanal.backend.domain.analysis.entity.RetrospectLog;
 import com.nanal.backend.domain.analysis.repository.AuthLogRepository;
 import com.nanal.backend.domain.analysis.repository.DiaryLogRepository;
 import com.nanal.backend.domain.analysis.repository.MypageLogRepository;

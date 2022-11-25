@@ -1,6 +1,6 @@
 package com.nanal.backend.domain.retrospect.dto;
 
-import com.nanal.backend.entity.RetrospectContent;
+import com.nanal.backend.domain.retrospect.entity.RetrospectContent;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

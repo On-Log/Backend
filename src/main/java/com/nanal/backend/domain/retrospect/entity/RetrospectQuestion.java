@@ -1,5 +1,6 @@
 package com.nanal.backend.domain.retrospect.entity;
 
+import com.nanal.backend.global.config.BaseTime;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -7,7 +8,7 @@ import javax.persistence.*;
 @Getter
 @Table(name = "retrospectquestion")
 @Entity
-public class RetrospectQuestion {
+public class RetrospectQuestion extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

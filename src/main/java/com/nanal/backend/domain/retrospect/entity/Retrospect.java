@@ -1,6 +1,7 @@
 package com.nanal.backend.domain.retrospect.entity;
 
 import com.nanal.backend.domain.mypage.entity.Member;
+import com.nanal.backend.global.config.BaseTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +20,7 @@ import java.util.List;
 @Table(name = "retrospect")
 @Entity
 @DynamicUpdate
-public class Retrospect {
+public class Retrospect extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "retrospect_id")

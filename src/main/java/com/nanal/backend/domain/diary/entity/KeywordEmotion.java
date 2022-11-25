@@ -1,6 +1,7 @@
 package com.nanal.backend.domain.diary.entity;
 
 
+import com.nanal.backend.global.config.BaseTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Entity
-public class KeywordEmotion {
+public class KeywordEmotion extends BaseTime {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "keyword_emotion_id")

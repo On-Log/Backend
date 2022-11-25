@@ -1,5 +1,6 @@
 package com.nanal.backend.domain.retrospect.entity;
 
+import com.nanal.backend.global.config.BaseTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Entity
-public class RetrospectContent {
+public class RetrospectContent extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "retrospect_content_id")

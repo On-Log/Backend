@@ -2,6 +2,7 @@ package com.nanal.backend.domain.mypage.entity;
 
 import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
+import com.nanal.backend.global.config.BaseTime;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "member")
 @Entity
-public class Member {
+public class Member extends BaseTime {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")

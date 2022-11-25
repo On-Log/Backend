@@ -44,7 +44,7 @@ public class AspectConfig {
 
         log.info("[{}]{} - FINISHED", email, methodName);
 
-        log.info("[{}]{} - EXECUTION TIME => {}", email, methodName, executionTime);
+        log.info("[{}]{} - EXECUTION TIME => {} ms", email, methodName, executionTime);
 
         DiaryLog diaryLog = DiaryLog.builder()
                 .userEmail(email)
@@ -73,7 +73,7 @@ public class AspectConfig {
 
         log.info("[{}]{} - FINISHED", email, methodName);
 
-        log.info("[{}]{} - EXECUTION TIME => {}", email, methodName, executionTime);
+        log.info("[{}]{} - EXECUTION TIME => {} ms", email, methodName, executionTime);
 
         MypageLog mypageLog = MypageLog.builder()
                 .userEmail(email)
@@ -102,7 +102,7 @@ public class AspectConfig {
 
         log.info("[{}]{} - FINISHED", email, methodName);
 
-        log.info("[{}]{} - EXECUTION TIME => {}", email, methodName, executionTime);
+        log.info("[{}]{} - EXECUTION TIME => {} ms", email, methodName, executionTime);
 
         RetrospectLog retrospectLog = RetrospectLog.builder()
                 .userEmail(email)

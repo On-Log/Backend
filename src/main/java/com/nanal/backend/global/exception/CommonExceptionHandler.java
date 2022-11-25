@@ -1,5 +1,11 @@
 package com.nanal.backend.global.exception;
 
+import com.nanal.backend.domain.auth.exception.RefreshTokenInvalidException;
+import com.nanal.backend.domain.diary.exception.DiaryAlreadyExistException;
+import com.nanal.backend.domain.diary.exception.DiaryNotFoundException;
+import com.nanal.backend.domain.mypage.exception.ResetAvailException;
+import com.nanal.backend.domain.mypage.exception.RetrospectDayDupException;
+import com.nanal.backend.domain.retrospect.exception.RetrospectNotFoundException;
 import com.nanal.backend.global.security.AuthenticationUtil;
 import com.nanal.backend.global.exception.customexception.*;
 import com.nanal.backend.global.response.CommonResponse;

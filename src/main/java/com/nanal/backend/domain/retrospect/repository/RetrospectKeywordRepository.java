@@ -1,6 +1,6 @@
 package com.nanal.backend.domain.retrospect.repository;
 
-import com.nanal.backend.entity.RetrospectKeyword;
+import com.nanal.backend.domain.retrospect.entity.RetrospectKeyword;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

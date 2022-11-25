@@ -1,0 +1,17 @@
+package com.nanal.backend.domain.analysis.dto.resp;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class RespGetWauDto {
+
+    private List<WeekDto> weekDtoList;
+}

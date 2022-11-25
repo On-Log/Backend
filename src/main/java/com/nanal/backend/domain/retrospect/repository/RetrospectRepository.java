@@ -1,6 +1,6 @@
 package com.nanal.backend.domain.retrospect.repository;
 
-import com.nanal.backend.entity.Retrospect;
+import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

@@ -30,7 +30,7 @@ public class RetrospectController {
     @Operation(summary="회고 탭 화면 조회", description="해당 날짜에 맞는 정보 조회")
     @GetMapping("/retrospect")
     public CommonResponse<RespGetInfoDto> getInfo(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
-                                                  @RequestBody ReqGetInfoDto reqGetInfoDto) {
+                                                   ReqGetInfoDto reqGetInfoDto) {
 
         // 요청 정보 기반으로 해당 날짜에 맞는 정보 조회
         RespGetInfoDto respGetInfoDto = retrospectService.getInfo(userDto.getEmail(), reqGetInfoDto);
@@ -64,7 +64,7 @@ public class RetrospectController {
     @Operation(summary="회고 정보 조회", description="요청 날짜 기반으로 회고 조회")
     @GetMapping("/retrospect/view")
     public CommonResponse<RespGetRetroDto> getRetrospect(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
-                                                         @RequestBody ReqGetRetroDto reqGetRetroDto) {
+                                                          ReqGetRetroDto reqGetRetroDto) {
 
         // 요청 날짜 기반으로 회고 조회
         RespGetRetroDto respGetRetroDto = retrospectService.getRetro(userDto.getEmail(), reqGetRetroDto);
@@ -98,7 +98,7 @@ public class RetrospectController {
     @Operation(summary="일기 작성 날짜+키워드+감정어 조회")
     @GetMapping("/retrospect/keyword")
     public CommonResponse<RespGetKeywordAndEmotionDto> getKeywordAndEmotion(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
-                                                                            @RequestBody ReqGetKeywordAndEmotionDto reqGetKeywordAndEmotionDto) {
+                                                                             ReqGetKeywordAndEmotionDto reqGetKeywordAndEmotionDto) {
 
         // 일기 작성 날짜+키워드+감정어 조회
         RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = retrospectService.getKeywordAndEmotion(userDto.getEmail(), reqGetKeywordAndEmotionDto);

@@ -1,6 +1,7 @@
 package com.nanal.backend.domain.diary.dto;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -11,6 +12,7 @@ import java.util.List;
 @Data
 public class ReqSaveDiaryDto {
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime date;
 
     @NotBlank(message = "content 는 비어있을 수 없습니다.")

@@ -20,7 +20,7 @@ import java.io.IOException;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final String[] ignoredPaths = {"/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/analysis/**"};
+    private final String[] ignoredPaths = {"/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/analysis/**", "/actuator/**"};
 
     private final TokenUtil tokenService;
 

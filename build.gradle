@@ -50,7 +50,9 @@ dependencies {
     // Swagger
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.9'
 
-
+    // Monitoring
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 }
 
 tasks.named('test') {

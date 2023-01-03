@@ -2,7 +2,6 @@ package com.nanal.backend.domain.retrospect.dto.req;
 
 import com.nanal.backend.domain.retrospect.dto.RetrospectContentDto;
 import com.nanal.backend.domain.retrospect.dto.RetrospectKeywordDto;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.Valid;

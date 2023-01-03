@@ -9,9 +9,6 @@ import com.nanal.backend.domain.mypage.dto.resp.RespGetUserDto;
 import com.nanal.backend.domain.mypage.service.MypageService;
 import com.nanal.backend.global.response.CommonResponse;
 import com.nanal.backend.global.security.UserDto;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +18,6 @@ import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
-@Tag(name = "MypageController", description = "마이페이지 관련 api")
-
 public class MypageController {
 
     private final MypageService mypageService;
@@ -34,7 +29,7 @@ public class MypageController {
      * 수정일 : 2022-11-16
      */
     @GetMapping("/mypage")
-    public CommonResponse<RespGetUserDto> getUser(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
+    public CommonResponse<RespGetUserDto> getUser(@AuthenticationPrincipal UserDto userDto,
                                                   @Valid ReqGetUserDto reqGetUserDto) {
 
         // 유저 정보 조회
@@ -50,7 +45,7 @@ public class MypageController {
      * 수정일 : 2022-11-17
      */
     @PutMapping("/mypage/nickname")
-    public CommonResponse<RespEditNicknameDto> updateNickname(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
+    public CommonResponse<RespEditNicknameDto> updateNickname(@AuthenticationPrincipal UserDto userDto,
                                                               @RequestBody @Valid ReqEditNicknameDto reqEditNickname) {
 
         // 닉네임 변경
@@ -66,7 +61,7 @@ public class MypageController {
      * 수정일 : 2022-11-17
      */
     @PutMapping("/mypage/day")
-    public CommonResponse<RespEditRetrospectDayDto> updateRetrospectDay(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
+    public CommonResponse<RespEditRetrospectDayDto> updateRetrospectDay(@AuthenticationPrincipal UserDto userDto,
                                                                         @RequestBody @Valid ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
 
         // 회고요일 변경

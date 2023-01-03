@@ -1,6 +1,5 @@
 package com.nanal.backend.domain.retrospect.dto.req;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 

@@ -30,9 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
-                .authorizeRequests().antMatchers("/auth/**", "/main", "/analysis/**", "/actuator/**").permitAll().and()
-                // Swagger 접속 정보
-                .authorizeRequests().antMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .authorizeRequests().antMatchers("/auth/**", "/main", "/analysis/**", "/actuator/**").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

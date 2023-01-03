@@ -33,7 +33,6 @@ public class MypageController {
      * 작성자 : 김유빈
      * 수정일 : 2022-11-16
      */
-    @Operation(summary="마이페이지 정보 조회", description="유저 정보 기반 마이페이지 조회")
     @GetMapping("/mypage")
     public CommonResponse<RespGetUserDto> getUser(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
                                                   @Valid ReqGetUserDto reqGetUserDto) {
@@ -50,7 +49,6 @@ public class MypageController {
      * 작성자 : 김유빈
      * 수정일 : 2022-11-17
      */
-    @Operation(summary="닉네임 변경", description="닉네임 변경")
     @PutMapping("/mypage/nickname")
     public CommonResponse<RespEditNicknameDto> updateNickname(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
                                                               @RequestBody @Valid ReqEditNicknameDto reqEditNickname) {
@@ -67,7 +65,6 @@ public class MypageController {
      * 작성자 : 김유빈
      * 수정일 : 2022-11-17
      */
-    @Operation(summary="회고요일 변경", description="회고요일 변경")
     @PutMapping("/mypage/day")
     public CommonResponse<RespEditRetrospectDayDto> updateRetrospectDay(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
                                                                         @RequestBody @Valid ReqEditRetrospectDayDto reqEditRetrospectDayDto) {

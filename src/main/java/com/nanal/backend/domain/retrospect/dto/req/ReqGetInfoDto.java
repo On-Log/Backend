@@ -10,10 +10,8 @@ import java.time.LocalDateTime;
 public class ReqGetInfoDto {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @Schema(description = "현재 날짜" , example = "2022-11-19T05:33:42.387Z")
     private LocalDateTime currentDate;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @Schema(description = "선택된 날짜" , example = "2022-11-13T05:33:42.387Z")
     private LocalDateTime selectDate;
 }

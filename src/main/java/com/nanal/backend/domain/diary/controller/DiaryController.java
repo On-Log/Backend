@@ -32,7 +32,6 @@ public class DiaryController {
      * 작성자 : 장동호
      * 수정일 : 2022-11-18
      */
-    @Operation(summary="일기 탭 화면 조회", description="해당 날짜에 맞는 정보 조회")
     @GetMapping("/diary")
     public CommonResponse<RespGetCalendarDto> getCalendar(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
                                                           @Valid ReqGetCalendarDto reqGetCalendarDto) {
@@ -49,7 +48,6 @@ public class DiaryController {
      * 작성자 : 장동호
      * 수정일 : 2022-11-18
      */
-    @Operation(summary="일기 정보 저장", description="요청 정보 기반으로 일기 저장")
     @PostMapping("/diary")
     public CommonResponse<?> saveDiary(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
                                        @RequestBody @Valid ReqSaveDiaryDto reqSaveDiaryDto) {
@@ -66,7 +64,6 @@ public class DiaryController {
      * 작성자 : 장동호
      * 수정일 : 2022-11-18
      */
-    @Operation(summary="일기 정보 조회", description="요청 날짜 기반으로 일기 조회")
     @GetMapping("/diary/view")
     public CommonResponse<RespGetDiaryDto> getDiary(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
                                                     ReqGetDiaryDto reqGetDiaryDto) {
@@ -83,7 +80,6 @@ public class DiaryController {
      * 작성자 : 장동호
      * 수정일 : 2022-11-18
      */
-    @Operation(summary="일기 수정")
     @PutMapping("/diary")
     public CommonResponse<?> editDiary(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
                                        @RequestBody @Valid ReqEditDiaryDto reqEditDiary) {
@@ -99,7 +95,6 @@ public class DiaryController {
      * 작성자 : 장동호
      * 수정일 : 2022-11-18
      */
-    @Operation(summary="일기 삭제")
     @DeleteMapping("/diary")
     public CommonResponse<?> deleteDiary(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
                                          ReqDeleteDiaryDto reqDeleteDiaryDto) {
@@ -114,7 +109,6 @@ public class DiaryController {
      * 작성자 : 장동호
      * 수정일 : 2022-11-18
      */
-    @Operation(summary="감정어 조회")
     @GetMapping("/diary/emotion")
     public CommonResponse<RespGetEmotionDto> getEmotion(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto) {
 

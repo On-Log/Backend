@@ -15,8 +15,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findBySocialId(String socialId);
 
-    Optional<Member> findByEmail(String email);
-
     @Query(value = "SELECT m.memberId FROM Member m WHERE m.retrospectDay = :dayOfWeek")
     List<Long> findMemberIdByRetrospectDay(@Param("dayOfWeek") DayOfWeek dayOfWeek);
 

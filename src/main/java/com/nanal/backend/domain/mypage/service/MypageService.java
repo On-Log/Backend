@@ -10,7 +10,7 @@ import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.mypage.exception.ResetAvailException;
 import com.nanal.backend.domain.mypage.exception.RetrospectDayDupException;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
-import com.nanal.backend.global.security.UserDto;
+import com.nanal.backend.global.security.User;
 import com.nanal.backend.domain.auth.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,10 +26,10 @@ public class MypageService {
 
     private final MemberRepository memberRepository;
 
-    public RespGetUserDto getUser(String email, ReqGetUserDto reqGetUserDto) {
+    public RespGetUserDto getUser(String socialId, ReqGetUserDto reqGetUserDto) {
 
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         return RespGetUserDto.builder()
                 .userEmail(member.getEmail())
@@ -39,9 +39,9 @@ public class MypageService {
     }
 
     @Transactional
-    public RespEditNicknameDto updateNickname(UserDto userDto, ReqEditNicknameDto reqEditNickname) {
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(userDto.getEmail()).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+    public RespEditNicknameDto updateNickname(String socialId, ReqEditNicknameDto reqEditNickname) {
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         member.setNickname(reqEditNickname.getNickname());
 
@@ -51,10 +51,10 @@ public class MypageService {
     }
 
     @Transactional
-    public RespEditRetrospectDayDto updateRetrospectDay(UserDto userDto, ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
+    public RespEditRetrospectDayDto updateRetrospectDay(String socialId, ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
 
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(userDto.getEmail()).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         // 회고일이 같은 경우, error.
         if (checkRetrospectDay(member, reqEditRetrospectDayDto.getRetrospectDay())) {throw new RetrospectDayDupException("이전 회고일과 같은 회고일을 선택했습니다.");}

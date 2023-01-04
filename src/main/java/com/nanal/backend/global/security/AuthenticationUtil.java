@@ -1,5 +1,6 @@
 package com.nanal.backend.global.security;
 
+import com.nanal.backend.domain.auth.entity.Member;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,9 +20,10 @@ public class AuthenticationUtil {
                 Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
     }
 
-    public static void makeAuthentication(String email) {
+    public static void makeAuthentication(String socialId, String email) {
         // Authentication 정보 만들기
         UserDto userDto = UserDto.builder()
+                .socialId(socialId)
                 .email(email)
                 //.name(existMember.getName())
                 .build();

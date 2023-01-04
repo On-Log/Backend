@@ -9,9 +9,9 @@ import com.nanal.backend.domain.mypage.dto.resp.RespGetUserDto;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.mypage.exception.ResetAvailException;
 import com.nanal.backend.domain.mypage.exception.RetrospectDayDupException;
-import com.nanal.backend.domain.mypage.repository.MemberRepository;
+import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.global.security.UserDto;
-import com.nanal.backend.domain.mypage.entity.Member;
+import com.nanal.backend.domain.auth.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +43,7 @@ public class MypageService {
         // email 로 유저 조회
         Member member = memberRepository.findByEmail(userDto.getEmail()).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
-        member.changeNickname(reqEditNickname.getNickname());
+        member.setNickname(reqEditNickname.getNickname());
 
         return RespEditNicknameDto.builder()
                 .userNickname(member.getNickname())
@@ -61,7 +61,7 @@ public class MypageService {
         // resetAvail이 false일 때(= 회고일 변경으로부터 한 달이 지나지 않아 변경할 수 없을 때.), error.
         if (checkResetAvail(member)) {throw new ResetAvailException("이번 달에 이미 회고일을 변경했습니다.");}
 
-        member.changeRetrospectDay(reqEditRetrospectDayDto.getRetrospectDay());
+        member.setRetrospectDay(reqEditRetrospectDayDto.getRetrospectDay());
 
         return RespEditRetrospectDayDto.builder()
                 .userRetrospectDay(member.getRetrospectDay())

@@ -1,7 +1,7 @@
 package com.nanal.backend.global.security.jwt;
 
-import com.nanal.backend.domain.mypage.repository.MemberRepository;
-import com.nanal.backend.domain.mypage.entity.Member;
+import com.nanal.backend.domain.auth.repository.MemberRepository;
+import com.nanal.backend.domain.auth.entity.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -44,12 +44,12 @@ public class TokenUtil {
         this.secretKey = Base64.getEncoder().encodeToString(this.secretKey.getBytes());
     }
 
-    public Token generateToken(String uid) {
-        // claim 에 email 정보 추가
-        Claims claims = Jwts.claims().setSubject(uid);
+    public Token generateToken(String socialId) {
+        // claim 에 socialId 정보 추가
+        Claims claims = Jwts.claims().setSubject(socialId);
 
         // claim 에 권한 정보 추가
-        Member member = memberRepository.findByEmail(uid).orElseThrow(()-> new RuntimeException());
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(()-> new RuntimeException());
         claims.put("role", member.getRole());
 
         // Access, Refresh 토큰 생성 후 반환
@@ -83,20 +83,20 @@ public class TokenUtil {
     }
 
     public Token tokenReissue(String token) {
-        String email = getUid(token);
-        // email 에 해당하는 refreshToken redis 에서 가져오기
-        String storedRefreshToken = redisTemplate.opsForValue().get(email);
-        // email 에 해당하는 refreshToken 이 없거나 일치하지 않을 때
+        String socialId = getUid(token);
+        // socialId 에 해당하는 refreshToken redis 에서 가져오기
+        String storedRefreshToken = redisTemplate.opsForValue().get(socialId);
+        // socialId 에 해당하는 refreshToken 이 없거나 일치하지 않을 때
         if(storedRefreshToken == null || !storedRefreshToken.equals(token)) throw new RuntimeException();
 
         // Token 생성
-        Token newToken = generateToken(email);
+        Token newToken = generateToken(socialId);
 
         Date expireDate = getExpiration(token);
         Date currentDate = new Date();
         // refreshToken 기간이 얼마남지 않았을 경우 (3일 미만)
         log.info("remain time = {} < {}", expireDate.getTime() - currentDate.getTime(), reissuePeriod);
-        if (expireDate.getTime() - currentDate.getTime() < reissuePeriod) storeRefreshToken(email, newToken);
+        if (expireDate.getTime() - currentDate.getTime() < reissuePeriod) storeRefreshToken(socialId, newToken);
         // refreshToken 의 유효기간이 3일 이상 남았을 경우 (refreshToken NULL 값으로 설정함으로써 전송하지 않음)
         else newToken.setRefreshToken(null);
 
@@ -111,9 +111,9 @@ public class TokenUtil {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public void storeRefreshToken(String email, Token token) {
+    public void storeRefreshToken(String socialId, Token token) {
         redisTemplate.opsForValue().set(
-                email,
+                socialId,
                 token.getRefreshToken(),
                 refreshTokenStoragePeriod,
                 TimeUnit.SECONDS

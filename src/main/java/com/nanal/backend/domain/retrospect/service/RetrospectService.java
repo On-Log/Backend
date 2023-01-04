@@ -1,7 +1,7 @@
 package com.nanal.backend.domain.retrospect.service;
 
 import com.nanal.backend.domain.diary.entity.Diary;
-import com.nanal.backend.domain.mypage.entity.Member;
+import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.retrospect.dto.req.*;
 import com.nanal.backend.domain.retrospect.dto.resp.RespGetInfoDto;
 import com.nanal.backend.domain.retrospect.dto.resp.RespGetKeywordAndEmotionDto;
@@ -14,7 +14,7 @@ import com.nanal.backend.domain.retrospect.entity.RetrospectQuestion;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
 import com.nanal.backend.domain.diary.service.DiaryService;
-import com.nanal.backend.domain.mypage.repository.MemberRepository;
+import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.retrospect.dto.*;
 import com.nanal.backend.domain.retrospect.repository.RetrospectKeywordRepository;
 import com.nanal.backend.domain.retrospect.repository.RetrospectQuestionRepository;

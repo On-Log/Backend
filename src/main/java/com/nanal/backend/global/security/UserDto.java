@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 @NoArgsConstructor
 @Getter
 public class UserDto {
+    private String socialId;
     private String email;
     private String name;
     private String provider;

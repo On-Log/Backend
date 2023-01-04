@@ -3,7 +3,7 @@ package com.nanal.backend.domain.analysis.service;
 import com.nanal.backend.domain.analysis.dto.resp.*;
 import com.nanal.backend.domain.analysis.repository.AuthLogRepository;
 import com.nanal.backend.domain.analysis.repository.RetrospectLogRepository;
-import com.nanal.backend.domain.mypage.repository.MemberRepository;
+import com.nanal.backend.domain.auth.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

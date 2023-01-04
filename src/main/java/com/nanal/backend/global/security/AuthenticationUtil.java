@@ -10,24 +10,25 @@ import java.util.Arrays;
 public class AuthenticationUtil {
 
     public static String getCurrentUserEmail() {
-        UserDto userDto = (UserDto)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userDto.getEmail();
+        User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return user.getEmail();
     }
 
-    public static Authentication getAuthentication(UserDto member) {
+    public static Authentication getAuthentication(User member) {
         return new UsernamePasswordAuthenticationToken(member, "",
                 Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
     }
 
-    public static void makeAuthentication(String email) {
+    public static void makeAuthentication(String socialId, String email) {
         // Authentication 정보 만들기
-        UserDto userDto = UserDto.builder()
+        User user = User.builder()
+                .socialId(socialId)
                 .email(email)
                 //.name(existMember.getName())
                 .build();
 
         // ContextHolder 에 Authentication 정보 저장
-        Authentication auth = AuthenticationUtil.getAuthentication(userDto);
+        Authentication auth = AuthenticationUtil.getAuthentication(user);
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 }

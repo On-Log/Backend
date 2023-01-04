@@ -1,7 +1,7 @@
 package com.nanal.backend.global.config;
 
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
-import com.nanal.backend.domain.mypage.repository.MemberRepository;
+import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.retrospect.repository.RetrospectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

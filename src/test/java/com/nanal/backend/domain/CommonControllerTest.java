@@ -1,22 +1,17 @@
 package com.nanal.backend.domain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nanal.backend.global.security.UserDto;
+import com.nanal.backend.global.security.User;
 import com.nanal.backend.global.security.jwt.JwtAuthFilter;
 import com.nanal.backend.global.security.jwt.TokenUtil;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -46,16 +41,14 @@ public class CommonControllerTest {
     public JwtAuthFilter jwtAuthFilter;
 
     // Mock Data
-    public UserDto user;
+    public User user;
 
     @BeforeEach
     public void setUp(WebApplicationContext wac, RestDocumentationContextProvider restDoc) throws ServletException, IOException {
 
         // Mock User
-        user = UserDto.builder()
+        user = User.builder()
                 .email("test@gmail.com")
-                .name("tester")
-                .provider("google")
                 .build();
 
 

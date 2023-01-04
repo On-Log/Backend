@@ -1,5 +1,7 @@
 package com.nanal.backend.global.security.jwt;
 
+import com.nanal.backend.domain.auth.entity.Member;
+import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.global.security.AuthenticationUtil;
 import com.nanal.backend.global.exception.customexception.TokenInvalidException;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final String[] ignoredPaths = {"/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/analysis/**", "/actuator/**"};
 
     private final TokenUtil tokenService;
+    private final MemberRepository memberRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
@@ -38,11 +41,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String token = ((HttpServletRequest)request).getHeader("Token");
 
         if (token != null && tokenService.verifyToken(token)) {
-            // 토큰 파싱해서 email 정보 가져오기
-            String email = tokenService.getUid(token);
+            // 토큰 파싱해서 socialId 정보 가져오기
+            String socialId = tokenService.getUid(token);
+            Member findMember = memberRepository.findBySocialId(socialId).orElseThrow();
 
             // 이메일로 Authentication 정보 생성
-            AuthenticationUtil.makeAuthentication(email);
+            AuthenticationUtil.makeAuthentication(socialId, findMember.getEmail());
         }else{
             // 여기서 예외를 발생시켜야 JwtExceptionFilter 로 떨어짐.
             throw new TokenInvalidException("Token 이 유효하지 않습니다.");

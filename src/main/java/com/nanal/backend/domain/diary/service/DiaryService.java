@@ -8,13 +8,13 @@ import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.diary.entity.Emotion;
 import com.nanal.backend.domain.diary.entity.Keyword;
 import com.nanal.backend.domain.diary.entity.KeywordEmotion;
-import com.nanal.backend.domain.mypage.entity.Member;
+import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.diary.exception.DiaryAlreadyExistException;
 import com.nanal.backend.domain.diary.exception.DiaryNotFoundException;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
 import com.nanal.backend.domain.diary.repository.EmotionRepository;
-import com.nanal.backend.domain.mypage.repository.MemberRepository;
+import com.nanal.backend.domain.auth.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,9 +36,9 @@ public class DiaryService {
     private final DiaryRepository diaryRepository;
     private final EmotionRepository emotionRepository;
 
-    public void saveDiary(String email, ReqSaveDiaryDto reqSaveDiaryDto) {
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+    public void saveDiary(String socialId, ReqSaveDiaryDto reqSaveDiaryDto) {
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         // 해당 날짜에 작성한 일기 존재하는지 체크
         // 질의할 sql 의 Like 절에 해당하게끔 변환
@@ -54,9 +54,9 @@ public class DiaryService {
         diaryRepository.save(diary);
     }
 
-    public RespGetCalendarDto getCalendar(String email, ReqGetCalendarDto reqGetCalendarDto) {
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+    public RespGetCalendarDto getCalendar(String socialId, ReqGetCalendarDto reqGetCalendarDto) {
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         LocalDateTime currentDate = reqGetCalendarDto.getCurrentDate();
         LocalDateTime selectDate = reqGetCalendarDto.getSelectDate();
@@ -89,9 +89,9 @@ public class DiaryService {
         return respGetEmotionDto;
     }
 
-    public RespGetDiaryDto getDiary(String email, ReqGetDiaryDto reqGetDiaryDto) {
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+    public RespGetDiaryDto getDiary(String socialId, ReqGetDiaryDto reqGetDiaryDto) {
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
         System.out.println(reqGetDiaryDto.getDate());
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonthDay = reqGetDiaryDto.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
@@ -105,9 +105,9 @@ public class DiaryService {
         return respGetDiaryDto;
     }
 
-    public void editDiary(String email, ReqEditDiaryDto reqEditDiary) {
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+    public void editDiary(String socialId, ReqEditDiaryDto reqEditDiary) {
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         /*
         현재는 수정요청 들어오면 기존 일기삭제 후, 다시 저장하는 방식
@@ -127,9 +127,9 @@ public class DiaryService {
         diaryRepository.save(diary);
     }
 
-    public void deleteDiary(String email, ReqDeleteDiaryDto reqDeleteDiaryDto) {
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+    public void deleteDiary(String socialId, ReqDeleteDiaryDto reqDeleteDiaryDto) {
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonthDay = reqDeleteDiaryDto.getDeleteDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";

@@ -1,7 +1,7 @@
-package com.nanal.backend.domain.mypage.repository;
+package com.nanal.backend.domain.auth.repository;
 
 import com.nanal.backend.domain.analysis.dto.resp.DesignatedRetrospectDayDto;
-import com.nanal.backend.domain.mypage.entity.Member;
+import com.nanal.backend.domain.auth.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,7 +12,8 @@ import java.util.Optional;
 
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    Optional<Member> findByEmail(String email);
+
+    Optional<Member> findBySocialId(String socialId);
 
     @Query(value = "SELECT m.memberId FROM Member m WHERE m.retrospectDay = :dayOfWeek")
     List<Long> findMemberIdByRetrospectDay(@Param("dayOfWeek") DayOfWeek dayOfWeek);

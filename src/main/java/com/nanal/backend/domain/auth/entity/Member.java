@@ -1,5 +1,6 @@
-package com.nanal.backend.domain.mypage.entity;
+package com.nanal.backend.domain.auth.entity;
 
+import com.nanal.backend.domain.auth.enumerate.MemberProvider;
 import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import com.nanal.backend.global.config.BaseTime;
@@ -10,7 +11,7 @@ import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter @Setter //setter 추가.
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,12 +23,16 @@ public class Member extends BaseTime {
     @Column(name = "member_id")
     private Long memberId;
 
+    @Column(nullable = false)
+    private String socialId;
+
     // RFC 표준상 최대 320자.
     @Column(unique = true, nullable = false, length = 50)
     private String email;
 
-    @Column(nullable = false, length = 10)
-    private String provider;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MemberProvider provider;
 
     @Column(nullable = false, length = 20)
     private String name;
@@ -61,10 +66,14 @@ public class Member extends BaseTime {
     }
 
     //==수정 메서드==//
-    public void changeNickname(String nickname) { this.nickname = nickname; }
+    public void setNickname(String nickname) { this.nickname = nickname; }
 
-    public void changeRetrospectDay(DayOfWeek retrospectDay) {
+    public void setRetrospectDay(DayOfWeek retrospectDay) {
         this.retrospectDay = retrospectDay;
+    }
+
+    public void setResetAvail(Boolean resetAvail) {
+        this.resetAvail = resetAvail;
     }
 }
 

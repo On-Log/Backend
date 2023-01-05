@@ -14,8 +14,8 @@ public class AuthenticationUtil {
         return user.getEmail();
     }
 
-    public static Authentication getAuthentication(User member) {
-        return new UsernamePasswordAuthenticationToken(member, "",
+    public static Authentication getAuthentication(User user) {
+        return new UsernamePasswordAuthenticationToken(user, "",
                 Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
     }
 

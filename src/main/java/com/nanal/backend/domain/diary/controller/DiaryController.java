@@ -32,7 +32,7 @@ public class DiaryController {
                                                           @Valid ReqGetCalendarDto reqGetCalendarDto) {
 
         // 요청 정보 기반으로 해당 날짜에 맞는 정보 조회
-        RespGetCalendarDto respGetCalendarDto = diaryService.getCalendar(user.getEmail(), reqGetCalendarDto);
+        RespGetCalendarDto respGetCalendarDto = diaryService.getCalendar(user.getSocialId(), reqGetCalendarDto);
 
         return new CommonResponse<>(respGetCalendarDto);
     }
@@ -48,7 +48,7 @@ public class DiaryController {
                                        @RequestBody @Valid ReqSaveDiaryDto reqSaveDiaryDto) {
 
         // 요청 정보 기반으로 일기 저장
-        diaryService.saveDiary(user.getEmail(), reqSaveDiaryDto);
+        diaryService.saveDiary(user.getSocialId(), reqSaveDiaryDto);
 
         return new CommonResponse<>(ErrorCode.SUCCESS);
     }

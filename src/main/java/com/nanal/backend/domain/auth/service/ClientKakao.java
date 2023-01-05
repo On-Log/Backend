@@ -30,7 +30,7 @@ public class ClientKakao{
                 .block();
 
         return Member.builder()
-                .socialId(String.valueOf(kakaoUserResponseDto.getId()))
+                .socialId(MemberProvider.KAKAO + "@" + kakaoUserResponseDto.getId())
                 .provider(MemberProvider.KAKAO)
                 .name(kakaoUserResponseDto.getProperties().getNickname())
                 .email(kakaoUserResponseDto.getKakaoAccount().getEmail())

@@ -29,7 +29,7 @@ public class ClientGoogle {
                 .block();
 
         return Member.builder()
-                .socialId(googleUserResponseDto.getSub())
+                .socialId(MemberProvider.GOOGLE + "@" + googleUserResponseDto.getSub())
                 .provider(MemberProvider.GOOGLE)
                 .name(googleUserResponseDto.getName())
                 .email(googleUserResponseDto.getEmail())

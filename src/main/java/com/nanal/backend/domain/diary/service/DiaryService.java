@@ -66,7 +66,7 @@ public class DiaryService {
         추후 부등호를 이용해서 write_date 컬럼만 뽑아오는 방식으로 변환 (like 절과 부등호를 뽑아는 방식 성능 비교)
          */
         // 요청된 기간내 기록이 존재하는 날 조회
-        List<Integer> existDiaryDate = getExistDiaryDate(member, selectDate);
+        List<LocalDateTime> existDiaryDate = getExistDiaryDate(member, selectDate);
 
         // 회고 요일과 현재 날짜로 일기 작성 가능주 구하기
         LocalDateTime nextDayOfPrevRetroDate = getNextDayOfPrevRetroDate(member.getRetrospectDay(), currentDate);
@@ -75,8 +75,8 @@ public class DiaryService {
 
         return RespGetCalendarDto.builder()
                 .existDiaryDate(existDiaryDate)
-                .prevRetroDate(nextDayOfPrevRetroDate.getDayOfMonth())
-                .postRetroDate(postRetroDate.getDayOfMonth())
+                .prevRetroDate(nextDayOfPrevRetroDate)
+                .postRetroDate(postRetroDate)
                 .build();
     }
 
@@ -178,7 +178,7 @@ public class DiaryService {
         return diary;
     }
 
-    private List<Integer> getExistDiaryDate(Member member, LocalDateTime selectTime) {
+    private List<LocalDateTime> getExistDiaryDate(Member member, LocalDateTime selectTime) {
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonth = selectTime.format(DateTimeFormatter.ofPattern("yyyy-MM")) + "%";
 
@@ -188,9 +188,9 @@ public class DiaryService {
                 yearMonth);
 
         // 가져온 작성날짜 일 단위로 파싱해서 List 삽입
-        List<Integer> existDiaryDate = new ArrayList<>();
+        List<LocalDateTime> existDiaryDate = new ArrayList<>();
         for (Diary t : writeDates) {
-            existDiaryDate.add(t.getWriteDate().getDayOfMonth());
+            existDiaryDate.add(t.getWriteDate());
         }
         return existDiaryDate;
     }

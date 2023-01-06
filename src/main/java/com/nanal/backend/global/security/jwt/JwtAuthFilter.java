@@ -22,7 +22,7 @@ import java.io.IOException;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final String[] ignoredPaths = {"/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/analysis/**", "/actuator/**"};
+    private final String[] ignoredPaths = {"/auth/**", "/docs/**"};
 
     private final TokenUtil tokenService;
     private final MemberRepository memberRepository;

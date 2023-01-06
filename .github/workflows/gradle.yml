@@ -40,9 +40,9 @@ jobs:
       #gradle 권한 추가
       - name: Grant Execute Permission For Gradlew
         run: chmod +x gradlew
-      #빌드(테스트 스킵)
+      #빌드(테스트 진행)
       - name: Build with Gradle
-        run: ./gradlew build -x test
+        run: ./gradlew build
       ## 배포용 application.yml 설정
       - name: create application-prod.yml
         run: |

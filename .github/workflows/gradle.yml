@@ -53,7 +53,7 @@ jobs:
       ##CD
       #빌드(테스트 스킵)
       - name: Build With Gradle
-        run: ./gradlew build -x test
+        run: ./gradlew build
       #도커 빌드 & 푸시
       - name: docker build and push
         run: |

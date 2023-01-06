@@ -63,7 +63,7 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-/* RestDocs 설정 정보
+// RestDocs 설정 정보
 
 ext {
     snippetsDir = file('build/generated-snippets')
@@ -95,5 +95,3 @@ task copyDocument(type: Copy) {
 build {
     dependsOn copyDocument
 }
-
- */

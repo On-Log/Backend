@@ -1,7 +1,6 @@
 package com.nanal.backend.domain.auth.controller;
 
 import com.nanal.backend.domain.auth.dto.req.ReqAuthDto;
-import com.nanal.backend.domain.auth.dto.req.ReqSignUpDto;
 import com.nanal.backend.domain.auth.service.AuthService;
 import com.nanal.backend.global.security.jwt.Token;
 import com.nanal.backend.global.response.CommonResponse;
@@ -18,6 +17,19 @@ import javax.servlet.http.HttpServletRequest;
 public class AuthController {
 
     private final AuthService authService;
+
+    /**
+     * NAVER 소셜 로그인 기능
+     */
+    @PostMapping(value = "/auth/naver")
+    public CommonResponse<?> naverAuth(@RequestBody ReqAuthDto reqAuthDto) {
+
+        // 최초 로그인 - 회원가입 후 토큰 발행.
+        // 기존 유저 - 토큰 발행.
+        Token token = authService.naverAuth(reqAuthDto);
+
+        return new CommonResponse<>(token);
+    }
 
     /**
      * KAKAO 소셜 로그인 기능

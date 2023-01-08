@@ -1,7 +1,6 @@
 package com.nanal.backend.domain.auth.service;
 
 import com.nanal.backend.domain.auth.dto.req.ReqAuthDto;
-import com.nanal.backend.domain.auth.dto.req.ReqSignUpDto;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.global.security.AuthenticationUtil;
@@ -11,21 +10,43 @@ import com.nanal.backend.domain.auth.exception.RefreshTokenInvalidException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 
 @Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
 public class AuthService {
-
     private final MemberRepository memberRepository;
+
     private final TokenUtil tokenUtil;
+
+    private final ClientNaver clientNaver;
     private final ClientKakao clientKakao;
     private final ClientGoogle clientGoogle;
+
+    public Token naverAuth(ReqAuthDto reqAuthDto) {
+        Member naverMember = clientNaver.getUserData(reqAuthDto.getAccessToken());
+        String socialId = naverMember.getSocialId();
+
+        // 최초 로그인이라면 회원가입 처리를 한다.
+        if(memberRepository.findBySocialId(socialId).isEmpty()) memberRepository.save(naverMember);
+
+        // socialId로 Authentication 정보 생성
+        AuthenticationUtil.makeAuthentication(socialId, naverMember.getEmail());
+
+        // 토큰 생성
+        Token token = tokenUtil.generateToken(socialId);
+        log.info("{}", token);
+
+        // Redis에 Refresh Token 저장
+        tokenUtil.storeRefreshToken(socialId, token);
+
+        log.info("Redis 저장 완료");
+
+        return token;
+    }
 
     public Token kakaoAuth(ReqAuthDto reqAuthDto) {
         Member kakaoMember = clientKakao.getUserData(reqAuthDto.getAccessToken());
@@ -83,6 +104,5 @@ public class AuthService {
 
         throw new RefreshTokenInvalidException("Refresh Token 이 유효하지 않습니다.");
     }
-
 
 }

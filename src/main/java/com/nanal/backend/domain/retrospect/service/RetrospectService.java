@@ -10,7 +10,6 @@ import com.nanal.backend.domain.retrospect.dto.resp.RespGetRetroDto;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import com.nanal.backend.domain.retrospect.entity.RetrospectContent;
 import com.nanal.backend.domain.retrospect.entity.RetrospectKeyword;
-import com.nanal.backend.domain.retrospect.entity.RetrospectQuestion;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
 import com.nanal.backend.domain.diary.service.DiaryService;

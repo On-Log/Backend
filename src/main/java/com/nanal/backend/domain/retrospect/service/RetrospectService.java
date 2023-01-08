@@ -7,16 +7,17 @@ import com.nanal.backend.domain.retrospect.dto.resp.RespGetInfoDto;
 import com.nanal.backend.domain.retrospect.dto.resp.RespGetKeywordAndEmotionDto;
 import com.nanal.backend.domain.retrospect.dto.resp.RespGetQuestionAndHelpDto;
 import com.nanal.backend.domain.retrospect.dto.resp.RespGetRetroDto;
+import com.nanal.backend.domain.retrospect.entity.Question;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import com.nanal.backend.domain.retrospect.entity.RetrospectContent;
 import com.nanal.backend.domain.retrospect.entity.RetrospectKeyword;
+import com.nanal.backend.domain.retrospect.repository.QuestionRepository;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
 import com.nanal.backend.domain.diary.service.DiaryService;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.retrospect.dto.*;
 import com.nanal.backend.domain.retrospect.repository.RetrospectKeywordRepository;
-import com.nanal.backend.domain.retrospect.repository.RetrospectQuestionRepository;
 import com.nanal.backend.domain.retrospect.repository.RetrospectRepository;
 import com.nanal.backend.domain.retrospect.exception.RetrospectNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class RetrospectService {
     private final RetrospectRepository retrospectRepository;
     private final DiaryService diaryService;
     private final RetrospectKeywordRepository retrospectKeywordRepository;
-    private final RetrospectQuestionRepository retrospectQuestionRepository;
+    private final QuestionRepository questionRepository;
 
     public RespGetInfoDto getInfo(String socialId, ReqGetInfoDto reqGetInfoDto) {
         // socialId 로 유저 조회
@@ -141,11 +142,11 @@ public class RetrospectService {
     }
 
 
-    public RespGetQuestionAndHelpDto getQuestionAndHelp() {
+    public RespGetQuestionAndHelpDto getQuestionAndHelp(ReqGetGoalDto reqGetGoalDto) {
         // 회고 질문 + 도움말 조회
-        List<RetrospectQuestion> retrospectQuestions = retrospectQuestionRepository.findAll();
+        List<Question> retrospectQuestions = questionRepository.findListByGoal(reqGetGoalDto.getGoalIndex());
 
-        RespGetQuestionAndHelpDto respGetQuestionAndHelpDto = getRespGetQuestionAndHelpDto(retrospectQuestions);
+        RespGetQuestionAndHelpDto respGetQuestionAndHelpDto = RespGetQuestionAndHelpDto.makeRespGetQuestionAndHelpDto(retrospectQuestions);
 
         return respGetQuestionAndHelpDto;
     }
@@ -226,7 +227,7 @@ public class RetrospectService {
             List<List<String>> klist = new ArrayList<>();
             for (Retrospect t : writeRetrospect) {
                 List<RetrospectKeyword> classifiedKeyword = retrospectKeywordRepository.findListByRetroAndClassify(t.getRetrospectId(), keyWordClass.get(i));
-               //t번째 회고의 i번째 분류 키워드
+                //t번째 회고의 i번째 분류 키워드
                 List<String> keyword = new ArrayList<>();
                 for (RetrospectKeyword r : classifiedKeyword) {
                     keyword.add(r.getKeyword());
@@ -237,18 +238,5 @@ public class RetrospectService {
         }
 
         return keywordList;
-    }
-    private RespGetQuestionAndHelpDto getRespGetQuestionAndHelpDto(List<RetrospectQuestion> retrospectQuestions) {
-        List<String> questionAndHelp = new ArrayList<>();
-
-        for (RetrospectQuestion t : retrospectQuestions) {
-            String str = "";
-            str = t.getQuestion() + " " + t.getHelp();
-            questionAndHelp.add(str);
-        }
-
-        RespGetQuestionAndHelpDto respGetQuestionAndHelpDto = new RespGetQuestionAndHelpDto();
-        respGetQuestionAndHelpDto.setQuestionAndHelp(questionAndHelp);
-        return respGetQuestionAndHelpDto;
     }
 }

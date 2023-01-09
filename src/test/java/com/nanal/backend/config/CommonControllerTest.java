@@ -1,4 +1,4 @@
-package com.nanal.backend.domain.config;
+package com.nanal.backend.config;
 
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.auth.repository.MemberRepository;

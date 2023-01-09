@@ -1,29 +1,92 @@
 package com.nanal.backend.domain.diary.controller;
 
 import com.nanal.backend.config.CommonControllerTest;
+import com.nanal.backend.domain.diary.dto.resp.RespGetCalendarDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetEmotionDto;
 import com.nanal.backend.domain.diary.service.DiaryService;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 
 @WebMvcTest(DiaryController.class)
 class DiaryControllerTest extends CommonControllerTest {
 
     @MockBean
     private DiaryService diaryService;
+
+    @Test
+    public void 일기_탭() throws Exception {
+        //given
+        String currentDate = "2023-01-22T00:00:00.000Z";
+        String selectDate = "2023-01-13T00:00:00.000Z";
+
+        List<LocalDateTime> existDiaryDate = new ArrayList<>(Arrays.asList(
+                LocalDateTime.parse("2023-01-01T00:00:00"),
+                LocalDateTime.parse("2023-01-03T00:00:00"),
+                LocalDateTime.parse("2023-01-09T00:00:00"),
+                LocalDateTime.parse("2023-01-13T00:00:00"),
+                LocalDateTime.parse("2023-01-16T00:00:00")
+                )
+        );
+
+        RespGetCalendarDto respGetCalendarDto = new RespGetCalendarDto(
+                existDiaryDate,
+                LocalDateTime.parse("2023-01-18T00:00:00"),
+                LocalDateTime.parse("2023-01-24T00:00:00")
+        );
+
+        given(diaryService.getCalendar(any(), any())).willReturn(respGetCalendarDto);
+
+        System.out.println("test1");
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/diary")
+                        .header("Token", "ACCESS_TOKEN")
+                        .param("currentDate", currentDate)
+                        .param("selectDate", selectDate)
+        );
+
+        System.out.println("test2");
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestParameters(
+                                        parameterWithName("currentDate").description("현재 날짜"),
+                                        parameterWithName("selectDate").description("선택 날짜")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.existDiaryDate").description("일기 존재 날짜"),
+                                        fieldWithPath("result.nextDayOfPrevRetroDate").description("이전 회고일의 다음일"),
+                                        fieldWithPath("result.postRetroDate").description("다음 회고일")
+                                )
+                        )
+                );
+    }
+
+
 
     @Test
     public void 감정어_조회() throws Exception {
@@ -41,12 +104,12 @@ class DiaryControllerTest extends CommonControllerTest {
                 .andExpect(status().isOk())
                 .andDo(
                         restDocs.document(
-                            responseFields(
-                                    fieldWithPath("isSuccess").optional().description("성공 여부"),
-                                    fieldWithPath("code").description("상태 코드"),
-                                    fieldWithPath("message").description("결과 메시지"),
-                                    fieldWithPath("result.emotion").description("감정어")
-                            )
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.emotion").description("감정어")
+                                )
                         )
                 );
     }

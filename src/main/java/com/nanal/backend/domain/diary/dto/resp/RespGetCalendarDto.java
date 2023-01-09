@@ -18,7 +18,7 @@ public class RespGetCalendarDto {
     private List<LocalDateTime> existDiaryDate;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private LocalDateTime prevRetroDate;
+    private LocalDateTime nextDayOfPrevRetroDate;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime postRetroDate;

@@ -75,7 +75,7 @@ public class DiaryService {
 
         return RespGetCalendarDto.builder()
                 .existDiaryDate(existDiaryDate)
-                .prevRetroDate(nextDayOfPrevRetroDate)
+                .nextDayOfPrevRetroDate(nextDayOfPrevRetroDate)
                 .postRetroDate(postRetroDate)
                 .build();
     }

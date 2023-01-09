@@ -8,6 +8,7 @@ import com.nanal.backend.domain.diary.service.DiaryService;
 import com.nanal.backend.global.response.CommonResponse;
 import com.nanal.backend.global.response.ErrorCode;
 import com.nanal.backend.global.security.User;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class DiaryController {
      * [GET] /diary
      */
     @GetMapping("/diary")
-    public CommonResponse<RespGetCalendarDto> getCalendar(@AuthenticationPrincipal User user,
+    public CommonResponse<?> getCalendar(@AuthenticationPrincipal User user,
                                                           @Valid ReqGetCalendarDto reqGetCalendarDto) {
 
         // 요청 정보 기반으로 해당 날짜에 맞는 정보 조회
@@ -82,8 +83,11 @@ public class DiaryController {
      */
     @DeleteMapping("/diary")
     public CommonResponse<?> deleteDiary(@AuthenticationPrincipal User user,
-                                         ReqDeleteDiaryDto reqDeleteDiaryDto) {
+                                         @RequestBody ReqDeleteDiaryDto reqDeleteDiaryDto) {
 
+        System.out.println("test");
+        System.out.println(user.getSocialId());
+        System.out.println("드디어");
         diaryService.deleteDiary(user.getSocialId(), reqDeleteDiaryDto);
 
         return new CommonResponse<>(ErrorCode.SUCCESS);
@@ -93,7 +97,7 @@ public class DiaryController {
      * [GET] /diary/emotion
      */
     @GetMapping("/diary/emotion")
-    public CommonResponse<RespGetEmotionDto> getEmotion(@AuthenticationPrincipal User user) {
+    public CommonResponse<RespGetEmotionDto> getEmotion() {
 
         // 감정어 조회
         RespGetEmotionDto respGetEmotionDto = diaryService.getEmotion();

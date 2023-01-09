@@ -1,8 +1,11 @@
 package com.nanal.backend.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.global.interceptor.AuthInterceptor;
+import com.nanal.backend.global.security.AuthenticationUtil;
+import com.nanal.backend.global.security.User;
 import com.nanal.backend.global.security.jwt.TokenUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +18,8 @@ import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -36,7 +41,10 @@ public class CommonControllerTest {
     protected RestDocumentationResultHandler restDocs;
 
     @Autowired
-    public MockMvc mockMvc;
+    protected MockMvc mockMvc;
+
+    @Autowired
+    protected ObjectMapper objectMapper;
 
     @MockBean
     public TokenUtil tokenUtil;
@@ -59,6 +67,9 @@ public class CommonControllerTest {
                 .socialId("KAKAO@123")
                 .nickname("logger")
                 .build();
+
+        // user.getSocialId() 에서 NullPointerException 방지를 위한 Authentication 생성
+        AuthenticationUtil.makeAuthentication(member.getSocialId(), member.getEmail());
 
         given(tokenUtil.verifyToken(any())).willReturn(true);
         given(tokenUtil.getUid(any())).willReturn(member.getSocialId());

@@ -1,4 +1,4 @@
-package com.nanal.backend.domain.config;
+package com.nanal.backend.config;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;

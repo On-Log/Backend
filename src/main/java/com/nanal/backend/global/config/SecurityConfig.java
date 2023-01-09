@@ -18,9 +18,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final JwtAuthFilter jwtAuthFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
 
+    private final JwtAuthFilter jwtAuthFilter;
+    // Filter 제외 요청들
     @Override
     public void configure(WebSecurity web) throws Exception {
         super.configure(web);
@@ -36,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
-                .authorizeRequests().antMatchers("/auth/**", "/docs/**").permitAll()
+                .authorizeRequests().antMatchers("/auth/**", "/docs/**", "/favicon.ico").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

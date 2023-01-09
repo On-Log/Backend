@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @RequiredArgsConstructor
 @Configuration
-public class WebConfig implements WebMvcConfigurer {
+public class InterceptorConfig implements WebMvcConfigurer {
 
     private final AuthInterceptor authInterceptor;
 
@@ -17,6 +17,6 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(authInterceptor)
                 .order(1)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/auth/**", "/analysis/**", "/docs/**");
+                .excludePathPatterns("/auth/**", "/docs/**", "/favicon.ico", "/error");
     }
 }

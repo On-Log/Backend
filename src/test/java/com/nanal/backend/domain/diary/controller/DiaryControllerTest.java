@@ -1,11 +1,11 @@
 package com.nanal.backend.domain.diary.controller;
 
 import com.nanal.backend.config.CommonControllerTest;
+import com.nanal.backend.domain.diary.dto.req.ReqDeleteDiaryDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetCalendarDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetEmotionDto;
 import com.nanal.backend.domain.diary.service.DiaryService;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -23,7 +23,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(DiaryController.class)
@@ -86,7 +85,39 @@ class DiaryControllerTest extends CommonControllerTest {
                 );
     }
 
+    @Test
+    public void 일기_삭제() throws Exception {
+        //given
+        ReqDeleteDiaryDto input = new ReqDeleteDiaryDto(LocalDateTime.now());
+        willDoNothing().given(diaryService).deleteDiary(any(), any());
 
+        //when
+        ResultActions actions = mockMvc.perform(
+                delete("/diary")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input))
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestFields(
+                                        fieldWithPath("deleteDate").description("삭제 날짜")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지")
+                                )
+                        )
+                );
+    }
 
     @Test
     public void 감정어_조회() throws Exception {

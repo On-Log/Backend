@@ -72,6 +72,7 @@ public class DiaryController {
     public CommonResponse<?> editDiary(@AuthenticationPrincipal User user,
                                        @RequestBody @Valid ReqEditDiaryDto reqEditDiary) {
 
+        // 요청 날짜 기반으로 일기 수정
         diaryService.editDiary(user.getSocialId(), reqEditDiary);
 
         return new CommonResponse<>(ErrorCode.SUCCESS);
@@ -83,11 +84,9 @@ public class DiaryController {
      */
     @DeleteMapping("/diary")
     public CommonResponse<?> deleteDiary(@AuthenticationPrincipal User user,
-                                         @RequestBody ReqDeleteDiaryDto reqDeleteDiaryDto) {
+                                         ReqDeleteDiaryDto reqDeleteDiaryDto) {
 
-        System.out.println("test");
-        System.out.println(user.getSocialId());
-        System.out.println("드디어");
+        // 요청 날짜 기반으로 일기 삭제
         diaryService.deleteDiary(user.getSocialId(), reqDeleteDiaryDto);
 
         return new CommonResponse<>(ErrorCode.SUCCESS);

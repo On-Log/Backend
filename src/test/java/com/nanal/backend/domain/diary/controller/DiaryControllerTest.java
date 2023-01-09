@@ -1,7 +1,6 @@
 package com.nanal.backend.domain.diary.controller;
 
 import com.nanal.backend.config.CommonControllerTest;
-import com.nanal.backend.domain.diary.dto.req.ReqDeleteDiaryDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetCalendarDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetEmotionDto;
 import com.nanal.backend.domain.diary.service.DiaryService;
@@ -46,29 +45,31 @@ class DiaryControllerTest extends CommonControllerTest {
                 )
         );
 
-        RespGetCalendarDto respGetCalendarDto = new RespGetCalendarDto(
+        RespGetCalendarDto output = new RespGetCalendarDto(
                 existDiaryDate,
                 LocalDateTime.parse("2023-01-18T00:00:00"),
                 LocalDateTime.parse("2023-01-24T00:00:00")
         );
 
-        given(diaryService.getCalendar(any(), any())).willReturn(respGetCalendarDto);
+        given(diaryService.getCalendar(any(), any())).willReturn(output);
 
-        System.out.println("test1");
         //when
         ResultActions actions = mockMvc.perform(
                 get("/diary")
                         .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("currentDate", currentDate)
                         .param("selectDate", selectDate)
         );
 
-        System.out.println("test2");
         //then
         actions
                 .andExpect(status().isOk())
                 .andDo(
                         restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
                                 requestParameters(
                                         parameterWithName("currentDate").description("현재 날짜"),
                                         parameterWithName("selectDate").description("선택 날짜")
@@ -88,15 +89,14 @@ class DiaryControllerTest extends CommonControllerTest {
     @Test
     public void 일기_삭제() throws Exception {
         //given
-        ReqDeleteDiaryDto input = new ReqDeleteDiaryDto(LocalDateTime.now());
         willDoNothing().given(diaryService).deleteDiary(any(), any());
 
         //when
         ResultActions actions = mockMvc.perform(
                 delete("/diary")
                         .header("Token", "ACCESS_TOKEN")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(input))
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("deleteDate" ,"2023-01-15T00:00:00")
         );
 
         //then
@@ -107,8 +107,8 @@ class DiaryControllerTest extends CommonControllerTest {
                                 requestHeaders(
                                         headerWithName("Token").description("접근 토큰")
                                 ),
-                                requestFields(
-                                        fieldWithPath("deleteDate").description("삭제 날짜")
+                                requestParameters(
+                                        parameterWithName("deleteDate").description("삭제 날짜")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),
@@ -122,8 +122,8 @@ class DiaryControllerTest extends CommonControllerTest {
     @Test
     public void 감정어_조회() throws Exception {
         //given
-        RespGetEmotionDto respGetEmotionDto = new RespGetEmotionDto(new ArrayList<>(Arrays.asList("행복", "슬픔")));
-        given(diaryService.getEmotion()).willReturn(respGetEmotionDto);
+        RespGetEmotionDto output = new RespGetEmotionDto(new ArrayList<>(Arrays.asList("행복", "슬픔")));
+        given(diaryService.getEmotion()).willReturn(output);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -135,6 +135,9 @@ class DiaryControllerTest extends CommonControllerTest {
                 .andExpect(status().isOk())
                 .andDo(
                         restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),

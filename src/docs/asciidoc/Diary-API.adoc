@@ -3,7 +3,7 @@
 
 [[Diary-일기-탭]]
 === Diary 일기 탭
-
+operation::diary-controller-test/일기_탭[snippets='http-request,request-headers,request-parameters,http-response,response-fields']
 
 [[Diary-일기-기록]]
 === Diary 일기 기록
@@ -23,4 +23,4 @@
 
 [[Diary-감정어-조회]]
 === Diary 감정어 조회
-operation::diary-controller-test/감정어_조회[snippets='http-request,http-response,response-fields']
+operation::diary-controller-test/감정어_조회[snippets='http-request,request-headers,http-response,response-fields']

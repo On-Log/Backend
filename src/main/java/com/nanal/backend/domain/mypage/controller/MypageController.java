@@ -23,10 +23,8 @@ public class MypageController {
     private final MypageService mypageService;
 
     /**
-     * 마이페이지 정보
+     * 마이페이지 화면
      * [GET] /mypage
-     * 작성자 : 김유빈
-     * 수정일 : 2022-11-16
      */
     @GetMapping("/mypage")
     public CommonResponse<RespGetUserDto> getUser(@AuthenticationPrincipal User user,
@@ -41,8 +39,6 @@ public class MypageController {
     /**
      * 닉네임 변경
      * [PUT] /mypage/nickname
-     * 작성자 : 김유빈
-     * 수정일 : 2022-11-17
      */
     @PutMapping("/mypage/nickname")
     public CommonResponse<RespEditNicknameDto> updateNickname(@AuthenticationPrincipal User user,
@@ -57,8 +53,6 @@ public class MypageController {
     /**
      * 회고요일 변경
      * [PUT] /mypage/day
-     * 작성자 : 김유빈
-     * 수정일 : 2022-11-17
      */
     @PutMapping("/mypage/day")
     public CommonResponse<RespEditRetrospectDayDto> updateRetrospectDay(@AuthenticationPrincipal User user,

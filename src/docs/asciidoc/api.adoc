@@ -1,10 +1,14 @@
-ifndef::snippets[]
-:snippets: ./build/generated-snippets
-endif::[]
+= Nanal API Doc
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
 
-== Test
-=== docs
-==== Request
-include::{snippets}/docs-test/http-request.adoc[]
-==== Response
-include::{snippets}/docs-test/http-response.adoc[]
+include::MyPage-API.adoc[]
+
+include::Diary-API.adoc[]
+
+include::Retrospect-API.adoc[]
+

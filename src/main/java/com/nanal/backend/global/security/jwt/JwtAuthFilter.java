@@ -18,11 +18,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final String[] ignoredPaths = {"/auth/**", "/docs/**"};
+    private final String[] ignoredPaths = {"/auth/**", "/docs/**", "/favicon.ico"};
 
     private final TokenUtil tokenService;
     private final MemberRepository memberRepository;
@@ -49,6 +49,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             AuthenticationUtil.makeAuthentication(socialId, findMember.getEmail());
         }else{
             // 여기서 예외를 발생시켜야 JwtExceptionFilter 로 떨어짐.
+            log.info("예외 발생 url = {}", request.getRequestURL());
             throw new TokenInvalidException("Token 이 유효하지 않습니다.");
         }
 

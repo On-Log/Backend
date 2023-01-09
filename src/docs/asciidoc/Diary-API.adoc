@@ -1,0 +1,26 @@
+[[Diary-API]]
+== Diary API
+
+[[Diary-일기-탭]]
+=== Diary 일기 탭
+
+
+[[Diary-일기-기록]]
+=== Diary 일기 기록
+
+
+[[Diary-일기-조회]]
+=== Diary 일기 조회
+
+
+[[Diary-일기-수정]]
+=== Diary 일기 수정
+
+
+[[Diary-일기-삭제]]
+=== Diary 일기 삭제
+
+
+[[Diary-감정어-조회]]
+=== Diary 감정어 조회
+operation::diary-controller-test/감정어_조회[snippets='http-request,http-response,response-fields']

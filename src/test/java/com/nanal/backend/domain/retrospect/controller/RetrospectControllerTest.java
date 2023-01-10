@@ -2,15 +2,13 @@ package com.nanal.backend.domain.retrospect.controller;
 
 import com.nanal.backend.config.CommonControllerTest;
 import com.nanal.backend.domain.diary.dto.req.KeywordEmotionDto;
+import com.nanal.backend.domain.retrospect.dto.QuestionsDto;
 import com.nanal.backend.domain.retrospect.dto.RetrospectContentDto;
 import com.nanal.backend.domain.retrospect.dto.RetrospectKeywordDto;
 import com.nanal.backend.domain.retrospect.dto.req.KeywordDto;
 import com.nanal.backend.domain.retrospect.dto.req.ReqEditRetroDto;
 import com.nanal.backend.domain.retrospect.dto.req.ReqSaveRetroDto;
-import com.nanal.backend.domain.retrospect.dto.resp.KeywordWriteDateDto;
-import com.nanal.backend.domain.retrospect.dto.resp.RespGetInfoDto;
-import com.nanal.backend.domain.retrospect.dto.resp.RespGetKeywordAndEmotionDto;
-import com.nanal.backend.domain.retrospect.dto.resp.RespGetRetroDto;
+import com.nanal.backend.domain.retrospect.dto.resp.*;
 import com.nanal.backend.domain.retrospect.service.RetrospectService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -273,5 +271,44 @@ public class RetrospectControllerTest extends CommonControllerTest {
 
     }
 
+    @Test
+    public void 회고질문_도움말_조회() throws Exception {
+        //given
+        int goalIndex = 1;
+        List<QuestionsDto> questionsDtos = new ArrayList<>(Arrays.asList(new QuestionsDto("이번주 나의 모습은 어땠나요?", "이번주 나의 모습을 묘사하기 어려우신가요? 가장 먼저 떠오르는 내 모습, 혹은 가장 자주 보였던 나의 모습을 떠올려보세요."),
+                new QuestionsDto("다른 내 모습도 들려줄래요? 이번주에 찾은 의외의 내 모습이 있다면요?", "우리의 일주일은 한가지 색만으로 이루어져있지 않아요! 가장 사소한 일부터 차근 차근 생각해보세요."),
+                new QuestionsDto("다음주에도 유지하고 싶은 나의 모습이 있을까요? 혹은 새롭게 찾고 싶은 나의 모습이 있다면 무엇인가요?", "그 모습의 나는 구체적으로 어떤 행동을 하게 될까요? 그 모습이 되려면 어떤 노력을 해야할지도 생각해봅시다.")));
+        RespGetQuestionAndHelpDto respGetQuestionAndHelpDto = new RespGetQuestionAndHelpDto(questionsDtos);
+        given(retrospectService.getQuestionAndHelp(any())).willReturn(respGetQuestionAndHelpDto);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/retrospect/question")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("goalIndex", String.valueOf(goalIndex))
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestParameters(
+                                        parameterWithName("goalIndex").description("선택한 회고 목적 1.자아탐색 2.성취확인 3.감정정리 4.관계고민")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.questionAndHelp[].question").description("회고 목적에 대한 질문"),
+                                        fieldWithPath("result.questionAndHelp[].help").description("질문에 대한 도움말")
+                                )
+                        )
+                );
+    }
 
 }

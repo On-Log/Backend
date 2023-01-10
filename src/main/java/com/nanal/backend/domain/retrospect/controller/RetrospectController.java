@@ -108,7 +108,7 @@ public class RetrospectController {
      * 수정일 :
      */
     @GetMapping("/retrospect/question")
-    public CommonResponse<RespGetQuestionAndHelpDto> getQuestionAndHelp(@AuthenticationPrincipal User user, @RequestBody ReqGetGoalDto reqGetGoalDto) {
+    public CommonResponse<RespGetQuestionAndHelpDto> getQuestionAndHelp(@AuthenticationPrincipal User user, ReqGetGoalDto reqGetGoalDto) {
 
         // 회고질문 + 도움말 조회
         RespGetQuestionAndHelpDto respGetQuestionAndHelp = retrospectService.getQuestionAndHelp(reqGetGoalDto);

@@ -8,7 +8,6 @@ import com.nanal.backend.domain.diary.service.DiaryService;
 import com.nanal.backend.global.response.CommonResponse;
 import com.nanal.backend.global.response.ErrorCode;
 import com.nanal.backend.global.security.User;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +27,7 @@ public class DiaryController {
      */
     @GetMapping("/diary")
     public CommonResponse<?> getCalendar(@AuthenticationPrincipal User user,
-                                                          @Valid ReqGetCalendarDto reqGetCalendarDto) {
+                                         @Valid ReqGetCalendarDto reqGetCalendarDto) {
 
         // 요청 정보 기반으로 해당 날짜에 맞는 정보 조회
         RespGetCalendarDto respGetCalendarDto = diaryService.getCalendar(user.getSocialId(), reqGetCalendarDto);
@@ -46,6 +45,8 @@ public class DiaryController {
 
         // 요청 정보 기반으로 일기 저장
         diaryService.saveDiary(user.getSocialId(), reqSaveDiaryDto);
+
+        System.out.println("여기까지");
 
         return new CommonResponse<>(ErrorCode.SUCCESS);
     }

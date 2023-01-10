@@ -22,7 +22,6 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        log.info("url = {}", request.getRequestURL());
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String socialId = user.getSocialId();
 

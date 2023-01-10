@@ -57,6 +57,9 @@ public class AuthController {
         return new CommonResponse<>(token);
     }
 
+    /**
+     * Token 재발급
+     */
     @GetMapping("/auth/reissue")
     public CommonResponse<Token> reissue(HttpServletRequest request) {
 

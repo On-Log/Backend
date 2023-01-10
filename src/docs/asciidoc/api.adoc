@@ -6,6 +6,8 @@
 :toclevels: 2
 :sectlinks:
 
+include::Auth-API.adoc[]
+
 include::MyPage-API.adoc[]
 
 include::Diary-API.adoc[]

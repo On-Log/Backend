@@ -93,19 +93,21 @@ class DiaryControllerTest extends CommonControllerTest {
     public void 일기_기록() throws Exception {
         //given
         String saveDate = "2023-01-22T00:00:00";
+
         List<KeywordEmotionDto> keywordEmotionDtoList = new ArrayList<>(Arrays.asList(
-                new KeywordEmotionDto("감정어"),
-                new KeywordEmotionDto("감정어"),
-                new KeywordEmotionDto("감정어")
+                new KeywordEmotionDto("아쉬움"),
+                new KeywordEmotionDto("복잡"),
+                new KeywordEmotionDto("기대")
         ));
         List<KeywordDto> keywordDtoList = new ArrayList<>(Arrays.asList(
-                new KeywordDto("키워드", keywordEmotionDtoList),
-                new KeywordDto("키워드", keywordEmotionDtoList)
+                new KeywordDto("창업", keywordEmotionDtoList),
+                new KeywordDto("취업", keywordEmotionDtoList),
+                new KeywordDto("막학기", keywordEmotionDtoList)
         ));
 
         ReqSaveDiaryDto input = ReqSaveDiaryDto.builder()
                 .date(LocalDateTime.parse(saveDate))
-                .content("일기 내용")
+                .content("마지막 방학... 계절 학기 언제 끝나...")
                 .keywords(keywordDtoList)
                 .build();
 
@@ -150,18 +152,19 @@ class DiaryControllerTest extends CommonControllerTest {
         String date = "2023-01-15T00:00:00";
 
         List<KeywordEmotionDto> keywordEmotionDtoList = new ArrayList<>(Arrays.asList(
-                new KeywordEmotionDto("감정어"),
-                new KeywordEmotionDto("감정어"),
-                new KeywordEmotionDto("감정어")
+                new KeywordEmotionDto("아쉬움"),
+                new KeywordEmotionDto("복잡"),
+                new KeywordEmotionDto("기대")
         ));
         List<KeywordDto> keywordDtoList = new ArrayList<>(Arrays.asList(
-                new KeywordDto("키워드", keywordEmotionDtoList),
-                new KeywordDto("키워드", keywordEmotionDtoList)
+                new KeywordDto("창업", keywordEmotionDtoList),
+                new KeywordDto("취업", keywordEmotionDtoList),
+                new KeywordDto("막학기", keywordEmotionDtoList)
         ));
 
         RespGetDiaryDto output = RespGetDiaryDto.builder()
                 .writeDate(LocalDateTime.parse(date))
-                .content("일기 내용")
+                .content("마지막 방학... 계절 학기 언제 끝나...")
                 .keywords(keywordDtoList)
                 .build();
 
@@ -205,18 +208,19 @@ class DiaryControllerTest extends CommonControllerTest {
         String editDate = "2023-01-15T00:00:00";
 
         List<KeywordEmotionDto> keywordEmotionDtoList = new ArrayList<>(Arrays.asList(
-                new KeywordEmotionDto("감정어"),
-                new KeywordEmotionDto("감정어"),
-                new KeywordEmotionDto("감정어")
+                new KeywordEmotionDto("행복"),
+                new KeywordEmotionDto("여유"),
+                new KeywordEmotionDto("안심")
         ));
         List<KeywordDto> keywordDtoList = new ArrayList<>(Arrays.asList(
-                new KeywordDto("키워드", keywordEmotionDtoList),
-                new KeywordDto("키워드", keywordEmotionDtoList)
+                new KeywordDto("방학", keywordEmotionDtoList),
+                new KeywordDto("나날", keywordEmotionDtoList),
+                new KeywordDto("여행", keywordEmotionDtoList)
         ));
 
         ReqEditDiaryDto input = ReqEditDiaryDto.builder()
                 .editDate(LocalDateTime.parse(editDate))
-                .content("수정 내용")
+                .content("이제 마지막 학기네요...")
                 .keywords(keywordDtoList)
                 .build();
 

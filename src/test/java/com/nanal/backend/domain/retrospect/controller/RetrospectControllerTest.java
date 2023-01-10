@@ -1,6 +1,9 @@
 package com.nanal.backend.domain.retrospect.controller;
 
 import com.nanal.backend.config.CommonControllerTest;
+import com.nanal.backend.domain.retrospect.dto.RetrospectContentDto;
+import com.nanal.backend.domain.retrospect.dto.RetrospectKeywordDto;
+import com.nanal.backend.domain.retrospect.dto.req.ReqSaveRetroDto;
 import com.nanal.backend.domain.retrospect.dto.resp.RespGetInfoDto;
 import com.nanal.backend.domain.retrospect.service.RetrospectService;
 import org.junit.jupiter.api.Test;
@@ -9,19 +12,21 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RetrospectController.class)
@@ -79,6 +84,51 @@ public class RetrospectControllerTest extends CommonControllerTest {
                         )
                 );
 
+    }
+
+    @Test
+    public void 회고_저장() throws Exception {
+        //given
+        List<RetrospectContentDto> retrospectContentDtos = new ArrayList<>(Arrays.asList(new RetrospectContentDto("이번주 나의 모습은 어땠나요?", "답변1"),
+                new RetrospectContentDto("다른 내 모습도 들려줄래요? 이번주에 찾은 의외의 내 모습이 있다면요?", "답변2"), new RetrospectContentDto("다음주에도 유지하고 싶은 나의 모습이 있을까요? 혹은 새롭게 찾고 싶은 나의 모습이 있다면 무엇인가요?", "답변3")));
+        List<RetrospectKeywordDto> retrospectKeywordDtos = new ArrayList<>(Arrays.asList(new RetrospectKeywordDto("그때 그대로 의미있었던 행복한 기억", "키워드1"),
+                new RetrospectKeywordDto("나를 힘들게 했지만 도움이 된 기억", "키워드2"),
+                new RetrospectKeywordDto("돌아보니, 다른 의미로 다가온 기억", "키워드3")));
+        ReqSaveRetroDto reqSaveRetroDto = new ReqSaveRetroDto(LocalDateTime.parse("2023-01-24T00:00:00"), "자아탐색", retrospectContentDtos, retrospectKeywordDtos);
+
+        willDoNothing().given(retrospectService).saveRetrospect(any(), any()); //void일때는 willDoNothing 사용
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/retrospect")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reqSaveRetroDto))
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestFields(
+                                        fieldWithPath("currentDate").description("회고 저장 날짜"),
+                                        fieldWithPath("goal").description("회고 목적"),
+                                        fieldWithPath("contents[].question").description("회고 목적별 질문"),
+                                        fieldWithPath("contents[].answer").description("질문에 대한 답변"),
+                                        fieldWithPath("keywords[].classify").description("회고 과정에서 키워드 분류 기준(감정 분리수거 기능)"),
+                                        fieldWithPath("keywords[].keyword").description("분류된 키워드")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지")
+                                )
+                        )
+                );
     }
 
 

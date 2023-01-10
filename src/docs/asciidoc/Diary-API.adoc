@@ -7,15 +7,15 @@ operation::diary-controller-test/일기_탭[snippets='http-request,request-heade
 
 [[Diary-일기-기록]]
 === Diary 일기 기록
-operation::diary-controller-test/일기_기록[snippets='http-request,request-headers,http-response,response-fields']
+operation::diary-controller-test/일기_기록[snippets='http-request,request-headers,request-fields,http-response,response-fields']
 
 [[Diary-일기-조회]]
 === Diary 일기 조회
-
+operation::diary-controller-test/일기_조회[snippets='http-request,request-headers,request-parameters,http-response,response-fields']
 
 [[Diary-일기-수정]]
 === Diary 일기 수정
-
+operation::diary-controller-test/일기_수정[snippets='http-request,request-headers,request-fields,http-response,response-fields']
 
 [[Diary-일기-삭제]]
 === Diary 일기 삭제

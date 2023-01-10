@@ -1,6 +1,7 @@
 package com.nanal.backend.domain.diary.dto.resp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.nanal.backend.domain.diary.dto.req.KeywordDto;
 import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.diary.entity.Keyword;
 import lombok.AllArgsConstructor;
@@ -17,25 +18,25 @@ import java.util.List;
 @Data
 public class RespGetDiaryDto {
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    //@JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime writeDate;
 
     private String content;
 
-    private List<KeywordStringDto> keywords;
+    private List<KeywordDto> keywords;
 
     public static RespGetDiaryDto makeRespGetDiaryDto(Diary selectDiary) {
-        List<KeywordStringDto> keywords = new ArrayList<>();
-        for (Keyword k : selectDiary.getKeywords()) {
-            KeywordStringDto keywordStringDto = KeywordStringDto.makeKeywordStringDto(k);
+        List<KeywordDto> keywordDtos = new ArrayList<>();
 
-            keywords.add(keywordStringDto);
+        for (Keyword k : selectDiary.getKeywords()) {
+            KeywordDto keywordDto = new KeywordDto(k.getWord(), KeywordDto.makeKeywordDtoList(k));
+            keywordDtos.add(keywordDto);
         }
 
         RespGetDiaryDto respGetDiaryDto = RespGetDiaryDto.builder()
                 .writeDate(selectDiary.getWriteDate())
                 .content(selectDiary.getContent())
-                .keywords(keywords)
+                .keywords(keywordDtos)
                 .build();
         return respGetDiaryDto;
     }

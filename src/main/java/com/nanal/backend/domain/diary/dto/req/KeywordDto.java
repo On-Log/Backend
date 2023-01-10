@@ -1,5 +1,8 @@
 package com.nanal.backend.domain.diary.dto.req;
 
+import com.nanal.backend.domain.diary.dto.resp.KeywordStringDto;
+import com.nanal.backend.domain.diary.entity.Keyword;
+import com.nanal.backend.domain.diary.entity.KeywordEmotion;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -20,4 +24,14 @@ public class KeywordDto {
     @Valid
     private List<KeywordEmotionDto> keywordEmotions;
 
+    public static List<KeywordEmotionDto> makeKeywordDtoList(Keyword keyword) {
+        List<KeywordEmotionDto> keywordEmotionDtos = new ArrayList<>();
+        for (KeywordEmotion k : keyword.getKeywordEmotions()) {
+            KeywordEmotionDto keywordEmotionDto = new KeywordEmotionDto(k.getEmotion());
+
+            keywordEmotionDtos.add(keywordEmotionDto);
+        }
+
+        return keywordEmotionDtos;
+    }
 }

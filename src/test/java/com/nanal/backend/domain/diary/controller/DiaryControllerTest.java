@@ -3,8 +3,10 @@ package com.nanal.backend.domain.diary.controller;
 import com.nanal.backend.config.CommonControllerTest;
 import com.nanal.backend.domain.diary.dto.req.KeywordDto;
 import com.nanal.backend.domain.diary.dto.req.KeywordEmotionDto;
+import com.nanal.backend.domain.diary.dto.req.ReqEditDiaryDto;
 import com.nanal.backend.domain.diary.dto.req.ReqSaveDiaryDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetCalendarDto;
+import com.nanal.backend.domain.diary.dto.resp.RespGetDiaryDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetEmotionDto;
 import com.nanal.backend.domain.diary.service.DiaryService;
 import org.junit.jupiter.api.Test;
@@ -127,6 +129,12 @@ class DiaryControllerTest extends CommonControllerTest {
                                 requestHeaders(
                                         headerWithName("Token").description("접근 토큰")
                                 ),
+                                requestFields(
+                                        fieldWithPath("date").description("작성 날짜"),
+                                        fieldWithPath("content").description("일기 내용"),
+                                        fieldWithPath("keywords[].keyword").description("키워드"),
+                                        fieldWithPath("keywords[].keywordEmotions[].emotion").description("감정어")
+                                ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
@@ -136,7 +144,116 @@ class DiaryControllerTest extends CommonControllerTest {
                 );
     }
 
+    @Test
+    public void 일기_조회() throws Exception {
+        //given
+        String date = "2023-01-15T00:00:00";
 
+        List<KeywordEmotionDto> keywordEmotionDtoList = new ArrayList<>(Arrays.asList(
+                new KeywordEmotionDto("감정어"),
+                new KeywordEmotionDto("감정어"),
+                new KeywordEmotionDto("감정어")
+        ));
+        List<KeywordDto> keywordDtoList = new ArrayList<>(Arrays.asList(
+                new KeywordDto("키워드", keywordEmotionDtoList),
+                new KeywordDto("키워드", keywordEmotionDtoList)
+        ));
+
+        RespGetDiaryDto output = RespGetDiaryDto.builder()
+                .writeDate(LocalDateTime.parse(date))
+                .content("일기 내용")
+                .keywords(keywordDtoList)
+                .build();
+
+        given(diaryService.getDiary(any(), any())).willReturn(output);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/diary/view")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("date" ,date)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestParameters(
+                                        parameterWithName("date").description("작성 날짜")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.writeDate").description("작성 날짜"),
+                                        fieldWithPath("result.content").description("일기 내용"),
+                                        fieldWithPath("result.keywords[].keyword").description("키워드"),
+                                        fieldWithPath("result.keywords[].keywordEmotions[].emotion").description("감정어")
+                                )
+                        )
+                );
+    }
+
+    @Test
+    public void 일기_수정() throws Exception {
+        //given
+        String editDate = "2023-01-15T00:00:00";
+
+        List<KeywordEmotionDto> keywordEmotionDtoList = new ArrayList<>(Arrays.asList(
+                new KeywordEmotionDto("감정어"),
+                new KeywordEmotionDto("감정어"),
+                new KeywordEmotionDto("감정어")
+        ));
+        List<KeywordDto> keywordDtoList = new ArrayList<>(Arrays.asList(
+                new KeywordDto("키워드", keywordEmotionDtoList),
+                new KeywordDto("키워드", keywordEmotionDtoList)
+        ));
+
+        ReqEditDiaryDto input = ReqEditDiaryDto.builder()
+                .editDate(LocalDateTime.parse(editDate))
+                .content("수정 내용")
+                .keywords(keywordDtoList)
+                .build();
+
+        String body = objectMapper.writeValueAsString(input);
+
+        willDoNothing().given(diaryService).editDiary(any(), any());
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                put("/diary")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestFields(
+                                        fieldWithPath("editDate").description("수정 날짜"),
+                                        fieldWithPath("content").description("일기 내용"),
+                                        fieldWithPath("keywords[].keyword").description("키워드"),
+                                        fieldWithPath("keywords[].keywordEmotions[].emotion").description("감정어")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지")
+                                )
+                        )
+                );
+    }
 
     @Test
     public void 일기_삭제() throws Exception {
@@ -161,7 +278,7 @@ class DiaryControllerTest extends CommonControllerTest {
                                         headerWithName("Token").description("접근 토큰")
                                 ),
                                 requestParameters(
-                                        parameterWithName("deleteDate").attributes() .description("삭제 날짜")
+                                        parameterWithName("deleteDate").description("삭제 날짜")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),

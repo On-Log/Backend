@@ -15,7 +15,7 @@ operation::diary-controller-test/일기_조회[snippets='http-request,request-he
 
 [[Diary-일기-수정]]
 === Diary 일기 수정
-
+operation::diary-controller-test/일기_수정[snippets='http-request,request-headers,request-fields,http-response,response-fields']
 
 [[Diary-일기-삭제]]
 === Diary 일기 삭제

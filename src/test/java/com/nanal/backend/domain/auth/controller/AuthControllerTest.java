@@ -71,7 +71,7 @@ class AuthControllerTest extends CommonControllerTest {
     public void Kakao_소셜_로그인() throws Exception {
         //given
         ReqAuthDto input = ReqAuthDto.builder()
-                .accessToken("Platform_ACCESS_TOKEN")
+                .accessToken("PLATFORM_ACCESS_TOKEN")
                 .build();
 
         String body = objectMapper.writeValueAsString(input);

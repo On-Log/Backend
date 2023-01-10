@@ -3,6 +3,7 @@ package com.nanal.backend.domain.retrospect.controller;
 import com.nanal.backend.config.CommonControllerTest;
 import com.nanal.backend.domain.retrospect.dto.RetrospectContentDto;
 import com.nanal.backend.domain.retrospect.dto.RetrospectKeywordDto;
+import com.nanal.backend.domain.retrospect.dto.req.ReqEditRetroDto;
 import com.nanal.backend.domain.retrospect.dto.req.ReqSaveRetroDto;
 import com.nanal.backend.domain.retrospect.dto.resp.RespGetInfoDto;
 import com.nanal.backend.domain.retrospect.dto.resp.RespGetRetroDto;
@@ -26,8 +27,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.requestHe
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RetrospectController.class)
@@ -179,5 +179,43 @@ public class RetrospectControllerTest extends CommonControllerTest {
                         )
                 );
     }
+
+    @Test
+    public void 회고_수정() throws Exception {
+        //given
+        ReqEditRetroDto reqEditRetroDto = new ReqEditRetroDto(LocalDateTime.parse("2023-01-24T00:00:00"), "수정답변", 0, 0);
+        willDoNothing().given(retrospectService).editRetrospect(any(), any());
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                put("/retrospect")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reqEditRetroDto))
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestFields(
+                                        fieldWithPath("editDate").description("회고 수정 날짜"),
+                                        fieldWithPath("answer").description("수정된 회고 질문에 대한 답변"),
+                                        fieldWithPath("week").description("회고 주차 (index로 되어있어서 1주 차는 0, 2주 차는 1 이런 식으로 보내야 함)"),
+                                        fieldWithPath("index").description("수정할 회고 질문 (index로 되어있어서 첫번째 질문은 0, 두번째 질문은 1 이런 식으로 보내야 함)")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지")
+                                )
+                        )
+                );
+    }
+
 
 }

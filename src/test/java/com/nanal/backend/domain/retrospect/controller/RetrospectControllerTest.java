@@ -141,9 +141,9 @@ public class RetrospectControllerTest extends CommonControllerTest {
         int week = 0;
         List<RetrospectContentDto> retrospectContentDtos = new ArrayList<>(Arrays.asList(new RetrospectContentDto("이번주 나의 모습은 어땠나요?", "답변1"),
                 new RetrospectContentDto("다른 내 모습도 들려줄래요? 이번주에 찾은 의외의 내 모습이 있다면요?", "답변2"), new RetrospectContentDto("다음주에도 유지하고 싶은 나의 모습이 있을까요? 혹은 새롭게 찾고 싶은 나의 모습이 있다면 무엇인가요?", "답변3")));
-        List<RetrospectKeywordDto> retrospectKeywordDtos = new ArrayList<>(Arrays.asList(new RetrospectKeywordDto("키워드1", "그때 그대로 의미있었던 행복한 기억"),
-                new RetrospectKeywordDto("키워드2", "나를 힘들게 했지만 도움이 된 기억"),
-                new RetrospectKeywordDto("키워드3", "돌아보니, 다른 의미로 다가온 기억")));
+        List<RetrospectKeywordDto> retrospectKeywordDtos = new ArrayList<>(Arrays.asList(new RetrospectKeywordDto("그때 그대로 의미있었던 행복한 기억", "키워드1"),
+                new RetrospectKeywordDto("나를 힘들게 했지만 도움이 된 기억", "키워드2"),
+                new RetrospectKeywordDto("돌아보니, 다른 의미로 다가온 기억", "키워드3")));
         RespGetRetroDto respGetRetroDto = new RespGetRetroDto(LocalDateTime.parse("2023-01-18T00:00:00"), retrospectContentDtos, retrospectKeywordDtos);
         given(retrospectService.getRetro(any(), any())).willReturn(respGetRetroDto);
 

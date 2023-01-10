@@ -3,23 +3,24 @@
 
 [[Retrospect-회고-탭]]
 === Retrospect 회고 탭
-
+operation::retrospect-controller-test/회고_탭[snippets='http-request,request-headers,request-parameters,http-response,response-fields']
 
 [[Retrospect-회고-기록]]
 === Retrospect 회고 기록
-
+operation::retrospect-controller-test/회고_저장[snippets='http-request,request-headers,request-fields,http-response,response-fields']
 
 [[Retrospect-회고-조회]]
 === Retrospect 회고 조회
-
+operation::retrospect-controller-test/회고_조회[snippets='http-request,request-headers,request-parameters,http-response,response-fields']
 
 [[Retrospect-회고-수정]]
 === Retrospect 회고 수정
-
+operation::retrospect-controller-test/회고_수정[snippets='http-request,request-headers,request-fields,http-response,response-fields']
 
 [[Retrospect-일기작성날짜-키워드-감정어-조회]]
 === Retrospect 일기 작성 날짜 + 키워드 + 감정어 조회
-
+operation::retrospect-controller-test/일기_키워드_감정어_조회[snippets='http-request,request-headers,request-parameters,http-response,response-fields']
 
 [[Retrospect-회고질문-도움말-조회]]
 === Retrospect 회고질문 + 도움말 조회
+operation::retrospect-controller-test/회고질문_도움말_조회[snippets='http-request,request-headers,request-parameters,http-response,response-fields']

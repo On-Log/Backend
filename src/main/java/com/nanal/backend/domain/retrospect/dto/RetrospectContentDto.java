@@ -1,11 +1,14 @@
 package com.nanal.backend.domain.retrospect.dto;
 
 import com.nanal.backend.domain.retrospect.entity.RetrospectContent;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class RetrospectContentDto {
     @NotBlank(message = "answer 는 비어있을 수 없습니다.")

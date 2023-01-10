@@ -1,11 +1,15 @@
 package com.nanal.backend.domain.retrospect.controller;
 
 import com.nanal.backend.config.CommonControllerTest;
+import com.nanal.backend.domain.diary.dto.req.KeywordEmotionDto;
 import com.nanal.backend.domain.retrospect.dto.RetrospectContentDto;
 import com.nanal.backend.domain.retrospect.dto.RetrospectKeywordDto;
+import com.nanal.backend.domain.retrospect.dto.req.KeywordDto;
 import com.nanal.backend.domain.retrospect.dto.req.ReqEditRetroDto;
 import com.nanal.backend.domain.retrospect.dto.req.ReqSaveRetroDto;
+import com.nanal.backend.domain.retrospect.dto.resp.KeywordWriteDateDto;
 import com.nanal.backend.domain.retrospect.dto.resp.RespGetInfoDto;
+import com.nanal.backend.domain.retrospect.dto.resp.RespGetKeywordAndEmotionDto;
 import com.nanal.backend.domain.retrospect.dto.resp.RespGetRetroDto;
 import com.nanal.backend.domain.retrospect.service.RetrospectService;
 import org.junit.jupiter.api.Test;
@@ -215,6 +219,58 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                 )
                         )
                 );
+    }
+
+    @Test
+    public void 일기_키워드_감정어_조회() throws Exception{
+        //given
+        String currentDate = "2023-01-24T00:00:00";
+        List<KeywordEmotionDto> keywordEmotionDtoList = new ArrayList<>(Arrays.asList(
+                new KeywordEmotionDto("아쉬움"),
+                new KeywordEmotionDto("복잡"),
+                new KeywordEmotionDto("기대")
+        ));
+
+        List<KeywordDto> keywordDtoList = new ArrayList<>(Arrays.asList(
+                new KeywordDto("창업", keywordEmotionDtoList),
+                new KeywordDto("취업", keywordEmotionDtoList),
+                new KeywordDto("막학기", keywordEmotionDtoList)
+        ));
+
+        List<KeywordWriteDateDto> keywordWriteDateDtos = new ArrayList<>(Arrays.asList(new KeywordWriteDateDto(LocalDateTime.parse("2023-01-21T00:00:00"),keywordDtoList)));
+        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = new RespGetKeywordAndEmotionDto(keywordWriteDateDtos);
+        given(retrospectService.getKeywordAndEmotion(any(), any())).willReturn(respGetKeywordAndEmotionDto);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/retrospect/keyword")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("currentDate", currentDate)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestParameters(
+                                        parameterWithName("currentDate").description("현재 날짜")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.keywords[].writeDate").description("일기 작성 날짜"),
+                                        fieldWithPath("result.keywords[].keywords[].keyword").description("해당 날짜에 작성한 일기 키워드"),
+                                        fieldWithPath("result.keywords[].keywords[].keywordEmotions[].emotion").description("키워드에 해당하는 감정어")
+                                )
+                        )
+                );
+
     }
 
 

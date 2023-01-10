@@ -19,7 +19,7 @@ operation::diary-controller-test/일기_탭[snippets='http-request,request-heade
 
 [[Diary-일기-삭제]]
 === Diary 일기 삭제
-
+operation::diary-controller-test/일기_삭제[snippets='http-request,request-headers,request-parameters,http-response,response-fields']
 
 [[Diary-감정어-조회]]
 === Diary 감정어 조회

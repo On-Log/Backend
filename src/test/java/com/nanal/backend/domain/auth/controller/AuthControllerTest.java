@@ -109,7 +109,12 @@ class AuthControllerTest extends CommonControllerTest {
     @Test
     public void Google_소셜_로그인() throws Exception {
         //given
-        String accessToken = "Platform_ACCESS_TOKEN";
+        ReqAuthDto input = ReqAuthDto.builder()
+                .accessToken("Platform_ACCESS_TOKEN")
+                .build();
+
+        String body = objectMapper.writeValueAsString(input);
+
         Token output = Token.builder()
                 .token("SERVER_ACCESS_TOKEN")
                 .refreshToken("SERVER_REFRESH_TOKEN")
@@ -121,7 +126,7 @@ class AuthControllerTest extends CommonControllerTest {
         ResultActions actions = mockMvc.perform(
                 post("/auth/google")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(accessToken)
+                        .content(body)
         );
 
         //then

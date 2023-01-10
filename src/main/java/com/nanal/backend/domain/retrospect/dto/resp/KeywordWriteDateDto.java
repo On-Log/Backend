@@ -3,6 +3,7 @@ package com.nanal.backend.domain.retrospect.dto.resp;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.diary.entity.Keyword;
+import com.nanal.backend.domain.retrospect.dto.req.KeywordDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,15 +18,14 @@ public class KeywordWriteDateDto {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime writeDate;
 
-    private List<KeywordStringsDto> keywords;
+    private List<KeywordDto> keywords;
 
     public static KeywordWriteDateDto makeKeywordWriteDateDto(Diary d) {
-        List<KeywordStringsDto> keywords = new ArrayList<>();
+        List<KeywordDto> keywords = new ArrayList<>();
         for(Keyword k : d.getKeywords()){
-            System.out.println(k.getWord());
-            KeywordStringsDto keywordStringsDto = KeywordStringsDto.makeKeywordStringsDto(k);
+            KeywordDto keywordDto = new KeywordDto(k.getWord(), KeywordDto.makeKeywordDtoList(k));
 
-            keywords.add(keywordStringsDto);
+            keywords.add(keywordDto);
         }
         KeywordWriteDateDto  keywordWriteDateDto = KeywordWriteDateDto.builder()
                 .writeDate(d.getWriteDate())

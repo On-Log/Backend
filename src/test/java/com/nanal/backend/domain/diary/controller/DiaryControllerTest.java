@@ -136,6 +136,8 @@ class DiaryControllerTest extends CommonControllerTest {
                 );
     }
 
+
+
     @Test
     public void 일기_삭제() throws Exception {
         //given

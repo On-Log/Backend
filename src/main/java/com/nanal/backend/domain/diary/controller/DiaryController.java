@@ -46,8 +46,6 @@ public class DiaryController {
         // 요청 정보 기반으로 일기 저장
         diaryService.saveDiary(user.getSocialId(), reqSaveDiaryDto);
 
-        System.out.println("여기까지");
-
         return new CommonResponse<>(ErrorCode.SUCCESS);
     }
 

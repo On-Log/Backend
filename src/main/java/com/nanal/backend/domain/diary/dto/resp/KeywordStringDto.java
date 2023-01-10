@@ -14,7 +14,7 @@ public class KeywordStringDto {
 
     private List<String> keywordEmotions;
 
-    public static KeywordStringDto makeKeywordStringDto(Keyword keyword) {
+    public static KeywordStringDto makeKeywordDto(Keyword keyword) {
         KeywordStringDto keywordStringDto = new KeywordStringDto();
         keywordStringDto.setKeyword(keyword.getWord());
 

@@ -18,7 +18,7 @@ import java.util.List;
 @Data
 public class RespGetDiaryDto {
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    //@JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime writeDate;
 
     private String content;

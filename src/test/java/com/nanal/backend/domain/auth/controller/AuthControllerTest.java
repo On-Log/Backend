@@ -12,7 +12,10 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -148,4 +151,38 @@ class AuthControllerTest extends CommonControllerTest {
                 );
     }
 
+    @Test
+    public void Token_재발급() throws Exception {
+        //given
+        Token output = Token.builder()
+                .token("SERVER_ACCESS_TOKEN")
+                .refreshToken("SERVER_REFRESH_TOKEN")
+                .build();
+
+        given(authService.reissue(any())).willReturn(output);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/auth/reissue")
+                        .header("RefreshToken", "REFRESH_TOKEN")
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("RefreshToken").description("토큰 재발급용 RefreshToken")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.token").description("서버 접근용 Token"),
+                                        fieldWithPath("result.refreshToken").description("서버 접근용 Refresh Token")
+                                )
+                        )
+                );
+    }
 }

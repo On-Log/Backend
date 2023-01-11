@@ -35,7 +35,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
-            objectMapper.writeValue(response.getWriter(), new CommonResponse<>(ErrorCode.INVALID_JWT));
+            objectMapper.writeValue(response.getWriter(), new CommonResponse<>(ErrorCode.INVALID_TOKEN));
         }
     }
 }

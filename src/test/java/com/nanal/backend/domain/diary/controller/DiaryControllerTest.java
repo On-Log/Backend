@@ -1,10 +1,7 @@
 package com.nanal.backend.domain.diary.controller;
 
 import com.nanal.backend.config.CommonControllerTest;
-import com.nanal.backend.domain.diary.dto.req.KeywordDto;
-import com.nanal.backend.domain.diary.dto.req.KeywordEmotionDto;
-import com.nanal.backend.domain.diary.dto.req.ReqEditDiaryDto;
-import com.nanal.backend.domain.diary.dto.req.ReqSaveDiaryDto;
+import com.nanal.backend.domain.diary.dto.req.*;
 import com.nanal.backend.domain.diary.dto.resp.RespGetCalendarDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetDiaryDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetEmotionDto;
@@ -105,7 +102,7 @@ class DiaryControllerTest extends CommonControllerTest {
                 new KeywordDto("막학기", keywordEmotionDtoList)
         ));
 
-        ReqSaveDiaryDto input = ReqSaveDiaryDto.builder()
+        ReqDiaryDto input = ReqDiaryDto.builder()
                 .date(LocalDateTime.parse(saveDate))
                 .content("마지막 방학... 계절 학기 언제 끝나...")
                 .keywords(keywordDtoList)
@@ -218,8 +215,8 @@ class DiaryControllerTest extends CommonControllerTest {
                 new KeywordDto("여행", keywordEmotionDtoList)
         ));
 
-        ReqEditDiaryDto input = ReqEditDiaryDto.builder()
-                .editDate(LocalDateTime.parse(editDate))
+        ReqDiaryDto input = ReqDiaryDto.builder()
+                .date(LocalDateTime.parse(editDate))
                 .content("이제 마지막 학기네요...")
                 .keywords(keywordDtoList)
                 .build();
@@ -245,7 +242,7 @@ class DiaryControllerTest extends CommonControllerTest {
                                         headerWithName("Token").description("접근 토큰")
                                 ),
                                 requestFields(
-                                        fieldWithPath("editDate").description("수정 날짜"),
+                                        fieldWithPath("date").description("수정 날짜"),
                                         fieldWithPath("content").description("일기 내용"),
                                         fieldWithPath("keywords[].keyword").description("키워드"),
                                         fieldWithPath("keywords[].keywordEmotions[].emotion").description("감정어")
@@ -270,7 +267,7 @@ class DiaryControllerTest extends CommonControllerTest {
                 delete("/diary")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("deleteDate" ,deleteDate)
+                        .param("date" ,deleteDate)
         );
 
         //then
@@ -282,7 +279,7 @@ class DiaryControllerTest extends CommonControllerTest {
                                         headerWithName("Token").description("접근 토큰")
                                 ),
                                 requestParameters(
-                                        parameterWithName("deleteDate").description("삭제 날짜")
+                                        parameterWithName("date").description("삭제 날짜")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),

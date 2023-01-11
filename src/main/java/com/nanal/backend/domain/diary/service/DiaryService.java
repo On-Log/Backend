@@ -37,24 +37,6 @@ public class DiaryService {
     private final DiaryRepository diaryRepository;
     private final EmotionRepository emotionRepository;
 
-    public void saveDiary(String socialId, ReqSaveDiaryDto reqSaveDiaryDto) {
-        // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
-
-        // 해당 날짜에 작성한 일기 존재하는지 체크
-        // 질의할 sql 의 Like 절에 해당하게끔 변환
-        String yearMonthDay = reqSaveDiaryDto.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
-        // 선택한 yyyy-MM-dd 에 작성한 일기 조회
-        List<Diary> existDiary = diaryRepository.findDiaryListByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
-        if(existDiary.size() == 1) throw new DiaryAlreadyExistException("이미 해당 날짜에 작성한 일기가 존재합니다.");
-
-        // 일기 Entity 생성
-        Diary diary = createDiary(member, reqSaveDiaryDto.getContent(), reqSaveDiaryDto.getDate(), reqSaveDiaryDto.getKeywords());
-
-        // 일기 저장
-        diaryRepository.save(diary);
-    }
-
     public RespGetCalendarDto getCalendar(String socialId, ReqGetCalendarDto reqGetCalendarDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
@@ -71,6 +53,20 @@ public class DiaryService {
                 .nextDayOfPrevRetroDate(nextDayOfPrevRetroDate)
                 .postRetroDate(postRetroDate)
                 .build();
+    }
+
+    public void saveDiary(String socialId, ReqSaveDiaryDto reqSaveDiaryDto) {
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+
+        // 해당 날짜에 작성한 일기 존재하는지 체크
+        checkDiaryAlreadyExist(reqSaveDiaryDto, member);
+
+        // 일기 Entity 생성
+        Diary diary = createDiary(member, reqSaveDiaryDto);
+
+        // 일기 저장
+        diaryRepository.save(diary);
     }
 
     public RespGetEmotionDto getEmotion() {
@@ -107,7 +103,7 @@ public class DiaryService {
         추후에 더 효율적인 방법으로 수정 필요
          */
         // 질의할 sql 의 Like 절에 해당하게끔 변환
-        String yearMonthDay = reqEditDiary.getEditDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
+        String yearMonthDay = reqEditDiary.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
         // 선택한 yyyy-MM-dd 에 작성한 일기 조회
         Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay)
                 .orElseThrow(() -> new DiaryNotFoundException("해당 날짜에 작성한 일기가 존재하지 않습니다."));
@@ -115,7 +111,7 @@ public class DiaryService {
         diaryRepository.delete(selectDiary);
 
         // 새로운 일기 Entity 생성
-        Diary diary = createDiary(member, reqEditDiary.getContent(), reqEditDiary.getEditDate(), reqEditDiary.getKeywords());
+        Diary diary = createDiary(member, reqEditDiary);
         // 일기 저장
         diaryRepository.save(diary);
     }
@@ -125,7 +121,7 @@ public class DiaryService {
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         // 질의할 sql 의 Like 절에 해당하게끔 변환
-        String yearMonthDay = reqDeleteDiaryDto.getDeleteDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
+        String yearMonthDay = reqDeleteDiaryDto.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
 
         /*
         일기와 해당 일기의 키워드, 감정어등을 삭제하고자 할 때, 일기 Entity 를 가져온 다음에 해당 Entity 를 삭제하는 식으로 이루어 짐.
@@ -140,16 +136,23 @@ public class DiaryService {
     }
 
 
-
-
-
     //===편의 메서드===//
 
-    private Diary createDiary(Member member, String content, LocalDateTime date, List<KeywordDto> keywordDtos) {
+    private void checkDiaryAlreadyExist(ReqSaveDiaryDto reqSaveDiaryDto, Member member) {
+        // 질의할 sql 의 Like 절에 해당하게끔 변환
+        String yearMonthDay = reqSaveDiaryDto.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
+        // 선택한 yyyy-MM-dd 에 작성한 일기 조회
+        List<Diary> existDiary = diaryRepository.findDiaryListByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
+
+        if(existDiary.size() == 1) throw new DiaryAlreadyExistException(ErrorCode.DIARY_ALREADY_EXIST.getMessage());
+    }
+
+    private Diary createDiary(Member member, ReqDiaryDto reqDiaryDto) {
+
         // Diary 생성에 필요한 Keyword 리스트 생성
         List<Keyword> keywords = new ArrayList<>();
 
-        for (KeywordDto keywordDto : keywordDtos) {
+        for (KeywordDto keywordDto : reqDiaryDto.getKeywords()) {
 
             // Keyword 생성에 필요한 KeywordEmotion 리스트 생성
             List<KeywordEmotion> keywordEmotions = new ArrayList<>();
@@ -166,7 +169,7 @@ public class DiaryService {
         }
 
         // Keyword 리스트를 이용하여 Diary 생성
-        Diary diary = Diary.makeDiary(member, keywords, content, date);
+        Diary diary = Diary.makeDiary(member, keywords, reqDiaryDto.getContent(), reqDiaryDto.getDate());
 
         return diary;
     }

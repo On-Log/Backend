@@ -1,13 +1,13 @@
 package com.nanal.backend.global.response;
 
 import lombok.Getter;
-import org.apache.catalina.connector.Response;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
 
     // Success
-    SUCCESS(true, Response.SC_OK, "요청에 성공하였습니다."),
+    SUCCESS(true, HttpStatus.OK.value(), "요청에 성공하였습니다."),
 
 
     INVALID_INPUT_VALUE(false, 4000, "잘못된 입력값입니다."),

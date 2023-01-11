@@ -15,6 +15,7 @@ import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
 import com.nanal.backend.domain.diary.repository.EmotionRepository;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
+import com.nanal.backend.global.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,17 +59,16 @@ public class DiaryService {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
-        LocalDateTime currentDate = reqGetCalendarDto.getCurrentDate();
-        LocalDateTime selectDate = reqGetCalendarDto.getSelectDate();
-
         /*
         현재는 like 절을 이용해서 Diary 의 전체 컬럼을 뽑아온 다음 작업하는 방식.
         추후 부등호를 이용해서 write_date 컬럼만 뽑아오는 방식으로 변환 (like 절과 부등호를 뽑아는 방식 성능 비교)
          */
-        // 요청된 기간내 기록이 존재하는 날 조회
-        List<LocalDateTime> existDiaryDate = getExistDiaryDate(member, selectDate);
+        // 요청된 기간내 유저의 기록이 존재하는 날 조회
+        LocalDateTime selectDate = reqGetCalendarDto.getSelectDate();
+        List<LocalDateTime> existDiaryDate = getExistDiaryDate(member.getMemberId(), selectDate);
 
         // 회고 요일과 현재 날짜로 일기 작성 가능주 구하기
+        LocalDateTime currentDate = reqGetCalendarDto.getCurrentDate();
         LocalDateTime nextDayOfPrevRetroDate = getNextDayOfPrevRetroDate(member.getRetrospectDay(), currentDate);
 
         LocalDateTime postRetroDate = getPostRetroDate(member.getRetrospectDay(), currentDate);
@@ -97,7 +97,7 @@ public class DiaryService {
         String yearMonthDay = reqGetDiaryDto.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
         // 선택한 yyyy-MM-dd 에 작성한 일기 조회
         Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay)
-                .orElseThrow(() -> new DiaryNotFoundException("해당 날짜에 작성한 일기가 존재하지 않습니다."));
+                .orElseThrow(() -> new DiaryNotFoundException(ErrorCode.DIARY_NOT_FOUND.getMessage()));
 
         // 조회한 일기로 반환값 생성
         RespGetDiaryDto respGetDiaryDto = RespGetDiaryDto.makeRespGetDiaryDto(selectDiary);
@@ -178,14 +178,12 @@ public class DiaryService {
         return diary;
     }
 
-    private List<LocalDateTime> getExistDiaryDate(Member member, LocalDateTime selectTime) {
+    private List<LocalDateTime> getExistDiaryDate(Long memberId, LocalDateTime selectTime) {
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonth = selectTime.format(DateTimeFormatter.ofPattern("yyyy-MM")) + "%";
 
         // 선택한 yyyy-MM 에 작성한 일기리스트 조회
-        List<Diary> writeDates = diaryRepository.findListByMemberAndWriteDate(
-                member.getMemberId(),
-                yearMonth);
+        List<Diary> writeDates = diaryRepository.findListByMemberAndWriteDate(memberId, yearMonth);
 
         // 가져온 작성날짜 일 단위로 파싱해서 List 삽입
         List<LocalDateTime> existDiaryDate = new ArrayList<>();

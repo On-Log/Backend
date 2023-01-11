@@ -99,6 +99,4 @@ public class CommonExceptionHandler {
         log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.RESET_AVAIL_FALSE);
     }
-
-
 }

@@ -57,21 +57,14 @@ public class DiaryService {
 
     public RespGetCalendarDto getCalendar(String socialId, ReqGetCalendarDto reqGetCalendarDto) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
-        /*
-        현재는 like 절을 이용해서 Diary 의 전체 컬럼을 뽑아온 다음 작업하는 방식.
-        추후 부등호를 이용해서 write_date 컬럼만 뽑아오는 방식으로 변환 (like 절과 부등호를 뽑아는 방식 성능 비교)
-         */
         // 요청된 기간내 유저의 기록이 존재하는 날 조회
-        LocalDateTime selectDate = reqGetCalendarDto.getSelectDate();
-        List<LocalDateTime> existDiaryDate = getExistDiaryDate(member.getMemberId(), selectDate);
+        List<LocalDateTime> existDiaryDate = getExistDiaryDate(member.getMemberId(), reqGetCalendarDto.getSelectDate());
 
         // 회고 요일과 현재 날짜로 일기 작성 가능주 구하기
-        LocalDateTime currentDate = reqGetCalendarDto.getCurrentDate();
-        LocalDateTime nextDayOfPrevRetroDate = getNextDayOfPrevRetroDate(member.getRetrospectDay(), currentDate);
-
-        LocalDateTime postRetroDate = getPostRetroDate(member.getRetrospectDay(), currentDate);
+        LocalDateTime nextDayOfPrevRetroDate = getNextDayOfPrevRetroDate(member.getRetrospectDay(), reqGetCalendarDto.getCurrentDate());
+        LocalDateTime postRetroDate = getPostRetroDate(member.getRetrospectDay(), reqGetCalendarDto.getCurrentDate());
 
         return RespGetCalendarDto.builder()
                 .existDiaryDate(existDiaryDate)

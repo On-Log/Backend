@@ -82,30 +82,17 @@ public class DiaryService {
         return respGetDiaryDto;
     }
 
-    private Diary getSelectDiary(LocalDateTime date, Long memberId) {
-        // 질의할 sql 의 Like 절에 해당하게끔 변환
-        String yearMonthDay = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
-
-        // 선택한 yyyy-MM-dd 에 작성한 일기 조회
-        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(memberId, yearMonthDay)
-                .orElseThrow(() -> new DiaryNotFoundException(ErrorCode.DIARY_NOT_FOUND.getMessage()));
-
-        return selectDiary;
-    }
-
     public void editDiary(String socialId, ReqEditDiaryDto reqEditDiary) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
         /*
         현재는 수정요청 들어오면 기존 일기삭제 후, 다시 저장하는 방식
         추후에 더 효율적인 방법으로 수정 필요
          */
-        // 질의할 sql 의 Like 절에 해당하게끔 변환
-        String yearMonthDay = reqEditDiary.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
-        // 선택한 yyyy-MM-dd 에 작성한 일기 조회
-        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay)
-                .orElseThrow(() -> new DiaryNotFoundException("해당 날짜에 작성한 일기가 존재하지 않습니다."));
+
+        // 삭제할 일기 가져오기
+        Diary selectDiary = getSelectDiary(reqEditDiary.getDate(), member.getMemberId());
         // 기존 일기 삭제
         diaryRepository.delete(selectDiary);
 
@@ -119,17 +106,14 @@ public class DiaryService {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
-        // 질의할 sql 의 Like 절에 해당하게끔 변환
-        String yearMonthDay = reqDeleteDiaryDto.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
-
         /*
         일기와 해당 일기의 키워드, 감정어등을 삭제하고자 할 때, 일기 Entity 를 가져온 다음에 해당 Entity 를 삭제하는 식으로 이루어 짐.
         추후에 한 번의 쿼리만으로 Cascade 로직이 정상적으로 작동할 수 있도록 수정 필요
         diaryRepository.deleteByMemberAndWriteDate(member.getMemberId(), reqDeleteDiaryDto.getDeleteDate());
          */
-        // 선택한 yyyy-MM-dd 에 작성한 일기 조회
-        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay)
-                .orElseThrow(() -> new DiaryNotFoundException("해당 날짜에 작성한 일기가 존재하지 않습니다."));
+
+        // 삭제할 일기 가져오기
+        Diary selectDiary = getSelectDiary(reqDeleteDiaryDto.getDate(), member.getMemberId());
         // 기존 일기 삭제
         diaryRepository.delete(selectDiary);
     }
@@ -143,6 +127,17 @@ public class DiaryService {
 
 
     //===편의 메서드===//
+
+    private Diary getSelectDiary(LocalDateTime date, Long memberId) {
+        // 질의할 sql 의 Like 절에 해당하게끔 변환
+        String yearMonthDay = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
+
+        // 선택한 yyyy-MM-dd 에 작성한 일기 조회
+        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(memberId, yearMonthDay)
+                .orElseThrow(() -> new DiaryNotFoundException(ErrorCode.DIARY_NOT_FOUND.getMessage()));
+
+        return selectDiary;
+    }
 
     private void checkDiaryAlreadyExist(ReqSaveDiaryDto reqSaveDiaryDto, Member member) {
         // 질의할 sql 의 Like 절에 해당하게끔 변환

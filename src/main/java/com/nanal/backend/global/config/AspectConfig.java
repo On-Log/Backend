@@ -42,9 +42,7 @@ public class AspectConfig {
         stopWatch.stop();
         Long executionTime = stopWatch.getTotalTimeMillis();
 
-        log.info("[{}]{} - FINISHED", email, methodName);
-
-        log.info("[{}]{} - EXECUTION TIME => {} ms", email, methodName, executionTime);
+        log.info("[{}]{} - FINISHED | EXECUTION TIME => {} ms", email, methodName, executionTime);
 
         DiaryLog diaryLog = DiaryLog.builder()
                 .userEmail(email)
@@ -71,9 +69,7 @@ public class AspectConfig {
         stopWatch.stop();
         Long executionTime = stopWatch.getTotalTimeMillis();
 
-        log.info("[{}]{} - FINISHED", email, methodName);
-
-        log.info("[{}]{} - EXECUTION TIME => {} ms", email, methodName, executionTime);
+        log.info("[{}]{} - FINISHED | EXECUTION TIME => {} ms", email, methodName, executionTime);
 
         MypageLog mypageLog = MypageLog.builder()
                 .userEmail(email)
@@ -100,9 +96,7 @@ public class AspectConfig {
         stopWatch.stop();
         Long executionTime = stopWatch.getTotalTimeMillis();
 
-        log.info("[{}]{} - FINISHED", email, methodName);
-
-        log.info("[{}]{} - EXECUTION TIME => {} ms", email, methodName, executionTime);
+        log.info("[{}]{} - FINISHED | EXECUTION TIME => {} ms", email, methodName, executionTime);
 
         RetrospectLog retrospectLog = RetrospectLog.builder()
                 .userEmail(email)

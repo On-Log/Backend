@@ -1,6 +1,6 @@
 package com.nanal.backend.global.config;
 
-import com.nanal.backend.global.security.jwt.JwtExceptionFilter;
+import com.nanal.backend.global.exception.ExceptionFilter;
 import com.nanal.backend.global.security.jwt.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +18,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final JwtExceptionFilter jwtExceptionFilter;
+    private final ExceptionFilter exceptionFilter;
 
     private final JwtAuthFilter jwtAuthFilter;
     // Filter 제외 요청들
@@ -42,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 // ControllerAdvice 로는 filter 에서 발생하는 예외를 다룰 수 없으므로 ExceptionFilter 추가.
-                .addFilterBefore(jwtExceptionFilter, JwtAuthFilter.class);
+                .addFilterBefore(exceptionFilter, JwtAuthFilter.class);
 
     }
 

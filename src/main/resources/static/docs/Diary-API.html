@@ -898,11 +898,11 @@ Content-Length: 847
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /diary HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Token: ACCESS_TOKEN
-Content-Length: 644
+Content-Length: 640
 Host: localhost:8080
 
 {
-  "editDate" : "2023-01-15T00:00:00",
+  "date" : "2023-01-15T00:00:00",
   "content" : "이제 마지막 학기네요...",
   "keywords" : [ {
     "keyword" : "방학",
@@ -974,7 +974,7 @@ Host: localhost:8080
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>editDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>date</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">수정 날짜</p></td>
 </tr>
@@ -1053,7 +1053,7 @@ Content-Length: 94
 <h4 id="Diary-일기-삭제_http_request">HTTP request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /diary?deleteDate=2023-01-15T00%3A00%3A00 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /diary?date=2023-01-15T00%3A00%3A00 HTTP/1.1
 Content-Type: application/x-www-form-urlencoded;charset=UTF-8
 Token: ACCESS_TOKEN
 Host: localhost:8080</code></pre>
@@ -1096,7 +1096,7 @@ Host: localhost:8080</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deleteDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>date</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">삭제 날짜</p></td>
 </tr>
 </tbody>
@@ -1251,7 +1251,7 @@ Content-Length: 156
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-01-11 01:38:07 +0900
+Last updated 2023-01-10 20:40:14 +0900
 </div>
 </div>
 </body>

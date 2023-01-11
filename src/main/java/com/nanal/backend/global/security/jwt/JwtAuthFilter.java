@@ -2,6 +2,7 @@ package com.nanal.backend.global.security.jwt;
 
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
+import com.nanal.backend.global.response.ErrorCode;
 import com.nanal.backend.global.security.AuthenticationUtil;
 import com.nanal.backend.global.exception.customexception.TokenInvalidException;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (token != null && tokenService.verifyToken(token)) {
             // 토큰 파싱해서 socialId 정보 가져오기
             String socialId = tokenService.getUid(token);
-            Member findMember = memberRepository.findBySocialId(socialId).orElseThrow();
+            Member findMember = memberRepository.findBySocialId(socialId).orElseThrow(() -> new TokenInvalidException(ErrorCode.INVALID_TOKEN.getMessage()));
 
             // 이메일로 Authentication 정보 생성
             AuthenticationUtil.makeAuthentication(socialId, findMember.getEmail());

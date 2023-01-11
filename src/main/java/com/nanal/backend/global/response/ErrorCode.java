@@ -1,26 +1,25 @@
 package com.nanal.backend.global.response;
 
 import lombok.Getter;
-import org.apache.catalina.connector.Response;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
 
-    // Success
-    SUCCESS(true, Response.SC_OK, "요청에 성공하였습니다."),
-
+    INTERNAL_SERVER_ERROR(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "서버 내부에서 문제가 발생했습니다."),
 
     INVALID_INPUT_VALUE(false, 4000, "잘못된 입력값입니다."),
 
+    // Success
+    SUCCESS(true, HttpStatus.OK.value(), "요청에 성공하였습니다."),
+
     // Token
-    // 토큰이 없거나 유효하지 않은 상태에서 정보를 요청할 때.
-    INVALID_JWT(false, 4001, "토큰이 없거나 유효하지 않습니다. 로그인을 해주세요."),
     // 특정 정보를 권한이 없는 유저가 요청하거나, 존재하지 않는 정보를 요청할 때.
-    INVALID_REQUEST(false, 4002, "잘못된 요청입니다."),
+    INVALID_REQUEST(false, 4001, "잘못된 요청입니다."),
     // Token 이 유효하지 않을 때.
-    INVALID_TOKEN(false, 4003, "유효하지 않은 Token 입니다."),
+    INVALID_TOKEN(false, 4002, "유효하지 않은 Token 입니다."),
     // RefreshToken 이 유효하지 않을 때.
-    INVALID_REFRESH_TOKEN(false, 4004, "유효하지 않은 RefreshToken 입니다."),
+    INVALID_REFRESH_TOKEN(false, 4003, "유효하지 않은 RefreshToken 입니다."),
 
     // Auth
     MEMBER_NOT_FOUND(false, 4013, "존재하지 않는 사용자입니다."),

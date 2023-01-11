@@ -13,5 +13,5 @@ import java.time.LocalDateTime;
 public class ReqDeleteDiaryDto {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime deleteDate;
+    private LocalDateTime date;
 }

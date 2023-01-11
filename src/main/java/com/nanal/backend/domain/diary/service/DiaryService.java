@@ -42,7 +42,7 @@ public class DiaryService {
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
         // 요청된 기간내 유저의 기록이 존재하는 날 조회
-        List<LocalDateTime> existDiaryDate = getExistDiaryDate(member.getMemberId(), reqGetCalendarDto.getSelectDate());
+        List<LocalDateTime> existDiaryDate = getExistDiaryDateList(member.getMemberId(), reqGetCalendarDto.getSelectDate());
 
         // 회고 요일과 현재 날짜로 일기 작성 가능주 구하기
         LocalDateTime nextDayOfPrevRetroDate = getNextDayOfPrevRetroDate(member.getRetrospectDay(), reqGetCalendarDto.getCurrentDate());
@@ -69,29 +69,28 @@ public class DiaryService {
         diaryRepository.save(diary);
     }
 
-    public RespGetEmotionDto getEmotion() {
-        // 감정어 조회
-        List<Emotion> emotions = emotionRepository.findAll();
-
-        RespGetEmotionDto respGetEmotionDto = getRespGetEmotionDto(emotions);
-
-        return respGetEmotionDto;
-    }
-
     public RespGetDiaryDto getDiary(String socialId, ReqGetDiaryDto reqGetDiaryDto) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
-        System.out.println(reqGetDiaryDto.getDate());
-        // 질의할 sql 의 Like 절에 해당하게끔 변환
-        String yearMonthDay = reqGetDiaryDto.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
-        // 선택한 yyyy-MM-dd 에 작성한 일기 조회
-        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), yearMonthDay)
-                .orElseThrow(() -> new DiaryNotFoundException(ErrorCode.DIARY_NOT_FOUND.getMessage()));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+
+        // 조회할 일기 가져오기
+        Diary selectDiary = getSelectDiary(reqGetDiaryDto.getDate(), member.getMemberId());
 
         // 조회한 일기로 반환값 생성
         RespGetDiaryDto respGetDiaryDto = RespGetDiaryDto.makeRespGetDiaryDto(selectDiary);
 
         return respGetDiaryDto;
+    }
+
+    private Diary getSelectDiary(LocalDateTime date, Long memberId) {
+        // 질의할 sql 의 Like 절에 해당하게끔 변환
+        String yearMonthDay = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
+
+        // 선택한 yyyy-MM-dd 에 작성한 일기 조회
+        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(memberId, yearMonthDay)
+                .orElseThrow(() -> new DiaryNotFoundException(ErrorCode.DIARY_NOT_FOUND.getMessage()));
+
+        return selectDiary;
     }
 
     public void editDiary(String socialId, ReqEditDiaryDto reqEditDiary) {
@@ -135,6 +134,13 @@ public class DiaryService {
         diaryRepository.delete(selectDiary);
     }
 
+    public RespGetEmotionDto getEmotion() {
+        // 감정어 조회
+        RespGetEmotionDto respGetEmotionDto = getRespGetEmotionDto(emotionRepository.findAll());
+
+        return respGetEmotionDto;
+    }
+
 
     //===편의 메서드===//
 
@@ -174,7 +180,7 @@ public class DiaryService {
         return diary;
     }
 
-    private List<LocalDateTime> getExistDiaryDate(Long memberId, LocalDateTime selectTime) {
+    private List<LocalDateTime> getExistDiaryDateList(Long memberId, LocalDateTime selectTime) {
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonth = selectTime.format(DateTimeFormatter.ofPattern("yyyy-MM")) + "%";
 

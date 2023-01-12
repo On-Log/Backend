@@ -3,13 +3,14 @@
 
 [[MyPage-마이페이지-탭]]
 === MyPage 마이페이지 탭
-
+operation::mypage-controller-test/마이페이지_탭[snippets='http-request,request-headers,request-parameters,http-response,response-fields']
 
 
 [[MyPage-닉네임-변경]]
 === MyPage 닉네임 변경
-
+operation::mypage-controller-test/닉네임_변경[snippets='http-request,request-headers,request-fields,http-response,response-fields']
 
 
 [[MyPage-회고요일-변경]]
 === MyPage 회고요일 변경
+operation::mypage-controller-test/회고요일_변경[snippets='http-request,request-headers,request-fields,http-response,response-fields']

@@ -87,7 +87,7 @@ class DiaryControllerTest extends CommonControllerTest {
     }
 
     @Test
-    public void 일기_기록() throws Exception {
+    public void 일기_저장() throws Exception {
         //given
         String saveDate = "2023-01-22T00:00:00";
 

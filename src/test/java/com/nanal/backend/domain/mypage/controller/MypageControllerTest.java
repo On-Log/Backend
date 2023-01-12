@@ -2,7 +2,9 @@ package com.nanal.backend.domain.mypage.controller;
 
 import com.nanal.backend.config.CommonControllerTest;
 import com.nanal.backend.domain.mypage.dto.req.ReqEditNicknameDto;
+import com.nanal.backend.domain.mypage.dto.req.ReqEditRetrospectDayDto;
 import com.nanal.backend.domain.mypage.dto.resp.RespEditNicknameDto;
+import com.nanal.backend.domain.mypage.dto.resp.RespEditRetrospectDayDto;
 import com.nanal.backend.domain.mypage.dto.resp.RespGetUserDto;
 import com.nanal.backend.domain.mypage.service.MypageService;
 import org.junit.jupiter.api.Test;
@@ -96,4 +98,39 @@ public class MypageControllerTest extends CommonControllerTest {
                 );
     }
 
+    @Test
+    public void 회고요일_변경() throws Exception {
+        //given
+        ReqEditRetrospectDayDto reqEditRetrospectDayDto = new ReqEditRetrospectDayDto(LocalDate.of(2023, 1, 12).getDayOfWeek());
+        RespEditRetrospectDayDto respEditRetrospectDayDto = new RespEditRetrospectDayDto(LocalDate.of(2023, 1, 12).getDayOfWeek());
+        given(mypageService.updateRetrospectDay(any(), any())).willReturn(respEditRetrospectDayDto);
+        //when
+        ResultActions actions = mockMvc.perform(
+                put("/mypage/day")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reqEditRetrospectDayDto))
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestFields(
+                                        fieldWithPath("retrospectDay").description("변경한 회고일")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.userRetrospectDay").description("변경한 회고일")
+                                )
+                        )
+                );
+
+    }
 }

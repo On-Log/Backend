@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,9 +28,9 @@ public class CommonExceptionHandler {
     /**
      *  사용자 요청 관련 예외
      */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public CommonResponse<?> inputValueInvalidError(MethodArgumentNotValidException e) {
+    public CommonResponse<?> inputValueInvalidError(HttpServletResponse response, MethodArgumentNotValidException e) {
+        response.setStatus(ErrorCode.INVALID_INPUT_VALUE.getCode());
         log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
 
         List<String> errorMessages = e.getBindingResult().getAllErrors().stream()
@@ -42,16 +43,16 @@ public class CommonExceptionHandler {
     /**
      *  인증 관련 예외
      */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MemberAuthException.class)
-    public CommonResponse<?> memberNotFoundError(MemberAuthException e) {
+    public CommonResponse<?> memberNotFoundError(HttpServletResponse response, MemberAuthException e) {
+        response.setStatus(ErrorCode.MEMBER_NOT_FOUND.getCode());
         log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.MEMBER_NOT_FOUND);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(RefreshTokenInvalidException.class)
-    public CommonResponse<?> refreshTokenInvalidError(RefreshTokenInvalidException e) {
+    public CommonResponse<?> refreshTokenInvalidError(HttpServletResponse response, RefreshTokenInvalidException e) {
+        response.setStatus(ErrorCode.INVALID_REFRESH_TOKEN.getCode());
         log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.INVALID_REFRESH_TOKEN);
     }
@@ -59,16 +60,16 @@ public class CommonExceptionHandler {
     /**
      *  일기 관련 예외
      */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(DiaryNotFoundException.class)
-    public CommonResponse<?> diaryNotFoundError(DiaryNotFoundException e) {
+    public CommonResponse<?> diaryNotFoundError(HttpServletResponse response, DiaryNotFoundException e) {
+        response.setStatus(ErrorCode.DIARY_NOT_FOUND.getCode());
         log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.DIARY_NOT_FOUND);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(DiaryAlreadyExistException.class)
-    public CommonResponse<?> diaryAlreadyExistError(DiaryAlreadyExistException e) {
+    public CommonResponse<?> diaryAlreadyExistError(HttpServletResponse response, DiaryAlreadyExistException e) {
+        response.setStatus(ErrorCode.DIARY_ALREADY_EXIST.getCode());
         log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.DIARY_ALREADY_EXIST);
     }
@@ -76,16 +77,16 @@ public class CommonExceptionHandler {
     /**
      *  회고 관련 예외
      */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(RetrospectDayDupException.class)
-    public CommonResponse<?> retrospectDayDupError(RetrospectDayDupException e) {
+    public CommonResponse<?> retrospectDayDupError(HttpServletResponse response, RetrospectDayDupException e) {
+        response.setStatus(ErrorCode.RETROSPECT_DAY_DUPLICATION.getCode());
         log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.RETROSPECT_DAY_DUPLICATION);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(RetrospectNotFoundException.class)
-    public CommonResponse<?> retrospectNotFoundError(RetrospectNotFoundException e) {
+    public CommonResponse<?> retrospectNotFoundError(HttpServletResponse response, RetrospectNotFoundException e) {
+        response.setStatus(ErrorCode.RETROSPECT_NOT_FOUND.getCode());
         log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.RETROSPECT_NOT_FOUND);
     }
@@ -93,9 +94,9 @@ public class CommonExceptionHandler {
     /**
      *  사용자 정보 관련 예외
      */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ResetAvailException.class)
-    public CommonResponse<?> resetAvailError(ResetAvailException e) {
+    public CommonResponse<?> resetAvailError(HttpServletResponse response, ResetAvailException e) {
+        response.setStatus(ErrorCode.RESET_AVAIL_FALSE.getCode());
         log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.RESET_AVAIL_FALSE);
     }

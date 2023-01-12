@@ -446,9 +446,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#Overview">Overview</a>
+<li><a href="#Overview-http-status-codes">HTTP status codes</a>
 <ul class="sectlevel2">
-<li><a href="#Overview-http-status-codes">HTTP status codes</a></li>
+<li><a href="#Overview-common-status-codes">HTTP status codes</a></li>
+<li><a href="#Overview-diary-status-codes">Diary Status Codes</a></li>
+<li><a href="#Overview-Mypage-status-codes">Mypage Status Codes</a></li>
+<li><a href="#Overview-Retrospect-status-codes">Retrospect Status Codes</a></li>
 </ul>
 </li>
 <li><a href="#Auth-API">Auth API</a>
@@ -491,10 +494,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="Overview"><a class="link" href="#Overview">Overview</a></h2>
+<h2 id="Overview-http-status-codes"><a class="link" href="#Overview-http-status-codes">HTTP status codes</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="Overview-http-status-codes"><a class="link" href="#Overview-http-status-codes">HTTP status codes</a></h3>
+<h3 id="Overview-common-status-codes"><a class="link" href="#Overview-common-status-codes">HTTP status codes</a></h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -539,6 +542,25 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">전체</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">존재하지 않는 사용자</p></td>
 </tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="Overview-diary-status-codes"><a class="link" href="#Overview-diary-status-codes">Diary Status Codes</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Status Code</th>
+<th class="tableblock halign-left valign-top">Scope</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>4020 DIARY_NOT_FOUND</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">일기 조회/수정/삭제</p></td>
@@ -549,20 +571,58 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">일기 저장</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">이미 요청한 날짜에 작성된 일기 존재</p></td>
 </tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="Overview-Mypage-status-codes"><a class="link" href="#Overview-Mypage-status-codes">Mypage Status Codes</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Status Code</th>
+<th class="tableblock halign-left valign-top">Scope</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>4030 RETROSPECT_DAY_DUPLICATION</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">mypage</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고 요일 변경</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이전 회고 요일과 같은 회고 요일로 변경시도</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>4031 RESET_AVAIL_FALSE</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">mypage</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고 요일 변경</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">해당 달에 회고 요일 변경 불가능</p></td>
 </tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="Overview-Retrospect-status-codes"><a class="link" href="#Overview-Retrospect-status-codes">Retrospect Status Codes</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Status Code</th>
+<th class="tableblock halign-left valign-top">Scope</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>4041 RETROSPECT_NOT_FOUND</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고 조회/수정</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청한 기간에 작성된 회고 존재하지 않음</p></td>
 </tr>
 </tbody>
 </table>

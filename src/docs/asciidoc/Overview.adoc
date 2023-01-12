@@ -1,7 +1,7 @@
-[[Overview]]
-== Overview
-
 [[Overview-http-status-codes]]
+== HTTP status codes
+
+[[Overview-common-status-codes]]
 === HTTP status codes
 
 |===
@@ -30,6 +30,14 @@
 | `4010 MEMBER_NOT_FOUND`
 | 전체
 | 존재하지 않는 사용자
+|===
+
+
+[[Overview-diary-status-codes]]
+=== Diary Status Codes
+
+|===
+| Status Code | Scope | Description
 
 | `4020 DIARY_NOT_FOUND`
 | 일기 조회/수정/삭제
@@ -38,17 +46,32 @@
 | `4021 DIARY_ALREADY_EXIST`
 | 일기 저장
 | 이미 요청한 날짜에 작성된 일기 존재
+|===
+
+
+[[Overview-Mypage-status-codes]]
+=== Mypage Status Codes
+
+|===
+| Status Code | Scope | Description
 
 | `4030 RETROSPECT_DAY_DUPLICATION`
-| mypage
-|
+| 회고 요일 변경
+| 이전 회고 요일과 같은 회고 요일로 변경시도
 
 | `4031 RESET_AVAIL_FALSE`
-| mypage
-|
+| 회고 요일 변경
+| 해당 달에 회고 요일 변경 불가능
+|===
+
+
+[[Overview-Retrospect-status-codes]]
+=== Retrospect Status Codes
+
+|===
+| Status Code | Scope | Description
 
 | `4041 RETROSPECT_NOT_FOUND`
-|
-|
-
+| 회고 조회/수정
+| 요청한 기간에 작성된 회고 존재하지 않음
 |===

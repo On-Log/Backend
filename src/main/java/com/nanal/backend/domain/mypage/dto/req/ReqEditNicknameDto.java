@@ -1,10 +1,14 @@
 package com.nanal.backend.domain.mypage.dto.req;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class ReqEditNicknameDto {
     @NotBlank(message = "nickname 은 비어있을 수 없습니다.")

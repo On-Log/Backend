@@ -36,7 +36,7 @@ public class DiaryController {
     }
 
     /**
-     * 일기 기록
+     * 일기 저장
      * [POST] /diary
      */
     @PostMapping("/diary")

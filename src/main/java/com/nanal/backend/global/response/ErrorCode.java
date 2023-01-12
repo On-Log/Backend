@@ -8,27 +8,30 @@ public enum ErrorCode {
 
     INTERNAL_SERVER_ERROR(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "서버 내부에서 문제가 발생했습니다."),
 
-    INVALID_INPUT_VALUE(false, 4000, "잘못된 입력값입니다."),
-
     // Success
     SUCCESS(true, HttpStatus.OK.value(), "요청에 성공하였습니다."),
 
-    // Token
+
     // 특정 정보를 권한이 없는 유저가 요청하거나, 존재하지 않는 정보를 요청할 때.
-    INVALID_REQUEST(false, 4001, "잘못된 요청입니다."),
+    INVALID_REQUEST(false, 400, "잘못된 요청입니다."),
+
+    // Validation
+    INVALID_INPUT_VALUE(false, 4001, "잘못된 입력값입니다."),
+
+    // Token
     // Token 이 유효하지 않을 때.
     INVALID_TOKEN(false, 4002, "유효하지 않은 Token 입니다."),
     // RefreshToken 이 유효하지 않을 때.
     INVALID_REFRESH_TOKEN(false, 4003, "유효하지 않은 RefreshToken 입니다."),
 
     // Auth
-    MEMBER_NOT_FOUND(false, 4013, "존재하지 않는 사용자입니다."),
+    MEMBER_NOT_FOUND(false, 4010, "존재하지 않는 사용자입니다."),
 
     // Diary
     // 일기 조회시 해당 날짜에 일기가 존재하지 않을 때.
-    DIARY_NOT_FOUND(false, 4020, "해당 날짜에 작성된 일기가 없습니다."),
+    DIARY_NOT_FOUND(false, 4020, "요청한 날짜에 작성된 일기가 없습니다."),
     // 일기 저장시 해당 날짜에 일기가 이미 존재할 때.
-    DIARY_ALREADY_EXIST(false, 4021, "이미 해당 날짜에 작성한 일기가 존재합니다."),
+    DIARY_ALREADY_EXIST(false, 4021, "이미 요청한 날짜에 작성한 일기가 존재합니다."),
 
 
     // MyPage

@@ -446,6 +446,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
+<li><a href="#Overview">Overview</a>
+<ul class="sectlevel2">
+<li><a href="#Overview-http-status-codes">HTTP status codes</a></li>
+</ul>
+</li>
 <li><a href="#Auth-API">Auth API</a>
 <ul class="sectlevel2">
 <li><a href="#Auth-Naver-소셜-로그인">Auth Naver 소셜 로그인</a></li>
@@ -464,7 +469,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#Diary-API">Diary API</a>
 <ul class="sectlevel2">
 <li><a href="#Diary-일기-탭">Diary 일기 탭</a></li>
-<li><a href="#Diary-일기-기록">Diary 일기 기록</a></li>
+<li><a href="#Diary-일기-저장">Diary 일기 기록</a></li>
 <li><a href="#Diary-일기-조회">Diary 일기 조회</a></li>
 <li><a href="#Diary-일기-수정">Diary 일기 수정</a></li>
 <li><a href="#Diary-일기-삭제">Diary 일기 삭제</a></li>
@@ -485,6 +490,85 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div id="content">
+<div class="sect1">
+<h2 id="Overview"><a class="link" href="#Overview">Overview</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="Overview-http-status-codes"><a class="link" href="#Overview-http-status-codes">HTTP status codes</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Status Code</th>
+<th class="tableblock halign-left valign-top">Scope</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>200 SUCCESS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전체</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성공</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4000 INVALID_REQUEST</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전체</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">잘못된 요청</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4001 INVALID_INPUT_VALUE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전체</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">잘못된 입력 형식</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4002 INVALID_TOKEN</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전체</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유효하지 않은 Token</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4003 INVALID_REFRESH_TOKEN</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전체</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유효하지 않은 RefreshToken</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4010 MEMBER_NOT_FOUND</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전체</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">존재하지 않는 사용자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4020 DIARY_NOT_FOUND</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일기 조회/수정/삭제</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청한 날짜에 작성된 일기 존재하지 않음</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4021 DIARY_ALREADY_EXIST</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일기 저장</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이미 요청한 날짜에 작성된 일기 존재</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4030 RETROSPECT_DAY_DUPLICATION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mypage</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4031 RESET_AVAIL_FALSE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mypage</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4041 RETROSPECT_NOT_FOUND</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="Auth-API"><a class="link" href="#Auth-API">Auth API</a></h2>
 <div class="sectionbody">
@@ -1057,9 +1141,9 @@ Content-Length: 359
 </div>
 </div>
 <div class="sect2">
-<h3 id="Diary-일기-기록"><a class="link" href="#Diary-일기-기록">Diary 일기 기록</a></h3>
+<h3 id="Diary-일기-저장"><a class="link" href="#Diary-일기-저장">Diary 일기 기록</a></h3>
 <div class="sect3">
-<h4 id="Diary-일기-기록_http_request"><a class="link" href="#Diary-일기-기록_http_request">HTTP request</a></h4>
+<h4 id="Diary-일기-저장_http_request"><a class="link" href="#Diary-일기-저장_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /diary HTTP/1.1
@@ -1104,7 +1188,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="Diary-일기-기록_request_headers"><a class="link" href="#Diary-일기-기록_request_headers">Request headers</a></h4>
+<h4 id="Diary-일기-저장_request_headers"><a class="link" href="#Diary-일기-저장_request_headers">Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -1125,7 +1209,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="Diary-일기-기록_request_fields"><a class="link" href="#Diary-일기-기록_request_fields">Request fields</a></h4>
+<h4 id="Diary-일기-저장_request_fields"><a class="link" href="#Diary-일기-저장_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1164,7 +1248,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="Diary-일기-기록_http_response"><a class="link" href="#Diary-일기-기록_http_response">HTTP response</a></h4>
+<h4 id="Diary-일기-저장_http_response"><a class="link" href="#Diary-일기-저장_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -1180,7 +1264,7 @@ Content-Length: 94
 </div>
 </div>
 <div class="sect3">
-<h4 id="Diary-일기-기록_response_fields"><a class="link" href="#Diary-일기-기록_response_fields">Response fields</a></h4>
+<h4 id="Diary-일기-저장_response_fields"><a class="link" href="#Diary-일기-저장_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2601,7 +2685,7 @@ Content-Length: 1029
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-01-10 22:37:06 +0900
+Last updated 2023-01-12 08:46:35 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

@@ -1,17 +1,15 @@
 package com.nanal.backend.domain.mypage.service;
 
+import com.nanal.backend.domain.auth.entity.Member;
+import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.mypage.dto.req.ReqEditNicknameDto;
 import com.nanal.backend.domain.mypage.dto.req.ReqEditRetrospectDayDto;
-import com.nanal.backend.domain.mypage.dto.req.ReqGetUserDto;
 import com.nanal.backend.domain.mypage.dto.resp.RespEditNicknameDto;
 import com.nanal.backend.domain.mypage.dto.resp.RespEditRetrospectDayDto;
 import com.nanal.backend.domain.mypage.dto.resp.RespGetUserDto;
-import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.mypage.exception.ResetAvailException;
 import com.nanal.backend.domain.mypage.exception.RetrospectDayDupException;
-import com.nanal.backend.domain.auth.repository.MemberRepository;
-import com.nanal.backend.global.security.User;
-import com.nanal.backend.domain.auth.entity.Member;
+import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +24,7 @@ public class MypageService {
 
     private final MemberRepository memberRepository;
 
-    public RespGetUserDto getUser(String socialId, ReqGetUserDto reqGetUserDto) {
+    public RespGetUserDto getUser(String socialId) {
 
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));

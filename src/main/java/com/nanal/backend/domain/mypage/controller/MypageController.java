@@ -2,7 +2,6 @@ package com.nanal.backend.domain.mypage.controller;
 
 import com.nanal.backend.domain.mypage.dto.req.ReqEditNicknameDto;
 import com.nanal.backend.domain.mypage.dto.req.ReqEditRetrospectDayDto;
-import com.nanal.backend.domain.mypage.dto.req.ReqGetUserDto;
 import com.nanal.backend.domain.mypage.dto.resp.RespEditNicknameDto;
 import com.nanal.backend.domain.mypage.dto.resp.RespEditRetrospectDayDto;
 import com.nanal.backend.domain.mypage.dto.resp.RespGetUserDto;
@@ -11,7 +10,10 @@ import com.nanal.backend.global.response.CommonResponse;
 import com.nanal.backend.global.security.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -27,11 +29,10 @@ public class MypageController {
      * [GET] /mypage
      */
     @GetMapping("/mypage")
-    public CommonResponse<RespGetUserDto> getUser(@AuthenticationPrincipal User user,
-                                                  @Valid ReqGetUserDto reqGetUserDto) {
+    public CommonResponse<RespGetUserDto> getUser(@AuthenticationPrincipal User user) {
 
         // 유저 정보 조회
-        RespGetUserDto respGetUserDto = mypageService.getUser(user.getSocialId(), reqGetUserDto);
+        RespGetUserDto respGetUserDto = mypageService.getUser(user.getSocialId());
 
         return new CommonResponse<>(respGetUserDto);
     }

@@ -5,29 +5,29 @@
 === HTTP status codes
 
 |===
-| Status Code | Scope | Description
+| Status | Scope | Description
 
 | `200 SUCCESS`
 | 전체
 | 성공
 
-| `4000 INVALID_REQUEST`
+| `400 BAD_REQUEST`
 | 전체
 | 잘못된 요청
 
-| `4001 INVALID_INPUT_VALUE`
+| `455 INVALID_INPUT_VALUE`
 | 전체
 | 잘못된 입력 형식
 
-| `4002 INVALID_TOKEN`
+| `456 INVALID_TOKEN`
 | 전체
 | 유효하지 않은 Token
 
-| `4003 INVALID_REFRESH_TOKEN`
+| `457 INVALID_REFRESH_TOKEN`
 | 전체
 | 유효하지 않은 RefreshToken
 
-| `4010 MEMBER_NOT_FOUND`
+| `460 MEMBER_NOT_FOUND`
 | 전체
 | 존재하지 않는 사용자
 |===
@@ -37,29 +37,29 @@
 === Diary Status Codes
 
 |===
-| Status Code | Scope | Description
+| Status | Scope | Description
 
-| `4020 DIARY_NOT_FOUND`
+| `470 DIARY_NOT_FOUND`
 | 일기 조회/수정/삭제
 | 요청한 날짜에 작성된 일기 존재하지 않음
 
-| `4021 DIARY_ALREADY_EXIST`
+| `471 DIARY_ALREADY_EXIST`
 | 일기 저장
 | 이미 요청한 날짜에 작성된 일기 존재
 |===
 
 
-[[Overview-Mypage-status-codes]]
-=== Mypage Status Codes
+[[Overview-MyPage-status-codes]]
+=== MyPage Status Codes
 
 |===
-| Status Code | Scope | Description
+| Status | Scope | Description
 
-| `4030 RETROSPECT_DAY_DUPLICATION`
+| `480 RETROSPECT_DAY_DUPLICATION`
 | 회고 요일 변경
 | 이전 회고 요일과 같은 회고 요일로 변경시도
 
-| `4031 RESET_AVAIL_FALSE`
+| `481 RESET_AVAIL_FALSE`
 | 회고 요일 변경
 | 해당 달에 회고 요일 변경 불가능
 |===
@@ -69,9 +69,9 @@
 === Retrospect Status Codes
 
 |===
-| Status Code | Scope | Description
+| Status | Scope | Description
 
-| `4041 RETROSPECT_NOT_FOUND`
+| `490 RETROSPECT_NOT_FOUND`
 | 회고 조회/수정
 | 요청한 기간에 작성된 회고 존재하지 않음
 |===

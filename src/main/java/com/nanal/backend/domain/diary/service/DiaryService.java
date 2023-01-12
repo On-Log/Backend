@@ -145,7 +145,7 @@ public class DiaryService {
         // 선택한 yyyy-MM-dd 에 작성한 일기 조회
         List<Diary> existDiary = diaryRepository.findDiaryListByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
 
-        if(existDiary.size() == 1) throw new DiaryAlreadyExistException(ErrorCode.DIARY_ALREADY_EXIST.getMessage());
+        if(existDiary.size() != 0) throw new DiaryAlreadyExistException(ErrorCode.DIARY_ALREADY_EXIST.getMessage());
     }
 
     private Diary createDiary(Member member, ReqDiaryDto reqDiaryDto) {

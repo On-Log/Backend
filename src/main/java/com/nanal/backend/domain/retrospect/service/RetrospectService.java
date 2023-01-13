@@ -82,7 +82,7 @@ public class RetrospectService {
         //회고 저장 후 일주일 일기 리스트 editstatus 변경
         LocalDateTime currentTime = reqSaveRetroDto.getCurrentDate();
         LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
-        List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate());
+        List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate(),true);
         for(Diary t : diaries) {
             t.changeEditStatus(false);
         }
@@ -134,7 +134,9 @@ public class RetrospectService {
         List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(
                 member.getMemberId(),
                 prevRetroDate.toLocalDate().minusDays(6),
-                currentTime.toLocalDate());
+                currentTime.toLocalDate(),
+                true
+                );
 
         RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.makeRespGetKeywordAndEmotionDto(diaries);
 

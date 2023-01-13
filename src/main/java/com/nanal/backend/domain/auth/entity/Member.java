@@ -27,7 +27,7 @@ public class Member extends BaseTime {
     private String socialId;
 
     // RFC 표준상 최대 320자.
-    @Column(unique = true, nullable = false, length = 50)
+    @Column(nullable = false, length = 50)
     private String email;
 
     @Enumerated(EnumType.STRING)

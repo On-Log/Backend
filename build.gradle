@@ -1,7 +1,10 @@
 plugins {
     id 'org.springframework.boot' version '2.7.5'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    // RestDocs
     id "org.asciidoctor.jvm.convert" version "3.3.2"
+    // Querydsl
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
     id 'java'
 }
 
@@ -59,13 +62,33 @@ dependencies {
 
     // WebClient 사용
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // Querydsl
+    implementation 'com.querydsl:querydsl-jpa:5.0.0'
+    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
 }
 
-// RestDocs 설정 정보
+// querydsl 설정
+def querydslDir = "$buildDir/generated/querydsl"
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+sourceSets {
+    main.java.srcDir querydslDir
+}
+configurations {
+    querydsl.extendsFrom compileClasspath
+}
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
+
+// RestDocs 설정
 ext {
     snippetsDir = file('build/generated-snippets')
 }
@@ -98,3 +121,5 @@ task copyDocument(type: Copy) {
 build {
     dependsOn copyDocument
 }
+
+

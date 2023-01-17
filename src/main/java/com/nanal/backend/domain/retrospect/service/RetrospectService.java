@@ -3,10 +3,7 @@ package com.nanal.backend.domain.retrospect.service;
 import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.retrospect.dto.req.*;
-import com.nanal.backend.domain.retrospect.dto.resp.RespGetInfoDto;
-import com.nanal.backend.domain.retrospect.dto.resp.RespGetKeywordAndEmotionDto;
-import com.nanal.backend.domain.retrospect.dto.resp.RespGetQuestionAndHelpDto;
-import com.nanal.backend.domain.retrospect.dto.resp.RespGetRetroDto;
+import com.nanal.backend.domain.retrospect.dto.resp.*;
 import com.nanal.backend.domain.retrospect.entity.Question;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import com.nanal.backend.domain.retrospect.entity.RetrospectContent;
@@ -62,13 +59,11 @@ public class RetrospectService {
         // 회고 요일까지 남은 날짜
         Period period = Period.between(currentDate.toLocalDate(), postRetroDate.toLocalDate());
         // 회고 주제별로 분류 후 주차별로 분류
-        List<List<List<String>>> existRetrospectKeyword = getKeyword(member, selectDate);
+        List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = getKeyword(member, selectDate);
 
-        return RespGetInfoDto.builder()
-                .existRetrospect(existRetrospect)
-                .betweenDate(period.getDays())
-                .existRetrospectKeyword(existRetrospectKeyword)
-                .build();
+        RespGetInfoDto respGetInfoDto = new RespGetInfoDto(existRetrospect, period.getDays(), respGetClassifiedKeywordDtos);
+
+        return respGetInfoDto;
     }
 
 
@@ -190,7 +185,7 @@ public class RetrospectService {
         return retrospects;
     }
 
-    private List<List<List<String>>> getKeyword(Member member, LocalDateTime selectTime){
+    private List<RespGetClassifiedKeywordDto> getKeyword(Member member, LocalDateTime selectTime) {
         // 전체 분할한 키워드 리스트들
         // 분류1 : [
         //   1차 : [
@@ -200,7 +195,6 @@ public class RetrospectService {
         //   3차 : [
         //   ]
         //]
-        List<List<List<String>>> keywordList = new ArrayList<>();
 
         //회고별 분류
         //   1차 : [
@@ -218,27 +212,30 @@ public class RetrospectService {
                 member.getMemberId(),
                 yearMonth);
 
+
         //회고의 분류 리스트 생성
         List<String> keyWordClass = new ArrayList<>();
         keyWordClass.add("그때 그대로 의미있었던 행복한 기억");
         keyWordClass.add("나를 힘들게 했지만 도움이 된 기억");
         keyWordClass.add("돌아보니, 다른 의미로 다가온 기억");
-        keyWordClass.add("놓아줘도 괜찮은 기억");
 
+        List<ClassifyDto> classifyDtos = new ArrayList<>();
+        List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = new ArrayList<>();
+        RespGetClassifiedKeywordDto respGetClassifiedKeywordDto = new RespGetClassifiedKeywordDto();
         for (int i = 0; i < keyWordClass.size(); i++) {
-            List<List<String>> klist = new ArrayList<>();
+            classifyDtos = new ArrayList<>();
             for (Retrospect t : writeRetrospect) {
+                //한 회고에 대한 키워드 리스트
                 List<RetrospectKeyword> classifiedKeyword = retrospectKeywordRepository.findListByRetroAndClassify(t.getRetrospectId(), keyWordClass.get(i));
-                //t번째 회고의 i번째 분류 키워드
-                List<String> keyword = new ArrayList<>();
-                for (RetrospectKeyword r : classifiedKeyword) {
-                    keyword.add(r.getKeyword());
-                }
-                klist.add(keyword);
+                ClassifyDto classifyDto = new ClassifyDto();
+                //t차 회고의 i 번째 분류 과정 시작 가장 첫 시작은 첫번째 회고의 첫번째 분류
+                classifyDto = ClassifyDto.makeClassifyDto(classifiedKeyword);
+                classifyDtos.add(classifyDto);
             }
-            keywordList.add(klist);
+            // i 번째 분류 과정 완
+            respGetClassifiedKeywordDto = RespGetClassifiedKeywordDto.makeRespGetExistRetrospectKeyword(classifyDtos, keyWordClass.get(i));
+            respGetClassifiedKeywordDtos.add(respGetClassifiedKeywordDto);
         }
-
-        return keywordList;
+        return respGetClassifiedKeywordDtos;
     }
 }

@@ -5,9 +5,7 @@ import com.nanal.backend.domain.diary.dto.req.KeywordEmotionDto;
 import com.nanal.backend.domain.retrospect.dto.QuestionsDto;
 import com.nanal.backend.domain.retrospect.dto.RetrospectContentDto;
 import com.nanal.backend.domain.retrospect.dto.RetrospectKeywordDto;
-import com.nanal.backend.domain.retrospect.dto.req.KeywordDto;
-import com.nanal.backend.domain.retrospect.dto.req.ReqEditRetroDto;
-import com.nanal.backend.domain.retrospect.dto.req.ReqSaveRetroDto;
+import com.nanal.backend.domain.retrospect.dto.req.*;
 import com.nanal.backend.domain.retrospect.dto.resp.*;
 import com.nanal.backend.domain.retrospect.service.RetrospectService;
 import org.junit.jupiter.api.Test;
@@ -43,15 +41,52 @@ public class RetrospectControllerTest extends CommonControllerTest {
         //given
         String currentDate = "2023-01-22T00:00:00";
         String selectDate = "2023-01-13T00:00:00";
-        List<String> weekkeyword1 = new ArrayList<>(Arrays.asList("1주차 키워드1, 1주차 키워드2")); //분류한 키워드를 주차별로 나누는 리스트
-        List<String> weekkeyword2 = new ArrayList<>(Arrays.asList("1주차 키워드3")); //주차 별 키워드
-        List<String> weekkeyword3 = new ArrayList<>(Arrays.asList("1주차 키워드4")); //주차 별 키워드
-        List<List<String>> classifykeyword1 = new ArrayList<>(Arrays.asList(weekkeyword1)); //키워드 분류하는 리스트
-        List<List<String>> classifykeyword2 = new ArrayList<>(Arrays.asList(weekkeyword2));
-        List<List<String>> classifykeyword3 = new ArrayList<>(Arrays.asList(weekkeyword3));
+        List<ClassifyKeywordDto> firstweek1= new ArrayList<>(Arrays.asList(
+                new ClassifyKeywordDto("앱출시")
+        ));
+        List<ClassifyKeywordDto> firstweek2 = new ArrayList<>(Arrays.asList(
+                new ClassifyKeywordDto("창업")
+        ));
 
-        List<List<List<String>>> existRetrospectKeyword = new ArrayList<>(Arrays.asList(classifykeyword1, classifykeyword2, classifykeyword3));
-        RespGetInfoDto respGetInfoDto = new RespGetInfoDto(new ArrayList<>(Arrays.asList("자아탐색")), 6, existRetrospectKeyword);
+        List<ClassifyKeywordDto> secondweek1 = new ArrayList<>(Arrays.asList(
+                new ClassifyKeywordDto("면접"),
+                new ClassifyKeywordDto("자격증시험")
+        ));
+
+        List<ClassifyKeywordDto> secondweek2  = new ArrayList<>(Arrays.asList(
+                new ClassifyKeywordDto("알바")
+        ));
+
+
+        List<ClassifyKeywordDto>  thirdweek1 = new ArrayList<>(Arrays.asList(
+                new ClassifyKeywordDto("봉사")
+        ));
+        List<ClassifyKeywordDto>  thirdweek2 = new ArrayList<>(Arrays.asList(
+                new ClassifyKeywordDto("취준")
+        ));
+
+        List<ClassifyDto> classifyDtos1 = new ArrayList<>(Arrays.asList(
+                new ClassifyDto(firstweek1),
+                new ClassifyDto(firstweek2)
+        ));
+
+        List<ClassifyDto> classifyDtos2 = new ArrayList<>(Arrays.asList(
+                new ClassifyDto(secondweek1),
+                new ClassifyDto(secondweek2)
+        ));
+
+        List<ClassifyDto> classifyDtos3 = new ArrayList<>(Arrays.asList(
+                new ClassifyDto(thirdweek1),
+                new ClassifyDto(thirdweek2)
+        ));
+
+        List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = new ArrayList<>(Arrays.asList(
+                new RespGetClassifiedKeywordDto(classifyDtos1, "그때 그대로 의미있었던 행복한 기억"),
+                new RespGetClassifiedKeywordDto(classifyDtos2, "나를 힘들게 했지만 도움이 된 기억"),
+                new RespGetClassifiedKeywordDto(classifyDtos3, "돌아보니, 다른 의미로 다가온 기억")
+        ));
+
+        RespGetInfoDto respGetInfoDto = new RespGetInfoDto(new ArrayList<>(Arrays.asList("자아탐색", "성취확인")), 6, respGetClassifiedKeywordDtos);
         given(retrospectService.getInfo(any(), any())).willReturn(respGetInfoDto);
 
         //when
@@ -81,14 +116,14 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("message").description("결과 메시지"),
                                         fieldWithPath("result.existRetrospect").description("회고 목적"),
                                         fieldWithPath("result.betweenDate").description("다음 회고까지 남은 날"),
-                                        fieldWithPath("result.existRetrospectKeyword[].[].[]").description("키워드 분류")
+                                        fieldWithPath("result.keywordList[].val").description("키워드 분류 주제"),
+                                        fieldWithPath("result.keywordList[].classify[].weeklykeywords[].keyword").description("주차별 키워드. 1차 회고부터 순서대로임")
 
                                 )
                         )
                 );
 
     }
-
     @Test
     public void 회고_저장() throws Exception {
         //given

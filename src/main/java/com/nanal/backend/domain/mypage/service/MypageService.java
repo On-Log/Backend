@@ -42,7 +42,7 @@ public class MypageService {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
-        member.setNickname(reqEditNickname.getNickname());
+        member.updateNickname(reqEditNickname.getNickname());
 
         return RespEditNicknameDto.builder()
                 .userNickname(member.getNickname())
@@ -55,30 +55,10 @@ public class MypageService {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
-        // 회고일이 같은 경우, error.
-        if (checkRetrospectDay(member, reqEditRetrospectDayDto.getRetrospectDay())) {throw new RetrospectDayDupException(ErrorCode.RETROSPECT_DAY_DUPLICATION.getMessage());}
-        // resetAvail이 false일 때(= 회고일 변경으로부터 한 달이 지나지 않아 변경할 수 없을 때.), error.
-        if (checkResetAvail(member)) {throw new ResetAvailException(ErrorCode.RESET_AVAIL_FALSE.getMessage());}
-
-        member.setRetrospectDay(reqEditRetrospectDayDto.getRetrospectDay());
+        member.updateRetrospectDay(reqEditRetrospectDayDto.getRetrospectDay());
 
         return RespEditRetrospectDayDto.builder()
                 .userRetrospectDay(member.getRetrospectDay())
                 .build();
-    }
-
-    //===편의 메서드===//
-
-    public boolean checkRetrospectDay(Member member, DayOfWeek retrospectDay) {
-        if(member.getRetrospectDay().equals(retrospectDay)) //기존 값이 받은 값과 같으면
-            return true;
-        return false;
-    }
-
-    public boolean checkResetAvail(Member member) {
-        if(member.getResetAvail() == false) return true;
-
-        member.setResetAvail(false);
-        return false;
     }
 }

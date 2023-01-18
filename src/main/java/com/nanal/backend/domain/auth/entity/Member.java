@@ -2,8 +2,11 @@ package com.nanal.backend.domain.auth.entity;
 
 import com.nanal.backend.domain.auth.enumerate.MemberProvider;
 import com.nanal.backend.domain.diary.entity.Diary;
+import com.nanal.backend.domain.mypage.exception.ResetAvailException;
+import com.nanal.backend.domain.mypage.exception.RetrospectDayDupException;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import com.nanal.backend.global.config.BaseTime;
+import com.nanal.backend.global.response.ErrorCode;
 import lombok.*;
 
 import javax.persistence.*;
@@ -66,14 +69,35 @@ public class Member extends BaseTime {
     }
 
     //==수정 메서드==//
-    public void setNickname(String nickname) { this.nickname = nickname; }
-
-    public void setRetrospectDay(DayOfWeek retrospectDay) {
-        this.retrospectDay = retrospectDay;
-    }
+    public void updateNickname(String nickname) { this.nickname = nickname; }
 
     public void setResetAvail(Boolean resetAvail) {
         this.resetAvail = resetAvail;
+    }
+
+    public void updateRetrospectDay(DayOfWeek retrospectDay) {
+        // 요청 회고요일로 변경 가능한지 검증
+        checkUpdateRetrospectDay(retrospectDay);
+
+        this.retrospectDay = retrospectDay;
+    }
+
+    public void checkUpdateRetrospectDay(DayOfWeek retrospectDay) {
+        // 회고일이 같은 경우, error.
+        if (checkRetrospectDay(retrospectDay)) {throw new RetrospectDayDupException(ErrorCode.RETROSPECT_DAY_DUPLICATION.getMessage());}
+        // resetAvail이 false일 때(이번달에 이미 회고요일 변경이 있었을 때), error.
+        if (checkResetAvail()) {throw new ResetAvailException(ErrorCode.RESET_AVAIL_FALSE.getMessage());}
+    }
+
+    public boolean checkRetrospectDay(DayOfWeek retrospectDay) {
+        return getRetrospectDay().equals(retrospectDay);
+    }
+
+    public boolean checkResetAvail() {
+        if(getResetAvail() == false) return true;
+
+        setResetAvail(false);
+        return false;
     }
 }
 

@@ -10,6 +10,7 @@ import com.nanal.backend.domain.mypage.dto.resp.RespGetUserDto;
 import com.nanal.backend.domain.mypage.exception.ResetAvailException;
 import com.nanal.backend.domain.mypage.exception.RetrospectDayDupException;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
+import com.nanal.backend.global.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class MypageService {
     public RespGetUserDto getUser(String socialId) {
 
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
         return RespGetUserDto.builder()
                 .userEmail(member.getEmail())
@@ -39,7 +40,7 @@ public class MypageService {
     @Transactional
     public RespEditNicknameDto updateNickname(String socialId, ReqEditNicknameDto reqEditNickname) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
         member.setNickname(reqEditNickname.getNickname());
 
@@ -52,12 +53,12 @@ public class MypageService {
     public RespEditRetrospectDayDto updateRetrospectDay(String socialId, ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
 
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
         // 회고일이 같은 경우, error.
-        if (checkRetrospectDay(member, reqEditRetrospectDayDto.getRetrospectDay())) {throw new RetrospectDayDupException("이전 회고일과 같은 회고일을 선택했습니다.");}
+        if (checkRetrospectDay(member, reqEditRetrospectDayDto.getRetrospectDay())) {throw new RetrospectDayDupException(ErrorCode.RETROSPECT_DAY_DUPLICATION.getMessage());}
         // resetAvail이 false일 때(= 회고일 변경으로부터 한 달이 지나지 않아 변경할 수 없을 때.), error.
-        if (checkResetAvail(member)) {throw new ResetAvailException("이번 달에 이미 회고일을 변경했습니다.");}
+        if (checkResetAvail(member)) {throw new ResetAvailException(ErrorCode.RESET_AVAIL_FALSE.getMessage());}
 
         member.setRetrospectDay(reqEditRetrospectDayDto.getRetrospectDay());
 

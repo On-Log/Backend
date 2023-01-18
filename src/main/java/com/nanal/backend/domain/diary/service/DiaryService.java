@@ -104,7 +104,7 @@ public class DiaryService {
 
     public void deleteDiary(String socialId, ReqDeleteDiaryDto reqDeleteDiaryDto) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
         /*
         일기와 해당 일기의 키워드, 감정어등을 삭제하고자 할 때, 일기 Entity 를 가져온 다음에 해당 Entity 를 삭제하는 식으로 이루어 짐.

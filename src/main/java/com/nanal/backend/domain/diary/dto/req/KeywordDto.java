@@ -1,6 +1,5 @@
 package com.nanal.backend.domain.diary.dto.req;
 
-import com.nanal.backend.domain.diary.dto.resp.KeywordStringDto;
 import com.nanal.backend.domain.diary.entity.Keyword;
 import com.nanal.backend.domain.diary.entity.KeywordEmotion;
 import lombok.AllArgsConstructor;

@@ -16,7 +16,6 @@ import java.time.LocalDate;
 public class ClientNaver {
     private final WebClient webClient;
 
-    // TODO ADMIN 유저 생성 시 getAdminUserData 메소드 생성 필요
     public Member getUserData(String accessToken) {
         NaverUserResponseDto naverUserResponseDto = webClient.get()
                 .uri("https://openapi.naver.com/v1/nid/me") // Naver의 유저 정보 받아오는 url
@@ -28,6 +27,8 @@ public class ClientNaver {
                 .bodyToMono(NaverUserResponseDto.class) // Naver의 유저 정보를 넣을 Dto 클래스
                 .block();
 
+        naverUserResponseDto.adaptResponse();
+
         return Member.builder()
                 .socialId(MemberProvider.NAVER + "@" + naverUserResponseDto.getResponse().getId())
                 .provider(MemberProvider.NAVER)
@@ -36,7 +37,9 @@ public class ClientNaver {
                 // 당일로 회고일 설정
                 .retrospectDay(LocalDate.now().getDayOfWeek())
                 .resetAvail(Boolean.TRUE)
-                .nickname("Anonymous User")
+                .nickname(naverUserResponseDto.getResponse().getNickname())
+                .gender(naverUserResponseDto.getResponse().getGender())
+                .ageRange(naverUserResponseDto.getResponse().getAge())
                 .role(Member.Role.USER)
                 .build();
     }

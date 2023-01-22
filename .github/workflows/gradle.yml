@@ -43,36 +43,75 @@ jobs:
       #빌드(테스트 진행)
       - name: Build with Gradle
         run: ./gradlew build
-      ## 배포용 application.yml 설정
-      - name: create application-prod.yml
+
+      ## 배포용 application.yml 설정 (앱 출시용 )
+      - name: create application-prod.yml (DEPLOY)
+        if: contains(github.ref, 'main')
         run: |
           cd ./src/main/resources
           touch ./application-prod.yml
           echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.yml
         shell: bash
+
+      ## 배포용 application.yml 설정 (테스트용 )
+      - name: create application-prod.yml (TEST)
+        if: contains(github.ref, 'develop')
+        run: |
+          cd ./src/main/resources
+          touch ./application-prod.yml
+          echo "${{ secrets.PROPERTIES_PROD_TEST}}" > ./application-prod.yml
+        shell: bash
+
       ##CD
-      #빌드(테스트 스킵)
+      #빌드(테스트 진행)
       - name: Build With Gradle
         run: ./gradlew build
-      #도커 빌드 & 푸시
-      - name: docker build and push
+
+      #도커 빌드 & 푸시 (앱 출시용 )
+      - name: docker build and push (DEPLOY)
+        if: contains(github.ref, 'main')
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -f Dockerfile-prod -t ${{ secrets.DOCKER_USERNAME }}/nanal:green .
-          docker build -f Dockerfile-prod -t ${{ secrets.DOCKER_USERNAME }}/nanal:blue .
-          docker push ${{ secrets.DOCKER_USERNAME }}/nanal:green
-          docker push ${{ secrets.DOCKER_USERNAME }}/nanal:blue
-      #배포
-      - name: Deploy
+          docker build -f Dockerfile-prod -t ${{ secrets.DOCKER_USERNAME }}/deploy .
+          docker push ${{ secrets.DOCKER_USERNAME }}/deploy
+
+      #도커 빌드 & 푸시 (테스트용 )
+      - name: docker build and push (TEST)
+        if: contains(github.ref, 'develop')
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -f Dockerfile-prod -t ${{ secrets.DOCKER_USERNAME }}/test .
+          docker push ${{ secrets.DOCKER_USERNAME }}/test
+          
+
+      #배포 (앱 출시용 )
+      - name: Deploy (DEPLOY)
         uses: appleboy/ssh-action@master
         id: deploy-prod
+        if: contains(github.ref, 'main')
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           envs: GITHUB_SHA
           script: |
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nanal:green
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nanal:blue
-            ./deploy.sh
+            sudo docker rm -f $(docker ps -qa)
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/deplopy
+            docker-compose up -d
+            docker image prune -f
             
+      #배포 ( 테스트용 )
+      - name: Deploy (TEST)
+        uses: appleboy/ssh-action@master
+        id: deploy-prod-test
+        if: contains(github.ref, 'develop')
+        with:
+          host: ${{ secrets.EC2_HOST_TEST }}
+          username: ${{ secrets.EC2_USERNAME_TEST}}
+          key: ${{ secrets.EC2_PRIVATE_KEY_TEST}}
+          envs: GITHUB_SHA
+          script: |
+            sudo docker rm -f $(docker ps -qa)
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/test
+            docker-compose up -d
+            docker image prune -f

@@ -37,8 +37,8 @@ public enum ErrorCode {
     // MyPage
     // 중복된 회고일을 입력할 때.
     RETROSPECT_DAY_DUPLICATION(false, 480, "중복된 회고일입니다."),
-    // resetavail이 false일 때. (= 회고일 변경으로부터 한 달이 지나지 않아 변경할 수 없을 때.)
-    RESET_AVAIL_FALSE(false, 481, "이미 이번달에 회고일을 변경하였습니다."),
+    // 회고일 변경으로부터 한 달이 지나지 않아 변경할 수 없을 때.
+    RETROSPECT_DATE_CHANGE_IMPOSSIBLE(false, 481, "30일이 지나지 않아 회고일 변경이 불가능합니다."),
 
     // Retrospect
     RETROSPECT_NOT_FOUND(false, 490, "조회하고자 하는 회고가 존재하지 않습니다.");

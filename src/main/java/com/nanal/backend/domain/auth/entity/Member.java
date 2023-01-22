@@ -2,7 +2,7 @@ package com.nanal.backend.domain.auth.entity;
 
 import com.nanal.backend.domain.auth.enumerate.MemberProvider;
 import com.nanal.backend.domain.diary.entity.Diary;
-import com.nanal.backend.domain.mypage.exception.ResetAvailException;
+import com.nanal.backend.domain.mypage.exception.ChangeRetrospectDateException;
 import com.nanal.backend.domain.mypage.exception.RetrospectDayDupException;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import com.nanal.backend.global.config.BaseTime;
@@ -11,6 +11,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +56,7 @@ public class Member extends BaseTime {
     private DayOfWeek retrospectDay;
 
     @Column(nullable = false)
-    private Boolean resetAvail;
+    private LocalDateTime prevRetrospectDate;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -77,33 +79,25 @@ public class Member extends BaseTime {
     //==수정 메서드==//
     public void updateNickname(String nickname) { this.nickname = nickname; }
 
-    public void setResetAvail(Boolean resetAvail) {
-        this.resetAvail = resetAvail;
-    }
-
-    public void updateRetrospectDay(DayOfWeek retrospectDay) {
+    public void updateRetrospectDay(DayOfWeek retrospectDay, LocalDateTime now) {
         // 요청 회고요일로 변경 가능한지 검증
-        checkUpdateRetrospectDay(retrospectDay);
+        verifyPrevRetrospectDate(now);
+        if(isSameRetrospectDay(retrospectDay)) {throw new RetrospectDayDupException(ErrorCode.RETROSPECT_DAY_DUPLICATION.getMessage());}
 
         this.retrospectDay = retrospectDay;
+        this.prevRetrospectDate = now;
     }
 
-    public void checkUpdateRetrospectDay(DayOfWeek retrospectDay) {
-        // 회고일이 같은 경우, error.
-        if (checkRetrospectDay(retrospectDay)) {throw new RetrospectDayDupException(ErrorCode.RETROSPECT_DAY_DUPLICATION.getMessage());}
-        // resetAvail이 false일 때(이번달에 이미 회고요일 변경이 있었을 때), error.
-        if (checkResetAvail()) {throw new ResetAvailException(ErrorCode.RESET_AVAIL_FALSE.getMessage());}
+    private Boolean isSameRetrospectDay(DayOfWeek retrospectDay) {
+        return retrospectDay.equals(retrospectDay);
     }
 
-    public boolean checkRetrospectDay(DayOfWeek retrospectDay) {
-        return getRetrospectDay().equals(retrospectDay);
-    }
-
-    public boolean checkResetAvail() {
-        if(getResetAvail() == false) return true;
-
-        setResetAvail(false);
-        return false;
+    public void verifyPrevRetrospectDate(LocalDateTime now) {
+        if(!(ChronoUnit.DAYS.between(prevRetrospectDate, now) >= 29)) {
+            throw new ChangeRetrospectDateException(
+                ErrorCode.RETROSPECT_DATE_CHANGE_IMPOSSIBLE.getMessage(),
+                prevRetrospectDate.plusDays(30));
+        }
     }
 }
 

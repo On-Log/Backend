@@ -10,6 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -36,7 +37,7 @@ public class ClientNaver {
                 .email(naverUserResponseDto.getResponse().getEmail())
                 // 당일로 회고일 설정
                 .retrospectDay(LocalDate.now().getDayOfWeek())
-                .resetAvail(Boolean.TRUE)
+                .prevRetrospectDate(LocalDateTime.now().minusDays(30))
                 .nickname(naverUserResponseDto.getResponse().getNickname())
                 .gender(naverUserResponseDto.getResponse().getGender())
                 .ageRange(naverUserResponseDto.getResponse().getAge())

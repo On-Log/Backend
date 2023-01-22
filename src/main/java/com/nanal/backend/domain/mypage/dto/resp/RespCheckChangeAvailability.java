@@ -6,15 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RespGetUserDto {
-    private String userNickname;
+public class RespCheckChangeAvailability {
+    LocalDateTime nextChangeableDate;
 
-    private String userEmail;
-
-    private DayOfWeek userRetrospectDay;
+    DayOfWeek curRetrospectDay;
 }

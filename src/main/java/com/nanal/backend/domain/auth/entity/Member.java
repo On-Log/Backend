@@ -37,11 +37,17 @@ public class Member extends BaseTime {
     @Column(nullable = false)
     private MemberProvider provider;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 7)
     private String name;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 7)
     private String nickname;
+
+    @Column(nullable = false, length = 10)
+    private String ageRange;
+
+    @Column(nullable = false, length = 6)
+    private String gender;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

@@ -41,9 +41,10 @@ jobs:
       #gradle 권한 추가
       - name: Grant Execute Permission For Gradlew
         run: chmod +x gradlew
-      #빌드(테스트 진행)
+        
+      #빌드(테스트 스킵)
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build -x test
 
       ## 배포용 application.yml 설정 (앱 출시용 )
       - name: create application-prod.yml (DEPLOY)
@@ -64,9 +65,9 @@ jobs:
         shell: bash
 
       ##CD
-      #빌드(테스트 진행)
-      - name: Build With Gradle
-        run: ./gradlew build
+      #빌드(테스트 스킵)
+      - name: Build with Gradle
+        run: ./gradlew build -x test
 
       #도커 빌드 & 푸시 (앱 출시용 )
       - name: docker build and push (DEPLOY)

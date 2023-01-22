@@ -69,6 +69,7 @@ public class MypageService {
         member.updateRetrospectDay(reqEditRetrospectDayDto.getRetrospectDay(), now);
 
         return RespEditRetrospectDayDto.builder()
+                .updatedRetrospectDay(reqEditRetrospectDayDto.getRetrospectDay())
                 .build();
     }
 }

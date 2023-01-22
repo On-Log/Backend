@@ -17,4 +17,8 @@ public class GoogleUserResponseDto {
     private String name;
     private String picture;
 
+    public void adaptResponse() {
+        if(email.length() > 50) email = email.substring(0, 50);
+        if(name.length() > 7) name = name.substring(0, 7);
+    }
 }

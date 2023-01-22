@@ -19,16 +19,22 @@ public class KakaoUserResponseDto {
     @AllArgsConstructor
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class Properties {
-        private String nickname;
-        private String profileImage;
-    }
 
+        private String nickname;
+    }
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class KakaoAccount {
+
         private String email;
-        private String name;
         private String gender;
+        private String ageRange;
+    }
+    public void adaptResponse() {
+        if(kakaoAccount.gender == null || kakaoAccount.gender.isBlank()) kakaoAccount.gender = "undef";
+        if(kakaoAccount.ageRange == null || kakaoAccount.ageRange.isBlank()) kakaoAccount.ageRange = "undef";
+        if(kakaoAccount.email.length() > 50) kakaoAccount.email = kakaoAccount.email.substring(0, 50);
+        if(properties.nickname.length() > 7) properties.nickname = properties.nickname.substring(0, 7);
     }
 }

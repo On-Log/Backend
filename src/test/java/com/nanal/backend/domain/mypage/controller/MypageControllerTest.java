@@ -65,8 +65,8 @@ public class MypageControllerTest extends CommonControllerTest {
     @Test
     public void 닉네임_변경() throws Exception {
         //given
-        ReqEditNicknameDto reqEditNicknameDto = new ReqEditNicknameDto("사용자 변경 닉네임");
-        RespEditNicknameDto respEditNicknameDto = new RespEditNicknameDto("사용자 변경 닉네임");
+        ReqEditNicknameDto reqEditNicknameDto = new ReqEditNicknameDto("변경 닉네임");
+        RespEditNicknameDto respEditNicknameDto = new RespEditNicknameDto("변경 닉네임");
         given(mypageService.updateNickname(any(), any())).willReturn(respEditNicknameDto);
 
         //when
@@ -92,7 +92,7 @@ public class MypageControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
-                                        fieldWithPath("result.userNickname").description("변경한 닉네임")
+                                        fieldWithPath("result.nickname").description("변경한 닉네임")
                                 )
                         )
                 );
@@ -106,7 +106,7 @@ public class MypageControllerTest extends CommonControllerTest {
         given(mypageService.updateRetrospectDay(any(), any())).willReturn(respEditRetrospectDayDto);
         //when
         ResultActions actions = mockMvc.perform(
-                put("/mypage/day")
+                put("/mypage/retrospect")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reqEditRetrospectDayDto))
@@ -127,7 +127,7 @@ public class MypageControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
-                                        fieldWithPath("result.userRetrospectDay").description("변경한 회고일")
+                                        fieldWithPath("result.updatedRetrospectDay").description("변경한 회고일")
                                 )
                         )
                 );

@@ -562,11 +562,11 @@ Content-Length: 238
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /mypage/nickname HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Token: ACCESS_TOKEN
-Content-Length: 49
+Content-Length: 39
 Host: localhost:8080
 
 {
-  "nickname" : "사용자 변경 닉네임"
+  "nickname" : "변경 닉네임"
 }</code></pre>
 </div>
 </div>
@@ -622,14 +622,14 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 167
+Content-Length: 153
 
 {
   "isSuccess" : true,
   "code" : 200,
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "userNickname" : "사용자 변경 닉네임"
+    "nickname" : "변경 닉네임"
   }
 }</code></pre>
 </div>
@@ -667,7 +667,7 @@ Content-Length: 167
 <td class="tableblock halign-left valign-top"><p class="tableblock">결과 메시지</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.userNickname</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.nickname</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">변경한 닉네임</p></td>
 </tr>
@@ -681,7 +681,7 @@ Content-Length: 167
 <h4 id="MyPage-회고요일-변경_http_request">HTTP request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /mypage/day HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /mypage/retrospect HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Token: ACCESS_TOKEN
 Content-Length: 36
@@ -744,14 +744,14 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 154
+Content-Length: 157
 
 {
   "isSuccess" : true,
   "code" : 200,
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "userRetrospectDay" : "THURSDAY"
+    "updatedRetrospectDay" : "THURSDAY"
   }
 }</code></pre>
 </div>
@@ -789,7 +789,7 @@ Content-Length: 154
 <td class="tableblock halign-left valign-top"><p class="tableblock">결과 메시지</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.userRetrospectDay</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.updatedRetrospectDay</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">변경한 회고일</p></td>
 </tr>

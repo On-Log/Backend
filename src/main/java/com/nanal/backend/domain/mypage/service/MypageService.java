@@ -43,7 +43,7 @@ public class MypageService {
         member.updateNickname(reqEditNickname.getNickname());
 
         return RespEditNicknameDto.builder()
-                .userNickname(member.getNickname())
+                .nickname(member.getNickname())
                 .build();
     }
 

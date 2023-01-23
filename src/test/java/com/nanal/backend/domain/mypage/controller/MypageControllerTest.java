@@ -3,6 +3,7 @@ package com.nanal.backend.domain.mypage.controller;
 import com.nanal.backend.config.CommonControllerTest;
 import com.nanal.backend.domain.mypage.dto.req.ReqEditNicknameDto;
 import com.nanal.backend.domain.mypage.dto.req.ReqEditRetrospectDayDto;
+import com.nanal.backend.domain.mypage.dto.resp.RespCheckChangeAvailability;
 import com.nanal.backend.domain.mypage.dto.resp.RespEditNicknameDto;
 import com.nanal.backend.domain.mypage.dto.resp.RespEditRetrospectDayDto;
 import com.nanal.backend.domain.mypage.dto.resp.RespGetUserDto;
@@ -13,7 +14,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -100,7 +103,43 @@ public class MypageControllerTest extends CommonControllerTest {
     }
 
     @Test
-    public void 회고요일_변경() throws Exception {
+    public void 회고일_변경_가능_여부() throws Exception {
+        //given
+        RespCheckChangeAvailability output = RespCheckChangeAvailability.builder()
+                .nextChangeableDate(LocalDateTime.of(2023, 1, 12, 6, 0))
+                .curRetrospectDay(DayOfWeek.SUNDAY)
+                .build();
+        given(mypageService.checkChangeAvailability(any())).willReturn(output);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/mypage/retrospect")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.nextChangeableDate").description("다음 회고 변경 가능일"),
+                                        fieldWithPath("result.curRetrospectDay").description("현재 회고 요일")
+                                )
+                        )
+                );
+
+    }
+
+    @Test
+    public void 회고일_변경() throws Exception {
         //given
         ReqEditRetrospectDayDto reqEditRetrospectDayDto = new ReqEditRetrospectDayDto(LocalDate.of(2023, 1, 12).getDayOfWeek());
         willDoNothing().given(mypageService).updateRetrospectDay(any(), any());

@@ -3,17 +3,24 @@ package com.nanal.backend.domain.mypage.controller;
 import com.nanal.backend.config.CommonControllerTest;
 import com.nanal.backend.domain.mypage.dto.req.ReqEditNicknameDto;
 import com.nanal.backend.domain.mypage.dto.req.ReqEditRetrospectDayDto;
-import com.nanal.backend.domain.mypage.dto.resp.RespEditNicknameDto;
-import com.nanal.backend.domain.mypage.dto.resp.RespEditRetrospectDayDto;
-import com.nanal.backend.domain.mypage.dto.resp.RespGetUserDto;
+import com.nanal.backend.domain.mypage.dto.req.ReqWithdrawMembership;
+import com.nanal.backend.domain.mypage.dto.req.ReqWithdrawMembership.Reason;
+import com.nanal.backend.domain.mypage.dto.resp.*;
+import com.nanal.backend.domain.mypage.exception.ChangeRetrospectDateException;
 import com.nanal.backend.domain.mypage.service.MypageService;
+import com.nanal.backend.global.response.ErrorCode;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -21,8 +28,7 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MypageController.class)
@@ -100,10 +106,78 @@ public class MypageControllerTest extends CommonControllerTest {
     }
 
     @Test
-    public void 회고요일_변경() throws Exception {
+    public void 회고일_변경_가능_여부() throws Exception {
+        //given
+        RespCheckChangeAvailability output = RespCheckChangeAvailability.builder()
+                .nextChangeableDate(LocalDateTime.of(2023, 1, 12, 6, 0))
+                .curRetrospectDay(DayOfWeek.SUNDAY)
+                .build();
+        given(mypageService.checkChangeAvailability(any())).willReturn(output);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/mypage/retrospect")
+                        .header("Token", "ACCESS_TOKEN")
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.nextChangeableDate").description("다음 회고 변경 가능일"),
+                                        fieldWithPath("result.curRetrospectDay").description("현재 회고 요일")
+                                )
+                        )
+                );
+
+    }
+
+    @Test
+    public void 회고일_변경_불가능() throws Exception {
+        //given
+        given(mypageService.checkChangeAvailability(any())).willThrow(new ChangeRetrospectDateException(
+                ErrorCode.RETROSPECT_DATE_CHANGE_IMPOSSIBLE.getMessage(),
+                LocalDateTime.of(2023, 1, 12, 6, 0)));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/mypage/retrospect")
+                        .header("Token", "ACCESS_TOKEN")
+        );
+
+        //then
+        actions
+                .andExpect(status().is(481))
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result").description("다음 회고 변경 가능일")
+                                )
+                        )
+                );
+
+    }
+
+    @Test
+    public void 회고일_변경() throws Exception {
         //given
         ReqEditRetrospectDayDto reqEditRetrospectDayDto = new ReqEditRetrospectDayDto(LocalDate.of(2023, 1, 12).getDayOfWeek());
         willDoNothing().given(mypageService).updateRetrospectDay(any(), any());
+
         //when
         ResultActions actions = mockMvc.perform(
                 put("/mypage/retrospect")
@@ -130,6 +204,84 @@ public class MypageControllerTest extends CommonControllerTest {
                                 )
                         )
                 );
+    }
 
+    @Test
+    public void 서비스_사용기간_조회() throws Exception {
+        //given
+        RespGetServiceLife output = RespGetServiceLife.builder()
+                .serviceLife(92)
+                .build();
+        given(mypageService.getServiceLife(any())).willReturn(output);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/mypage/service-life")
+                        .header("Token", "ACCESS_TOKEN")
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.serviceLife").description("서비스 사용기간")
+                                )
+                        )
+                );
+
+    }
+
+    @Test
+    public void 회원탈퇴() throws Exception {
+        //given
+        List<Reason> reasons = new ArrayList<>(Arrays.asList(
+                new Reason("나날의 효과를 실감하지 못했어요"),
+                new Reason("앱 사용이 너무 불편해요"),
+                new Reason("나나리랑 싸웠습니다.")
+        ));
+        String detail = "회원탈퇴의 상세한 이유입니다.";
+
+        ReqWithdrawMembership input = ReqWithdrawMembership.builder()
+                .reasons(reasons)
+                .detail(detail)
+                .build();
+
+        willDoNothing().given(mypageService).withdrawMembership(any(), any());
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                delete("/mypage/withdrawal")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input))
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestFields(
+                                        fieldWithPath("reasons[].content").description("회원탈퇴 이유"),
+                                        fieldWithPath("detail").description("회원탈퇴 상세 내용")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지")
+                                )
+                        )
+                );
     }
 }

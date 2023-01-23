@@ -12,6 +12,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,6 +99,10 @@ public class Member extends BaseTime {
                 ErrorCode.RETROSPECT_DATE_CHANGE_IMPOSSIBLE.getMessage(),
                 prevRetrospectDate.plusDays(30));
         }
+    }
+
+    public Integer getServiceLife() {
+        return Period.between(this.createdAt.toLocalDate(), LocalDateTime.now().toLocalDate()).getDays() + 1;
     }
 }
 

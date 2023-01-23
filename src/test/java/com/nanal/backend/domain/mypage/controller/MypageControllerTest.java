@@ -3,10 +3,7 @@ package com.nanal.backend.domain.mypage.controller;
 import com.nanal.backend.config.CommonControllerTest;
 import com.nanal.backend.domain.mypage.dto.req.ReqEditNicknameDto;
 import com.nanal.backend.domain.mypage.dto.req.ReqEditRetrospectDayDto;
-import com.nanal.backend.domain.mypage.dto.resp.RespCheckChangeAvailability;
-import com.nanal.backend.domain.mypage.dto.resp.RespEditNicknameDto;
-import com.nanal.backend.domain.mypage.dto.resp.RespEditRetrospectDayDto;
-import com.nanal.backend.domain.mypage.dto.resp.RespGetUserDto;
+import com.nanal.backend.domain.mypage.dto.resp.*;
 import com.nanal.backend.domain.mypage.service.MypageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -169,6 +166,40 @@ public class MypageControllerTest extends CommonControllerTest {
                                 )
                         )
                 );
+    }
+
+    @Test
+    public void 서비스_사용기간_조회() throws Exception {
+        //given
+        RespGetServiceLife output = RespGetServiceLife.builder()
+                .serviceLife(92)
+                .build();
+        given(mypageService.getServiceLife(any())).willReturn(output);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/mypage/service-life")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.serviceLife").description("서비스 사용기간")
+                                )
+                        )
+                );
 
     }
+
 }

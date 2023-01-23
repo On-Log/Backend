@@ -10,6 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -17,7 +18,6 @@ public class ClientKakao{
 
     private final WebClient webClient;
 
-    // TODO ADMIN 유저 생성 시 getAdminUserData 메소드 생성 필요
     public Member getUserData(String accessToken) {
         KakaoUserResponseDto kakaoUserResponseDto = webClient.get()
                 .uri("https://kapi.kakao.com/v2/user/me") // KAKAO의 유저 정보 받아오는 url
@@ -29,6 +29,9 @@ public class ClientKakao{
                 .bodyToMono(KakaoUserResponseDto.class) // KAKAO의 유저 정보를 넣을 Dto 클래스
                 .block();
 
+        kakaoUserResponseDto.adaptResponse();
+
+        // 닉네임 길이체크해야함
         return Member.builder()
                 .socialId(MemberProvider.KAKAO + "@" + kakaoUserResponseDto.getId())
                 .provider(MemberProvider.KAKAO)
@@ -36,8 +39,10 @@ public class ClientKakao{
                 .email(kakaoUserResponseDto.getKakaoAccount().getEmail())
                 // 당일로 회고일 설정
                 .retrospectDay(LocalDate.now().getDayOfWeek())
-                .resetAvail(Boolean.TRUE)
-                .nickname("Anonymous User")
+                .prevRetrospectDate(LocalDateTime.now().minusDays(30))
+                .nickname(kakaoUserResponseDto.getProperties().getNickname())
+                .gender(kakaoUserResponseDto.getKakaoAccount().getGender())
+                .ageRange(kakaoUserResponseDto.getKakaoAccount().getAgeRange())
                 .role(Member.Role.USER)
                 .build();
     }

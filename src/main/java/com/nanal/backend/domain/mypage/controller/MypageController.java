@@ -2,11 +2,13 @@ package com.nanal.backend.domain.mypage.controller;
 
 import com.nanal.backend.domain.mypage.dto.req.ReqEditNicknameDto;
 import com.nanal.backend.domain.mypage.dto.req.ReqEditRetrospectDayDto;
+import com.nanal.backend.domain.mypage.dto.resp.RespCheckChangeAvailability;
 import com.nanal.backend.domain.mypage.dto.resp.RespEditNicknameDto;
 import com.nanal.backend.domain.mypage.dto.resp.RespEditRetrospectDayDto;
 import com.nanal.backend.domain.mypage.dto.resp.RespGetUserDto;
 import com.nanal.backend.domain.mypage.service.MypageService;
 import com.nanal.backend.global.response.CommonResponse;
+import com.nanal.backend.global.response.ErrorCode;
 import com.nanal.backend.global.security.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 
 
 @RequiredArgsConstructor
@@ -29,7 +32,7 @@ public class MypageController {
      * [GET] /mypage
      */
     @GetMapping("/mypage")
-    public CommonResponse<RespGetUserDto> getUser(@AuthenticationPrincipal User user) {
+    public CommonResponse<?> getUser(@AuthenticationPrincipal User user) {
 
         // 유저 정보 조회
         RespGetUserDto respGetUserDto = mypageService.getUser(user.getSocialId());
@@ -42,7 +45,7 @@ public class MypageController {
      * [PUT] /mypage/nickname
      */
     @PutMapping("/mypage/nickname")
-    public CommonResponse<RespEditNicknameDto> updateNickname(@AuthenticationPrincipal User user,
+    public CommonResponse<?> updateNickname(@AuthenticationPrincipal User user,
                                                               @RequestBody @Valid ReqEditNicknameDto reqEditNickname) {
 
         // 닉네임 변경
@@ -52,11 +55,24 @@ public class MypageController {
     }
 
     /**
-     * 회고요일 변경
-     * [PUT] /mypage/day
+     * 회고일 변경 가능 여부
+     * [GET] /mypage/retrospect
      */
-    @PutMapping("/mypage/day")
-    public CommonResponse<RespEditRetrospectDayDto> updateRetrospectDay(@AuthenticationPrincipal User user,
+    @GetMapping("/mypage/retrospect")
+    public CommonResponse<?> checkChangeAvailability(@AuthenticationPrincipal User user) {
+
+        // 회고일 변경 가능 여부
+        RespCheckChangeAvailability respCheckChangeAvailability = mypageService.checkChangeAvailability(user.getSocialId());
+
+        return new CommonResponse<>(ErrorCode.SUCCESS, respCheckChangeAvailability);
+    }
+
+    /**
+     * 회고일 변경
+     * [PUT] /mypage/retrospect
+     */
+    @PutMapping("/mypage/retrospect")
+    public CommonResponse<?> updateRetrospectDay(@AuthenticationPrincipal User user,
                                                                         @RequestBody @Valid ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
 
         // 회고요일 변경
@@ -64,5 +80,4 @@ public class MypageController {
 
         return new CommonResponse<>(respEditRetrospectDayDto);
     }
-
 }

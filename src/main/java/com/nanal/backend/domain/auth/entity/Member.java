@@ -2,12 +2,17 @@ package com.nanal.backend.domain.auth.entity;
 
 import com.nanal.backend.domain.auth.enumerate.MemberProvider;
 import com.nanal.backend.domain.diary.entity.Diary;
+import com.nanal.backend.domain.mypage.exception.ChangeRetrospectDateException;
+import com.nanal.backend.domain.mypage.exception.RetrospectDayDupException;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import com.nanal.backend.global.config.BaseTime;
+import com.nanal.backend.global.response.ErrorCode;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,18 +39,24 @@ public class Member extends BaseTime {
     @Column(nullable = false)
     private MemberProvider provider;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 7)
     private String name;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 7)
     private String nickname;
+
+    @Column(nullable = false, length = 10)
+    private String ageRange;
+
+    @Column(nullable = false, length = 6)
+    private String gender;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private DayOfWeek retrospectDay;
 
     @Column(nullable = false)
-    private Boolean resetAvail;
+    private LocalDateTime prevRetrospectDate;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -66,14 +77,27 @@ public class Member extends BaseTime {
     }
 
     //==수정 메서드==//
-    public void setNickname(String nickname) { this.nickname = nickname; }
+    public void updateNickname(String nickname) { this.nickname = nickname; }
 
-    public void setRetrospectDay(DayOfWeek retrospectDay) {
+    public void updateRetrospectDay(DayOfWeek retrospectDay, LocalDateTime now) {
+        // 요청 회고요일로 변경 가능한지 검증
+        verifyPrevRetrospectDate(now);
+        if(isSameRetrospectDay(retrospectDay)) {throw new RetrospectDayDupException(ErrorCode.RETROSPECT_DAY_DUPLICATION.getMessage());}
+
         this.retrospectDay = retrospectDay;
+        this.prevRetrospectDate = now;
     }
 
-    public void setResetAvail(Boolean resetAvail) {
-        this.resetAvail = resetAvail;
+    private Boolean isSameRetrospectDay(DayOfWeek retrospectDay) {
+        return retrospectDay.equals(retrospectDay);
+    }
+
+    public void verifyPrevRetrospectDate(LocalDateTime now) {
+        if(!(ChronoUnit.DAYS.between(prevRetrospectDate, now) >= 29)) {
+            throw new ChangeRetrospectDateException(
+                ErrorCode.RETROSPECT_DATE_CHANGE_IMPOSSIBLE.getMessage(),
+                prevRetrospectDate.plusDays(30));
+        }
     }
 }
 

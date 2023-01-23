@@ -3,7 +3,7 @@ package com.nanal.backend.global.exception;
 import com.nanal.backend.domain.auth.exception.RefreshTokenInvalidException;
 import com.nanal.backend.domain.diary.exception.DiaryAlreadyExistException;
 import com.nanal.backend.domain.diary.exception.DiaryNotFoundException;
-import com.nanal.backend.domain.mypage.exception.ResetAvailException;
+import com.nanal.backend.domain.mypage.exception.ChangeRetrospectDateException;
 import com.nanal.backend.domain.mypage.exception.RetrospectDayDupException;
 import com.nanal.backend.domain.retrospect.exception.RetrospectNotFoundException;
 import com.nanal.backend.global.security.AuthenticationUtil;
@@ -92,10 +92,10 @@ public class CommonExceptionHandler {
     /**
      *  사용자 정보 관련 예외
      */
-    @ExceptionHandler(ResetAvailException.class)
-    public CommonResponse<?> resetAvailError(HttpServletResponse response, ResetAvailException e) {
-        response.setStatus(ErrorCode.RESET_AVAIL_FALSE.getCode());
+    @ExceptionHandler(ChangeRetrospectDateException.class)
+    public CommonResponse<?> remainRetrospectChange(HttpServletResponse response, ChangeRetrospectDateException e) {
+        response.setStatus(ErrorCode.RETROSPECT_DATE_CHANGE_IMPOSSIBLE.getCode());
         log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
-        return new CommonResponse<>(ErrorCode.RESET_AVAIL_FALSE);
+        return new CommonResponse<>(ErrorCode.RETROSPECT_DATE_CHANGE_IMPOSSIBLE, e.getChangeableDate());
     }
 }

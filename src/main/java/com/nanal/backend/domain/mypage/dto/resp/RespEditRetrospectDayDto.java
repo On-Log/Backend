@@ -12,5 +12,5 @@ import java.time.DayOfWeek;
 @NoArgsConstructor
 @Data
 public class RespEditRetrospectDayDto {
-    private DayOfWeek userRetrospectDay;
+    private DayOfWeek updatedRetrospectDay;
 }

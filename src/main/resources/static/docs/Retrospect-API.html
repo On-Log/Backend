@@ -508,16 +508,51 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 330
+Content-Length: 1116
 
 {
   "isSuccess" : true,
   "code" : 200,
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "existRetrospect" : [ "자아탐색" ],
+    "existRetrospect" : [ "자아탐색", "성취확인" ],
     "betweenDate" : 6,
-    "existRetrospectKeyword" : [ [ [ "1주차 키워드1, 1주차 키워드2" ] ], [ [ "1주차 키워드3" ] ], [ [ "1주차 키워드4" ] ] ]
+    "keywordList" : [ {
+      "classify" : [ {
+        "weeklykeywords" : [ {
+          "keyword" : "앱출시"
+        } ]
+      }, {
+        "weeklykeywords" : [ {
+          "keyword" : "창업"
+        } ]
+      } ],
+      "val" : "그때 그대로 의미있었던 행복한 기억"
+    }, {
+      "classify" : [ {
+        "weeklykeywords" : [ {
+          "keyword" : "면접"
+        }, {
+          "keyword" : "자격증시험"
+        } ]
+      }, {
+        "weeklykeywords" : [ {
+          "keyword" : "알바"
+        } ]
+      } ],
+      "val" : "나를 힘들게 했지만 도움이 된 기억"
+    }, {
+      "classify" : [ {
+        "weeklykeywords" : [ {
+          "keyword" : "봉사"
+        } ]
+      }, {
+        "weeklykeywords" : [ {
+          "keyword" : "취준"
+        } ]
+      } ],
+      "val" : "돌아보니, 다른 의미로 다가온 기억"
+    } ]
   }
 }</code></pre>
 </div>
@@ -565,9 +600,14 @@ Content-Length: 330
 <td class="tableblock halign-left valign-top"><p class="tableblock">다음 회고까지 남은 날</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.existRetrospectKeyword[].[].[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">키워드 분류</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.keywordList[].val</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">키워드 분류 주제</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.keywordList[].classify[].weeklykeywords[].keyword</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">주차별 키워드. 1차 회고부터 순서대로임</p></td>
 </tr>
 </tbody>
 </table>
@@ -1311,7 +1351,7 @@ Content-Length: 1029
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-01-13 23:55:28 +0900
+Last updated 2023-01-11 09:16:39 +0900
 </div>
 </div>
 </body>

@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class RespEditNicknameDto {
-    private String userNickname;
-
+    private String nickname;
 }

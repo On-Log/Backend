@@ -23,6 +23,16 @@ public class RespGetInfoDto {
     Integer betweenDate;
 
     //키워드 분류하고, 주차별로 나누기
-    List<List<List<String>>> existRetrospectKeyword;
+    List<RespGetClassifiedKeywordDto> keywordList;
+
+    public static RespGetInfoDto makeRespGetInfoDto(List<String> existRetrospect, int betweenDate, List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos){
+        RespGetInfoDto respGetInfoDto = RespGetInfoDto.builder()
+                .existRetrospect(existRetrospect)
+                .betweenDate(betweenDate)
+                .keywordList(respGetClassifiedKeywordDtos)
+                .build();
+
+        return respGetInfoDto;
+    }
 
 }

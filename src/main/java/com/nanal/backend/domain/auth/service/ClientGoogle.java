@@ -10,6 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -17,7 +18,6 @@ public class ClientGoogle {
 
     private final WebClient webClient;
 
-    // TODO ADMIN 유저 생성 시 getAdminUserData 메소드 생성 필요
     public Member getUserData(String accessToken) {
         GoogleUserResponseDto googleUserResponseDto = webClient.get()
                 .uri("https://oauth2.googleapis.com/tokeninfo", builder -> builder.queryParam("id_token", accessToken).build())
@@ -28,6 +28,8 @@ public class ClientGoogle {
                 .bodyToMono(GoogleUserResponseDto.class)
                 .block();
 
+        googleUserResponseDto.adaptResponse();
+
         return Member.builder()
                 .socialId(MemberProvider.GOOGLE + "@" + googleUserResponseDto.getSub())
                 .provider(MemberProvider.GOOGLE)
@@ -35,8 +37,10 @@ public class ClientGoogle {
                 .email(googleUserResponseDto.getEmail())
                 // 당일로 회고일 설정
                 .retrospectDay(LocalDate.now().getDayOfWeek())
-                .resetAvail(Boolean.TRUE)
-                .nickname("Anonymous User")
+                .prevRetrospectDate(LocalDateTime.now().minusDays(30))
+                .nickname(googleUserResponseDto.getName())
+                .ageRange("undef")
+                .gender("undef")
                 .role(Member.Role.USER)
                 .build();
     }

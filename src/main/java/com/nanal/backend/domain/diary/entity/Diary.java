@@ -72,7 +72,7 @@ public class Diary extends BaseTime {
             diary.addKeyword(keyword);
         }
 
-        // 속성 설정
+        // 속성 설정++
         diary.changeContentAndWriteDateAndEditStatus(content, writeDate, true);
 
         return diary;

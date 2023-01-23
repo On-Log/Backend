@@ -22,3 +22,8 @@ operation::mypage-controller-test/회고일_변경[snippets='http-request,reques
 === MyPage 서비스 사용기간 조회
 operation::mypage-controller-test/서비스_사용기간_조회[snippets='http-request,request-headers,http-response,response-fields']
 
+[[MyPage-회원탈퇴]]
+=== MyPage 회원탈퇴
+operation::mypage-controller-test/회원탈퇴[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+
+

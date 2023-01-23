@@ -5,22 +5,34 @@
 === MyPage 마이페이지 탭
 operation::mypage-controller-test/마이페이지_탭[snippets='http-request,request-headers,http-response,response-fields']
 
+---
 
 [[MyPage-닉네임-변경]]
 === MyPage 닉네임 변경
 operation::mypage-controller-test/닉네임_변경[snippets='http-request,request-headers,request-fields,http-response,response-fields']
 
+---
+
 [[MyPage-회고일-변경-가능-여부]]
 === MyPage 회고일 변경 가능 여부
 operation::mypage-controller-test/회고일_변경_가능_여부[snippets='http-request,request-headers,http-response,response-fields']
+
+=== MyPage 회고일 변경 불가능
+operation::mypage-controller-test/회고일_변경_불가능[snippets='http-request,request-headers,http-response,response-fields']
+
+---
 
 [[MyPage-회고일-변경]]
 === MyPage 회고일 변경
 operation::mypage-controller-test/회고일_변경[snippets='http-request,request-headers,request-fields,http-response,response-fields']
 
+---
+
 [[MyPage-서비스-사용기간-조회]]
 === MyPage 서비스 사용기간 조회
 operation::mypage-controller-test/서비스_사용기간_조회[snippets='http-request,request-headers,http-response,response-fields']
+
+---
 
 [[MyPage-회원탈퇴]]
 === MyPage 회원탈퇴

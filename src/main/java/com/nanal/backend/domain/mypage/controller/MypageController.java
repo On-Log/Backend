@@ -2,6 +2,7 @@ package com.nanal.backend.domain.mypage.controller;
 
 import com.nanal.backend.domain.mypage.dto.req.ReqEditNicknameDto;
 import com.nanal.backend.domain.mypage.dto.req.ReqEditRetrospectDayDto;
+import com.nanal.backend.domain.mypage.dto.req.ReqWithdrawMembership;
 import com.nanal.backend.domain.mypage.dto.resp.*;
 import com.nanal.backend.domain.mypage.service.MypageService;
 import com.nanal.backend.global.response.CommonResponse;
@@ -9,10 +10,7 @@ import com.nanal.backend.global.response.ErrorCode;
 import com.nanal.backend.global.security.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -70,7 +68,7 @@ public class MypageController {
      */
     @PutMapping("/mypage/retrospect")
     public CommonResponse<?> updateRetrospectDay(@AuthenticationPrincipal User user,
-                                                                        @RequestBody @Valid ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
+                                                 @RequestBody @Valid ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
 
         // 회고요일 변경
         RespEditRetrospectDayDto respEditRetrospectDayDto = mypageService.updateRetrospectDay(user.getSocialId(), reqEditRetrospectDayDto);
@@ -88,5 +86,18 @@ public class MypageController {
         RespGetServiceLife respGetServiceLife = mypageService.getServiceLife(user.getSocialId());
 
         return new CommonResponse<>(respGetServiceLife);
+    }
+
+    /**
+     * 회원탈퇴
+     */
+    @DeleteMapping("/mypage/withdrawal")
+    public CommonResponse<?> withdrawMembership(@AuthenticationPrincipal User user,
+                                                @RequestBody @Valid ReqWithdrawMembership reqWithdrawMembership) {
+
+        // 회원탈퇴
+        mypageService.withdrawMembership(user.getSocialId(), reqWithdrawMembership);
+
+        return new CommonResponse<>(ErrorCode.SUCCESS);
     }
 }

@@ -2,9 +2,12 @@ package com.nanal.backend.domain.mypage.service;
 
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
+import com.nanal.backend.domain.mypage.FeedbackRepository;
 import com.nanal.backend.domain.mypage.dto.req.ReqEditNicknameDto;
 import com.nanal.backend.domain.mypage.dto.req.ReqEditRetrospectDayDto;
+import com.nanal.backend.domain.mypage.dto.req.ReqWithdrawMembership;
 import com.nanal.backend.domain.mypage.dto.resp.*;
+import com.nanal.backend.domain.mypage.entity.Feedback;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import com.nanal.backend.global.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,7 @@ import java.time.LocalDateTime;
 public class MypageService {
 
     private final MemberRepository memberRepository;
+    private final FeedbackRepository feedbackRepository;
 
     public RespGetUserDto getUser(String socialId) {
         // socialId 로 유저 조회
@@ -77,5 +81,30 @@ public class MypageService {
         return RespGetServiceLife.builder()
                 .serviceLife(serviceLife)
                 .build();
+    }
+
+    public void withdrawMembership(String socialId, ReqWithdrawMembership reqWithdrawMembership) {
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+
+        for(ReqWithdrawMembership.Reason r : reqWithdrawMembership.getReasons()){
+            Feedback feedback = Feedback.builder()
+                    .memberId(member.getMemberId())
+                    .type("reason")
+                    .content(r.getContent())
+                    .build();
+
+            feedbackRepository.save(feedback);
+        }
+
+        Feedback detail = Feedback.builder()
+                .memberId(member.getMemberId())
+                .type("detail")
+                .content(reqWithdrawMembership.getDetail())
+                .build();
+
+        feedbackRepository.save(detail);
+
+        memberRepository.delete(member);
     }
 }

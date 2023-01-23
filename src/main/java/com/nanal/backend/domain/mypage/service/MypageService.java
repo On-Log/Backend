@@ -61,7 +61,7 @@ public class MypageService {
     }
 
 
-    public RespEditRetrospectDayDto updateRetrospectDay(String socialId, ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
+    public void updateRetrospectDay(String socialId, ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
 
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));

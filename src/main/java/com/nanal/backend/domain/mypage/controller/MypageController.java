@@ -2,10 +2,7 @@ package com.nanal.backend.domain.mypage.controller;
 
 import com.nanal.backend.domain.mypage.dto.req.ReqEditNicknameDto;
 import com.nanal.backend.domain.mypage.dto.req.ReqEditRetrospectDayDto;
-import com.nanal.backend.domain.mypage.dto.resp.RespCheckChangeAvailability;
-import com.nanal.backend.domain.mypage.dto.resp.RespEditNicknameDto;
-import com.nanal.backend.domain.mypage.dto.resp.RespEditRetrospectDayDto;
-import com.nanal.backend.domain.mypage.dto.resp.RespGetUserDto;
+import com.nanal.backend.domain.mypage.dto.resp.*;
 import com.nanal.backend.domain.mypage.service.MypageService;
 import com.nanal.backend.global.response.CommonResponse;
 import com.nanal.backend.global.response.ErrorCode;
@@ -79,5 +76,17 @@ public class MypageController {
         RespEditRetrospectDayDto respEditRetrospectDayDto = mypageService.updateRetrospectDay(user.getSocialId(), reqEditRetrospectDayDto);
 
         return new CommonResponse<>(respEditRetrospectDayDto);
+    }
+
+    /**
+     * 서비스 사용기간 조회
+     */
+    @GetMapping("/mypage/service-life")
+    public CommonResponse<?> getServiceLife(@AuthenticationPrincipal User user) {
+
+        // 서비스 사용기간 조회
+        RespGetServiceLife respGetServiceLife = mypageService.getServiceLife(user.getSocialId());
+
+        return new CommonResponse<>(respGetServiceLife);
     }
 }

@@ -17,6 +17,7 @@ import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -102,8 +103,7 @@ public class MypageControllerTest extends CommonControllerTest {
     public void 회고요일_변경() throws Exception {
         //given
         ReqEditRetrospectDayDto reqEditRetrospectDayDto = new ReqEditRetrospectDayDto(LocalDate.of(2023, 1, 12).getDayOfWeek());
-        RespEditRetrospectDayDto respEditRetrospectDayDto = new RespEditRetrospectDayDto(LocalDate.of(2023, 1, 12).getDayOfWeek());
-        given(mypageService.updateRetrospectDay(any(), any())).willReturn(respEditRetrospectDayDto);
+        willDoNothing().given(mypageService).updateRetrospectDay(any(), any());
         //when
         ResultActions actions = mockMvc.perform(
                 put("/mypage/retrospect")
@@ -126,8 +126,7 @@ public class MypageControllerTest extends CommonControllerTest {
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
-                                        fieldWithPath("message").description("결과 메시지"),
-                                        fieldWithPath("result.updatedRetrospectDay").description("변경한 회고일")
+                                        fieldWithPath("message").description("결과 메시지")
                                 )
                         )
                 );

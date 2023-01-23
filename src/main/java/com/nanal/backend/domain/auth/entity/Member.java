@@ -80,8 +80,9 @@ public class Member extends BaseTime {
     //==수정 메서드==//
     public void updateNickname(String nickname) { this.nickname = nickname; }
 
-    public void updateRetrospectDay(DayOfWeek retrospectDay, LocalDateTime now) {
+    public void updateRetrospectDay(DayOfWeek retrospectDay) {
         // 요청 회고요일로 변경 가능한지 검증
+        LocalDateTime now = LocalDateTime.now();
         verifyPrevRetrospectDate(now);
         if(isSameRetrospectDay(retrospectDay)) {throw new RetrospectDayDupException(ErrorCode.RETROSPECT_DAY_DUPLICATION.getMessage());}
 
@@ -90,7 +91,7 @@ public class Member extends BaseTime {
     }
 
     private Boolean isSameRetrospectDay(DayOfWeek retrospectDay) {
-        return retrospectDay.equals(retrospectDay);
+        return this.retrospectDay.equals(retrospectDay);
     }
 
     public void verifyPrevRetrospectDate(LocalDateTime now) {

@@ -59,7 +59,7 @@ public class MypageController {
         // 회고일 변경 가능 여부
         RespCheckChangeAvailability respCheckChangeAvailability = mypageService.checkChangeAvailability(user.getSocialId());
 
-        return new CommonResponse<>(ErrorCode.SUCCESS, respCheckChangeAvailability);
+        return new CommonResponse<>(respCheckChangeAvailability);
     }
 
     /**
@@ -71,9 +71,9 @@ public class MypageController {
                                                  @RequestBody @Valid ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
 
         // 회고요일 변경
-        RespEditRetrospectDayDto respEditRetrospectDayDto = mypageService.updateRetrospectDay(user.getSocialId(), reqEditRetrospectDayDto);
+        mypageService.updateRetrospectDay(user.getSocialId(), reqEditRetrospectDayDto);
 
-        return new CommonResponse<>(respEditRetrospectDayDto);
+        return new CommonResponse<>(ErrorCode.SUCCESS);
     }
 
     /**

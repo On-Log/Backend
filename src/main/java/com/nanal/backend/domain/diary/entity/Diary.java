@@ -1,6 +1,6 @@
 package com.nanal.backend.domain.diary.entity;
 
-import com.nanal.backend.domain.mypage.entity.Member;
+import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.global.config.BaseTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -72,7 +72,7 @@ public class Diary extends BaseTime {
             diary.addKeyword(keyword);
         }
 
-        // 속성 설정
+        // 속성 설정++
         diary.changeContentAndWriteDateAndEditStatus(content, writeDate, true);
 
         return diary;

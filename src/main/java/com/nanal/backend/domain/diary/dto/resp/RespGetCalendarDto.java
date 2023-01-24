@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -14,11 +15,11 @@ import java.util.List;
 @Data
 public class RespGetCalendarDto {
 
-    private List<Integer> existDiaryDate;
+    private List<LocalDateTime> existDiaryDate;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer prevRetroDate;
+    private LocalDateTime nextDayOfPrevRetroDate;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer postRetroDate;
+    private LocalDateTime postRetroDate;
 }

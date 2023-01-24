@@ -1,10 +1,10 @@
 package com.nanal.backend.domain.mypage.dto.resp;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.DayOfWeek;
 
 @Builder
@@ -12,6 +12,5 @@ import java.time.DayOfWeek;
 @NoArgsConstructor
 @Data
 public class RespEditRetrospectDayDto {
-    @Schema(description = "회고일" , example = "TUESDAY")
-    private DayOfWeek userRetrospectDay;
+    private DayOfWeek updatedRetrospectDay;
 }

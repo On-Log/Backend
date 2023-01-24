@@ -2,44 +2,35 @@ package com.nanal.backend.domain.mypage.controller;
 
 import com.nanal.backend.domain.mypage.dto.req.ReqEditNicknameDto;
 import com.nanal.backend.domain.mypage.dto.req.ReqEditRetrospectDayDto;
-import com.nanal.backend.domain.mypage.dto.req.ReqGetUserDto;
-import com.nanal.backend.domain.mypage.dto.resp.RespEditNicknameDto;
-import com.nanal.backend.domain.mypage.dto.resp.RespEditRetrospectDayDto;
-import com.nanal.backend.domain.mypage.dto.resp.RespGetUserDto;
+import com.nanal.backend.domain.mypage.dto.req.ReqWithdrawMembership;
+import com.nanal.backend.domain.mypage.dto.resp.*;
 import com.nanal.backend.domain.mypage.service.MypageService;
 import com.nanal.backend.global.response.CommonResponse;
-import com.nanal.backend.global.security.UserDto;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.nanal.backend.global.response.ErrorCode;
+import com.nanal.backend.global.security.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 
 
 @RequiredArgsConstructor
 @RestController
-@Tag(name = "MypageController", description = "마이페이지 관련 api")
-
 public class MypageController {
 
     private final MypageService mypageService;
 
     /**
-     * 마이페이지 정보
+     * 마이페이지 화면
      * [GET] /mypage
-     * 작성자 : 김유빈
-     * 수정일 : 2022-11-16
      */
-    @Operation(summary="마이페이지 정보 조회", description="유저 정보 기반 마이페이지 조회")
     @GetMapping("/mypage")
-    public CommonResponse<RespGetUserDto> getUser(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
-                                                  @Valid ReqGetUserDto reqGetUserDto) {
+    public CommonResponse<?> getUser(@AuthenticationPrincipal User user) {
 
         // 유저 정보 조회
-        RespGetUserDto respGetUserDto = mypageService.getUser(userDto.getEmail(), reqGetUserDto);
+        RespGetUserDto respGetUserDto = mypageService.getUser(user.getSocialId());
 
         return new CommonResponse<>(respGetUserDto);
     }
@@ -47,35 +38,66 @@ public class MypageController {
     /**
      * 닉네임 변경
      * [PUT] /mypage/nickname
-     * 작성자 : 김유빈
-     * 수정일 : 2022-11-17
      */
-    @Operation(summary="닉네임 변경", description="닉네임 변경")
     @PutMapping("/mypage/nickname")
-    public CommonResponse<RespEditNicknameDto> updateNickname(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
+    public CommonResponse<?> updateNickname(@AuthenticationPrincipal User user,
                                                               @RequestBody @Valid ReqEditNicknameDto reqEditNickname) {
 
         // 닉네임 변경
-        RespEditNicknameDto respEditNicknameDto = mypageService.updateNickname(userDto, reqEditNickname);
+        RespEditNicknameDto respEditNicknameDto = mypageService.updateNickname(user.getSocialId(), reqEditNickname);
 
         return new CommonResponse<>(respEditNicknameDto);
     }
 
     /**
-     * 회고요일 변경
-     * [PUT] /mypage/day
-     * 작성자 : 김유빈
-     * 수정일 : 2022-11-17
+     * 회고일 변경 가능 여부
+     * [GET] /mypage/retrospect
      */
-    @Operation(summary="회고요일 변경", description="회고요일 변경")
-    @PutMapping("/mypage/day")
-    public CommonResponse<RespEditRetrospectDayDto> updateRetrospectDay(@Parameter(hidden = true) @AuthenticationPrincipal UserDto userDto,
-                                                                        @RequestBody @Valid ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
+    @GetMapping("/mypage/retrospect")
+    public CommonResponse<?> checkChangeAvailability(@AuthenticationPrincipal User user) {
 
-        // 회고요일 변경
-        RespEditRetrospectDayDto respEditRetrospectDayDto = mypageService.updateRetrospectDay(userDto, reqEditRetrospectDayDto);
+        // 회고일 변경 가능 여부
+        RespCheckChangeAvailability respCheckChangeAvailability = mypageService.checkChangeAvailability(user.getSocialId());
 
-        return new CommonResponse<>(respEditRetrospectDayDto);
+        return new CommonResponse<>(respCheckChangeAvailability);
     }
 
+    /**
+     * 회고일 변경
+     * [PUT] /mypage/retrospect
+     */
+    @PutMapping("/mypage/retrospect")
+    public CommonResponse<?> updateRetrospectDay(@AuthenticationPrincipal User user,
+                                                 @RequestBody @Valid ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
+
+        // 회고요일 변경
+        mypageService.updateRetrospectDay(user.getSocialId(), reqEditRetrospectDayDto);
+
+        return new CommonResponse<>(ErrorCode.SUCCESS);
+    }
+
+    /**
+     * 서비스 사용기간 조회
+     */
+    @GetMapping("/mypage/service-life")
+    public CommonResponse<?> getServiceLife(@AuthenticationPrincipal User user) {
+
+        // 서비스 사용기간 조회
+        RespGetServiceLife respGetServiceLife = mypageService.getServiceLife(user.getSocialId());
+
+        return new CommonResponse<>(respGetServiceLife);
+    }
+
+    /**
+     * 회원탈퇴
+     */
+    @DeleteMapping("/mypage/withdrawal")
+    public CommonResponse<?> withdrawMembership(@AuthenticationPrincipal User user,
+                                                @RequestBody @Valid ReqWithdrawMembership reqWithdrawMembership) {
+
+        // 회원탈퇴
+        mypageService.withdrawMembership(user.getSocialId(), reqWithdrawMembership);
+
+        return new CommonResponse<>(ErrorCode.SUCCESS);
+    }
 }

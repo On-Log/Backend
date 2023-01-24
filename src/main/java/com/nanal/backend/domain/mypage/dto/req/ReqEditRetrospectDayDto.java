@@ -1,13 +1,14 @@
 package com.nanal.backend.domain.mypage.dto.req;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.DayOfWeek;
-
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class ReqEditRetrospectDayDto {
 
-    @Schema(description = "회고일" , example = "TUESDAY")
     private DayOfWeek retrospectDay;
 }

@@ -1,4 +1,4 @@
-package com.nanal.backend.global.security.jwt;
+package com.nanal.backend.global.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nanal.backend.global.exception.customexception.TokenInvalidException;
@@ -18,9 +18,9 @@ import java.io.IOException;
 
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
-public class JwtExceptionFilter extends OncePerRequestFilter {
+@RequiredArgsConstructor
+public class ExceptionFilter extends OncePerRequestFilter {
 
     private final ObjectMapper objectMapper;
 
@@ -29,13 +29,22 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         try {
             //JwtFilter 를 호출하는데, 이 필터에서 jwtTokenNotAvailable 이 떨어진다.
             filterChain.doFilter(request, response);
-        } catch(TokenInvalidException e){
+        } catch (TokenInvalidException e) {
             log.error("[" + e.getClass().getSimpleName() + "] " + e.getMessage());
 
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            response.setCharacterEncoding("UTF-8");
-            objectMapper.writeValue(response.getWriter(), new CommonResponse<>(ErrorCode.INVALID_JWT));
-        }
+            setErrorResponse(response, ErrorCode.INVALID_TOKEN);
+        } /*catch (Exception e) {
+            log.error("[" + e.getClass().getSimpleName() + "] " + e.getMessage());
+            e.printStackTrace();
+
+            setErrorResponse(response, ErrorCode.INVALID_REQUEST);
+        }*/
+    }
+
+    private void setErrorResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException {
+        response.setStatus(errorCode.getCode());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
+        objectMapper.writeValue(response.getWriter(), new CommonResponse<>(errorCode));
     }
 }

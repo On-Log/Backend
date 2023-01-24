@@ -1,6 +1,6 @@
 package com.nanal.backend.domain.auth.controller;
 
-import com.nanal.backend.domain.auth.dto.req.ReqSignUpDto;
+import com.nanal.backend.domain.auth.dto.req.ReqAuthDto;
 import com.nanal.backend.domain.auth.service.AuthService;
 import com.nanal.backend.global.security.jwt.Token;
 import com.nanal.backend.global.response.CommonResponse;
@@ -18,16 +18,48 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/auth/signup")
-    public CommonResponse<?> signUp(@RequestBody ReqSignUpDto reqSignUpDto) {
+    /**
+     * NAVER 소셜 로그인 기능
+     */
+    @PostMapping(value = "/auth/naver")
+    public CommonResponse<?> naverAuth(@RequestBody ReqAuthDto reqAuthDto) {
 
         // 최초 로그인 - 회원가입 후 토큰 발행.
         // 기존 유저 - 토큰 발행.
-        Token token = authService.signUp(reqSignUpDto);
+        Token token = authService.naverAuth(reqAuthDto);
 
         return new CommonResponse<>(token);
     }
 
+    /**
+     * KAKAO 소셜 로그인 기능
+     */
+    @PostMapping(value = "/auth/kakao")
+    public CommonResponse<?> kakaoAuth(@RequestBody ReqAuthDto reqAuthDto) {
+
+        // 최초 로그인 - 회원가입 후 토큰 발행.
+        // 기존 유저 - 토큰 발행.
+        Token token = authService.kakaoAuth(reqAuthDto);
+
+        return new CommonResponse<>(token);
+    }
+
+    /**
+     * GOOGLE 소셜 로그인 기능
+     */
+    @PostMapping(value = "/auth/google")
+    public CommonResponse<?> googleAuth(@RequestBody ReqAuthDto reqAuthDto) {
+
+        // 최초 로그인 - 회원가입 후 토큰 발행.
+        // 기존 유저 - 토큰 발행.
+        Token token = authService.googleAuth(reqAuthDto);
+
+        return new CommonResponse<>(token);
+    }
+
+    /**
+     * Token 재발급
+     */
     @GetMapping("/auth/reissue")
     public CommonResponse<Token> reissue(HttpServletRequest request) {
 

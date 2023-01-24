@@ -1,0 +1,18 @@
+= Nanal API Doc
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+include::Overview.adoc[]
+
+include::Auth-API.adoc[]
+
+include::MyPage-API.adoc[]
+
+include::Diary-API.adoc[]
+
+include::Retrospect-API.adoc[]
+

@@ -28,6 +28,13 @@ public class TestController {
     }
 
     @ResponseBody
+    @GetMapping("/deploy")
+    public String deploy() {
+        log.info("hi deploy");
+        return "deploy success";
+    }
+
+    @ResponseBody
     @GetMapping("/redis/test")
     public String store() {
 

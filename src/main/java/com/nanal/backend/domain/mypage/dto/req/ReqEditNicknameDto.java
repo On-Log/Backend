@@ -1,15 +1,19 @@
 package com.nanal.backend.domain.mypage.dto.req;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class ReqEditNicknameDto {
-    @Schema(description = "닉네임" , example = "nanal123")
     @NotBlank(message = "nickname 은 비어있을 수 없습니다.")
-    @Size(max = 20, message="nickname 은 최대 20개의 문자만 입력 가능합니다.")
+    @Size(max = 7, message="nickname 은 최대 7개의 문자만 입력 가능합니다.")
     private String nickname;
 }

@@ -1,23 +1,20 @@
 package com.nanal.backend.domain.retrospect.service;
 
 import com.nanal.backend.domain.diary.entity.Diary;
-import com.nanal.backend.domain.mypage.entity.Member;
+import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.retrospect.dto.req.*;
-import com.nanal.backend.domain.retrospect.dto.resp.RespGetInfoDto;
-import com.nanal.backend.domain.retrospect.dto.resp.RespGetKeywordAndEmotionDto;
-import com.nanal.backend.domain.retrospect.dto.resp.RespGetQuestionAndHelpDto;
-import com.nanal.backend.domain.retrospect.dto.resp.RespGetRetroDto;
+import com.nanal.backend.domain.retrospect.dto.resp.*;
+import com.nanal.backend.domain.retrospect.entity.Question;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import com.nanal.backend.domain.retrospect.entity.RetrospectContent;
 import com.nanal.backend.domain.retrospect.entity.RetrospectKeyword;
-import com.nanal.backend.domain.retrospect.entity.RetrospectQuestion;
+import com.nanal.backend.domain.retrospect.repository.QuestionRepository;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
 import com.nanal.backend.domain.diary.service.DiaryService;
-import com.nanal.backend.domain.mypage.repository.MemberRepository;
+import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.retrospect.dto.*;
 import com.nanal.backend.domain.retrospect.repository.RetrospectKeywordRepository;
-import com.nanal.backend.domain.retrospect.repository.RetrospectQuestionRepository;
 import com.nanal.backend.domain.retrospect.repository.RetrospectRepository;
 import com.nanal.backend.domain.retrospect.exception.RetrospectNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -43,11 +40,11 @@ public class RetrospectService {
     private final RetrospectRepository retrospectRepository;
     private final DiaryService diaryService;
     private final RetrospectKeywordRepository retrospectKeywordRepository;
-    private final RetrospectQuestionRepository retrospectQuestionRepository;
+    private final QuestionRepository questionRepository;
 
-    public RespGetInfoDto getInfo(String email, ReqGetInfoDto reqGetInfoDto) {
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+    public RespGetInfoDto getInfo(String socialId, ReqGetInfoDto reqGetInfoDto) {
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
         LocalDateTime currentDate = reqGetInfoDto.getCurrentDate();
         LocalDateTime selectDate = reqGetInfoDto.getSelectDate();
 
@@ -62,19 +59,17 @@ public class RetrospectService {
         // 회고 요일까지 남은 날짜
         Period period = Period.between(currentDate.toLocalDate(), postRetroDate.toLocalDate());
         // 회고 주제별로 분류 후 주차별로 분류
-        List<List<List<String>>> existRetrospectKeyword = getKeyword(member, selectDate);
+        List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = getKeyword(member, selectDate);
 
-        return RespGetInfoDto.builder()
-                .existRetrospect(existRetrospect)
-                .betweenDate(period.getDays())
-                .existRetrospectKeyword(existRetrospectKeyword)
-                .build();
+        RespGetInfoDto respGetInfoDto = new RespGetInfoDto(existRetrospect, period.getDays(), respGetClassifiedKeywordDtos);
+
+        return respGetInfoDto;
     }
 
 
-    public void saveRetrospect(String email, ReqSaveRetroDto reqSaveRetroDto) {
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+    public void saveRetrospect(String socialId, ReqSaveRetroDto reqSaveRetroDto) {
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
         // 회고 Entity 생성
         Retrospect retrospect = createRetrospect(member, reqSaveRetroDto.getGoal(), reqSaveRetroDto.getCurrentDate(), reqSaveRetroDto.getKeywords(), reqSaveRetroDto.getContents());
         // 회고 저장
@@ -82,16 +77,16 @@ public class RetrospectService {
         //회고 저장 후 일주일 일기 리스트 editstatus 변경
         LocalDateTime currentTime = reqSaveRetroDto.getCurrentDate();
         LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
-        List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate());
+        List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate(),true);
         for(Diary t : diaries) {
             t.changeEditStatus(false);
         }
     }
 
 
-    public RespGetRetroDto getRetro(String email, ReqGetRetroDto reqGetRetroDto) {
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+    public RespGetRetroDto getRetro(String socialId, ReqGetRetroDto reqGetRetroDto) {
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         LocalDateTime selectDate = reqGetRetroDto.getSelectDate();
         // 선택한 yyyy-MM 에 작성한 회고리스트 조회
@@ -105,9 +100,9 @@ public class RetrospectService {
     }
 
 
-    public void editRetrospect(String email, ReqEditRetroDto reqEditRetroDto) {
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+    public void editRetrospect(String socialId, ReqEditRetroDto reqEditRetroDto) {
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         LocalDateTime selectDate = reqEditRetroDto.getEditDate();
         // 선택한 yyyy-MM 에 작성한 회고리스트 조회
@@ -123,9 +118,9 @@ public class RetrospectService {
     }
 
 
-    public RespGetKeywordAndEmotionDto getKeywordAndEmotion(String email, ReqGetKeywordAndEmotionDto reqGetKeywordAndEmotionDto){
-        // email 로 유저 조회
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+    public RespGetKeywordAndEmotionDto getKeywordAndEmotion(String socialId, ReqGetKeywordAndEmotionDto reqGetKeywordAndEmotionDto){
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
 
         LocalDateTime currentTime = reqGetKeywordAndEmotionDto.getCurrentDate();
         LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
@@ -134,7 +129,9 @@ public class RetrospectService {
         List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(
                 member.getMemberId(),
                 prevRetroDate.toLocalDate().minusDays(6),
-                currentTime.toLocalDate());
+                currentTime.toLocalDate(),
+                true
+                );
 
         RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.makeRespGetKeywordAndEmotionDto(diaries);
 
@@ -142,11 +139,11 @@ public class RetrospectService {
     }
 
 
-    public RespGetQuestionAndHelpDto getQuestionAndHelp() {
+    public RespGetQuestionAndHelpDto getQuestionAndHelp(ReqGetGoalDto reqGetGoalDto) {
         // 회고 질문 + 도움말 조회
-        List<RetrospectQuestion> retrospectQuestions = retrospectQuestionRepository.findAll();
+        List<Question> retrospectQuestions = questionRepository.findListByGoal(reqGetGoalDto.getGoalIndex());
 
-        RespGetQuestionAndHelpDto respGetQuestionAndHelpDto = getRespGetQuestionAndHelpDto(retrospectQuestions);
+        RespGetQuestionAndHelpDto respGetQuestionAndHelpDto = RespGetQuestionAndHelpDto.makeRespGetQuestionAndHelpDto(retrospectQuestions);
 
         return respGetQuestionAndHelpDto;
     }
@@ -188,7 +185,7 @@ public class RetrospectService {
         return retrospects;
     }
 
-    private List<List<List<String>>> getKeyword(Member member, LocalDateTime selectTime){
+    private List<RespGetClassifiedKeywordDto> getKeyword(Member member, LocalDateTime selectTime) {
         // 전체 분할한 키워드 리스트들
         // 분류1 : [
         //   1차 : [
@@ -198,7 +195,6 @@ public class RetrospectService {
         //   3차 : [
         //   ]
         //]
-        List<List<List<String>>> keywordList = new ArrayList<>();
 
         //회고별 분류
         //   1차 : [
@@ -216,40 +212,30 @@ public class RetrospectService {
                 member.getMemberId(),
                 yearMonth);
 
+
         //회고의 분류 리스트 생성
         List<String> keyWordClass = new ArrayList<>();
         keyWordClass.add("그때 그대로 의미있었던 행복한 기억");
         keyWordClass.add("나를 힘들게 했지만 도움이 된 기억");
         keyWordClass.add("돌아보니, 다른 의미로 다가온 기억");
-        keyWordClass.add("놓아줘도 괜찮은 기억");
 
+        List<ClassifyDto> classifyDtos = new ArrayList<>();
+        List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = new ArrayList<>();
+        RespGetClassifiedKeywordDto respGetClassifiedKeywordDto = new RespGetClassifiedKeywordDto();
         for (int i = 0; i < keyWordClass.size(); i++) {
-            List<List<String>> klist = new ArrayList<>();
+            classifyDtos = new ArrayList<>();
             for (Retrospect t : writeRetrospect) {
+                //한 회고에 대한 키워드 리스트
                 List<RetrospectKeyword> classifiedKeyword = retrospectKeywordRepository.findListByRetroAndClassify(t.getRetrospectId(), keyWordClass.get(i));
-               //t번째 회고의 i번째 분류 키워드
-                List<String> keyword = new ArrayList<>();
-                for (RetrospectKeyword r : classifiedKeyword) {
-                    keyword.add(r.getKeyword());
-                }
-                klist.add(keyword);
+                ClassifyDto classifyDto = new ClassifyDto();
+                //t차 회고의 i 번째 분류 과정 시작 가장 첫 시작은 첫번째 회고의 첫번째 분류
+                classifyDto = ClassifyDto.makeClassifyDto(classifiedKeyword);
+                classifyDtos.add(classifyDto);
             }
-            keywordList.add(klist);
+            // i 번째 분류 과정 완
+            respGetClassifiedKeywordDto = RespGetClassifiedKeywordDto.makeRespGetExistRetrospectKeyword(classifyDtos, keyWordClass.get(i));
+            respGetClassifiedKeywordDtos.add(respGetClassifiedKeywordDto);
         }
-
-        return keywordList;
-    }
-    private RespGetQuestionAndHelpDto getRespGetQuestionAndHelpDto(List<RetrospectQuestion> retrospectQuestions) {
-        List<String> questionAndHelp = new ArrayList<>();
-
-        for (RetrospectQuestion t : retrospectQuestions) {
-            String str = "";
-            str = t.getQuestion() + " " + t.getHelp();
-            questionAndHelp.add(str);
-        }
-
-        RespGetQuestionAndHelpDto respGetQuestionAndHelpDto = new RespGetQuestionAndHelpDto();
-        respGetQuestionAndHelpDto.setQuestionAndHelp(questionAndHelp);
-        return respGetQuestionAndHelpDto;
+        return respGetClassifiedKeywordDtos;
     }
 }

@@ -21,8 +21,8 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     @Query(value = "SELECT * FROM diary d WHERE d.member_id = :memberId AND d.write_date LIKE :likeFormat", nativeQuery = true)
     List<Diary> findDiaryListByMemberAndWriteDate(Long memberId, String likeFormat);
 
-    @Query(value = "SELECT * FROM diary d WHERE d.member_id = :memberId AND (DATE(write_date) BETWEEN :firstDate AND :lastDate)", nativeQuery = true)
-    List<Diary> findListByMemberAndBetweenWriteDate(Long memberId, LocalDate firstDate, LocalDate lastDate);
+    @Query(value = "SELECT * FROM diary d WHERE d.member_id = :memberId AND (DATE(write_date) BETWEEN :firstDate AND :lastDate) AND d.edit_status = :editStatus", nativeQuery = true)
+    List<Diary> findListByMemberAndBetweenWriteDate(Long memberId, LocalDate firstDate, LocalDate lastDate, Boolean editStatus);
 
     @Modifying
     @Query(value = "UPDATE diary d SET d.edit_status = false WHERE d.edit_status = :editStatus AND d.write_date LIKE :likeFormat", nativeQuery = true)

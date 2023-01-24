@@ -6,7 +6,6 @@ import com.nanal.backend.domain.retrospect.dto.RetrospectKeywordDto;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import com.nanal.backend.domain.retrospect.entity.RetrospectContent;
 import com.nanal.backend.domain.retrospect.entity.RetrospectKeyword;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +19,6 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class RespGetRetroDto {
-    @Schema(description = "작성 날짜" , example = "2022-10-11")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime writeDate;
 

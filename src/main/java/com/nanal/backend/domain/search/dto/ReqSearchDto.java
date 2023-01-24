@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
@@ -14,4 +15,12 @@ import javax.validation.constraints.NotBlank;
 public class ReqSearchDto {
     @NotBlank
     private String searchWord;
+
+    private LocalDateTime startDate;
+
+    private LocalDateTime endDate;
+
+    private Integer offset;
+
+    private Integer limit;
 }

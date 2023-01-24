@@ -87,7 +87,6 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/nanal-test:green
           docker push ${{ secrets.DOCKER_USERNAME }}/nanal-test:blue
           
-
       #배포 (앱 출시용 )
       - name: Deploy (PROD)
         uses: appleboy/ssh-action@master

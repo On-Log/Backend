@@ -1,5 +1,6 @@
 package com.nanal.backend.global.response;
 
+import com.nanal.backend.domain.retrospect.exception.RetrospectAlreadyExistException;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -41,7 +42,8 @@ public enum ErrorCode {
     RETROSPECT_DATE_CHANGE_IMPOSSIBLE(false, 481, "30일이 지나지 않아 회고일 변경이 불가능합니다."),
 
     // Retrospect
-    RETROSPECT_NOT_FOUND(false, 490, "조회하고자 하는 회고가 존재하지 않습니다.");
+    RETROSPECT_NOT_FOUND(false, 490, "조회하고자 하는 회고가 존재하지 않습니다."),
+    RETROSPECT_ALREADY_EXIST(false,491,"이미 요청한 날짜에 작성한 회고가 존재합니다.");
 
     private Boolean isSuccess;
     private int code;

@@ -5,6 +5,7 @@ import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.retrospect.dto.req.*;
 import com.nanal.backend.domain.retrospect.dto.resp.*;
 import com.nanal.backend.domain.retrospect.entity.*;
+import com.nanal.backend.domain.retrospect.exception.RetrospectAlreadyExistException;
 import com.nanal.backend.domain.retrospect.repository.ExtraQuestionRepository;
 import com.nanal.backend.domain.retrospect.repository.QuestionRepository;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
@@ -15,6 +16,7 @@ import com.nanal.backend.domain.retrospect.dto.*;
 import com.nanal.backend.domain.retrospect.repository.RetrospectKeywordRepository;
 import com.nanal.backend.domain.retrospect.repository.RetrospectRepository;
 import com.nanal.backend.domain.retrospect.exception.RetrospectNotFoundException;
+import com.nanal.backend.global.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
@@ -70,6 +72,8 @@ public class RetrospectService {
     public void saveRetrospect(String socialId, ReqSaveRetroDto reqSaveRetroDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+        // 해당 날짜에 작성한 일기 존재하는지 체크
+        checkRetrospectAlreadyExist(reqSaveRetroDto, member);
         // 회고 Entity 생성
         Retrospect retrospect = createRetrospect(member, reqSaveRetroDto.getGoal(), reqSaveRetroDto.getCurrentDate(), reqSaveRetroDto.getKeywords(), reqSaveRetroDto.getContents());
         // 회고 저장
@@ -256,6 +260,14 @@ public class RetrospectService {
         return retrospect;
     }
 
+    private void checkRetrospectAlreadyExist(ReqSaveRetroDto reqSaveRetroDto, Member member) {
+        // 질의할 sql 의 Like 절에 해당하게끔 변환
+        String yearMonthDay = reqSaveRetroDto.getCurrentDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
+        // 선택한 yyyy-MM-dd 에 작성한 일기 조회
+        List<Retrospect> existRetrospect = retrospectRepository.findListByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
+
+        if(existRetrospect.size() != 0) throw new RetrospectAlreadyExistException(ErrorCode.RETROSPECT_ALREADY_EXIST.getMessage());
+    }
 
     private List<Retrospect> getExistRetrospect(Member member, LocalDateTime selectTime) {
         System.out.println(selectTime);

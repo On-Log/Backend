@@ -18,5 +18,9 @@ public interface RetrospectRepository extends JpaRepository<Retrospect, Long> {
     @Modifying
     @Query(value = "UPDATE retrospect re SET re.edit_status = false WHERE re.member_id IN (:member_ids)", nativeQuery = true)
     void updateEditStatusByMember(@Param("member_ids") List<Long> member_ids);
+
+    @Query(value = "SELECT * FROM retrospect re WHERE re.member_id = :memberId", nativeQuery = true)
+    List<Retrospect> findListByMember(Long memberId);
 }
+
 

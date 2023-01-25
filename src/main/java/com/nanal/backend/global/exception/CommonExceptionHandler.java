@@ -5,6 +5,7 @@ import com.nanal.backend.domain.diary.exception.DiaryAlreadyExistException;
 import com.nanal.backend.domain.diary.exception.DiaryNotFoundException;
 import com.nanal.backend.domain.mypage.exception.ChangeRetrospectDateException;
 import com.nanal.backend.domain.mypage.exception.RetrospectDayDupException;
+import com.nanal.backend.domain.retrospect.exception.RetrospectAlreadyExistException;
 import com.nanal.backend.domain.retrospect.exception.RetrospectNotFoundException;
 import com.nanal.backend.global.security.AuthenticationUtil;
 import com.nanal.backend.global.exception.customexception.*;
@@ -87,6 +88,13 @@ public class CommonExceptionHandler {
         response.setStatus(ErrorCode.RETROSPECT_NOT_FOUND.getCode());
         log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.RETROSPECT_NOT_FOUND);
+    }
+
+    @ExceptionHandler(RetrospectAlreadyExistException.class)
+    public CommonResponse<?> retrospectAlreadyExistError(HttpServletResponse response, RetrospectAlreadyExistException e) {
+        response.setStatus(ErrorCode.RETROSPECT_ALREADY_EXIST.getCode());
+        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
+        return new CommonResponse<>(ErrorCode.RETROSPECT_ALREADY_EXIST);
     }
 
     /**

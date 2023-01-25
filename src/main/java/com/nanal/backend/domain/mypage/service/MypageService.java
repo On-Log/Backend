@@ -36,15 +36,11 @@ public class MypageService {
                 .build();
     }
 
-    public RespEditNicknameDto updateNickname(String socialId, ReqEditNicknameDto reqEditNickname) {
+    public void updateNickname(String socialId, ReqEditNicknameDto reqEditNickname) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
         member.updateNickname(reqEditNickname.getNickname());
-
-        return RespEditNicknameDto.builder()
-                .nickname(member.getNickname())
-                .build();
     }
 
     public RespCheckChangeAvailability checkChangeAvailability(String socialId) {

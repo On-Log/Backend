@@ -2,7 +2,7 @@ package com.nanal.backend.domain.mypage.service;
 
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
-import com.nanal.backend.domain.mypage.FeedbackRepository;
+import com.nanal.backend.domain.mypage.repository.FeedbackRepository;
 import com.nanal.backend.domain.mypage.dto.req.ReqEditNicknameDto;
 import com.nanal.backend.domain.mypage.dto.req.ReqEditRetrospectDayDto;
 import com.nanal.backend.domain.mypage.dto.req.ReqWithdrawMembership;

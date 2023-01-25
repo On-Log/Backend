@@ -1,10 +1,7 @@
 package com.nanal.backend.domain.retrospect.controller;
 
 import com.nanal.backend.domain.retrospect.dto.req.*;
-import com.nanal.backend.domain.retrospect.dto.resp.RespGetInfoDto;
-import com.nanal.backend.domain.retrospect.dto.resp.RespGetKeywordAndEmotionDto;
-import com.nanal.backend.domain.retrospect.dto.resp.RespGetQuestionAndHelpDto;
-import com.nanal.backend.domain.retrospect.dto.resp.RespGetRetroDto;
+import com.nanal.backend.domain.retrospect.dto.resp.*;
 import com.nanal.backend.domain.retrospect.service.RetrospectService;
 import com.nanal.backend.global.response.CommonResponse;
 import com.nanal.backend.global.response.ErrorCode;
@@ -115,6 +112,22 @@ public class RetrospectController {
 
         return new CommonResponse<>(respGetQuestionAndHelp);
     }
+
+    /**
+     * 추가 회고 질문 + 도움말
+     * [GET] /retrospect/extra
+     * 작성자 : 장세은
+     * 수정일 :
+     */
+    @GetMapping("/retrospect/extra")
+    public CommonResponse<RespGetExtraQuestionAndHelpDto> getExtraQuestionAndHelp(@AuthenticationPrincipal User user, ReqGetGoalDto reqGetGoalDto) {
+
+        // 회고질문 + 도움말 조회
+        RespGetExtraQuestionAndHelpDto respGetExtraQuestionAndHelp = retrospectService.getExtraQuestionAndHelp(user.getSocialId(), reqGetGoalDto);
+
+        return new CommonResponse<>(respGetExtraQuestionAndHelp);
+    }
+
 
 
 }

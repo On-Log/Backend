@@ -1,5 +1,6 @@
 DELETE FROM emotion;
 DELETE FROM question;
+DELETE FROM extra_question;
 
 INSERT INTO emotion(emotion_id, emotion) VALUES (1, "행복");
 INSERT INTO emotion(emotion_id, emotion) VALUES (2, "여유");
@@ -38,3 +39,27 @@ INSERT INTO question(question_id, content, help, goal_id) VALUES (9, "다음주�
 INSERT INTO question(question_id, content, help, goal_id) VALUES (10, "이번주에 나를 속상하게 하거나, 웃게 한 사람이 있었나요? 지금 떠오르는 사람에 대해 알려주세요!", "속상했던 감정, 혹은 즐거웠던 감정이 크지 않았어도 괜찮아요. 직접 만난 사람이 아니어도 괜찮고, 아예 모르는 사람이어도 좋아요.", 4);
 INSERT INTO question(question_id, content, help, goal_id) VALUES (11, "그 사람은 당신에게 어떤 영향을 주는 사람인가요? 이 관계를 통해 배운 점은 무엇인가요?", "배운 점이 잘 떠오르지 않는다면 이 사람에 대해 든 생각을 적어보세요. 왜 이런 생각이 들었을까요? 이 생각이 앞으로의 관계에 어떤 영향을 미치게 될까요?", 4);
 INSERT INTO question(question_id, content, help, goal_id) VALUES (12, "나는 그 사람과의 관계를 어떻게 맺고 싶나요?", "어떤 관계인지 설명하기 어렵다면 그 사람과 어떤 교류를 원하는지부터 생각해보세요. 그 사람에게 어떤 말을 듣고 싶나요? 그 사람과 무엇을 하고 싶나요? 그 사람이 나를 어떻게 생각하면 좋을까요?", 4);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (1, "추가질문1-1", "추가질문1 도움말", 1);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (2, "추가질문1-2", "추가질문2 도움말", 1);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (3, "추가질문1-3", "추가질문3 도움말", 1);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (4, "추가질문1-4", "추가질문4 도움말", 1);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (5, "추가질문1-5", "추가질문5 도움말", 1);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (6, "추가질문1-6", "추가질문6 도움말", 1);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (7, "추가질문2-1", "추가질문1 도움말", 2);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (8, "추가질문2-2", "추가질문2 도움말", 2);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (9, "추가질문2-3", "추가질문3 도움말", 2);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (10, "추가질문2-4", "추가질문4 도움말", 2);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (11, "추가질문2-5", "추가질문5 도움말", 2);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (12, "추가질문2-6", "추가질문6 도움말", 2);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (13, "추가질문3-1", "추가질문1 도움말", 3);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (14, "추가질문3-2", "추가질문2 도움말", 3);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (15, "추가질문3-3", "추가질문3 도움말", 3);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (16, "추가질문3-4", "추가질문4 도움말", 3);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (17, "추가질문3-5", "추가질문5 도움말", 3);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (18, "추가질문3-6", "추가질문6 도움말", 3);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (19, "추가질문4-1", "추가질문1 도움말", 4);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (20, "추가질문4-2", "추가질문2 도움말", 4);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (21, "추가질문4-3", "추가질문3 도움말", 4);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (22, "추가질문4-4", "추가질문4 도움말", 4);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (23, "추가질문4-5", "추가질문5 도움말", 4);
+INSERT INTO extra_question(question_id, content, help, goal_id) VALUES (24, "추가질문4-6", "추가질문6 도움말", 4);

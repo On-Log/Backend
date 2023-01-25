@@ -72,16 +72,15 @@ public class MypageControllerTest extends CommonControllerTest {
     @Test
     public void 닉네임_변경() throws Exception {
         //given
-        ReqEditNicknameDto reqEditNicknameDto = new ReqEditNicknameDto("변경 닉네임");
-        RespEditNicknameDto respEditNicknameDto = new RespEditNicknameDto("변경 닉네임");
-        given(mypageService.updateNickname(any(), any())).willReturn(respEditNicknameDto);
+        ReqEditNicknameDto input = new ReqEditNicknameDto("변경 닉네임");
+        willDoNothing().given(mypageService).updateNickname(any(), any());
 
         //when
         ResultActions actions = mockMvc.perform(
                 put("/mypage/nickname")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reqEditNicknameDto))
+                        .content(objectMapper.writeValueAsString(input))
         );
 
         //then
@@ -98,8 +97,7 @@ public class MypageControllerTest extends CommonControllerTest {
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
-                                        fieldWithPath("message").description("결과 메시지"),
-                                        fieldWithPath("result.nickname").description("변경한 닉네임")
+                                        fieldWithPath("message").description("결과 메시지")
                                 )
                         )
                 );

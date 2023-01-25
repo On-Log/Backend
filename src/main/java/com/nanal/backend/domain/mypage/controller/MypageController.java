@@ -44,9 +44,9 @@ public class MypageController {
                                                               @RequestBody @Valid ReqEditNicknameDto reqEditNickname) {
 
         // 닉네임 변경
-        RespEditNicknameDto respEditNicknameDto = mypageService.updateNickname(user.getSocialId(), reqEditNickname);
+        mypageService.updateNickname(user.getSocialId(), reqEditNickname);
 
-        return new CommonResponse<>(respEditNicknameDto);
+        return new CommonResponse<>(ErrorCode.SUCCESS);
     }
 
     /**

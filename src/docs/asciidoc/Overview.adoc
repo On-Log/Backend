@@ -74,4 +74,8 @@
 | `490 RETROSPECT_NOT_FOUND`
 | 회고 조회/수정
 | 요청한 기간에 작성된 회고 존재하지 않음
+
+| `491 RETROSPECT_ALREADY_EXIST`
+| 회고 저장
+| 이미 요청한 날짜에 작성된 회고 존재
 |===

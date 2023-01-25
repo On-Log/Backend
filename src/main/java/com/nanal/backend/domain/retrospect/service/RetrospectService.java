@@ -4,10 +4,8 @@ import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.retrospect.dto.req.*;
 import com.nanal.backend.domain.retrospect.dto.resp.*;
-import com.nanal.backend.domain.retrospect.entity.Question;
-import com.nanal.backend.domain.retrospect.entity.Retrospect;
-import com.nanal.backend.domain.retrospect.entity.RetrospectContent;
-import com.nanal.backend.domain.retrospect.entity.RetrospectKeyword;
+import com.nanal.backend.domain.retrospect.entity.*;
+import com.nanal.backend.domain.retrospect.repository.ExtraQuestionRepository;
 import com.nanal.backend.domain.retrospect.repository.QuestionRepository;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
@@ -28,6 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @EnableScheduling
 @RequiredArgsConstructor
@@ -41,6 +40,7 @@ public class RetrospectService {
     private final DiaryService diaryService;
     private final RetrospectKeywordRepository retrospectKeywordRepository;
     private final QuestionRepository questionRepository;
+    private final ExtraQuestionRepository extraQuestionRepository;
 
     public RespGetInfoDto getInfo(String socialId, ReqGetInfoDto reqGetInfoDto) {
         // socialId 로 유저 조회
@@ -146,6 +146,91 @@ public class RetrospectService {
         RespGetQuestionAndHelpDto respGetQuestionAndHelpDto = RespGetQuestionAndHelpDto.makeRespGetQuestionAndHelpDto(retrospectQuestions);
 
         return respGetQuestionAndHelpDto;
+    }
+
+    public RespGetExtraQuestionAndHelpDto getExtraQuestionAndHelp(String socialId, ReqGetGoalDto reqGetGoalDto){
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+        //유저가 작성한 회고 리스트
+        List<Retrospect> getRetrospects = retrospectRepository.findListByMember(member.getMemberId());
+        List<String> contents = new ArrayList<>();
+        for (Retrospect retrospect : getRetrospects) {
+            List<RetrospectContent> content = new ArrayList<>();
+            content = retrospect.getRetrospectContents();
+            for(RetrospectContent r : content) {
+                contents.add(r.getQuestion());
+            }
+        }
+        // 회고 추가 질문 + 도움말 조회
+        List<ExtraQuestion> extraRetrospectQuestions = extraQuestionRepository.findListByGoal(reqGetGoalDto.getGoalIndex());
+        System.out.println(extraRetrospectQuestions.size());
+        System.out.println(contents);
+        System.out.println(extraRetrospectQuestions.get(1));
+        System.out.println(contents.contains(extraRetrospectQuestions.get(1).getContent()));
+        System.out.println(extraRetrospectQuestions.size());
+        //작성한 질문 인덱스 담는 리스트
+        ArrayList<Integer> windex = new ArrayList<>();
+        //아직 모든 질문에 대한 답을 안했을 때
+        for (int i = 0; i < extraRetrospectQuestions.size(); i++) {
+            if (contents.contains(extraRetrospectQuestions.get(i).getContent()) == true) {
+                windex.add(i);
+            }
+            if(windex.size() == extraRetrospectQuestions.size()){
+                windex = new ArrayList<>();
+            }
+        }
+
+        System.out.println();
+        System.out.println(windex.size());
+        System.out.println(extraRetrospectQuestions.size());
+        List<ExtraQuestion> selected = new ArrayList<>();
+        //중복없는 랜덤 숫자
+        int a[] = new int[2];
+        Random r = new Random();
+
+        //데이터 개수 홀수일 때
+        if(extraRetrospectQuestions.size() % 2 != 0 && windex.size() == extraRetrospectQuestions.size() - 1){
+            int lastIndex = 0;
+            for(int i = 0; i < extraRetrospectQuestions.size(); i++){
+                if(windex.contains(i) == false){
+                    lastIndex = i;
+                    break;
+                }
+            }
+            a[0] = lastIndex;
+            while(true){
+                a[1] = r.nextInt(extraRetrospectQuestions.size());
+                if(a[0] != a[1])
+                    break;
+            }
+        }
+        else {
+            System.out.println("아직 모든 질문에 대한 답을 안했을 때");
+            for (int i = 0; i < 2; i++) {
+                System.out.println(i);
+                a[i] = r.nextInt(extraRetrospectQuestions.size());
+                System.out.println(i);
+                System.out.println(a[i]);
+                System.out.println(windex.contains(a[i]));
+                if (windex.contains(a[i]) == true) {
+                    i--;
+                    continue;
+                }
+                for (int j = 0; j < i; j++) {
+                    if (a[i] == a[j])
+                        i--;
+                }
+            }
+        }
+
+        for (int i = 0; i < 2; i++){
+            selected.add(extraRetrospectQuestions.get(a[i]));
+        }
+
+
+        RespGetExtraQuestionAndHelpDto respGetExtraQuestionAndHelpDto = RespGetExtraQuestionAndHelpDto.makeRespGetQuestionAndHelpDto(selected);
+
+        return respGetExtraQuestionAndHelpDto;
     }
 
 

@@ -29,7 +29,7 @@ public class Member extends BaseTime {
     @Column(name = "member_id")
     private Long memberId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String socialId;
 
     // RFC 표준상 최대 320자.

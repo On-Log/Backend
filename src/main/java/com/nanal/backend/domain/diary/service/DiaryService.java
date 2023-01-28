@@ -172,6 +172,7 @@ public class DiaryService {
         // Keyword 리스트를 이용하여 Diary 생성
         Diary diary = Diary.makeDiary(member, keywords, reqDiaryDto.getContent(), reqDiaryDto.getDate());
 
+
         return diary;
     }
 

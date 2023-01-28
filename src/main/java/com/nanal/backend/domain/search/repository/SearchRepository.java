@@ -19,7 +19,7 @@ import static org.springframework.util.StringUtils.hasText;
 @Repository
 public class SearchRepository {
 
-    // 멀티스레드 동시성 문제 체크
+    // qclass iv로 선언시 스레드 세이프한지 체크
     QDiary diary = QDiary.diary;
     QKeyword keyword = QKeyword.keyword;
 

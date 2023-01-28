@@ -8,8 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Table(name = "keyword")
@@ -23,7 +21,6 @@ public class Keyword extends BaseTime {
     @Column(name = "keyword_id")
     private Long keywordId;
 
-    // word -> keyword 로 테스트
     @Column(nullable = false, length = 5)
     private String word;
 
@@ -31,26 +28,26 @@ public class Keyword extends BaseTime {
     @JoinColumn(name = "diary_id")
     private Diary diary;
 
-    @OneToMany(mappedBy = "keyword", cascade = CascadeType.ALL)
-    private List<KeywordEmotion> keywordEmotions = new ArrayList<>();
+    @Embedded
+    private EmotionList EmotionList;
+
+    //@OneToMany(mappedBy = "keyword", cascade = CascadeType.ALL)
+    //private List<KeywordEmotion> keywordEmotions = new ArrayList<>();
 
     //==수정 메서드==//
     public void changeDiary(Diary diary) {
         this.diary = diary;
     }
 
-    public void changeWord(String word) {
-        this.word = word;
+    public void changeWord(String keyword) {
+        this.word = keyword;
     }
 
     //==연관관계 메서드==//
-    public void addKeywordEmotion(KeywordEmotion keywordEmotion) {
-        keywordEmotions.add(keywordEmotion);
-        keywordEmotion.changeKeyword(this);
-    }
+
 
     //==생성 메서드==//
-    public static Keyword makeKeyword(String word, List<KeywordEmotion> keywordEmotions) {
+    /*public static Keyword makeKeyword(String word, List<KeywordEmotion> keywordEmotions) {
         Keyword keyword = new Keyword();
 
         for (KeywordEmotion keywordEmotion : keywordEmotions) {
@@ -60,5 +57,5 @@ public class Keyword extends BaseTime {
         keyword.changeWord(word);
 
         return keyword;
-    }
+    }*/
 }

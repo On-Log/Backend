@@ -6,8 +6,8 @@ import com.nanal.backend.domain.diary.dto.resp.RespGetDiaryDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetEmotionDto;
 import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.diary.entity.Emotion;
+import com.nanal.backend.domain.diary.entity.EmotionList;
 import com.nanal.backend.domain.diary.entity.Keyword;
-import com.nanal.backend.domain.diary.entity.KeywordEmotion;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.diary.exception.DiaryAlreadyExistException;
 import com.nanal.backend.domain.diary.exception.DiaryNotFoundException;
@@ -156,16 +156,19 @@ public class DiaryService {
         for (KeywordDto keywordDto : reqDiaryDto.getKeywords()) {
 
             // Keyword 생성에 필요한 KeywordEmotion 리스트 생성
-            List<KeywordEmotion> keywordEmotions = new ArrayList<>();
-
-            // KeywordEmotion 리스트에 KeywordEmotion 생성하여 삽입.
-            for(KeywordEmotionDto keywordEmotionDto : keywordDto.getKeywordEmotions()){
-                KeywordEmotion keywordEmotion = KeywordEmotion.makeKeywordEmotion(keywordEmotionDto.getEmotion());
-                keywordEmotions.add(keywordEmotion);
-            }
+            //List<KeywordEmotion> keywordEmotions = new ArrayList<>();
+            List<KeywordEmotionDto> keywordEmotionDtoList = keywordDto.getKeywordEmotions();
+            EmotionList emotionList = EmotionList.builder()
+                    .firstEmotion(keywordEmotionDtoList.get(0).getEmotion())
+                    .secondEmotion(keywordEmotionDtoList.get(1).getEmotion())
+                    .thirdEmotion(keywordEmotionDtoList.get(2).getEmotion())
+                    .build();
 
             // Keyword 리스트에 KeywordEmotion 리스트를 이용하여 생성한 Keyword 삽입.
-            Keyword keyword = Keyword.makeKeyword(keywordDto.getKeyword(), keywordEmotions);
+            Keyword keyword = Keyword.builder()
+                    .word(keywordDto.getKeyword())
+                    .EmotionList(emotionList)
+                    .build();
             keywords.add(keyword);
         }
 

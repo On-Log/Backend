@@ -1,15 +1,15 @@
-DELETE FROM emotion_list;
+DELETE FROM emotion;
 DELETE FROM question;
 DELETE FROM extra_question;
 
 INSERT INTO emotion(emotion_id, emotion) VALUES (1, "행복");
 INSERT INTO emotion(emotion_id, emotion) VALUES (2, "여유");
+INSERT INTO emotion(emotion_id, emotion) VALUES (3, "안심");
 INSERT INTO emotion(emotion_id, emotion) VALUES (4, "슬픔");
 INSERT INTO emotion(emotion_id, emotion) VALUES (5, "복잡");
 INSERT INTO emotion(emotion_id, emotion) VALUES (6, "즐거움");
 INSERT INTO emotion(emotion_id, emotion) VALUES (7, "의욕");
 INSERT INTO emotion(emotion_id, emotion) VALUES (8, "쏘쏘");
-INSERT INTO emotion(emotion_id, emotion) VALUES (3, "안심");
 INSERT INTO emotion(emotion_id, emotion) VALUES (9, "아쉬움");
 INSERT INTO emotion(emotion_id, emotion) VALUES (10, "화남");
 INSERT INTO emotion(emotion_id, emotion) VALUES (11, "기대");

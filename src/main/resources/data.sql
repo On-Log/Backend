@@ -1,15 +1,15 @@
-DELETE FROM emotion;
+DELETE FROM emotion_list;
 DELETE FROM question;
 DELETE FROM extra_question;
 
 INSERT INTO emotion(emotion_id, emotion) VALUES (1, "행복");
 INSERT INTO emotion(emotion_id, emotion) VALUES (2, "여유");
-INSERT INTO emotion(emotion_id, emotion) VALUES (3, "안심");
 INSERT INTO emotion(emotion_id, emotion) VALUES (4, "슬픔");
 INSERT INTO emotion(emotion_id, emotion) VALUES (5, "복잡");
 INSERT INTO emotion(emotion_id, emotion) VALUES (6, "즐거움");
 INSERT INTO emotion(emotion_id, emotion) VALUES (7, "의욕");
 INSERT INTO emotion(emotion_id, emotion) VALUES (8, "쏘쏘");
+INSERT INTO emotion(emotion_id, emotion) VALUES (3, "안심");
 INSERT INTO emotion(emotion_id, emotion) VALUES (9, "아쉬움");
 INSERT INTO emotion(emotion_id, emotion) VALUES (10, "화남");
 INSERT INTO emotion(emotion_id, emotion) VALUES (11, "기대");
@@ -22,6 +22,7 @@ INSERT INTO emotion(emotion_id, emotion) VALUES (17, "상쾌");
 INSERT INTO emotion(emotion_id, emotion) VALUES (18, "불안");
 INSERT INTO emotion(emotion_id, emotion) VALUES (19, "부담");
 INSERT INTO emotion(emotion_id, emotion) VALUES (20, "피곤");
+
 INSERT INTO question(question_id, content, help, goal_id) VALUES (1, "이번주 나의 모습은 어땠나요?", "이번주 나의 모습을 묘사하기 어려우신가요? 가장 먼저 떠오르는 내 모습, 혹은 가장 자주 보였던 나의 모습을 떠올려보세요.", 1);
 INSERT INTO question(question_id, content, help, goal_id) VALUES (2, "다른 내 모습도 들려줄래요? 이번주에 찾은 의외의 내 모습이 있다면요?", "우리의 일주일은 한가지 색만으로 이루어져있지 않아요! 가장 사소한 일부터 차근 차근 생각해보세요.", 1);
 INSERT INTO question(question_id, content, help, goal_id) VALUES (3, "다음주에도 유지하고 싶은 나의 모습이 있을까요? 혹은 새롭게 찾고 싶은 나의 모습이 있다면 무엇인가요?", "그 모습의 나는 구체적으로 어떤 행동을 하게 될까요? 그 모습이 되려면 어떤 노력을 해야할지도 생각해봅시다.", 1);

@@ -1,7 +1,6 @@
 package com.nanal.backend.domain.diary.dto.req;
 
 import com.nanal.backend.domain.diary.entity.Keyword;
-import com.nanal.backend.domain.diary.entity.KeywordEmotion;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,11 +25,10 @@ public class KeywordDto {
 
     public static List<KeywordEmotionDto> makeKeywordDtoList(Keyword keyword) {
         List<KeywordEmotionDto> keywordEmotionDtos = new ArrayList<>();
-        for (KeywordEmotion k : keyword.getKeywordEmotions()) {
-            KeywordEmotionDto keywordEmotionDto = new KeywordEmotionDto(k.getEmotion());
 
-            keywordEmotionDtos.add(keywordEmotionDto);
-        }
+        keywordEmotionDtos.add(new KeywordEmotionDto(keyword.getEmotionList().getFirstEmotion()));
+        keywordEmotionDtos.add(new KeywordEmotionDto(keyword.getEmotionList().getSecondEmotion()));
+        keywordEmotionDtos.add(new KeywordEmotionDto(keyword.getEmotionList().getThirdEmotion()));
 
         return keywordEmotionDtos;
     }

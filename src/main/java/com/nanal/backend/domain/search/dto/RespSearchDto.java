@@ -5,6 +5,8 @@ import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.retrospect.dto.RetrospectContentDto;
 import com.nanal.backend.domain.retrospect.dto.RetrospectKeywordDto;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -28,6 +30,10 @@ public class RespSearchDto {
                 .collect(Collectors.toList());
     }
 
+
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     @Data
     static public class DiaryDto{
         private LocalDateTime writeDate;
@@ -48,6 +54,9 @@ public class RespSearchDto {
         }
     }
 
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     @Data
     static public class RetrospectDto{
         private LocalDateTime writeDate;

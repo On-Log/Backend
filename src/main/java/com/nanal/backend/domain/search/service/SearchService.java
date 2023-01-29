@@ -25,17 +25,8 @@ public class SearchService {
         // 일기 검색
         List<Diary> diaryList = searchDiaryRepository.searchDiary(reqSearchDto);
 
-        /*for (Diary d : diaryList) {
-            System.out.println(d.getWriteDate());
-            d.getKeywords().stream().forEach((o) -> System.out.println(o.getWord()));
-        }*/
-
         // 회고 검색
         List<Retrospect> retrospectList = searchRetrospectRepository.searchRetrospect(reqSearchDto);
-        /*for (Retrospect r : retrospectList) {
-            System.out.println(r.getWriteDate());
-            r.getRetrospectKeywords().stream().forEach((o) -> System.out.println(o.getKeyword()));
-        }*/
 
         return new RespSearchDto(diaryList, retrospectList);
     }

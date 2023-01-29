@@ -17,10 +17,8 @@ public class SearchController {
     @GetMapping("/search")
     public CommonResponse<?> search(ReqSearchDto reqSearchDto) {
 
-
         RespSearchDto respSearchDto = searchService.search(reqSearchDto);
-        System.out.println("여기까진 성공?");
-        System.out.println(respSearchDto);
+
         return new CommonResponse<>(respSearchDto);
     }
 }

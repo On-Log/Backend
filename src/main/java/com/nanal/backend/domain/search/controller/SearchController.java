@@ -1,9 +1,9 @@
 package com.nanal.backend.domain.search.controller;
 
 import com.nanal.backend.domain.search.dto.ReqSearchDto;
+import com.nanal.backend.domain.search.dto.RespSearchDto;
 import com.nanal.backend.domain.search.service.SearchService;
 import com.nanal.backend.global.response.CommonResponse;
-import com.nanal.backend.global.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,8 +17,10 @@ public class SearchController {
     @GetMapping("/search")
     public CommonResponse<?> search(ReqSearchDto reqSearchDto) {
 
-        searchService.search(reqSearchDto);
 
-        return new CommonResponse<>(ErrorCode.SUCCESS);
+        RespSearchDto respSearchDto = searchService.search(reqSearchDto);
+        System.out.println("여기까진 성공?");
+        System.out.println(respSearchDto);
+        return new CommonResponse<>(respSearchDto);
     }
 }

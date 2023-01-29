@@ -19,6 +19,11 @@ public class RetrospectContentDto {
     @Size(max = 100, message="question 은 최대 100개의 문자만 입력 가능합니다.")
     String question;
 
+    public RetrospectContentDto(RetrospectContent retrospectContent) {
+        this.answer = retrospectContent.getAnswer();
+        this.question = retrospectContent.getQuestion();
+    }
+
     public static RetrospectContentDto makeRetrospectContentDto(RetrospectContent retrospectContent) {
         RetrospectContentDto retrospectContentDto = new RetrospectContentDto();
         retrospectContentDto.setQuestion(retrospectContent.getQuestion());

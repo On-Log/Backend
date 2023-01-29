@@ -20,6 +20,11 @@ public class RetrospectKeywordDto {
     @Size(max = 5, message="keyword 는 최대 5개의 문자만 입력 가능합니다.")
     String keyword;
 
+    public RetrospectKeywordDto(RetrospectKeyword retrospectKeyword) {
+        this.classify = retrospectKeyword.getClassify();
+        this.keyword = retrospectKeyword.getKeyword();
+    }
+
 
     public static RetrospectKeywordDto makeRetrospectKeywordDto(RetrospectKeyword retrospectKeyword) {
         RetrospectKeywordDto retrospectKeywordDto = new RetrospectKeywordDto();

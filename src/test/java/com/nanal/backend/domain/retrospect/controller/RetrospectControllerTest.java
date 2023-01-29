@@ -2,6 +2,7 @@ package com.nanal.backend.domain.retrospect.controller;
 
 import com.nanal.backend.config.CommonControllerTest;
 import com.nanal.backend.domain.diary.dto.req.KeywordEmotionDto;
+import com.nanal.backend.domain.retrospect.dto.ExtraQuestionsDto;
 import com.nanal.backend.domain.retrospect.dto.QuestionsDto;
 import com.nanal.backend.domain.retrospect.dto.RetrospectContentDto;
 import com.nanal.backend.domain.retrospect.dto.RetrospectKeywordDto;
@@ -319,6 +320,45 @@ public class RetrospectControllerTest extends CommonControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 get("/retrospect/question")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("goalIndex", String.valueOf(goalIndex))
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestParameters(
+                                        parameterWithName("goalIndex").description("선택한 회고 목적 1.자아탐색 2.성취확인 3.감정정리 4.관계고민")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.questionAndHelp[].question").description("회고 목적에 대한 질문"),
+                                        fieldWithPath("result.questionAndHelp[].help").description("질문에 대한 도움말")
+                                )
+                        )
+                );
+    }
+
+    @Test
+    public void 추가질문_도움말_조회() throws Exception {
+        //given
+        int goalIndex = 1;
+        List<ExtraQuestionsDto> extraQuestionsDtos = new ArrayList<>(Arrays.asList(new ExtraQuestionsDto("이번주 나의 모습은 어땠나요?", "이번주 나의 모습을 묘사하기 어려우신가요? 가장 먼저 떠오르는 내 모습, 혹은 가장 자주 보였던 나의 모습을 떠올려보세요."),
+                new ExtraQuestionsDto("다른 내 모습도 들려줄래요? 이번주에 찾은 의외의 내 모습이 있다면요?", "우리의 일주일은 한가지 색만으로 이루어져있지 않아요! 가장 사소한 일부터 차근 차근 생각해보세요.")));
+        RespGetExtraQuestionAndHelpDto respGetExtraQuestionAndHelpDto = new RespGetExtraQuestionAndHelpDto(extraQuestionsDtos );
+        given(retrospectService.getExtraQuestionAndHelp(any(), any())).willReturn(respGetExtraQuestionAndHelpDto);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/retrospect/extra")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("goalIndex", String.valueOf(goalIndex))

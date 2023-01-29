@@ -2,16 +2,15 @@ package com.nanal.backend.domain.diary.entity;
 
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.global.config.BaseTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,13 +23,14 @@ public class Diary extends BaseTime {
     @Column(name = "diary_id")
     private Long diaryId;
 
-    @Column(length = 500, nullable = true)
+    @Column(length = 500, nullable = false)
     private String content;
 
     private LocalDateTime writeDate;
 
     private Boolean editStatus;
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL)
     private List<Keyword> keywords = new ArrayList<>();
 

@@ -1,5 +1,6 @@
 package com.nanal.backend.domain.search.repository;
 
+import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.diary.entity.QDiary;
 import com.nanal.backend.domain.diary.entity.QKeyword;
 import com.nanal.backend.domain.search.dto.ReqSearchDto;
@@ -25,21 +26,20 @@ public class SearchRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<?> searchDiary(ReqSearchDto reqSearchDto) {
+    public List<Diary> searchDiary(ReqSearchDto reqSearchDto) {
 
-        queryFactory
+        return queryFactory
                 .selectDistinct(diary)
                 .from(diary)
-                .join(diary.keywords, keyword).fetchJoin()
+                .join(diary.keywords, keyword)
                 .where(
-                        containWord(reqSearchDto.getSearchWord())
-                                .and(betweenDate(reqSearchDto.getStartDate(), reqSearchDto.getEndDate()))
+                        betweenDate(reqSearchDto.getStartDate(), reqSearchDto.getEndDate())
+                                .and(containWord(reqSearchDto.getSearchWord()))
                 )
                 .orderBy(diary.writeDate.desc())
                 .offset(reqSearchDto.getOffset())
                 .limit(reqSearchDto.getLimit())
                 .fetch();
-        return new ArrayList<>();
     }
 
     private BooleanBuilder containWordInContent(String word) {

@@ -3,6 +3,9 @@ package com.nanal.backend.domain.search.repository;
 import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.diary.entity.QDiary;
 import com.nanal.backend.domain.diary.entity.QKeyword;
+import com.nanal.backend.domain.retrospect.entity.QRetrospect;
+import com.nanal.backend.domain.retrospect.entity.QRetrospectContent;
+import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import com.nanal.backend.domain.search.dto.ReqSearchDto;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -11,14 +14,13 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.util.StringUtils.hasText;
 
 @RequiredArgsConstructor
 @Repository
-public class SearchRepository {
+public class SearchDiaryRepository {
 
     // qclass iv로 선언시 스레드 세이프한지 체크
     QDiary diary = QDiary.diary;
@@ -41,6 +43,7 @@ public class SearchRepository {
                 .limit(reqSearchDto.getLimit())
                 .fetch();
     }
+
 
     private BooleanBuilder containWordInContent(String word) {
         if(hasText(word)) return new BooleanBuilder(diary.content.contains(word));
@@ -69,6 +72,4 @@ public class SearchRepository {
     private BooleanBuilder betweenDate(LocalDateTime startDate, LocalDateTime endDate) {
         return startDate(startDate).and(endDate(endDate));
     }
-
-
 }

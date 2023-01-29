@@ -23,6 +23,17 @@ public class KeywordDto {
     @Size(min = 3, max = 3, message ="emotion 의 개수는 3개여야 합니다.")
     private List<KeywordEmotionDto> keywordEmotions;
 
+    public KeywordDto(Keyword keyword) {
+        this.keyword = keyword.getWord();
+
+        List<KeywordEmotionDto> keywordEmotionDtos = new ArrayList<>();
+        keywordEmotionDtos.add(new KeywordEmotionDto(keyword.getEmotionList().getFirstEmotion()));
+        keywordEmotionDtos.add(new KeywordEmotionDto(keyword.getEmotionList().getSecondEmotion()));
+        keywordEmotionDtos.add(new KeywordEmotionDto(keyword.getEmotionList().getThirdEmotion()));
+
+        this.keywordEmotions = keywordEmotionDtos;
+    }
+
     public static List<KeywordEmotionDto> makeKeywordDtoList(Keyword keyword) {
         List<KeywordEmotionDto> keywordEmotionDtos = new ArrayList<>();
 

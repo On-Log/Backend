@@ -16,3 +16,5 @@ include::Diary-API.adoc[]
 
 include::Retrospect-API.adoc[]
 
+include::Search-API.adoc[]
+

@@ -57,8 +57,8 @@ class SearchControllerTest extends CommonControllerTest {
         ));
         List<KeywordDto> keywordDtoList = new ArrayList<>(Arrays.asList(
                 new KeywordDto("검색단어", keywordEmotionDtoList),
-                new KeywordDto("취업", keywordEmotionDtoList),
-                new KeywordDto("막학기", keywordEmotionDtoList)
+                new KeywordDto("검색단어", keywordEmotionDtoList),
+                new KeywordDto("검색단어", keywordEmotionDtoList)
         ));
         DiaryDto diaryDto = DiaryDto.builder()
                 .writeDate(LocalDateTime.parse("2022-11-15T00:00:00"))
@@ -68,9 +68,9 @@ class SearchControllerTest extends CommonControllerTest {
                 .build();
 
         List<RetrospectContentDto> retrospectContentDtoList = new ArrayList<>(Arrays.asList(
-                new RetrospectContentDto("답변1", "이번주 나의 모습은 어땠나요?"),
-                new RetrospectContentDto("답변2", "다른 내 모습도 들려줄래요? 이번주에 찾은 의외의 내 모습이 있다면요?"),
-                new RetrospectContentDto("답변3", "다음주에도 유지하고 싶은 나의 모습이 있을까요? 혹은 새롭게 찾고 싶은 나의 모습이 있다면 무엇인가요?")
+                new RetrospectContentDto("답변1", "검색단어"),
+                new RetrospectContentDto("답변2", "검색단어"),
+                new RetrospectContentDto("답변3", "검색단어")
         ));
         List<RetrospectKeywordDto> retrospectKeywordDtoList = new ArrayList<>(Arrays.asList(
                 new RetrospectKeywordDto("그때 그대로 의미있었던 행복한 기억", "키워드1"),

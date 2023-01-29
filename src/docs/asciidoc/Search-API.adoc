@@ -1,0 +1,6 @@
+[[Search-API]]
+== Search API
+
+[[Search-검색]]
+=== Search 검색
+operation::search-controller-test/검색[snippets='http-request,request-headers,request-parameters,http-response,response-fields']

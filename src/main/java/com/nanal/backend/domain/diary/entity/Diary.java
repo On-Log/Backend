@@ -30,7 +30,6 @@ public class Diary extends BaseTime {
 
     private Boolean editStatus;
 
-    @BatchSize(size = 100)
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL)
     private List<Keyword> keywords = new ArrayList<>();
 

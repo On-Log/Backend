@@ -34,3 +34,6 @@ operation::retrospect-controller-test/일기_키워드_감정어_조회[snippets
 [[Retrospect-회고질문-도움말-조회]]
 === Retrospect 회고질문 + 도움말 조회
 operation::retrospect-controller-test/회고질문_도움말_조회[snippets='http-request,request-headers,request-parameters,http-response,response-fields']
+[[Retrospect-회고-존재-여부]]
+=== Retrospect 회고 존재 여부
+operation::retrospect-controller-test/회고_존재_여부[snippets='http-request,request-headers,request-parameters,http-response,response-fields']

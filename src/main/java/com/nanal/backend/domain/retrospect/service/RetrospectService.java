@@ -237,6 +237,16 @@ public class RetrospectService {
         return respGetExtraQuestionAndHelpDto;
     }
 
+    public void checkRetrospect(String socialId, ReqCheckRetroDto reqCheckRetroDto) {
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+        // 질의할 sql 의 Like 절에 해당하게끔 변환
+        String yearMonthDay = reqCheckRetroDto.getCurrentDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
+        // 선택한 yyyy-MM-dd 에 작성한 회고 조회
+        List<Retrospect> existRetrospect = retrospectRepository.findListByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
+
+        if(existRetrospect.size() != 0) throw new RetrospectAlreadyExistException(ErrorCode.RETROSPECT_ALREADY_EXIST.getMessage());
+    }
 
     //===편의 메서드===//
     private Retrospect createRetrospect(Member member, String goal, LocalDateTime date, List<RetrospectKeywordDto> keywordDtos, List<RetrospectContentDto> contentDtos) {

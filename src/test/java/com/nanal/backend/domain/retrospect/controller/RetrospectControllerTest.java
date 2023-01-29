@@ -346,4 +346,37 @@ public class RetrospectControllerTest extends CommonControllerTest {
                 );
     }
 
+    @Test
+    public void 회고_존재_여부() throws Exception {
+        //given
+        String currentDate = "2023-01-24T00:00:00";
+        willDoNothing().given(retrospectService).checkRetrospect(any(), any());
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/retrospect/exist")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("currentDate", currentDate)
+        );
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestParameters(
+                                        parameterWithName("currentDate").description("현재 날짜")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지")
+
+                                )
+                        )
+                );
+
+    }
 }

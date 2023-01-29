@@ -128,6 +128,21 @@ public class RetrospectController {
         return new CommonResponse<>(respGetExtraQuestionAndHelp);
     }
 
+    /**
+     * 회고 존재 여부 체크
+     * [GET] /retrospect/exist
+     * 작성자 : 장세은
+     * 수정일 :
+     */
+    @GetMapping("/retrospect/exist")
+    public CommonResponse<?> checkExistRetrospect(@AuthenticationPrincipal User user, ReqCheckRetroDto reqCheckRetroDto) {
+
+        // 요청 날짜에 작성한 회고가 있는지 체크
+        retrospectService.checkRetrospect(user.getSocialId(), reqCheckRetroDto);
+
+        return new CommonResponse<>(ErrorCode.SUCCESS);
+    }
+
 
 
 }

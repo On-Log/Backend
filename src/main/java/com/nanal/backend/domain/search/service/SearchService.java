@@ -1,6 +1,7 @@
 package com.nanal.backend.domain.search.service;
 
 import com.nanal.backend.domain.diary.entity.Diary;
+import com.nanal.backend.domain.diary.entity.Keyword;
 import com.nanal.backend.domain.search.dto.ReqSearchDto;
 import com.nanal.backend.domain.search.repository.SearchRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class SearchService {
         List<Diary> diaryList = searchRepository.searchDiary(reqSearchDto);
         for (Diary d : diaryList) {
             System.out.println(d.getWriteDate());
+            d.getKeywords().stream().forEach((o) -> System.out.println(o.getWord()));
         }
         return diaryList;
 

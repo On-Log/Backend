@@ -23,7 +23,7 @@ public class ReqSearchDto {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime endDate;
 
-    private Integer offset;
+    private Integer offset = 0;
 
-    private Integer limit;
+    private Integer limit = 10;
 }

@@ -22,10 +22,9 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional
@@ -76,9 +75,7 @@ public class DiaryService {
         Diary selectDiary = getDiary(member.getMemberId(), reqGetDiaryDto.getDate());
 
         // 조회한 일기로 반환값 생성
-        RespGetDiaryDto respGetDiaryDto = RespGetDiaryDto.makeRespGetDiaryDto(selectDiary);
-
-        return respGetDiaryDto;
+        return RespGetDiaryDto.createRespGetDiaryDto(selectDiary);
     }
 
     public void updateDiary(String socialId, ReqEditDiaryDto reqEditDiary) {
@@ -131,7 +128,7 @@ public class DiaryService {
 
         List<Diary> findDiaryList = diaryRepository.findDiaryListByMemberAndWriteDate(memberId, startDate, endDate);
 
-        if(findDiaryList.size() != 0) throw new DiaryAlreadyExistException(ErrorCode.DIARY_ALREADY_EXIST.getMessage());
+        if (findDiaryList.size() != 0) throw new DiaryAlreadyExistException(ErrorCode.DIARY_ALREADY_EXIST.getMessage());
     }
 
     private List<LocalDateTime> getExistDiaryDateList(Long memberId, LocalDateTime date) {
@@ -139,15 +136,13 @@ public class DiaryService {
         LocalDateTime startDate = tempDate.withDayOfMonth(1).atStartOfDay();
         LocalDateTime endDate = tempDate.withDayOfMonth(tempDate.lengthOfMonth()).atTime(LocalTime.MAX);
 
-        // 선택한 yyyy-MM 에 작성한 일기리스트 조회
+        // 선택한 날에 작성한 일기리스트 조회
         List<Diary> writeDates = diaryRepository.findDiaryListByMemberAndWriteDate(memberId, startDate, endDate);
 
-        // 가져온 작성날짜 일 단위로 파싱해서 List 삽입
-        List<LocalDateTime> existDiaryDate = new ArrayList<>();
-        for (Diary t : writeDates) {
-            existDiaryDate.add(t.getWriteDate());
-        }
-        return existDiaryDate;
+        // 일기리스트의 작성날짜 List 생성
+        return writeDates.stream()
+                .map(Diary::getWriteDate)
+                .collect(Collectors.toList());
     }
 
     public LocalDateTime getPostRetroDate(DayOfWeek retrospectDay, LocalDateTime currentTime) {
@@ -158,7 +153,7 @@ public class DiaryService {
     private LocalDateTime getNextDayOfPrevRetroDate(DayOfWeek retrospectDay, LocalDateTime currentTime) {
         // 이전 회고일
         LocalDateTime prevRetroDate;
-        if(currentTime.toLocalDate().isEqual(LocalDate.now()))
+        if (currentTime.toLocalDate().isEqual(LocalDate.now()))
             prevRetroDate = currentTime.with(TemporalAdjusters.previous(retrospectDay));
         else
             prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(retrospectDay));
@@ -167,13 +162,10 @@ public class DiaryService {
     }
 
     private RespGetEmotionDto getRespGetEmotionDto(List<Emotion> emotions) {
-        List<String> emotionWords = new ArrayList<>();
-        for (Emotion t : emotions) {
-            emotionWords.add(t.getEmotion());
-        }
+        List<String> emotionWords = emotions.stream()
+                .map(Emotion::getEmotion)
+                .collect(Collectors.toList());
 
-        RespGetEmotionDto respGetEmotionDto = new RespGetEmotionDto();
-        respGetEmotionDto.setEmotion(emotionWords);
-        return respGetEmotionDto;
+        return new RespGetEmotionDto(emotionWords);
     }
 }

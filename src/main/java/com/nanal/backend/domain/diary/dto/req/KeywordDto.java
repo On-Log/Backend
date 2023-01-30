@@ -33,14 +33,4 @@ public class KeywordDto {
 
         this.keywordEmotions = keywordEmotionDtos;
     }
-
-    public static List<KeywordEmotionDto> makeKeywordDtoList(Keyword keyword) {
-        List<KeywordEmotionDto> keywordEmotionDtos = new ArrayList<>();
-
-        keywordEmotionDtos.add(new KeywordEmotionDto(keyword.getEmotionList().getFirstEmotion()));
-        keywordEmotionDtos.add(new KeywordEmotionDto(keyword.getEmotionList().getSecondEmotion()));
-        keywordEmotionDtos.add(new KeywordEmotionDto(keyword.getEmotionList().getThirdEmotion()));
-
-        return keywordEmotionDtos;
-    }
 }

@@ -27,7 +27,7 @@ public class DiaryController {
      */
     @GetMapping("/diary")
     public CommonResponse<?> getCalendar(@AuthenticationPrincipal User user,
-                                         @Valid ReqGetCalendarDto reqGetCalendarDto) {
+                                         ReqGetCalendarDto reqGetCalendarDto) {
 
         // 요청 정보 기반으로 해당 날짜에 맞는 정보 조회
         RespGetCalendarDto respGetCalendarDto = diaryService.getCalendar(user.getSocialId(), reqGetCalendarDto);
@@ -55,7 +55,7 @@ public class DiaryController {
      */
     @GetMapping("/diary/view")
     public CommonResponse<RespGetDiaryDto> getDiary(@AuthenticationPrincipal User user,
-                                                    ReqGetDiaryDto reqGetDiaryDto) {
+                                                    @Valid ReqGetDiaryDto reqGetDiaryDto) {
 
         // 요청 날짜 기반으로 일기 조회
         RespGetDiaryDto respGetDiaryDto = diaryService.getDiary(user.getSocialId(), reqGetDiaryDto);
@@ -83,7 +83,7 @@ public class DiaryController {
      */
     @DeleteMapping("/diary")
     public CommonResponse<?> deleteDiary(@AuthenticationPrincipal User user,
-                                         ReqDeleteDiaryDto reqDeleteDiaryDto) {
+                                         @Valid ReqDeleteDiaryDto reqDeleteDiaryDto) {
 
         // 요청 날짜 기반으로 일기 삭제
         diaryService.deleteDiary(user.getSocialId(), reqDeleteDiaryDto);

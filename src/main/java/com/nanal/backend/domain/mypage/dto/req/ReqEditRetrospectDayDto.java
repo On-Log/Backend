@@ -12,7 +12,7 @@ import java.time.DayOfWeek;
 @NoArgsConstructor
 @Data
 public class ReqEditRetrospectDayDto {
-    @NotNull(message = "retrospectDay는 비어있을 수 없습니다.")
+    @NotNull(message = "retrospectDay 는 비어있을 수 없습니다.")
     @ValueOfEnum(enumClass = DayOfWeek.class, message = "올바른 요일을 입력해주세요.")
     private String retrospectDay;
 }

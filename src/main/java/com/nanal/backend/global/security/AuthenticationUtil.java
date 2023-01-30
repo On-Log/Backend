@@ -24,7 +24,6 @@ public class AuthenticationUtil {
         User user = User.builder()
                 .socialId(socialId)
                 .email(email)
-                //.name(existMember.getName())
                 .build();
 
         // ContextHolder 에 Authentication 정보 저장

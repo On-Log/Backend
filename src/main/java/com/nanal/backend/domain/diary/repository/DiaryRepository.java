@@ -14,13 +14,10 @@ import java.util.Optional;
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
 
     @Query(value = "SELECT d FROM Diary d WHERE d.member.memberId = :memberId AND (d.writeDate BETWEEN :startDate AND :endDate)")
-    List<Diary> findListByMemberAndWriteDate(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
+    List<Diary> findDiaryListByMemberAndWriteDate(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
 
     @Query(value = "SELECT d FROM Diary d WHERE d.member.memberId = :memberId AND (d.writeDate BETWEEN :startDate AND :endDate)")
     Optional<Diary> findDiaryByMemberAndWriteDate(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
-
-    @Query(value = "SELECT * FROM diary d WHERE d.member_id = :memberId AND d.write_date LIKE :likeFormat", nativeQuery = true)
-    List<Diary> findDiaryListByMemberAndWriteDate(Long memberId, String likeFormat);
 
     @Query(value = "SELECT * FROM diary d WHERE d.member_id = :memberId AND (DATE(write_date) BETWEEN :firstDate AND :lastDate) AND d.edit_status = :editStatus", nativeQuery = true)
     List<Diary> findListByMemberAndBetweenWriteDate(Long memberId, LocalDate firstDate, LocalDate lastDate, Boolean editStatus);

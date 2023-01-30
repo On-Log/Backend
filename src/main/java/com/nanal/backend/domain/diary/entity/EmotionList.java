@@ -20,7 +20,7 @@ public class EmotionList {
     private String secondEmotion;
     private String thirdEmotion;
 
-    public static EmotionList updateEmotionList(List<KeywordEmotionDto> keywordEmotions) {
+    public static EmotionList createEmotionList(List<KeywordEmotionDto> keywordEmotions) {
         return EmotionList.builder()
                 .firstEmotion(keywordEmotions.get(0).getEmotion())
                 .secondEmotion(keywordEmotions.get(1).getEmotion())

@@ -33,13 +33,14 @@ public class Keyword extends BaseTime {
     private EmotionList emotionList;
 
     //==생성 메서드==//
-    public static Keyword updateKeyword(Diary diary, KeywordDto keywordDto) {
+    public static Keyword createKeyword(Diary diary, KeywordDto keywordDto) {
         return Keyword.builder()
                 .word(keywordDto.getKeyword())
                 .diary(diary)
-                .emotionList(EmotionList.updateEmotionList(keywordDto.getKeywordEmotions()))
+                .emotionList(EmotionList.createEmotionList(keywordDto.getKeywordEmotions()))
                 .build();
     }
+
     //==연관관계 메서드==//
     public void setDiary(Diary diary) {
         this.diary = diary;

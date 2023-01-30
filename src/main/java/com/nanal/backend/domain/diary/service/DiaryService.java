@@ -64,7 +64,7 @@ public class DiaryService {
         checkDiaryAlreadyExist(reqSaveDiaryDto, member);
 
         // 일기 Entity 생성
-        Diary diary = createDiary(member, reqSaveDiaryDto);
+        Diary diary = Diary.createDiary(member, reqSaveDiaryDto);
 
         // 일기 저장
         diaryRepository.save(diary);
@@ -91,23 +91,17 @@ public class DiaryService {
         Diary updateDiary = getSelectDiary(member.getMemberId(), reqEditDiary.getDate());
 
         // 일기 수정
-        updateDiary.update(reqEditDiary);
+        updateDiary.updateDiary(reqEditDiary);
     }
 
     public void deleteDiary(String socialId, ReqDeleteDiaryDto reqDeleteDiaryDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
-        /*
-        일기와 해당 일기의 키워드, 감정어등을 삭제하고자 할 때, 일기 Entity 를 가져온 다음에 해당 Entity 를 삭제하는 식으로 이루어 짐.
-        추후에 한 번의 쿼리만으로 Cascade 로직이 정상적으로 작동할 수 있도록 수정 필요
-        diaryRepository.deleteByMemberAndWriteDate(member.getMemberId(), reqDeleteDiaryDto.getDeleteDate());
-         */
-
         // 삭제할 일기 가져오기
-        Diary selectDiary = getSelectDiary(member.getMemberId(), reqDeleteDiaryDto.getDate());
+        Diary deleteDiary = getSelectDiary(member.getMemberId(), reqDeleteDiaryDto.getDate());
         // 기존 일기 삭제
-        diaryRepository.delete(selectDiary);
+        diaryRepository.delete(deleteDiary);
     }
 
     public RespGetEmotionDto getEmotion() {
@@ -139,37 +133,6 @@ public class DiaryService {
         List<Diary> existDiary = diaryRepository.findDiaryListByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
 
         if(existDiary.size() != 0) throw new DiaryAlreadyExistException(ErrorCode.DIARY_ALREADY_EXIST.getMessage());
-    }
-
-    private Diary createDiary(Member member, ReqDiaryDto reqDiaryDto) {
-
-        // Diary 생성에 필요한 Keyword 리스트 생성
-        List<Keyword> keywords = new ArrayList<>();
-
-        for (KeywordDto keywordDto : reqDiaryDto.getKeywords()) {
-
-            // Keyword 생성에 필요한 KeywordEmotion 리스트 생성
-            //List<KeywordEmotion> keywordEmotions = new ArrayList<>();
-            List<KeywordEmotionDto> keywordEmotionDtoList = keywordDto.getKeywordEmotions();
-            EmotionList emotionList = EmotionList.builder()
-                    .firstEmotion(keywordEmotionDtoList.get(0).getEmotion())
-                    .secondEmotion(keywordEmotionDtoList.get(1).getEmotion())
-                    .thirdEmotion(keywordEmotionDtoList.get(2).getEmotion())
-                    .build();
-
-            // Keyword 리스트에 KeywordEmotion 리스트를 이용하여 생성한 Keyword 삽입.
-            Keyword keyword = Keyword.builder()
-                    .word(keywordDto.getKeyword())
-                    .emotionList(emotionList)
-                    .build();
-            keywords.add(keyword);
-        }
-
-        // Keyword 리스트를 이용하여 Diary 생성
-        Diary diary = Diary.makeDiary(member, keywords, reqDiaryDto.getContent(), reqDiaryDto.getDate());
-
-
-        return diary;
     }
 
     private List<LocalDateTime> getExistDiaryDateList(Long memberId, LocalDateTime selectTime) {

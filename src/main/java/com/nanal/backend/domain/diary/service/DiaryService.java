@@ -115,11 +115,11 @@ public class DiaryService {
     //===편의 메서드===//
 
     private Diary getSelectDiary(Long memberId, LocalDateTime date) {
-        // 질의할 sql 의 Like 절에 해당하게끔 변환
-        LocalDateTime startDate = date.toLocalDate().atStartOfDay();
-        LocalDateTime endDate = date.toLocalDate().atTime(LocalTime.MAX);
+        LocalDate tempDate = date.toLocalDate();
+        LocalDateTime startDate = tempDate.atStartOfDay();
+        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX);
 
-        // 선택한 yyyy-MM-dd 에 작성한 일기 조회
+        // 선택한 날에 작성한 일기 조회
         Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(memberId, startDate, endDate)
                 .orElseThrow(() -> new DiaryNotFoundException(ErrorCode.DIARY_NOT_FOUND.getMessage()));
 
@@ -135,12 +135,13 @@ public class DiaryService {
         if(existDiary.size() != 0) throw new DiaryAlreadyExistException(ErrorCode.DIARY_ALREADY_EXIST.getMessage());
     }
 
-    private List<LocalDateTime> getExistDiaryDateList(Long memberId, LocalDateTime selectTime) {
-        // 질의할 sql 의 Like 절에 해당하게끔 변환
-        String yearMonth = selectTime.format(DateTimeFormatter.ofPattern("yyyy-MM")) + "%";
+    private List<LocalDateTime> getExistDiaryDateList(Long memberId, LocalDateTime date) {
+        LocalDate tempDate = date.toLocalDate();
+        LocalDateTime startDate = tempDate.withDayOfMonth(1).atStartOfDay();
+        LocalDateTime endDate = tempDate.withDayOfMonth(tempDate.lengthOfMonth()).atTime(LocalTime.MAX);
 
         // 선택한 yyyy-MM 에 작성한 일기리스트 조회
-        List<Diary> writeDates = diaryRepository.findListByMemberAndWriteDate(memberId, yearMonth);
+        List<Diary> writeDates = diaryRepository.findListByMemberAndWriteDate(memberId, startDate, endDate);
 
         // 가져온 작성날짜 일 단위로 파싱해서 List 삽입
         List<LocalDateTime> existDiaryDate = new ArrayList<>();

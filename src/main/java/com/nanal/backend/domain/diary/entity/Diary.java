@@ -1,14 +1,15 @@
 package com.nanal.backend.domain.diary.entity;
 
 import com.nanal.backend.domain.auth.entity.Member;
+import com.nanal.backend.domain.diary.dto.req.ReqDiaryDto;
 import com.nanal.backend.global.config.BaseTime;
 import lombok.*;
-import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Getter
@@ -19,7 +20,8 @@ import java.util.List;
 @Entity
 public class Diary extends BaseTime {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "diary_id")
     private Long diaryId;
 
@@ -30,23 +32,12 @@ public class Diary extends BaseTime {
 
     private Boolean editStatus;
 
-    @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Keyword> keywords = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
-    //==설정 메서드==//
-    public void changeContentAndWriteDateAndEditStatus(String content, LocalDateTime writeDate, Boolean editStatus) {
-        this.content = content;
-        this.writeDate = writeDate;
-        this.editStatus = editStatus;
-    }
-
-    public void changeEditStatus(Boolean editStatus) {
-        this.editStatus = editStatus;
-    }
 
 
     //==연관관계 메서드==//
@@ -57,7 +48,7 @@ public class Diary extends BaseTime {
 
     public void addKeyword(Keyword keyword) {
         keywords.add(keyword);
-        keyword.changeDiary(this);
+        keyword.setDiary(this);
     }
 
     //==생성 메서드==//
@@ -77,5 +68,24 @@ public class Diary extends BaseTime {
         return diary;
     }
 
+    //==설정 메서드==//
+    public void changeContentAndWriteDateAndEditStatus(String content, LocalDateTime writeDate, Boolean editStatus) {
+        this.content = content;
+        this.writeDate = writeDate;
+        this.editStatus = editStatus;
+    }
 
+    public void changeEditStatus(Boolean editStatus) {
+        this.editStatus = editStatus;
+    }
+
+    public void update(ReqDiaryDto reqDiaryDto) {
+        this.content = reqDiaryDto.getContent();
+
+        this.keywords.clear();
+        List<Keyword> keywordList = reqDiaryDto.getKeywords().stream()
+                .map(keywordDto -> Keyword.updateKeyword(this, keywordDto))
+                .collect(Collectors.toList());
+        this.keywords.addAll(keywordList);
+    }
 }

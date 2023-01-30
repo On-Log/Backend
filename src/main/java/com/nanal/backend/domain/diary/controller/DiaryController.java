@@ -68,11 +68,11 @@ public class DiaryController {
      * [PUT] /diary
      */
     @PutMapping("/diary")
-    public CommonResponse<?> editDiary(@AuthenticationPrincipal User user,
+    public CommonResponse<?> updateDiary(@AuthenticationPrincipal User user,
                                        @RequestBody @Valid ReqEditDiaryDto reqEditDiary) {
 
         // 요청 날짜 기반으로 일기 수정
-        diaryService.editDiary(user.getSocialId(), reqEditDiary);
+        diaryService.updateDiary(user.getSocialId(), reqEditDiary);
 
         return new CommonResponse<>(ErrorCode.SUCCESS);
     }

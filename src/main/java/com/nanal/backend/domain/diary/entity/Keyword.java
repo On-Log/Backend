@@ -1,6 +1,7 @@
 package com.nanal.backend.domain.diary.entity;
 
 
+import com.nanal.backend.domain.diary.dto.req.KeywordDto;
 import com.nanal.backend.global.config.BaseTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,33 +30,22 @@ public class Keyword extends BaseTime {
     private Diary diary;
 
     @Embedded
-    private EmotionList EmotionList;
+    private EmotionList emotionList;
 
-    //@OneToMany(mappedBy = "keyword", cascade = CascadeType.ALL)
-    //private List<KeywordEmotion> keywordEmotions = new ArrayList<>();
-
-    //==수정 메서드==//
-    public void changeDiary(Diary diary) {
-        this.diary = diary;
-    }
-
-    public void changeWord(String keyword) {
-        this.word = keyword;
+    //==생성 메서드==//
+    public static Keyword createKeyword(Diary diary, KeywordDto keywordDto) {
+        return Keyword.builder()
+                .word(keywordDto.getKeyword())
+                .diary(diary)
+                .emotionList(EmotionList.createEmotionList(keywordDto.getKeywordEmotions()))
+                .build();
     }
 
     //==연관관계 메서드==//
+    public void setDiary(Diary diary) {
+        this.diary = diary;
+    }
 
+    //==비즈니스 메서드==//
 
-    //==생성 메서드==//
-    /*public static Keyword makeKeyword(String word, List<KeywordEmotion> keywordEmotions) {
-        Keyword keyword = new Keyword();
-
-        for (KeywordEmotion keywordEmotion : keywordEmotions) {
-            keyword.addKeywordEmotion(keywordEmotion);
-        }
-
-        keyword.changeWord(word);
-
-        return keyword;
-    }*/
 }

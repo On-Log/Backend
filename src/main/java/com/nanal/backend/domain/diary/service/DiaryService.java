@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ public class DiaryService {
         checkDiaryAlreadyExist(reqSaveDiaryDto, member);
 
         // 일기 Entity 생성
-        Diary diary = createDiary(member, reqSaveDiaryDto);
+        Diary diary = Diary.createDiary(member, reqSaveDiaryDto);
 
         // 일기 저장
         diaryRepository.save(diary);
@@ -74,7 +75,7 @@ public class DiaryService {
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
         // 조회할 일기 가져오기
-        Diary selectDiary = getSelectDiary(reqGetDiaryDto.getDate(), member.getMemberId());
+        Diary selectDiary = getSelectDiary(member.getMemberId(), reqGetDiaryDto.getDate());
 
         // 조회한 일기로 반환값 생성
         RespGetDiaryDto respGetDiaryDto = RespGetDiaryDto.makeRespGetDiaryDto(selectDiary);
@@ -82,40 +83,25 @@ public class DiaryService {
         return respGetDiaryDto;
     }
 
-    public void editDiary(String socialId, ReqEditDiaryDto reqEditDiary) {
+    public void updateDiary(String socialId, ReqEditDiaryDto reqEditDiary) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
-        /*
-        현재는 수정요청 들어오면 기존 일기삭제 후, 다시 저장하는 방식
-        추후에 더 효율적인 방법으로 수정 필요
-         */
+        // 수정할 일기 조회
+        Diary updateDiary = getSelectDiary(member.getMemberId(), reqEditDiary.getDate());
 
-        // 삭제할 일기 가져오기
-        Diary selectDiary = getSelectDiary(reqEditDiary.getDate(), member.getMemberId());
-        // 기존 일기 삭제
-        diaryRepository.delete(selectDiary);
-
-        // 새로운 일기 Entity 생성
-        Diary diary = createDiary(member, reqEditDiary);
-        // 일기 저장
-        diaryRepository.save(diary);
+        // 일기 수정
+        updateDiary.updateDiary(reqEditDiary);
     }
 
     public void deleteDiary(String socialId, ReqDeleteDiaryDto reqDeleteDiaryDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
-        /*
-        일기와 해당 일기의 키워드, 감정어등을 삭제하고자 할 때, 일기 Entity 를 가져온 다음에 해당 Entity 를 삭제하는 식으로 이루어 짐.
-        추후에 한 번의 쿼리만으로 Cascade 로직이 정상적으로 작동할 수 있도록 수정 필요
-        diaryRepository.deleteByMemberAndWriteDate(member.getMemberId(), reqDeleteDiaryDto.getDeleteDate());
-         */
-
         // 삭제할 일기 가져오기
-        Diary selectDiary = getSelectDiary(reqDeleteDiaryDto.getDate(), member.getMemberId());
+        Diary deleteDiary = getSelectDiary(member.getMemberId(), reqDeleteDiaryDto.getDate());
         // 기존 일기 삭제
-        diaryRepository.delete(selectDiary);
+        diaryRepository.delete(deleteDiary);
     }
 
     public RespGetEmotionDto getEmotion() {
@@ -128,12 +114,13 @@ public class DiaryService {
 
     //===편의 메서드===//
 
-    private Diary getSelectDiary(LocalDateTime date, Long memberId) {
+    private Diary getSelectDiary(Long memberId, LocalDateTime date) {
         // 질의할 sql 의 Like 절에 해당하게끔 변환
-        String yearMonthDay = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
+        LocalDateTime startDate = date.toLocalDate().atStartOfDay();
+        LocalDateTime endDate = date.toLocalDate().atTime(LocalTime.MAX);
 
         // 선택한 yyyy-MM-dd 에 작성한 일기 조회
-        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(memberId, yearMonthDay)
+        Diary selectDiary = diaryRepository.findDiaryByMemberAndWriteDate(memberId, startDate, endDate)
                 .orElseThrow(() -> new DiaryNotFoundException(ErrorCode.DIARY_NOT_FOUND.getMessage()));
 
         return selectDiary;
@@ -146,37 +133,6 @@ public class DiaryService {
         List<Diary> existDiary = diaryRepository.findDiaryListByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
 
         if(existDiary.size() != 0) throw new DiaryAlreadyExistException(ErrorCode.DIARY_ALREADY_EXIST.getMessage());
-    }
-
-    private Diary createDiary(Member member, ReqDiaryDto reqDiaryDto) {
-
-        // Diary 생성에 필요한 Keyword 리스트 생성
-        List<Keyword> keywords = new ArrayList<>();
-
-        for (KeywordDto keywordDto : reqDiaryDto.getKeywords()) {
-
-            // Keyword 생성에 필요한 KeywordEmotion 리스트 생성
-            //List<KeywordEmotion> keywordEmotions = new ArrayList<>();
-            List<KeywordEmotionDto> keywordEmotionDtoList = keywordDto.getKeywordEmotions();
-            EmotionList emotionList = EmotionList.builder()
-                    .firstEmotion(keywordEmotionDtoList.get(0).getEmotion())
-                    .secondEmotion(keywordEmotionDtoList.get(1).getEmotion())
-                    .thirdEmotion(keywordEmotionDtoList.get(2).getEmotion())
-                    .build();
-
-            // Keyword 리스트에 KeywordEmotion 리스트를 이용하여 생성한 Keyword 삽입.
-            Keyword keyword = Keyword.builder()
-                    .word(keywordDto.getKeyword())
-                    .EmotionList(emotionList)
-                    .build();
-            keywords.add(keyword);
-        }
-
-        // Keyword 리스트를 이용하여 Diary 생성
-        Diary diary = Diary.makeDiary(member, keywords, reqDiaryDto.getContent(), reqDiaryDto.getDate());
-
-
-        return diary;
     }
 
     private List<LocalDateTime> getExistDiaryDateList(Long memberId, LocalDateTime selectTime) {

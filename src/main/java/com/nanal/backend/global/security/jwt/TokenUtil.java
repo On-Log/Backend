@@ -1,7 +1,10 @@
 package com.nanal.backend.global.security.jwt;
 
+import com.nanal.backend.domain.auth.exception.RefreshTokenInvalidException;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.auth.entity.Member;
+import com.nanal.backend.global.exception.customexception.MemberAuthException;
+import com.nanal.backend.global.response.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -44,16 +47,13 @@ public class TokenUtil {
         this.secretKey = Base64.getEncoder().encodeToString(this.secretKey.getBytes());
     }
 
-    public Token generateToken(String socialId) {
-        // claim 에 socialId 정보 추가
-        Claims claims = Jwts.claims().setSubject(socialId);
-
-        // claim 에 권한 정보 추가
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(()-> new RuntimeException());
-        claims.put("role", member.getRole());
+    public Token generateToken(Member member) {
+        // claim 생성
+        Claims claims = getClaims(member);
 
         // Access, Refresh 토큰 생성 후 반환
         Date now = new Date();
+
         return new Token(
                 Jwts.builder()
                         .setClaims(claims)
@@ -84,13 +84,14 @@ public class TokenUtil {
 
     public Token tokenReissue(String token) {
         String socialId = getUid(token);
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(()-> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
         // socialId 에 해당하는 refreshToken redis 에서 가져오기
         String storedRefreshToken = redisTemplate.opsForValue().get(socialId);
         // socialId 에 해당하는 refreshToken 이 없거나 일치하지 않을 때
-        if(storedRefreshToken == null || !storedRefreshToken.equals(token)) throw new RuntimeException();
+        if(storedRefreshToken == null || !storedRefreshToken.equals(token)) throw new RefreshTokenInvalidException(ErrorCode.INVALID_REFRESH_TOKEN.getMessage());
 
         // Token 생성
-        Token newToken = generateToken(socialId);
+        Token newToken = generateToken(member);
 
         Date expireDate = getExpiration(token);
         Date currentDate = new Date();
@@ -118,5 +119,15 @@ public class TokenUtil {
                 refreshTokenStoragePeriod,
                 TimeUnit.SECONDS
         );
+        log.info("Refresh Token 저장 완료");
+    }
+
+    private static Claims getClaims(Member member) {
+        // claim 에 socialId 정보 추가
+        Claims claims = Jwts.claims().setSubject(member.getSocialId());
+
+        // claim 에 권한 정보 추가
+        claims.put("role", member.getRole());
+        return claims;
     }
 }

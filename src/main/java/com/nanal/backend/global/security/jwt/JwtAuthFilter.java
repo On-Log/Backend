@@ -46,6 +46,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             // 토큰 파싱해서 socialId 정보 가져오기
             String socialId = tokenService.getUid(token);
             Member findMember = memberRepository.findBySocialId(socialId).orElseThrow(() -> new TokenInvalidException(ErrorCode.INVALID_TOKEN.getMessage()));
+            System.out.println("JwtAuthFilter 에서 한 번");
 
             // 이메일로 Authentication 정보 생성
             AuthenticationUtil.makeAuthentication(socialId, findMember.getEmail());

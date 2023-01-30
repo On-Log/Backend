@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @RequiredArgsConstructor
-@Configuration
+//@Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
 
     private final AuthInterceptor authInterceptor;

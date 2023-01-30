@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Builder
@@ -14,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 public class ReqSearchDto {
-    @NotBlank
+
     private String searchWord;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)

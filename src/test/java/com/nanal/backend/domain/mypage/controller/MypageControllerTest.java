@@ -173,7 +173,7 @@ public class MypageControllerTest extends CommonControllerTest {
     @Test
     public void 회고일_변경() throws Exception {
         //given
-        ReqEditRetrospectDayDto reqEditRetrospectDayDto = new ReqEditRetrospectDayDto(LocalDate.of(2023, 1, 12).getDayOfWeek());
+        ReqEditRetrospectDayDto reqEditRetrospectDayDto = new ReqEditRetrospectDayDto(LocalDate.of(2023, 1, 12).getDayOfWeek().toString());
         willDoNothing().given(mypageService).updateRetrospectDay(any(), any());
 
         //when

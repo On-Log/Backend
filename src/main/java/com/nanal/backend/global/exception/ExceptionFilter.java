@@ -33,11 +33,6 @@ public class ExceptionFilter extends OncePerRequestFilter {
             log.error("[" + e.getClass().getSimpleName() + "] " + e.getMessage());
 
             setErrorResponse(response, ErrorCode.INVALID_TOKEN);
-        } catch (Exception e) {
-            log.error("[" + e.getClass().getSimpleName() + "] " + e.getMessage());
-            e.printStackTrace();
-
-            setErrorResponse(response, ErrorCode.BAD_REQUEST);
         }
     }
 

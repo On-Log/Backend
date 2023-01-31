@@ -13,7 +13,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 
 
 @RequiredArgsConstructor
@@ -41,7 +40,7 @@ public class MypageController {
      */
     @PutMapping("/mypage/nickname")
     public CommonResponse<?> updateNickname(@AuthenticationPrincipal User user,
-                                                              @RequestBody @Valid ReqEditNicknameDto reqEditNickname) {
+                                            @RequestBody @Valid ReqEditNicknameDto reqEditNickname) {
 
         // 닉네임 변경
         mypageService.updateNickname(user.getSocialId(), reqEditNickname);

@@ -153,7 +153,8 @@ public class DiaryService {
     private LocalDateTime getNextDayOfPrevRetroDate(DayOfWeek retrospectDay, LocalDateTime currentTime) {
         // 이전 회고일
         LocalDateTime prevRetroDate;
-        if (currentTime.toLocalDate().isEqual(LocalDate.now()))
+        //if (currentTime.toLocalDate().isEqual(LocalDate.now()))
+        if (currentTime.getDayOfWeek().equals(retrospectDay))
             prevRetroDate = currentTime.with(TemporalAdjusters.previous(retrospectDay));
         else
             prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(retrospectDay));

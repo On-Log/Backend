@@ -15,11 +15,13 @@ import java.util.List;
 @Data
 public class RespGetCalendarDto {
 
+    private Boolean isRetrospectDay;
+
     private List<LocalDateTime> existDiaryDate;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime nextDayOfPrevRetroDate;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private LocalDateTime postRetroDate;
+    private LocalDateTime retroDate;
 }

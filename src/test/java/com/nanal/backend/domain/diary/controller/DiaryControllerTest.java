@@ -46,6 +46,7 @@ class DiaryControllerTest extends CommonControllerTest {
         );
 
         RespGetCalendarDto output = new RespGetCalendarDto(
+                true,
                 existDiaryDate,
                 LocalDateTime.parse("2023-01-18T00:00:00"),
                 LocalDateTime.parse("2023-01-24T00:00:00")
@@ -58,7 +59,6 @@ class DiaryControllerTest extends CommonControllerTest {
                 get("/diary")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("currentDate", currentDate)
                         .param("selectDate", selectDate)
         );
 
@@ -71,16 +71,16 @@ class DiaryControllerTest extends CommonControllerTest {
                                         headerWithName("Token").description("접근 토큰")
                                 ),
                                 requestParameters(
-                                        parameterWithName("currentDate").description("현재 날짜"),
                                         parameterWithName("selectDate").description("선택 날짜")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.isRetrospectDay").description("오늘이 회고일인지 체크"),
                                         fieldWithPath("result.existDiaryDate").description("일기 존재 날짜"),
                                         fieldWithPath("result.nextDayOfPrevRetroDate").description("이전 회고일의 다음일"),
-                                        fieldWithPath("result.postRetroDate").description("다음 회고일")
+                                        fieldWithPath("result.retroDate").description("이번주 회고일")
                                 )
                         )
                 );

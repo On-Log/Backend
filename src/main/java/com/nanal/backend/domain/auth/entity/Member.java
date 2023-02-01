@@ -90,6 +90,7 @@ public class Member extends BaseTime {
         this.prevRetrospectDate = now;
     }
 
+    //==비즈니스 메서드==//
     private Boolean isSameRetrospectDay(DayOfWeek retrospectDay) {
         return this.retrospectDay.equals(retrospectDay);
     }
@@ -104,6 +105,10 @@ public class Member extends BaseTime {
 
     public Integer getServiceLife() {
         return Period.between(this.createdAt.toLocalDate(), LocalDateTime.now().toLocalDate()).getDays() + 1;
+    }
+
+    public Boolean isRetrospectDay(LocalDateTime now) {
+        return now.getDayOfWeek().equals(retrospectDay);
     }
 }
 

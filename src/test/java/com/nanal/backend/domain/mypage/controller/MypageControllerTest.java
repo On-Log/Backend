@@ -61,9 +61,9 @@ public class MypageControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
-                                        fieldWithPath("result.userNickname").description("유저 닉네임"),
-                                        fieldWithPath("result.userEmail").description("유저 이메일"),
-                                        fieldWithPath("result.userRetrospectDay").description("유저의 회고일")
+                                        fieldWithPath("result.nickname").description("유저 닉네임"),
+                                        fieldWithPath("result.email").description("유저 이메일"),
+                                        fieldWithPath("result.retrospectDay").description("유저의 회고일")
                                 )
                         )
                 );

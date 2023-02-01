@@ -482,16 +482,16 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 238
+Content-Length: 226
 
 {
   "isSuccess" : true,
   "code" : 200,
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "userNickname" : "사용자 닉네임",
-    "userEmail" : "유저 이메일",
-    "userRetrospectDay" : "THURSDAY"
+    "nickname" : "사용자 닉네임",
+    "email" : "유저 이메일",
+    "retrospectDay" : "THURSDAY"
   }
 }</code></pre>
 </div>
@@ -529,17 +529,17 @@ Content-Length: 238
 <td class="tableblock halign-left valign-top"><p class="tableblock">결과 메시지</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.userNickname</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.nickname</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">유저 닉네임</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.userEmail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.email</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">유저 이메일</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.userRetrospectDay</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectDay</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">유저의 회고일</p></td>
 </tr>

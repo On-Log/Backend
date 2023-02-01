@@ -1,6 +1,7 @@
 package com.nanal.backend.domain.auth.controller;
 
 import com.nanal.backend.config.CommonControllerTest;
+import com.nanal.backend.domain.auth.dto.LoginInfo;
 import com.nanal.backend.domain.auth.dto.req.ReqAuthDto;
 import com.nanal.backend.domain.auth.service.AuthService;
 import com.nanal.backend.global.security.jwt.Token;
@@ -34,12 +35,13 @@ class AuthControllerTest extends CommonControllerTest {
 
         String body = objectMapper.writeValueAsString(input);
 
-        Token output = Token.builder()
+        LoginInfo output = LoginInfo.builder()
+                .nickname("유저 닉네임")
                 .token("SERVER_ACCESS_TOKEN")
                 .refreshToken("SERVER_REFRESH_TOKEN")
                 .build();
 
-        given(authService.naverAuth(any())).willReturn(output);
+        given(authService.commonAuth(any(), any())).willReturn(output);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -60,6 +62,7 @@ class AuthControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.nickname").description("유저 닉네임"),
                                         fieldWithPath("result.token").description("서버 접근용 Token"),
                                         fieldWithPath("result.refreshToken").description("서버 접근용 Refresh Token")
                                 )
@@ -76,12 +79,13 @@ class AuthControllerTest extends CommonControllerTest {
 
         String body = objectMapper.writeValueAsString(input);
 
-        Token output = Token.builder()
+        LoginInfo output = LoginInfo.builder()
+                .nickname("유저 닉네임")
                 .token("SERVER_ACCESS_TOKEN")
                 .refreshToken("SERVER_REFRESH_TOKEN")
                 .build();
 
-        given(authService.kakaoAuth(any())).willReturn(output);
+        given(authService.commonAuth(any(), any())).willReturn(output);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -102,6 +106,7 @@ class AuthControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.nickname").description("유저 닉네임"),
                                         fieldWithPath("result.token").description("서버 접근용 Token"),
                                         fieldWithPath("result.refreshToken").description("서버 접근용 Refresh Token")
                                 )
@@ -118,12 +123,13 @@ class AuthControllerTest extends CommonControllerTest {
 
         String body = objectMapper.writeValueAsString(input);
 
-        Token output = Token.builder()
+        LoginInfo output = LoginInfo.builder()
+                .nickname("유저 닉네임")
                 .token("SERVER_ACCESS_TOKEN")
                 .refreshToken("SERVER_REFRESH_TOKEN")
                 .build();
 
-        given(authService.googleAuth(any())).willReturn(output);
+        given(authService.commonAuth(any(), any())).willReturn(output);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -144,6 +150,7 @@ class AuthControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.nickname").description("유저 닉네임"),
                                         fieldWithPath("result.token").description("서버 접근용 Token"),
                                         fieldWithPath("result.refreshToken").description("서버 접근용 Refresh Token")
                                 )

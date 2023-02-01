@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class Token {
-
     private String token;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

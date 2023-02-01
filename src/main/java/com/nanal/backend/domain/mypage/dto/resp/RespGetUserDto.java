@@ -12,9 +12,9 @@ import java.time.DayOfWeek;
 @NoArgsConstructor
 @Data
 public class RespGetUserDto {
-    private String userNickname;
+    private String nickname;
 
-    private String userEmail;
+    private String email;
 
-    private DayOfWeek userRetrospectDay;
+    private DayOfWeek retrospectDay;
 }

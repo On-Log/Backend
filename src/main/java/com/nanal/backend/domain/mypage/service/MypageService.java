@@ -31,9 +31,9 @@ public class MypageService {
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
         return RespGetUserDto.builder()
-                .userEmail(member.getEmail())
-                .userNickname(member.getNickname())
-                .userRetrospectDay(member.getRetrospectDay())
+                .email(member.getEmail())
+                .nickname(member.getNickname())
+                .retrospectDay(member.getRetrospectDay())
                 .build();
     }
 

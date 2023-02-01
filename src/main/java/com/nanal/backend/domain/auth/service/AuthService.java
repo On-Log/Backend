@@ -1,6 +1,6 @@
 package com.nanal.backend.domain.auth.service;
 
-import com.nanal.backend.domain.auth.dto.req.ReqAuthDto;
+import com.nanal.backend.domain.auth.dto.LoginInfo;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.global.response.ErrorCode;
@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,53 +27,31 @@ public class AuthService {
     private final ClientKakao clientKakao;
     private final ClientGoogle clientGoogle;
 
-    public Token naverAuth(ReqAuthDto reqAuthDto) {
-        Member naverMember = clientNaver.getUserData(reqAuthDto.getAccessToken());
+    public LoginInfo commonAuth(String accessToken, String providerInfo) {
+        // 플랫폼에서 사용자 정보 조회
+        Member member = getUserDataFromPlatform(accessToken, providerInfo);
 
-        // 회원가입
-        register(naverMember);
+        // 회원가입(가입 정보 없는 유저일 때만) 및 로그인
+        Member loginMember = auth(member);
 
         // 토큰 생성
-        Token token = tokenUtil.generateToken(naverMember);
+        Token token = tokenUtil.generateToken(loginMember);
         log.info("{}", token);
 
         // Redis에 Refresh Token 저장
-        tokenUtil.storeRefreshToken(naverMember.getSocialId(), token);
+        tokenUtil.storeRefreshToken(loginMember.getSocialId(), token);
 
-        return token;
+        return new LoginInfo(loginMember.getNickname(), token);
     }
 
-    public Token kakaoAuth(ReqAuthDto reqAuthDto) {
-        Member kakaoMember = clientKakao.getUserData(reqAuthDto.getAccessToken());
-
-        // 회원가입
-        register(kakaoMember);
-
-        // 토큰 생성
-        Token token = tokenUtil.generateToken(kakaoMember);
-        log.info("{}", token);
-
-        // Redis에 Refresh Token 저장
-        tokenUtil.storeRefreshToken(kakaoMember.getSocialId(), token);
-
-        return token;
+    private Member auth(Member member) {
+        Optional<Member> findMember = memberRepository.findBySocialId(member.getSocialId());
+        if(newSubscribe(findMember)) return register(member);
+        else return login(findMember);
     }
 
-    public Token googleAuth(ReqAuthDto reqAuthDto) {
-        Member googleMember = clientGoogle.getUserData(reqAuthDto.getAccessToken());
 
-        // 회원가입
-        register(googleMember);
 
-        // 토큰 생성
-        Token token = tokenUtil.generateToken(googleMember);
-        log.info("{}", token);
-
-        // Redis에 Refresh Token 저장
-        tokenUtil.storeRefreshToken(googleMember.getSocialId(), token);
-
-        return token;
-    }
 
     public Token reissue(String token) {
         // refresh 토큰이 유효한지 확인
@@ -88,8 +67,21 @@ public class AuthService {
     }
 
     //===편의 메서드===//
+    private Member getUserDataFromPlatform(String accessToken, String providerInfo) {
+        if(providerInfo.contains("google")) return clientGoogle.getUserData(accessToken);
+        else if(providerInfo.contains("kakao")) return clientKakao.getUserData(accessToken);
+        else return clientNaver.getUserData(accessToken);
+    }
 
-    private void register(Member member) {
-        if(memberRepository.findBySocialId(member.getSocialId()).isEmpty()) memberRepository.save(member);
+    private static boolean newSubscribe(Optional<Member> findMember) {
+        return findMember.isEmpty();
+    }
+
+    private Member register(Member member) {
+        return memberRepository.save(member);
+    }
+
+    private Member login(Optional<Member> member) {
+        return member.get();
     }
 }

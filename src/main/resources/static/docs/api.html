@@ -1826,7 +1826,7 @@ Content-Length: 94
 <h4 id="Diary-일기-탭_http_request"><a class="link" href="#Diary-일기-탭_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /diary?currentDate=2023-01-22T00%3A00%3A00&amp;selectDate=2023-01-13T00%3A00%3A00 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /diary?selectDate=2023-01-13T00%3A00%3A00 HTTP/1.1
 Content-Type: application/x-www-form-urlencoded;charset=UTF-8
 Token: ACCESS_TOKEN
 Host: localhost:8080</code></pre>
@@ -1869,10 +1869,6 @@ Host: localhost:8080</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>currentDate</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">현재 날짜</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>selectDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">선택 날짜</p></td>
 </tr>
@@ -1885,16 +1881,17 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 359
+Content-Length: 386
 
 {
   "isSuccess" : true,
   "code" : 200,
   "message" : "요청에 성공하였습니다.",
   "result" : {
+    "isRetrospectDay" : true,
     "existDiaryDate" : [ "2023-01-01T00:00:00", "2023-01-03T00:00:00", "2023-01-09T00:00:00", "2023-01-13T00:00:00", "2023-01-16T00:00:00" ],
     "nextDayOfPrevRetroDate" : "2023-01-18T00:00:00",
-    "postRetroDate" : "2023-01-24T00:00:00"
+    "retroDate" : "2023-01-24T00:00:00"
   }
 }</code></pre>
 </div>
@@ -1932,6 +1929,11 @@ Content-Length: 359
 <td class="tableblock halign-left valign-top"><p class="tableblock">결과 메시지</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.isRetrospectDay</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오늘이 회고일인지 체크</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.existDiaryDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">일기 존재 날짜</p></td>
@@ -1942,9 +1944,9 @@ Content-Length: 359
 <td class="tableblock halign-left valign-top"><p class="tableblock">이전 회고일의 다음일</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.postRetroDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retroDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">다음 회고일</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이번주 회고일</p></td>
 </tr>
 </tbody>
 </table>

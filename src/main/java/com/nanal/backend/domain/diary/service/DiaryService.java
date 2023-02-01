@@ -39,17 +39,23 @@ public class DiaryService {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
 
+        // 회고일 체크
+        LocalDateTime now = LocalDateTime.now();
+        Boolean isRetrospectDay = member.isRetrospectDay(now);
+
         // 요청된 기간내 유저의 기록이 존재하는 날 조회
         List<LocalDateTime> existDiaryDate = getExistDiaryDateList(member.getMemberId(), reqGetCalendarDto.getSelectDate());
 
         // 회고 요일과 현재 날짜로 일기 작성 가능주 구하기
-        LocalDateTime nextDayOfPrevRetroDate = getNextDayOfPrevRetroDate(member.getRetrospectDay(), reqGetCalendarDto.getCurrentDate());
-        LocalDateTime postRetroDate = getPostRetroDate(member.getRetrospectDay(), reqGetCalendarDto.getCurrentDate());
+
+        LocalDateTime nextDayOfPrevRetroDate = getNextDayOfPrevRetroDate(member.getRetrospectDay(), now);
+        LocalDateTime retroDate = getRetroDate(member.getRetrospectDay(), now);
 
         return RespGetCalendarDto.builder()
+                .isRetrospectDay(isRetrospectDay)
                 .existDiaryDate(existDiaryDate)
                 .nextDayOfPrevRetroDate(nextDayOfPrevRetroDate)
-                .postRetroDate(postRetroDate)
+                .retroDate(retroDate)
                 .build();
     }
 
@@ -145,18 +151,15 @@ public class DiaryService {
                 .collect(Collectors.toList());
     }
 
-    public LocalDateTime getPostRetroDate(DayOfWeek retrospectDay, LocalDateTime currentTime) {
+    public LocalDateTime getRetroDate(DayOfWeek retrospectDay, LocalDateTime now) {
         // 다음 회고일
-        return currentTime.with(TemporalAdjusters.nextOrSame(retrospectDay));
+        return now.with(TemporalAdjusters.nextOrSame(retrospectDay));
     }
 
-    private LocalDateTime getNextDayOfPrevRetroDate(DayOfWeek retrospectDay, LocalDateTime currentTime) {
+    private LocalDateTime getNextDayOfPrevRetroDate(DayOfWeek retrospectDay, LocalDateTime now) {
         // 이전 회고일
-        LocalDateTime prevRetroDate;
-        if (currentTime.toLocalDate().isEqual(LocalDate.now()))
-            prevRetroDate = currentTime.with(TemporalAdjusters.previous(retrospectDay));
-        else
-            prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(retrospectDay));
+        LocalDateTime prevRetroDate = now.with(TemporalAdjusters.previous(retrospectDay));
+
         // 해당 주는 이전 회고일 다음날부터 다음 회고 일까지이므로 '이전 회고일 + 1' 을 해줘야함
         return prevRetroDate.plusDays(1);
     }

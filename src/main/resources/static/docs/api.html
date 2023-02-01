@@ -467,7 +467,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#MyPage-마이페이지-탭">MyPage 마이페이지 탭</a></li>
 <li><a href="#MyPage-닉네임-변경">MyPage 닉네임 변경</a></li>
 <li><a href="#MyPage-회고일-변경-가능-여부">MyPage 회고일 변경 가능 여부</a></li>
-<li><a href="#_mypage_회고일_변경_불가능">MyPage 회고일 변경 불가능</a></li>
 <li><a href="#MyPage-회고일-변경">MyPage 회고일 변경</a></li>
 <li><a href="#MyPage-서비스-사용기간-조회">MyPage 서비스 사용기간 조회</a></li>
 <li><a href="#MyPage-회원탈퇴">MyPage 회원탈퇴</a></li>
@@ -1326,7 +1325,9 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="MyPage-회고일-변경-가능-여부_http_response"><a class="link" href="#MyPage-회고일-변경-가능-여부_http_response">HTTP response</a></h4>
+<h4 id="_회고일_변경_가능"><a class="link" href="#_회고일_변경_가능">회고일 변경 가능</a></h4>
+<div class="sect4">
+<h5 id="_회고일_변경_가능_http_response"><a class="link" href="#_회고일_변경_가능_http_response">HTTP response</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -1345,8 +1346,8 @@ Content-Length: 202
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="MyPage-회고일-변경-가능-여부_response_fields"><a class="link" href="#MyPage-회고일-변경-가능-여부_response_fields">Response fields</a></h4>
+<div class="sect4">
+<h5 id="_회고일_변경_가능_response_fields"><a class="link" href="#_회고일_변경_가능_response_fields">Response fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1390,41 +1391,10 @@ Content-Length: 202
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_mypage_회고일_변경_불가능"><a class="link" href="#_mypage_회고일_변경_불가능">MyPage 회고일 변경 불가능</a></h3>
 <div class="sect3">
-<h4 id="_mypage_회고일_변경_불가능_http_request"><a class="link" href="#_mypage_회고일_변경_불가능_http_request">HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /mypage/retrospect HTTP/1.1
-Token: ACCESS_TOKEN
-Host: localhost:8080</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_mypage_회고일_변경_불가능_request_headers"><a class="link" href="#_mypage_회고일_변경_불가능_request_headers">Request headers</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Token</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">접근 토큰</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_mypage_회고일_변경_불가능_http_response"><a class="link" href="#_mypage_회고일_변경_불가능_http_response">HTTP response</a></h4>
+<h4 id="_회고일_변경_불가능"><a class="link" href="#_회고일_변경_불가능">회고일 변경 불가능</a></h4>
+<div class="sect4">
+<h5 id="_회고일_변경_불가능_http_response"><a class="link" href="#_회고일_변경_불가능_http_response">HTTP response</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 481
@@ -1440,8 +1410,8 @@ Content-Length: 165
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_mypage_회고일_변경_불가능_response_fields"><a class="link" href="#_mypage_회고일_변경_불가능_response_fields">Response fields</a></h4>
+<div class="sect4">
+<h5 id="_회고일_변경_불가능_response_fields"><a class="link" href="#_회고일_변경_불가능_response_fields">Response fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1480,6 +1450,7 @@ Content-Length: 165
 </table>
 </div>
 <hr>
+</div>
 </div>
 <div class="sect2">
 <h3 id="MyPage-회고일-변경"><a class="link" href="#MyPage-회고일-변경">MyPage 회고일 변경</a></h3>

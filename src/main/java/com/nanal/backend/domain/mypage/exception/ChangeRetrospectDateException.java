@@ -4,15 +4,13 @@ import com.nanal.backend.global.exception.NanalException;
 import com.nanal.backend.global.response.ErrorCode;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 
 @Getter
 public class ChangeRetrospectDateException extends NanalException {
 
-    private LocalDateTime changeableDate;
+    public static final NanalException EXCEPTION = new ChangeRetrospectDateException();
 
-    public ChangeRetrospectDateException(LocalDateTime changeableDate) {
+    private ChangeRetrospectDateException() {
         super(ErrorCode.RETROSPECT_DATE_CHANGE_IMPOSSIBLE);
-        this.changeableDate = changeableDate;
     }
 }

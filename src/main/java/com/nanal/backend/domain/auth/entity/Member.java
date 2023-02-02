@@ -6,7 +6,6 @@ import com.nanal.backend.domain.mypage.exception.ChangeRetrospectDateException;
 import com.nanal.backend.domain.mypage.exception.RetrospectDayDupException;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import com.nanal.backend.global.config.BaseTime;
-import com.nanal.backend.global.response.ErrorCode;
 import lombok.*;
 
 import javax.persistence.*;
@@ -83,8 +82,8 @@ public class Member extends BaseTime {
     public void updateRetrospectDay(DayOfWeek retrospectDay) {
         // 요청 회고요일로 변경 가능한지 검증
         LocalDateTime now = LocalDateTime.now();
-        verifyPrevRetrospectDate(now);
-        if(isSameRetrospectDay(retrospectDay)) {throw RetrospectDayDupException.EXCEPTION;}
+        if(!verifyChangingRetrospectDate(now)) throw ChangeRetrospectDateException.EXCEPTION;
+        if(isSameRetrospectDay(retrospectDay)) throw RetrospectDayDupException.EXCEPTION;
 
         this.retrospectDay = retrospectDay;
         this.prevRetrospectDate = now;
@@ -95,11 +94,8 @@ public class Member extends BaseTime {
         return this.retrospectDay.equals(retrospectDay);
     }
 
-    public void verifyPrevRetrospectDate(LocalDateTime now) {
-        if(!(ChronoUnit.DAYS.between(prevRetrospectDate, now) >= 29)) {
-            throw new ChangeRetrospectDateException(
-                prevRetrospectDate.plusDays(30));
-        }
+    public Boolean verifyChangingRetrospectDate(LocalDateTime now) {
+        return ChronoUnit.DAYS.between(prevRetrospectDate, now) >= 30 ? true : false;
     }
 
     public Integer getServiceLife() {

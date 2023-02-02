@@ -5,11 +5,13 @@ import com.nanal.backend.domain.diary.dto.resp.RespGetCalendarDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetDiaryDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetEmotionDto;
 import com.nanal.backend.domain.diary.service.DiaryService;
+import com.nanal.backend.global.exception.BindingResultException;
 import com.nanal.backend.global.response.CommonResponse;
 import com.nanal.backend.global.response.ErrorCode;
 import com.nanal.backend.global.security.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,7 +29,10 @@ public class DiaryController {
      */
     @GetMapping("/diary")
     public CommonResponse<?> getCalendar(@AuthenticationPrincipal User user,
-                                         ReqGetCalendarDto reqGetCalendarDto) {
+                                         @Valid ReqGetCalendarDto reqGetCalendarDto,
+                                         BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
 
         // 요청 정보 기반으로 해당 날짜에 맞는 정보 조회
         RespGetCalendarDto respGetCalendarDto = diaryService.getCalendar(user.getSocialId(), reqGetCalendarDto);

@@ -1,6 +1,5 @@
 package com.nanal.backend.global.exception;
 
-import com.nanal.backend.domain.mypage.exception.ChangeRetrospectDateException;
 import com.nanal.backend.global.security.AuthenticationUtil;
 import com.nanal.backend.global.response.CommonResponse;
 import com.nanal.backend.global.response.ErrorCode;
@@ -22,9 +21,11 @@ public class CommonExceptionHandler {
      *  사용자 요청 관련 예외
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public CommonResponse<?> inputValueInvalidError(HttpServletResponse response, MethodArgumentNotValidException e) {
+    public CommonResponse<?> inputValueInvalidException(HttpServletResponse response, MethodArgumentNotValidException e) {
         response.setStatus(ErrorCode.INVALID_INPUT_VALUE.getCode());
-        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
+
+        e.getBindingResult().getAllErrors().stream()
+                .forEach(o -> log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),o.getClass().getSimpleName(), o.getDefaultMessage()));
 
         List<String> errorMessages = e.getBindingResult().getAllErrors().stream()
                 .map(objectError -> objectError.getDefaultMessage())
@@ -32,6 +33,21 @@ public class CommonExceptionHandler {
 
         return new CommonResponse<>(ErrorCode.INVALID_INPUT_VALUE, errorMessages);
     }
+
+    @ExceptionHandler(BindingResultException.class)
+    public CommonResponse<?> bindingResultException(HttpServletResponse response, BindingResultException e) {
+        response.setStatus(ErrorCode.INVALID_INPUT_VALUE.getCode());
+
+        e.getFieldErrors().stream()
+                .forEach(o -> log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(), o.getClass().getSimpleName(), o.getDefaultMessage()));
+
+        List<String> errorMessages = e.getFieldErrors().stream()
+                .map(objectError -> objectError.getDefaultMessage())
+                .collect(Collectors.toList());
+
+        return new CommonResponse<>(ErrorCode.INVALID_INPUT_VALUE, errorMessages);
+    }
+
 
     /**
      *  잘못된 요청 형식

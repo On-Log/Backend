@@ -88,6 +88,18 @@ public class MypageController {
     }
 
     /**
+     * 로그아웃
+     */
+    @GetMapping("/mypage/logout")
+    public CommonResponse<?> logout(@AuthenticationPrincipal User user) {
+
+        // 로그 아웃
+        mypageService.logout(user.getSocialId());
+
+        return new CommonResponse<>(ErrorCode.SUCCESS);
+    }
+
+    /**
      * 회원탈퇴
      */
     @DeleteMapping("/mypage/withdrawal")

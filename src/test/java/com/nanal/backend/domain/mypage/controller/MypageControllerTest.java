@@ -239,6 +239,35 @@ public class MypageControllerTest extends CommonControllerTest {
     }
 
     @Test
+    public void 로그아웃() throws Exception {
+        //given
+        willDoNothing().given(mypageService).logout(any());
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/mypage/logout")
+                        .header("Token", "ACCESS_TOKEN")
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지")
+                                )
+                        )
+                );
+
+    }
+
+    @Test
     public void 회원탈퇴() throws Exception {
         //given
         List<Reason> reasons = new ArrayList<>(Arrays.asList(

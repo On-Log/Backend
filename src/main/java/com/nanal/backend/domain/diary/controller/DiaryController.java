@@ -60,7 +60,10 @@ public class DiaryController {
      */
     @GetMapping("/diary/view")
     public CommonResponse<RespGetDiaryDto> getDiary(@AuthenticationPrincipal User user,
-                                                    @Valid ReqGetDiaryDto reqGetDiaryDto) {
+                                                    @Valid ReqGetDiaryDto reqGetDiaryDto,
+                                                    BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
 
         // 요청 날짜 기반으로 일기 조회
         RespGetDiaryDto respGetDiaryDto = diaryService.getDiary(user.getSocialId(), reqGetDiaryDto);

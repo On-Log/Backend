@@ -63,7 +63,10 @@ public class RetrospectController {
      */
     @GetMapping("/retrospect/view")
     public CommonResponse<RespGetRetroDto> getRetrospect(@AuthenticationPrincipal User user,
-                                                         ReqGetRetroDto reqGetRetroDto) {
+                                                         @Valid ReqGetRetroDto reqGetRetroDto,
+                                                         BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
 
         // 요청 날짜 기반으로 회고 조회
         RespGetRetroDto respGetRetroDto = retrospectService.getRetro(user.getSocialId(), reqGetRetroDto);
@@ -95,7 +98,10 @@ public class RetrospectController {
      */
     @GetMapping("/retrospect/keyword")
     public CommonResponse<RespGetKeywordAndEmotionDto> getKeywordAndEmotion(@AuthenticationPrincipal User user,
-                                                                            ReqGetKeywordAndEmotionDto reqGetKeywordAndEmotionDto) {
+                                                                            @Valid ReqGetKeywordAndEmotionDto reqGetKeywordAndEmotionDto,
+                                                                            BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
 
         // 일기 작성 날짜+키워드+감정어 조회
         RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = retrospectService.getKeywordAndEmotion(user.getSocialId(), reqGetKeywordAndEmotionDto);
@@ -110,7 +116,10 @@ public class RetrospectController {
      * 수정일 :
      */
     @GetMapping("/retrospect/question")
-    public CommonResponse<RespGetQuestionAndHelpDto> getQuestionAndHelp(@AuthenticationPrincipal User user, ReqGetGoalDto reqGetGoalDto) {
+    public CommonResponse<RespGetQuestionAndHelpDto> getQuestionAndHelp(@Valid ReqGetGoalDto reqGetGoalDto,
+                                                                        BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
 
         // 회고질문 + 도움말 조회
         RespGetQuestionAndHelpDto respGetQuestionAndHelp = retrospectService.getQuestionAndHelp(reqGetGoalDto);
@@ -125,7 +134,11 @@ public class RetrospectController {
      * 수정일 :
      */
     @GetMapping("/retrospect/extra")
-    public CommonResponse<RespGetExtraQuestionAndHelpDto> getExtraQuestionAndHelp(@AuthenticationPrincipal User user, ReqGetGoalDto reqGetGoalDto) {
+    public CommonResponse<RespGetExtraQuestionAndHelpDto> getExtraQuestionAndHelp(@AuthenticationPrincipal User user,
+                                                                                  @Valid ReqGetGoalDto reqGetGoalDto,
+                                                                                  BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
 
         // 회고질문 + 도움말 조회
         RespGetExtraQuestionAndHelpDto respGetExtraQuestionAndHelp = retrospectService.getExtraQuestionAndHelp(user.getSocialId(), reqGetGoalDto);
@@ -140,7 +153,11 @@ public class RetrospectController {
      * 수정일 :
      */
     @GetMapping("/retrospect/exist")
-    public CommonResponse<?> checkExistRetrospect(@AuthenticationPrincipal User user, ReqCheckRetroDto reqCheckRetroDto) {
+    public CommonResponse<?> checkExistRetrospect(@AuthenticationPrincipal User user,
+                                                  @Valid ReqCheckRetroDto reqCheckRetroDto,
+                                                  BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
 
         // 요청 날짜에 작성한 회고가 있는지 체크
         retrospectService.checkRetrospect(user.getSocialId(), reqCheckRetroDto);

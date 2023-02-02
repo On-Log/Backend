@@ -130,4 +130,8 @@ public class TokenUtil {
         claims.put("role", member.getRole());
         return claims;
     }
+
+    public void expireRefreshToken(String socialId) {
+        redisTemplate.delete(socialId);
+    }
 }

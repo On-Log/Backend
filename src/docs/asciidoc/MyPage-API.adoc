@@ -37,6 +37,12 @@ operation::mypage-controller-test/서비스_사용기간_조회[snippets='http-r
 
 ---
 
+[[MyPage-로그아웃]]
+=== MyPage 로그아웃
+operation::mypage-controller-test/로그아웃[snippets='http-request,request-headers,http-response,response-fields']
+
+---
+
 [[MyPage-회원탈퇴]]
 === MyPage 회원탈퇴
 operation::mypage-controller-test/회원탈퇴[snippets='http-request,request-headers,request-fields,http-response,response-fields']

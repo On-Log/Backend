@@ -469,6 +469,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#MyPage-회고일-변경-가능-여부">MyPage 회고일 변경 가능 여부</a></li>
 <li><a href="#MyPage-회고일-변경">MyPage 회고일 변경</a></li>
 <li><a href="#MyPage-서비스-사용기간-조회">MyPage 서비스 사용기간 조회</a></li>
+<li><a href="#MyPage-로그아웃">MyPage 로그아웃</a></li>
 <li><a href="#MyPage-회원탈퇴">MyPage 회원탈퇴</a></li>
 </ul>
 </li>
@@ -1674,6 +1675,91 @@ Content-Length: 140
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.serviceLife</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">서비스 사용기간</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="MyPage-로그아웃"><a class="link" href="#MyPage-로그아웃">MyPage 로그아웃</a></h3>
+<div class="sect3">
+<h4 id="MyPage-로그아웃_http_request"><a class="link" href="#MyPage-로그아웃_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /mypage/logout HTTP/1.1
+Token: ACCESS_TOKEN
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="MyPage-로그아웃_request_headers"><a class="link" href="#MyPage-로그아웃_request_headers">Request headers</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Token</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">접근 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="MyPage-로그아웃_http_response"><a class="link" href="#MyPage-로그아웃_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Content-Length: 94
+
+{
+  "isSuccess" : true,
+  "code" : 200,
+  "message" : "요청에 성공하였습니다."
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="MyPage-로그아웃_response_fields"><a class="link" href="#MyPage-로그아웃_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isSuccess</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성공 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상태 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결과 메시지</p></td>
 </tr>
 </tbody>
 </table>

@@ -1,14 +1,7 @@
 package com.nanal.backend.global.exception;
 
-import com.nanal.backend.domain.auth.exception.RefreshTokenInvalidException;
-import com.nanal.backend.domain.diary.exception.DiaryAlreadyExistException;
-import com.nanal.backend.domain.diary.exception.DiaryNotFoundException;
 import com.nanal.backend.domain.mypage.exception.ChangeRetrospectDateException;
-import com.nanal.backend.domain.mypage.exception.RetrospectDayDupException;
-import com.nanal.backend.domain.retrospect.exception.RetrospectAlreadyExistException;
-import com.nanal.backend.domain.retrospect.exception.RetrospectNotFoundException;
 import com.nanal.backend.global.security.AuthenticationUtil;
-import com.nanal.backend.global.exception.customexception.*;
 import com.nanal.backend.global.response.CommonResponse;
 import com.nanal.backend.global.response.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +33,9 @@ public class CommonExceptionHandler {
         return new CommonResponse<>(ErrorCode.INVALID_INPUT_VALUE, errorMessages);
     }
 
+    /**
+     *  잘못된 요청 형식
+     */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public CommonResponse<?> badRequestError(HttpServletResponse response, HttpMessageNotReadableException e) {
         response.setStatus(ErrorCode.BAD_REQUEST.getCode());
@@ -47,63 +43,17 @@ public class CommonExceptionHandler {
         return new CommonResponse<>(ErrorCode.BAD_REQUEST);
     }
 
-    /**
-     *  인증 관련 예외
-     */
-    @ExceptionHandler(MemberAuthException.class)
-    public CommonResponse<?> memberNotFoundError(HttpServletResponse response, MemberAuthException e) {
-        response.setStatus(ErrorCode.MEMBER_NOT_FOUND.getCode());
-        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
-        return new CommonResponse<>(ErrorCode.MEMBER_NOT_FOUND);
-    }
-
-    @ExceptionHandler(RefreshTokenInvalidException.class)
-    public CommonResponse<?> refreshTokenInvalidError(HttpServletResponse response, RefreshTokenInvalidException e) {
-        response.setStatus(ErrorCode.INVALID_REFRESH_TOKEN.getCode());
-        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
-        return new CommonResponse<>(ErrorCode.INVALID_REFRESH_TOKEN);
-    }
 
     /**
-     *  일기 관련 예외
+     *  공통 예외 처리
      */
-    @ExceptionHandler(DiaryNotFoundException.class)
-    public CommonResponse<?> diaryNotFoundError(HttpServletResponse response, DiaryNotFoundException e) {
-        response.setStatus(ErrorCode.DIARY_NOT_FOUND.getCode());
-        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
-        return new CommonResponse<>(ErrorCode.DIARY_NOT_FOUND);
+    @ExceptionHandler(NanalException.class)
+    public CommonResponse<?> nanalExceptionHandler(HttpServletResponse response, NanalException e) {
+        response.setStatus(e.getErrorCode().getCode());
+        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getErrorCode().getMessage());
+        return new CommonResponse<>(e.getErrorCode());
     }
 
-    @ExceptionHandler(DiaryAlreadyExistException.class)
-    public CommonResponse<?> diaryAlreadyExistError(HttpServletResponse response, DiaryAlreadyExistException e) {
-        response.setStatus(ErrorCode.DIARY_ALREADY_EXIST.getCode());
-        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
-        return new CommonResponse<>(ErrorCode.DIARY_ALREADY_EXIST);
-    }
-
-    /**
-     *  회고 관련 예외
-     */
-    @ExceptionHandler(RetrospectDayDupException.class)
-    public CommonResponse<?> retrospectDayDupError(HttpServletResponse response, RetrospectDayDupException e) {
-        response.setStatus(ErrorCode.RETROSPECT_DAY_DUPLICATION.getCode());
-        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
-        return new CommonResponse<>(ErrorCode.RETROSPECT_DAY_DUPLICATION);
-    }
-
-    @ExceptionHandler(RetrospectNotFoundException.class)
-    public CommonResponse<?> retrospectNotFoundError(HttpServletResponse response, RetrospectNotFoundException e) {
-        response.setStatus(ErrorCode.RETROSPECT_NOT_FOUND.getCode());
-        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
-        return new CommonResponse<>(ErrorCode.RETROSPECT_NOT_FOUND);
-    }
-
-    @ExceptionHandler(RetrospectAlreadyExistException.class)
-    public CommonResponse<?> retrospectAlreadyExistError(HttpServletResponse response, RetrospectAlreadyExistException e) {
-        response.setStatus(ErrorCode.RETROSPECT_ALREADY_EXIST.getCode());
-        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
-        return new CommonResponse<>(ErrorCode.RETROSPECT_ALREADY_EXIST);
-    }
 
     /**
      *  사용자 정보 관련 예외
@@ -113,5 +63,15 @@ public class CommonExceptionHandler {
         response.setStatus(ErrorCode.RETROSPECT_DATE_CHANGE_IMPOSSIBLE.getCode());
         log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.RETROSPECT_DATE_CHANGE_IMPOSSIBLE, e.getChangeableDate());
+    }
+
+    /**
+     *  서버 에러
+     */
+    //@ExceptionHandler(Exception.class)
+    public CommonResponse<?> internalServerErrorHandler(HttpServletResponse response, Exception e) {
+        response.setStatus(ErrorCode.INTERNAL_SERVER_ERROR.getCode());
+        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
+        return new CommonResponse<>(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 }

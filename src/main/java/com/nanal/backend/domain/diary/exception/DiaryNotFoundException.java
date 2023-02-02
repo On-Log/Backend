@@ -1,9 +1,13 @@
 package com.nanal.backend.domain.diary.exception;
 
-import com.nanal.backend.global.exception.CustomException;
+import com.nanal.backend.global.exception.NanalException;
+import com.nanal.backend.global.response.ErrorCode;
 
-public class DiaryNotFoundException extends CustomException {
-    public DiaryNotFoundException(String message) {
-        super(message);
+public class DiaryNotFoundException extends NanalException {
+
+    public static final NanalException EXCEPTION = new DiaryNotFoundException();
+
+    private DiaryNotFoundException() {
+        super(ErrorCode.DIARY_NOT_FOUND);
     }
 }

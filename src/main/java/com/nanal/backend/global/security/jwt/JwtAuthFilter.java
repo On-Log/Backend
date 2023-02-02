@@ -45,14 +45,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (token != null && tokenService.verifyToken(token)) {
             // 토큰 파싱해서 socialId 정보 가져오기
             String socialId = tokenService.getUid(token);
-            Member findMember = memberRepository.findBySocialId(socialId).orElseThrow(() -> new TokenInvalidException(ErrorCode.INVALID_TOKEN.getMessage()));
+            Member findMember = memberRepository.findBySocialId(socialId).orElseThrow(() -> TokenInvalidException.EXCEPTION);
 
             // 이메일로 Authentication 정보 생성
             AuthenticationUtil.makeAuthentication(socialId, findMember.getEmail());
         }else{
             // 여기서 예외를 발생시켜야 JwtExceptionFilter 로 떨어짐.
             log.info("예외 발생 url = {}", request.getRequestURL());
-            throw new TokenInvalidException("Token 이 유효하지 않습니다.");
+            throw TokenInvalidException.EXCEPTION;
         }
 
         chain.doFilter(request, response);

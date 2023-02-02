@@ -84,7 +84,7 @@ public class Member extends BaseTime {
         // 요청 회고요일로 변경 가능한지 검증
         LocalDateTime now = LocalDateTime.now();
         verifyPrevRetrospectDate(now);
-        if(isSameRetrospectDay(retrospectDay)) {throw new RetrospectDayDupException(ErrorCode.RETROSPECT_DAY_DUPLICATION.getMessage());}
+        if(isSameRetrospectDay(retrospectDay)) {throw RetrospectDayDupException.EXCEPTION;}
 
         this.retrospectDay = retrospectDay;
         this.prevRetrospectDate = now;
@@ -98,7 +98,6 @@ public class Member extends BaseTime {
     public void verifyPrevRetrospectDate(LocalDateTime now) {
         if(!(ChronoUnit.DAYS.between(prevRetrospectDate, now) >= 29)) {
             throw new ChangeRetrospectDateException(
-                ErrorCode.RETROSPECT_DATE_CHANGE_IMPOSSIBLE.getMessage(),
                 prevRetrospectDate.plusDays(30));
         }
     }

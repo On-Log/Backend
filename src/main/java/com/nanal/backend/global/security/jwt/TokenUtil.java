@@ -84,11 +84,11 @@ public class TokenUtil {
 
     public Token tokenReissue(String token) {
         String socialId = getUid(token);
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(()-> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(()-> MemberAuthException.EXCEPTION);
         // socialId 에 해당하는 refreshToken redis 에서 가져오기
         String storedRefreshToken = redisTemplate.opsForValue().get(socialId);
         // socialId 에 해당하는 refreshToken 이 없거나 일치하지 않을 때
-        if(storedRefreshToken == null || !storedRefreshToken.equals(token)) throw new RefreshTokenInvalidException(ErrorCode.INVALID_REFRESH_TOKEN.getMessage());
+        if(storedRefreshToken == null || !storedRefreshToken.equals(token)) throw RefreshTokenInvalidException.EXCEPTION;
 
         // Token 생성
         Token newToken = generateToken(member);

@@ -142,7 +142,6 @@ public class MypageControllerTest extends CommonControllerTest {
     public void 회고일_변경_불가능() throws Exception {
         //given
         given(mypageService.checkChangeAvailability(any())).willThrow(new ChangeRetrospectDateException(
-                ErrorCode.RETROSPECT_DATE_CHANGE_IMPOSSIBLE.getMessage(),
                 LocalDateTime.of(2023, 1, 12, 6, 0)));
 
         //when

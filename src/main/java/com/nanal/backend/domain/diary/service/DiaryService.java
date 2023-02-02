@@ -37,7 +37,7 @@ public class DiaryService {
 
     public RespGetCalendarDto getCalendar(String socialId, ReqGetCalendarDto reqGetCalendarDto) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         // 회고일 체크
         LocalDateTime now = LocalDateTime.now();
@@ -61,7 +61,7 @@ public class DiaryService {
 
     public void saveDiary(String socialId, ReqSaveDiaryDto reqSaveDiaryDto) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         // 해당 날짜에 작성한 일기 존재하는지 체크
         checkDiaryAlreadyExist(member.getMemberId(), reqSaveDiaryDto.getDate());
@@ -75,7 +75,7 @@ public class DiaryService {
 
     public RespGetDiaryDto getDiary(String socialId, ReqGetDiaryDto reqGetDiaryDto) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         // 조회할 일기 가져오기
         Diary selectDiary = getDiary(member.getMemberId(), reqGetDiaryDto.getDate());
@@ -86,7 +86,7 @@ public class DiaryService {
 
     public void updateDiary(String socialId, ReqEditDiaryDto reqEditDiary) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         // 수정할 일기 조회
         Diary updateDiary = getDiary(member.getMemberId(), reqEditDiary.getDate());
@@ -97,7 +97,7 @@ public class DiaryService {
 
     public void deleteDiary(String socialId, ReqDeleteDiaryDto reqDeleteDiaryDto) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         // 삭제할 일기 가져오기
         Diary deleteDiary = getDiary(member.getMemberId(), reqDeleteDiaryDto.getDate());
@@ -122,7 +122,7 @@ public class DiaryService {
 
         // 선택한 날에 작성한 일기 조회
         Diary findDiary = diaryRepository.findDiaryByMemberAndWriteDate(memberId, startDate, endDate)
-                .orElseThrow(() -> new DiaryNotFoundException(ErrorCode.DIARY_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> DiaryNotFoundException.EXCEPTION);
 
         return findDiary;
     }
@@ -134,7 +134,7 @@ public class DiaryService {
 
         List<Diary> findDiaryList = diaryRepository.findDiaryListByMemberAndWriteDate(memberId, startDate, endDate);
 
-        if (findDiaryList.size() != 0) throw new DiaryAlreadyExistException(ErrorCode.DIARY_ALREADY_EXIST.getMessage());
+        if (findDiaryList.size() != 0) throw DiaryAlreadyExistException.EXCEPTION;
     }
 
     private List<LocalDateTime> getExistDiaryDateList(Long memberId, LocalDateTime date) {

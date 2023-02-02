@@ -106,10 +106,10 @@ public class MypageControllerTest extends CommonControllerTest {
     @Test
     public void 회고일_변경_가능_여부() throws Exception {
         //given
-        RespCheckChangeAvailability output = RespCheckChangeAvailability.builder()
-                .nextChangeableDate(LocalDateTime.of(2023, 1, 12, 6, 0))
-                .curRetrospectDay(DayOfWeek.SUNDAY)
-                .build();
+        RespCheckChangeAvailability output = RespCheckChangeAvailability.changeable(
+                LocalDateTime.of(2023, 1, 12, 6, 0),
+                DayOfWeek.SUNDAY);
+
         given(mypageService.checkChangeAvailability(any())).willReturn(output);
 
         //when
@@ -141,8 +141,10 @@ public class MypageControllerTest extends CommonControllerTest {
     @Test
     public void 회고일_변경_불가능() throws Exception {
         //given
-        given(mypageService.checkChangeAvailability(any())).willThrow(new ChangeRetrospectDateException(
-                LocalDateTime.of(2023, 1, 12, 6, 0)));
+        RespCheckChangeAvailability output = RespCheckChangeAvailability.unchangeable(
+                LocalDateTime.of(2023, 1, 15, 8, 0));
+
+        given(mypageService.checkChangeAvailability(any())).willReturn(output);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -152,7 +154,7 @@ public class MypageControllerTest extends CommonControllerTest {
 
         //then
         actions
-                .andExpect(status().is(481))
+                .andExpect(status().isOk())
                 .andDo(
                         restDocs.document(
                                 requestHeaders(
@@ -162,7 +164,7 @@ public class MypageControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
-                                        fieldWithPath("result").description("다음 회고 변경 가능일")
+                                        fieldWithPath("result.changeableDate").description("회고 변경 가능일")
                                 )
                         )
                 );

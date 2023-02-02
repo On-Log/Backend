@@ -1415,15 +1415,17 @@ Content-Length: 202
 <h5 id="_회고일_변경_불가능_http_response"><a class="link" href="#_회고일_변경_불가능_http_response">HTTP response</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 481
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 165
+Content-Length: 162
 
 {
-  "isSuccess" : false,
-  "code" : 481,
-  "message" : "30일이 지나지 않아 회고일 변경이 불가능합니다.",
-  "result" : "2023-01-12T06:00:00"
+  "isSuccess" : true,
+  "code" : 200,
+  "message" : "요청에 성공하였습니다.",
+  "result" : {
+    "changeableDate" : "2023-01-15T08:00:00"
+  }
 }</code></pre>
 </div>
 </div>
@@ -1460,9 +1462,9 @@ Content-Length: 165
 <td class="tableblock halign-left valign-top"><p class="tableblock">결과 메시지</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.changeableDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">다음 회고 변경 가능일</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고 변경 가능일</p></td>
 </tr>
 </tbody>
 </table>

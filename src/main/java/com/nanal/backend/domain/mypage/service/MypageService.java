@@ -9,13 +9,13 @@ import com.nanal.backend.domain.mypage.dto.req.ReqWithdrawMembership;
 import com.nanal.backend.domain.mypage.dto.resp.*;
 import com.nanal.backend.domain.mypage.entity.Feedback;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
-import com.nanal.backend.global.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 
 @RequiredArgsConstructor
@@ -49,12 +49,10 @@ public class MypageService {
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         LocalDateTime now = LocalDateTime.now();
-        member.verifyPrevRetrospectDate(now);
-
-        return RespCheckChangeAvailability.builder()
-                .nextChangeableDate(now.plusDays(30))
-                .curRetrospectDay(member.getRetrospectDay())
-                .build();
+        if(member.verifyChangingRetrospectDate(now))
+            return RespCheckChangeAvailability.changeable(now.plusDays(30), member.getRetrospectDay());
+        else
+            return RespCheckChangeAvailability.unchangeable(member.getPrevRetrospectDate().plusDays(30));
     }
 
 

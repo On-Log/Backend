@@ -54,17 +54,6 @@ public class CommonExceptionHandler {
         return new CommonResponse<>(e.getErrorCode());
     }
 
-
-    /**
-     *  사용자 정보 관련 예외
-     */
-    @ExceptionHandler(ChangeRetrospectDateException.class)
-    public CommonResponse<?> remainRetrospectChange(HttpServletResponse response, ChangeRetrospectDateException e) {
-        response.setStatus(ErrorCode.RETROSPECT_DATE_CHANGE_IMPOSSIBLE.getCode());
-        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
-        return new CommonResponse<>(ErrorCode.RETROSPECT_DATE_CHANGE_IMPOSSIBLE, e.getChangeableDate());
-    }
-
     /**
      *  서버 에러
      */

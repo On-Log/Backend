@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Builder
@@ -24,5 +26,6 @@ public class ReqSearchDto {
 
     private Integer offset = 0;
 
+    @Max(value = 10)
     private Integer limit = 10;
 }

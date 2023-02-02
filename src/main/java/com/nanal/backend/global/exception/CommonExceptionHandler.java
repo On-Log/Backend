@@ -12,6 +12,7 @@ import com.nanal.backend.global.exception.customexception.*;
 import com.nanal.backend.global.response.CommonResponse;
 import com.nanal.backend.global.response.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -37,6 +38,13 @@ public class CommonExceptionHandler {
                 .collect(Collectors.toList());
 
         return new CommonResponse<>(ErrorCode.INVALID_INPUT_VALUE, errorMessages);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public CommonResponse<?> badRequestError(HttpServletResponse response, HttpMessageNotReadableException e) {
+        response.setStatus(ErrorCode.BAD_REQUEST.getCode());
+        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
+        return new CommonResponse<>(ErrorCode.BAD_REQUEST);
     }
 
     /**

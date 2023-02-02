@@ -63,7 +63,7 @@ public class AuthService {
             return reissueToken;
         }
 
-        throw new RefreshTokenInvalidException(ErrorCode.INVALID_REFRESH_TOKEN.getMessage());
+        throw RefreshTokenInvalidException.EXCEPTION;
     }
 
     //===편의 메서드===//

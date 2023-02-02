@@ -46,7 +46,7 @@ public class RetrospectService {
 
     public RespGetInfoDto getInfo(String socialId, ReqGetInfoDto reqGetInfoDto) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
         LocalDateTime currentDate = reqGetInfoDto.getCurrentDate();
         LocalDateTime selectDate = reqGetInfoDto.getSelectDate();
 
@@ -71,7 +71,7 @@ public class RetrospectService {
 
     public void saveRetrospect(String socialId, ReqSaveRetroDto reqSaveRetroDto) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
         // 해당 날짜에 작성한 일기 존재하는지 체크
         checkRetrospectAlreadyExist(reqSaveRetroDto, member);
         // 회고 Entity 생성
@@ -90,13 +90,13 @@ public class RetrospectService {
 
     public RespGetRetroDto getRetro(String socialId, ReqGetRetroDto reqGetRetroDto) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         LocalDateTime selectDate = reqGetRetroDto.getSelectDate();
         // 선택한 yyyy-MM 에 작성한 회고리스트 조회
         List<Retrospect> getRetrospects = getExistRetrospect(member, selectDate);
         // 선택한 yyyy-MM 에 작성한 회고 중, 조회하고자 하는 회고가 존재하지 않을 경우
-        if(getRetrospects.size() < reqGetRetroDto.getWeek()) throw new RetrospectNotFoundException("조회하고자 하는 회고가 존재하지 않습니다.");
+        if(getRetrospects.size() < reqGetRetroDto.getWeek()) throw RetrospectNotFoundException.EXCEPTION;
 
         // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
         RespGetRetroDto respGetRetroDto = RespGetRetroDto.makeRespGetRetroDto(getRetrospects.get(reqGetRetroDto.getWeek()));
@@ -106,13 +106,13 @@ public class RetrospectService {
 
     public void editRetrospect(String socialId, ReqEditRetroDto reqEditRetroDto) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         LocalDateTime selectDate = reqEditRetroDto.getEditDate();
         // 선택한 yyyy-MM 에 작성한 회고리스트 조회
         List<Retrospect> getRetrospects = getExistRetrospect(member, selectDate);
         // 선택한 yyyy-MM 에 작성한 회고 중, 수정하고자 하는 회고가 존재하지 않을 경우
-        if(getRetrospects.size() < reqEditRetroDto.getWeek()) throw new RetrospectNotFoundException("조회하고자 하는 회고가 존재하지 않습니다.");
+        if(getRetrospects.size() < reqEditRetroDto.getWeek()) throw RetrospectNotFoundException.EXCEPTION;
         // 몇번째 회고인지
         Retrospect retrospect = getRetrospects.get(reqEditRetroDto.getWeek());
         // 회고에서 어떤 질문에 대한 답을 수정했는지
@@ -124,7 +124,7 @@ public class RetrospectService {
 
     public RespGetKeywordAndEmotionDto getKeywordAndEmotion(String socialId, ReqGetKeywordAndEmotionDto reqGetKeywordAndEmotionDto){
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         LocalDateTime currentTime = reqGetKeywordAndEmotionDto.getCurrentDate();
         LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
@@ -154,7 +154,7 @@ public class RetrospectService {
 
     public RespGetExtraQuestionAndHelpDto getExtraQuestionAndHelp(String socialId, ReqGetGoalDto reqGetGoalDto){
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
         //유저가 작성한 회고 리스트
         List<Retrospect> getRetrospects = retrospectRepository.findListByMember(member.getMemberId());
         List<String> contents = new ArrayList<>();
@@ -239,13 +239,13 @@ public class RetrospectService {
 
     public void checkRetrospect(String socialId, ReqCheckRetroDto reqCheckRetroDto) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonthDay = reqCheckRetroDto.getCurrentDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
         // 선택한 yyyy-MM-dd 에 작성한 회고 조회
         List<Retrospect> existRetrospect = retrospectRepository.findListByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
 
-        if(existRetrospect.size() != 0) throw new RetrospectAlreadyExistException(ErrorCode.RETROSPECT_ALREADY_EXIST.getMessage());
+        if(existRetrospect.size() != 0) throw RetrospectAlreadyExistException.EXCEPTION;
     }
 
     //===편의 메서드===//
@@ -276,7 +276,7 @@ public class RetrospectService {
         // 선택한 yyyy-MM-dd 에 작성한 일기 조회
         List<Retrospect> existRetrospect = retrospectRepository.findListByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
 
-        if(existRetrospect.size() != 0) throw new RetrospectAlreadyExistException(ErrorCode.RETROSPECT_ALREADY_EXIST.getMessage());
+        if(existRetrospect.size() != 0) throw RetrospectAlreadyExistException.EXCEPTION;
     }
 
     private List<Retrospect> getExistRetrospect(Member member, LocalDateTime selectTime) {

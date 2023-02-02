@@ -28,7 +28,7 @@ public class MypageService {
 
     public RespGetUserDto getUser(String socialId) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         return RespGetUserDto.builder()
                 .email(member.getEmail())
@@ -39,14 +39,14 @@ public class MypageService {
 
     public void updateNickname(String socialId, ReqEditNicknameDto reqEditNickname) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         member.updateNickname(reqEditNickname.getNickname());
     }
 
     public RespCheckChangeAvailability checkChangeAvailability(String socialId) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         LocalDateTime now = LocalDateTime.now();
         member.verifyPrevRetrospectDate(now);
@@ -61,14 +61,14 @@ public class MypageService {
     public void updateRetrospectDay(String socialId, ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
 
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         member.updateRetrospectDay(DayOfWeek.valueOf(reqEditRetrospectDayDto.getRetrospectDay()));
     }
 
     public RespGetServiceLife getServiceLife(String socialId) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         Integer serviceLife = member.getServiceLife();
 
@@ -79,7 +79,7 @@ public class MypageService {
 
     public void withdrawMembership(String socialId, ReqWithdrawMembership reqWithdrawMembership) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         for(ReqWithdrawMembership.Reason r : reqWithdrawMembership.getReasons()){
             Feedback feedback = Feedback.builder()

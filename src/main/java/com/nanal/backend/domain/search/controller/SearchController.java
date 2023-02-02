@@ -21,14 +21,13 @@ public class SearchController {
     private final SearchService searchService;
 
     @GetMapping("/search")
-    public CommonResponse<?> search(@AuthenticationPrincipal User user,
-                                    @Valid ReqSearchDto reqSearchDto,
+    public CommonResponse<?> search(@Valid ReqSearchDto reqSearchDto,
                                     BindingResult bindingResult) {
 
         if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
 
-        RespSearchDto respSearchDto = searchService.search(user.getSocialId(), reqSearchDto);
 
+        RespSearchDto respSearchDto = searchService.search(reqSearchDto);
         return new CommonResponse<>(respSearchDto);
     }
 }

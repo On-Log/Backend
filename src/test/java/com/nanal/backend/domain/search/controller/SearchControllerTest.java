@@ -87,7 +87,7 @@ class SearchControllerTest extends CommonControllerTest {
         output.setDiaryDtoList(new ArrayList<>(Arrays.asList(diaryDto)));
         output.setRetrospectDtoList(new ArrayList<>(Arrays.asList(retrospectDto)));
 
-        given(searchService.search(any(), any())).willReturn(output);
+        given(searchService.search(any())).willReturn(output);
 
         //when
         ResultActions actions = mockMvc.perform(

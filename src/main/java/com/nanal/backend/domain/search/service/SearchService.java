@@ -20,14 +20,10 @@ import java.util.List;
 @Service
 public class SearchService {
 
-    private final MemberRepository memberRepository;
     private final SearchDiaryRepository searchDiaryRepository;
     private final SearchRetrospectRepository searchRetrospectRepository;
 
-    public RespSearchDto search(String socialId, ReqSearchDto reqSearchDto) {
-
-        // socialId 로 유저 조회
-        memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+    public RespSearchDto search(ReqSearchDto reqSearchDto) {
 
         // 일기 검색
         List<Diary> diaryList = searchDiaryRepository.searchDiary(reqSearchDto);

@@ -77,7 +77,7 @@ public class DiaryController {
      */
     @PutMapping("/diary")
     public CommonResponse<?> updateDiary(@AuthenticationPrincipal User user,
-                                       @RequestBody @Valid ReqEditDiaryDto reqEditDiary) {
+                                         @Valid @RequestBody ReqEditDiaryDto reqEditDiary) {
 
         // 요청 날짜 기반으로 일기 수정
         diaryService.updateDiary(user.getSocialId(), reqEditDiary);
@@ -91,7 +91,7 @@ public class DiaryController {
      */
     @DeleteMapping("/diary")
     public CommonResponse<?> deleteDiary(@AuthenticationPrincipal User user,
-                                         @Valid ReqDeleteDiaryDto reqDeleteDiaryDto) {
+                                         @Valid @RequestBody ReqDeleteDiaryDto reqDeleteDiaryDto) {
 
         // 요청 날짜 기반으로 일기 삭제
         diaryService.deleteDiary(user.getSocialId(), reqDeleteDiaryDto);

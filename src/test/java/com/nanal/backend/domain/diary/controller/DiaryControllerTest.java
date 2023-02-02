@@ -260,14 +260,18 @@ class DiaryControllerTest extends CommonControllerTest {
     public void 일기_삭제() throws Exception {
         //given
         String deleteDate = "2023-01-15T00:00:00";
+
+        ReqDeleteDiaryDto input = new ReqDeleteDiaryDto(LocalDateTime.parse(deleteDate));
+        String body = objectMapper.writeValueAsString(input);
+
         willDoNothing().given(diaryService).deleteDiary(any(), any());
 
         //when
         ResultActions actions = mockMvc.perform(
                 delete("/diary")
                         .header("Token", "ACCESS_TOKEN")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("date" ,deleteDate)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body)
         );
 
         //then
@@ -278,8 +282,8 @@ class DiaryControllerTest extends CommonControllerTest {
                                 requestHeaders(
                                         headerWithName("Token").description("접근 토큰")
                                 ),
-                                requestParameters(
-                                        parameterWithName("date").description("삭제 날짜")
+                                requestFields(
+                                        fieldWithPath("date").description("삭제 날짜")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),

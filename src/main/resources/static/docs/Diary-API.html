@@ -1059,10 +1059,15 @@ Content-Length: 94
 <h4 id="Diary-일기-삭제_http_request">HTTP request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /diary?date=2023-01-15T00%3A00%3A00 HTTP/1.1
-Content-Type: application/x-www-form-urlencoded;charset=UTF-8
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /diary HTTP/1.1
+Content-Type: application/json;charset=UTF-8
 Token: ACCESS_TOKEN
-Host: localhost:8080</code></pre>
+Content-Length: 38
+Host: localhost:8080
+
+{
+  "date" : "2023-01-15T00:00:00"
+}</code></pre>
 </div>
 </div>
 </div>

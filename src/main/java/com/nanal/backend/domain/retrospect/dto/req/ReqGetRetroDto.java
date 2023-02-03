@@ -15,6 +15,6 @@ public class ReqGetRetroDto {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime selectDate;
 
-    @NotBlank(message = "week 은 비어있을 수 없습니다.")
+    @NotNull(message = "week 은 비어있을 수 없습니다.")
     private int week;
 }

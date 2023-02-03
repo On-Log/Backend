@@ -21,7 +21,7 @@ public class CommonExceptionHandler {
      *  사용자 요청 관련 예외
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public CommonResponse<?> inputValueInvalidException(HttpServletResponse response, MethodArgumentNotValidException e) {
+    public CommonResponse<?> inputValueInvalidExceptionHandler(HttpServletResponse response, MethodArgumentNotValidException e) {
         response.setStatus(ErrorCode.INVALID_INPUT_VALUE.getCode());
 
         e.getBindingResult().getAllErrors().stream()
@@ -35,7 +35,7 @@ public class CommonExceptionHandler {
     }
 
     @ExceptionHandler(BindingResultException.class)
-    public CommonResponse<?> bindingResultException(HttpServletResponse response, BindingResultException e) {
+    public CommonResponse<?> bindingResultExceptionHandler(HttpServletResponse response, BindingResultException e) {
         response.setStatus(ErrorCode.INVALID_INPUT_VALUE.getCode());
 
         e.getFieldErrors().stream()
@@ -48,12 +48,11 @@ public class CommonExceptionHandler {
         return new CommonResponse<>(ErrorCode.INVALID_INPUT_VALUE, errorMessages);
     }
 
-
     /**
      *  잘못된 요청 형식
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public CommonResponse<?> badRequestError(HttpServletResponse response, HttpMessageNotReadableException e) {
+    public CommonResponse<?> badRequestErrorHandler(HttpServletResponse response, HttpMessageNotReadableException e) {
         response.setStatus(ErrorCode.BAD_REQUEST.getCode());
         log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.BAD_REQUEST);
@@ -73,10 +72,10 @@ public class CommonExceptionHandler {
     /**
      *  서버 에러
      */
-    //@ExceptionHandler(Exception.class)
+    @ExceptionHandler(Exception.class)
     public CommonResponse<?> internalServerErrorHandler(HttpServletResponse response, Exception e) {
         response.setStatus(ErrorCode.INTERNAL_SERVER_ERROR.getCode());
-        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
+        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(), e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 }

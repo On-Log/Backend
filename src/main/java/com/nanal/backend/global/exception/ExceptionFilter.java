@@ -30,7 +30,7 @@ public class ExceptionFilter extends OncePerRequestFilter {
             //JwtFilter 를 호출하는데, 이 필터에서 jwtTokenNotAvailable 이 떨어진다.
             filterChain.doFilter(request, response);
         } catch (TokenInvalidException e) {
-            log.error("[" + e.getClass().getSimpleName() + "] " + e.getMessage());
+            log.error("[" + e.getClass().getSimpleName() + "] " + e.getErrorCode().getMessage());
 
             setErrorResponse(response, ErrorCode.INVALID_TOKEN);
         }

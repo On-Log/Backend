@@ -1128,14 +1128,14 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 856
+Content-Length: 862
 
 {
   "isSuccess" : true,
   "code" : 200,
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "keywords" : [ {
+    "weeklyKeywords" : [ {
       "writeDate" : "2023-01-21",
       "keywords" : [ {
         "keyword" : "창업",
@@ -1203,17 +1203,17 @@ Content-Length: 856
 <td class="tableblock halign-left valign-top"><p class="tableblock">결과 메시지</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.keywords[].writeDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.weeklyKeywords[].writeDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">일기 작성 날짜</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.keywords[].keywords[].keyword</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.weeklyKeywords[].keywords[].keyword</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 날짜에 작성한 일기 키워드</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.keywords[].keywords[].keywordEmotions[].emotion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.weeklyKeywords[].keywords[].keywordEmotions[].emotion</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">키워드에 해당하는 감정어</p></td>
 </tr>
@@ -1590,7 +1590,7 @@ Content-Length: 94
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-02-04 15:27:10 +0900
+Last updated 2023-02-05 01:04:29 +0900
 </div>
 </div>
 </body>

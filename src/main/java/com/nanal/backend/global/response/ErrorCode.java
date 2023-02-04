@@ -11,6 +11,7 @@ public enum ErrorCode {
 
     // Success
     SUCCESS(true, HttpStatus.OK.value(), "요청에 성공하였습니다."),
+    SUCCESS_BUT(false, HttpStatus.OK.value(), "요청에 성공하였습니다."),
 
 
     // 특정 정보를 권한이 없는 유저가 요청하거나, 존재하지 않는 정보를 요청할 때.

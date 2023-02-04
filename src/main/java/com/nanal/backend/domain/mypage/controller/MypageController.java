@@ -58,7 +58,8 @@ public class MypageController {
         // 회고일 변경 가능 여부
         RespCheckChangeAvailability respCheckChangeAvailability = mypageService.checkChangeAvailability(user.getSocialId());
 
-        return new CommonResponse<>(respCheckChangeAvailability);
+        if(respCheckChangeAvailability.getChangeableDate() == null) return new CommonResponse<>(respCheckChangeAvailability);
+        else return new CommonResponse<>(ErrorCode.SUCCESS_BUT, respCheckChangeAvailability);
     }
 
     /**

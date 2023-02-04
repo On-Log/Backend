@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 public class RespGetKeywordAndEmotionDto {
 
-    private List<KeywordWriteDateDto> keywords;
+    private List<KeywordWriteDateDto> weeklyKeywords;
 
     public static RespGetKeywordAndEmotionDto makeRespGetKeywordAndEmotionDto(List<Diary> diaries){
         List<KeywordWriteDateDto> keywordList = new ArrayList<>();
@@ -24,7 +24,7 @@ public class RespGetKeywordAndEmotionDto {
             keywordList.add(keywordWriteDateDto);
         }
         RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.builder()
-                .keywords(keywordList)
+                .weeklyKeywords(keywordList)
                 .build();
 
         return respGetKeywordAndEmotionDto;

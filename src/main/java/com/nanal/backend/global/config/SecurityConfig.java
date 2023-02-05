@@ -2,6 +2,9 @@ package com.nanal.backend.global.config;
 
 import com.nanal.backend.global.exception.ExceptionFilter;
 import com.nanal.backend.global.security.jwt.JwtAuthFilter;
+import com.nanal.backend.global.security.oauth.CustomOAuth2UserService;
+import com.nanal.backend.global.security.oauth.OAuth2FailureHandler;
+import com.nanal.backend.global.security.oauth.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +21,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final CustomOAuth2UserService oAuth2UserService;
+    private final OAuth2SuccessHandler successHandler;
+    private final OAuth2FailureHandler failureHandler;
     private final ExceptionFilter exceptionFilter;
 
     private final JwtAuthFilter jwtAuthFilter;
@@ -37,8 +43,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
-                .authorizeRequests().antMatchers("/auth/**", "/docs/**", "/favicon.ico").permitAll()
-                .anyRequest().authenticated();
+                .authorizeRequests().antMatchers("/main","/auth/**", "/docs/**", "/favicon.ico").permitAll()
+                .anyRequest().authenticated()
+
+                .and()
+                .oauth2Login()
+                .successHandler(successHandler)
+                .failureHandler(failureHandler)
+                .userInfoEndpoint().userService(oAuth2UserService);
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 // ControllerAdvice 로는 filter 에서 발생하는 예외를 다룰 수 없으므로 ExceptionFilter 추가.

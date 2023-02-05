@@ -80,6 +80,8 @@ class OAuth2Attribute {
                                            Map<String, Object> attributes) {
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
 
+        System.out.println(response);
+
         OAuth2Attribute oAuth2Attribute = OAuth2Attribute.builder()
                 .socialId(MemberProvider.NAVER + "@" + response.get(attributeKey))
                 .provider(MemberProvider.NAVER)

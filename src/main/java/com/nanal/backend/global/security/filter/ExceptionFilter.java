@@ -1,4 +1,4 @@
-package com.nanal.backend.global.exception;
+package com.nanal.backend.global.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nanal.backend.global.exception.customexception.TokenInvalidException;
@@ -27,7 +27,7 @@ public class ExceptionFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            //JwtFilter 를 호출하는데, 이 필터에서 jwtTokenNotAvailable 이 떨어진다.
+            //JwtFilter 를 호출하는데, 이 필터에서 TokenInvalidException 이 떨어진다.
             filterChain.doFilter(request, response);
         } catch (TokenInvalidException e) {
             log.error("[" + e.getClass().getSimpleName() + "] " + e.getErrorCode().getMessage());

@@ -1,10 +1,11 @@
-package com.nanal.backend.global.security.jwt;
+package com.nanal.backend.global.security.filter;
 
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.global.response.ErrorCode;
 import com.nanal.backend.global.security.AuthenticationUtil;
 import com.nanal.backend.global.exception.customexception.TokenInvalidException;
+import com.nanal.backend.global.security.jwt.TokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;

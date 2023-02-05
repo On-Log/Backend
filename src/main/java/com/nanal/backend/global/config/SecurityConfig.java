@@ -1,7 +1,7 @@
 package com.nanal.backend.global.config;
 
-import com.nanal.backend.global.exception.ExceptionFilter;
-import com.nanal.backend.global.security.jwt.JwtAuthFilter;
+import com.nanal.backend.global.security.filter.ExceptionFilter;
+import com.nanal.backend.global.security.filter.JwtAuthFilter;
 import com.nanal.backend.global.security.oauth.CustomOAuth2UserService;
 import com.nanal.backend.global.security.oauth.OAuth2FailureHandler;
 import com.nanal.backend.global.security.oauth.OAuth2SuccessHandler;

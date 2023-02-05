@@ -1,4 +1,4 @@
-package com.nanal.backend.global.exception;
+package com.nanal.backend.global.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

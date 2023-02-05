@@ -1,4 +1,6 @@
-package com.nanal.backend.global.exception;
+package com.nanal.backend.global.validation;
+
+import com.nanal.backend.global.validation.ValueOfEnum;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

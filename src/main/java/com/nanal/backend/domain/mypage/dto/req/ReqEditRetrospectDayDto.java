@@ -1,6 +1,6 @@
 package com.nanal.backend.domain.mypage.dto.req;
 
-import com.nanal.backend.global.exception.ValueOfEnum;
+import com.nanal.backend.global.validation.ValueOfEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

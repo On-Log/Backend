@@ -1,6 +1,6 @@
 package com.nanal.backend.domain.mypage.exception;
 
-import com.nanal.backend.global.exception.NanalException;
+import com.nanal.backend.global.exception.customexception.NanalException;
 import com.nanal.backend.global.response.ErrorCode;
 import lombok.Getter;
 

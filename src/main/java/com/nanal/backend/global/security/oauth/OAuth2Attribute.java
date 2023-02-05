@@ -85,8 +85,8 @@ class OAuth2Attribute {
         OAuth2Attribute oAuth2Attribute = OAuth2Attribute.builder()
                 .socialId(MemberProvider.NAVER + "@" + response.get(attributeKey))
                 .provider(MemberProvider.NAVER)
-                .name((String) response.get("name"))
-                .nickname((String) response.get("name"))
+                .name((String) response.get("nickname"))
+                .nickname((String) response.get("nickname"))
                 .email((String) response.get("email"))
                 .gender((String) response.get("gender"))
                 .ageRange((String) response.get("age"))
@@ -118,7 +118,7 @@ class OAuth2Attribute {
 
         if(ageRange == null || ageRange.isBlank()) ageRange = "undef";
         if(email.length() > 50) email = email.substring(0, 50);
-        if(name.length() > 7) {
+        if(nickname.length() > 7) {
             name = name.substring(0, 7);
             nickname = nickname.substring(0, 7);
         }

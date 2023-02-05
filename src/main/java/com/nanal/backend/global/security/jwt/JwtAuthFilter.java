@@ -23,7 +23,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final String[] ignoredPaths = {"/auth/**", "/docs/**", "/favicon.ico"};
+    private final String[] ignoredPaths = {"/main", "/login/**", "/auth/**", "/docs/**", "/favicon.ico"};
 
     private final TokenUtil tokenService;
     private final MemberRepository memberRepository;
@@ -40,7 +40,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
         }
 
-        String token = ((HttpServletRequest)request).getHeader("Token");
+        String token = request.getHeader("Token");
 
         if (token != null && tokenService.verifyToken(token)) {
             // 토큰 파싱해서 socialId 정보 가져오기

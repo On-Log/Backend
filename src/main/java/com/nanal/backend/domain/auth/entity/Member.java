@@ -7,9 +7,11 @@ import com.nanal.backend.domain.mypage.exception.RetrospectDayDupException;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import com.nanal.backend.global.config.BaseTime;
 import lombok.*;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
@@ -74,6 +76,24 @@ public class Member extends BaseTime {
         USER("ROLE_USER"), ADMIN("ROLE_ADMIN");
 
         private final String key;
+    }
+
+    //==생성 메서드==//
+    public static Member valueOf(OAuth2User oAuth2User) {
+        var attributes = oAuth2User.getAttributes();
+        return Member.builder()
+                .socialId((String) attributes.get("socialId"))
+                .provider((MemberProvider) attributes.get("provider"))
+                .name((String) attributes.get("name"))
+                .nickname((String) attributes.get("nickname"))
+                .email((String) attributes.get("email"))
+                // 당일로 회고일 설정
+                .retrospectDay(LocalDate.now().getDayOfWeek())
+                .prevRetrospectDate(LocalDateTime.now().minusDays(30))
+                .gender((String) attributes.get("gender"))
+                .ageRange((String) attributes.get("age"))
+                .role(Member.Role.USER)
+                .build();
     }
 
     //==수정 메서드==//

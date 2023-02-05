@@ -44,12 +44,6 @@ public class AuthService {
         return new LoginInfo(loginMember.getNickname(), token);
     }
 
-    private Member auth(Member member) {
-        Optional<Member> findMember = memberRepository.findBySocialId(member.getSocialId());
-        if(newSubscribe(findMember)) return register(member);
-        else return login(findMember);
-    }
-
     public Token reissue(String token) {
         // refresh 토큰이 유효한지 확인
         if (token != null && tokenUtil.verifyToken(token)) {
@@ -68,6 +62,12 @@ public class AuthService {
         if(providerInfo.contains("google")) return clientGoogle.getUserData(accessToken);
         else if(providerInfo.contains("kakao")) return clientKakao.getUserData(accessToken);
         else return clientNaver.getUserData(accessToken);
+    }
+
+    private Member auth(Member member) {
+        Optional<Member> findMember = memberRepository.findBySocialId(member.getSocialId());
+        if(newSubscribe(findMember)) return register(member);
+        else return login(findMember);
     }
 
     private static boolean newSubscribe(Optional<Member> findMember) {

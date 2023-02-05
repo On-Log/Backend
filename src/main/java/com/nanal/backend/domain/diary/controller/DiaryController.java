@@ -5,7 +5,7 @@ import com.nanal.backend.domain.diary.dto.resp.RespGetCalendarDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetDiaryDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetEmotionDto;
 import com.nanal.backend.domain.diary.service.DiaryService;
-import com.nanal.backend.global.exception.BindingResultException;
+import com.nanal.backend.global.exception.customexception.BindingResultException;
 import com.nanal.backend.global.response.CommonResponse;
 import com.nanal.backend.global.response.ErrorCode;
 import com.nanal.backend.global.security.User;

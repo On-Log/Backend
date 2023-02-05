@@ -1,5 +1,7 @@
 package com.nanal.backend.global.exception;
 
+import com.nanal.backend.global.exception.customexception.BindingResultException;
+import com.nanal.backend.global.exception.customexception.NanalException;
 import com.nanal.backend.global.security.AuthenticationUtil;
 import com.nanal.backend.global.response.CommonResponse;
 import com.nanal.backend.global.response.ErrorCode;

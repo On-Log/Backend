@@ -1,6 +1,5 @@
 package com.nanal.backend.global.exception.customexception;
 
-import com.nanal.backend.global.exception.NanalException;
 import com.nanal.backend.global.response.ErrorCode;
 
 public class MemberAuthException extends NanalException {

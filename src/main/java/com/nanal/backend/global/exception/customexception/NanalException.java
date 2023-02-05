@@ -1,4 +1,4 @@
-package com.nanal.backend.global.exception;
+package com.nanal.backend.global.exception.customexception;
 
 
 import com.nanal.backend.global.response.ErrorCode;

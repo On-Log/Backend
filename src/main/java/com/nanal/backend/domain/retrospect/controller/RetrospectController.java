@@ -3,7 +3,7 @@ package com.nanal.backend.domain.retrospect.controller;
 import com.nanal.backend.domain.retrospect.dto.req.*;
 import com.nanal.backend.domain.retrospect.dto.resp.*;
 import com.nanal.backend.domain.retrospect.service.RetrospectService;
-import com.nanal.backend.global.exception.BindingResultException;
+import com.nanal.backend.global.exception.customexception.BindingResultException;
 import com.nanal.backend.global.response.CommonResponse;
 import com.nanal.backend.global.response.ErrorCode;
 import com.nanal.backend.global.security.User;

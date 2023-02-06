@@ -60,6 +60,7 @@ public class RetrospectService {
         LocalDateTime postRetroDate = diaryService.getRetroDate(member.getRetrospectDay(), currentDate);
         // 회고 요일까지 남은 날짜
         Period period = Period.between(currentDate.toLocalDate(), postRetroDate.toLocalDate());
+
         // 회고 주제별로 분류 후 주차별로 분류
         List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = getKeyword(member, selectDate);
 

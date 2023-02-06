@@ -16,5 +16,5 @@ public class ReqGetRetroDto {
     private LocalDateTime selectDate;
 
     @NotNull(message = "week 은 비어있을 수 없습니다.")
-    private int week;
+    private Integer week;
 }

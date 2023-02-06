@@ -60,11 +60,14 @@ public class RetrospectService {
         LocalDateTime postRetroDate = diaryService.getRetroDate(member.getRetrospectDay(), currentDate);
         // 회고 요일까지 남은 날짜
         Period period = Period.between(currentDate.toLocalDate(), postRetroDate.toLocalDate());
+        int betweenDate = period.getDays();
+        if(checkRetro(member, currentDate) == true)
+            betweenDate = 7;
 
         // 회고 주제별로 분류 후 주차별로 분류
         List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = getKeyword(member, selectDate);
 
-        RespGetInfoDto respGetInfoDto = new RespGetInfoDto(existRetrospect, period.getDays(), respGetClassifiedKeywordDtos);
+        RespGetInfoDto respGetInfoDto = new RespGetInfoDto(existRetrospect, betweenDate, respGetClassifiedKeywordDtos);
 
         return respGetInfoDto;
     }
@@ -238,17 +241,6 @@ public class RetrospectService {
         return respGetExtraQuestionAndHelpDto;
     }
 
-    public void checkRetrospect(String socialId, ReqCheckRetroDto reqCheckRetroDto) {
-        // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
-        // 질의할 sql 의 Like 절에 해당하게끔 변환
-        String yearMonthDay = reqCheckRetroDto.getCurrentDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
-        // 선택한 yyyy-MM-dd 에 작성한 회고 조회
-        List<Retrospect> existRetrospect = retrospectRepository.findListByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
-
-        if(existRetrospect.size() != 0) throw RetrospectAlreadyExistException.EXCEPTION;
-    }
-
     //===편의 메서드===//
     private Retrospect createRetrospect(Member member, String goal, LocalDateTime date, List<RetrospectKeywordDto> keywordDtos, List<RetrospectContentDto> contentDtos) {
         // Retrospect 생성에 필요한 keyword, content 리스트 생성
@@ -271,13 +263,37 @@ public class RetrospectService {
         return retrospect;
     }
 
-    private void checkRetrospectAlreadyExist(ReqSaveRetroDto reqSaveRetroDto, Member member) {
+    //회고 존재 여부 API 사용
+    public void checkRetrospect(String socialId, ReqCheckRetroDto reqCheckRetroDto) {
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
         // 질의할 sql 의 Like 절에 해당하게끔 변환
-        String yearMonthDay = reqSaveRetroDto.getCurrentDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
-        // 선택한 yyyy-MM-dd 에 작성한 일기 조회
+        String yearMonthDay = reqCheckRetroDto.getCurrentDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
+        // 선택한 yyyy-MM-dd 에 작성한 회고 조회
         List<Retrospect> existRetrospect = retrospectRepository.findListByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
 
         if(existRetrospect.size() != 0) throw RetrospectAlreadyExistException.EXCEPTION;
+    }
+
+    //회고 저장시 예외처리
+    private void checkRetrospectAlreadyExist(ReqSaveRetroDto reqSaveRetroDto, Member member) {
+        // 질의할 sql 의 Like 절에 해당하게끔 변환
+        String yearMonthDay = reqSaveRetroDto.getCurrentDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
+        // 선택한 yyyy-MM-dd 에 작성한 회고 조회
+        List<Retrospect> existRetrospect = retrospectRepository.findListByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
+
+        if(existRetrospect.size() != 0) throw RetrospectAlreadyExistException.EXCEPTION;
+    }
+
+    //회고 메인탭 회고 체크 편의 메서드
+    private boolean checkRetro(Member member, LocalDateTime currentDate) {
+        String yearMonthDay = currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
+        // 선택한 yyyy-MM-dd 에 작성한 회고 조회
+        List<Retrospect> existRetrospect = retrospectRepository.findListByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
+        if(existRetrospect.size() != 0)
+            return true;
+        else
+            return false;
     }
 
     private List<Retrospect> getExistRetrospect(Member member, LocalDateTime selectTime) {

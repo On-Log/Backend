@@ -1,6 +1,5 @@
 package com.nanal.backend.global.response;
 
-import com.nanal.backend.domain.retrospect.exception.RetrospectAlreadyExistException;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 

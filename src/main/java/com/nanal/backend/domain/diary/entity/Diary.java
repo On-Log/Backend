@@ -47,7 +47,7 @@ public class Diary extends BaseTime {
     }
 
     //==생성 메서드==//
-    public static Diary createDiary(Member member, ReqSaveDiaryDto reqSaveDiaryDto) {
+    public static Diary createDiary(Member member, ReqSaveDiaryDto reqSaveDiaryDto, List<Emotion> findEmotions) {
         Diary diary = Diary.builder()
                 .content(reqSaveDiaryDto.getContent())
                 .writeDate(reqSaveDiaryDto.getDate())
@@ -56,7 +56,7 @@ public class Diary extends BaseTime {
 
         // 키워드 생성 후 삽입
         List<Keyword> keywordList = reqSaveDiaryDto.getKeywords().stream()
-                .map(keywordDto -> Keyword.createKeyword(diary, keywordDto))
+                .map(keywordDto -> Keyword.createKeyword(diary, keywordDto, findEmotions))
                 .collect(Collectors.toList());
         diary.getKeywords().addAll(keywordList);
 
@@ -71,12 +71,12 @@ public class Diary extends BaseTime {
         this.editStatus = editStatus;
     }
 
-    public void updateDiary(ReqDiaryDto reqDiaryDto) {
+    public void updateDiary(ReqDiaryDto reqDiaryDto, List<Emotion> findEmotions) {
         this.content = reqDiaryDto.getContent();
 
         this.keywords.clear();
         List<Keyword> keywordList = reqDiaryDto.getKeywords().stream()
-                .map(keywordDto -> Keyword.createKeyword(this, keywordDto))
+                .map(keywordDto -> Keyword.createKeyword(this, keywordDto, findEmotions))
                 .collect(Collectors.toList());
         this.keywords.addAll(keywordList);
     }

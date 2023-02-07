@@ -13,7 +13,6 @@ import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
 import com.nanal.backend.domain.diary.repository.EmotionRepository;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
-import com.nanal.backend.global.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,12 +61,13 @@ public class DiaryService {
     public void saveDiary(String socialId, ReqSaveDiaryDto reqSaveDiaryDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+        List<Emotion> findEmotions = emotionRepository.findEmotionsIn(reqSaveDiaryDto.getEmotions());
 
         // 해당 날짜에 작성한 일기 존재하는지 체크
         checkDiaryAlreadyExist(member.getMemberId(), reqSaveDiaryDto.getDate());
 
         // 일기 Entity 생성
-        Diary diary = Diary.createDiary(member, reqSaveDiaryDto);
+        Diary diary = Diary.createDiary(member, reqSaveDiaryDto, findEmotions);
 
         // 일기 저장
         diaryRepository.save(diary);
@@ -87,12 +87,13 @@ public class DiaryService {
     public void updateDiary(String socialId, ReqEditDiaryDto reqEditDiary) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+        List<Emotion> findEmotions = emotionRepository.findEmotionsIn(reqEditDiary.getEmotions());
 
         // 수정할 일기 조회
         Diary updateDiary = getDiary(member.getMemberId(), reqEditDiary.getDate());
 
         // 일기 수정
-        updateDiary.updateDiary(reqEditDiary);
+        updateDiary.updateDiary(reqEditDiary, findEmotions);
     }
 
     public void deleteDiary(String socialId, ReqDeleteDiaryDto reqDeleteDiaryDto) {

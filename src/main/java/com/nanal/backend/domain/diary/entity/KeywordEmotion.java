@@ -26,4 +26,16 @@ public class KeywordEmotion {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "emotion_id")
     private Emotion emotion;
+
+
+    //==생성 메서드==//
+    public static KeywordEmotion createKeywordEmotion(Emotion emotion) {
+        return KeywordEmotion.builder()
+                .emotion(emotion)
+                .build();
+    }
+
+    public void setKeyword(Keyword keyword) {
+        this.keyword = keyword;
+    }
 }

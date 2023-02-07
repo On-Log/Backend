@@ -1,6 +1,6 @@
 
+-- DB에 만들어둔 Procedure 실행
 CALL INIT_EMOTION();
-
 
 DELETE FROM question;
 DELETE FROM extra_question;

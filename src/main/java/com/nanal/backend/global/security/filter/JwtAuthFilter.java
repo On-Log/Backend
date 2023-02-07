@@ -1,8 +1,5 @@
 package com.nanal.backend.global.security.filter;
 
-import com.nanal.backend.domain.auth.entity.Member;
-import com.nanal.backend.domain.auth.repository.MemberRepository;
-import com.nanal.backend.global.response.ErrorCode;
 import com.nanal.backend.global.security.AuthenticationUtil;
 import com.nanal.backend.global.exception.customexception.TokenInvalidException;
 import com.nanal.backend.global.security.jwt.TokenUtil;
@@ -27,7 +24,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final String[] ignoredPaths = {"/main", "/login/**", "/auth/**", "/docs/**", "/favicon.ico"};
 
     private final TokenUtil tokenService;
-    private final MemberRepository memberRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
@@ -44,12 +40,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String token = request.getHeader("Token");
 
         if (token != null && tokenService.verifyToken(token)) {
-            // 토큰 파싱해서 socialId 정보 가져오기
-            String socialId = tokenService.getUid(token);
-            Member findMember = memberRepository.findBySocialId(socialId).orElseThrow(() -> TokenInvalidException.EXCEPTION);
+            try {
+                // 토큰 파싱해서 socialId 정보 가져오기
+                String socialId = tokenService.getSocialId(token);
+                String email = tokenService.getEmail(token);
 
-            // 이메일로 Authentication 정보 생성
-            AuthenticationUtil.makeAuthentication(socialId, findMember.getEmail());
+                // 이메일로 Authentication 정보 생성
+                AuthenticationUtil.makeAuthentication(socialId, email);
+            } catch (Exception e) {
+                throw TokenInvalidException.EXCEPTION;
+            }
         }else{
             // 여기서 예외를 발생시켜야 JwtExceptionFilter 로 떨어짐.
             log.info("예외 발생 url = {}", request.getRequestURL());

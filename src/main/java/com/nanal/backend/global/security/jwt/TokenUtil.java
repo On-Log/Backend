@@ -4,7 +4,6 @@ import com.nanal.backend.domain.auth.exception.RefreshTokenInvalidException;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
-import com.nanal.backend.global.response.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -83,7 +82,7 @@ public class TokenUtil {
     }
 
     public Token tokenReissue(String token) {
-        String socialId = getUid(token);
+        String socialId = getSocialId(token);
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(()-> MemberAuthException.EXCEPTION);
         // socialId 에 해당하는 refreshToken redis 에서 가져오기
         String storedRefreshToken = redisTemplate.opsForValue().get(socialId);
@@ -108,8 +107,12 @@ public class TokenUtil {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getExpiration();
     }
 
-    public String getUid(String token) {
+    public String getSocialId(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String getEmail(String token) {
+        return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("email");
     }
 
     public void storeRefreshToken(String socialId, Token token) {
@@ -125,7 +128,8 @@ public class TokenUtil {
     private static Claims getClaims(Member member) {
         // claim 에 socialId 정보 추가
         Claims claims = Jwts.claims().setSubject(member.getSocialId());
-
+        // claim 에 email 정보 추가
+        claims.put("email", member.getEmail());
         // claim 에 권한 정보 추가
         claims.put("role", member.getRole());
         return claims;

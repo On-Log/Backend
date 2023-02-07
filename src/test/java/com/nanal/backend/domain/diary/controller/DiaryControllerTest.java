@@ -92,9 +92,9 @@ class DiaryControllerTest extends CommonControllerTest {
         String saveDate = "2023-01-22T00:00:00";
 
         List<KeywordEmotionDto> keywordEmotionDtoList = new ArrayList<>(Arrays.asList(
-                new KeywordEmotionDto("아쉬움"),
-                new KeywordEmotionDto("복잡"),
-                new KeywordEmotionDto("기대")
+                new KeywordEmotionDto("행복"),
+                new KeywordEmotionDto("안심"),
+                new KeywordEmotionDto("의욕")
         ));
         List<KeywordDto> keywordDtoList = new ArrayList<>(Arrays.asList(
                 new KeywordDto("창업", keywordEmotionDtoList),
@@ -149,9 +149,9 @@ class DiaryControllerTest extends CommonControllerTest {
         String date = "2023-01-15T00:00:00";
 
         List<KeywordEmotionDto> keywordEmotionDtoList = new ArrayList<>(Arrays.asList(
-                new KeywordEmotionDto("아쉬움"),
-                new KeywordEmotionDto("복잡"),
-                new KeywordEmotionDto("기대")
+                new KeywordEmotionDto("놀람"),
+                new KeywordEmotionDto("힘듦"),
+                new KeywordEmotionDto("상쾌")
         ));
         List<KeywordDto> keywordDtoList = new ArrayList<>(Arrays.asList(
                 new KeywordDto("창업", keywordEmotionDtoList),
@@ -205,9 +205,9 @@ class DiaryControllerTest extends CommonControllerTest {
         String editDate = "2023-01-15T00:00:00";
 
         List<KeywordEmotionDto> keywordEmotionDtoList = new ArrayList<>(Arrays.asList(
-                new KeywordEmotionDto("행복"),
+                new KeywordEmotionDto("즐거움"),
                 new KeywordEmotionDto("여유"),
-                new KeywordEmotionDto("안심")
+                new KeywordEmotionDto("부담")
         ));
         List<KeywordDto> keywordDtoList = new ArrayList<>(Arrays.asList(
                 new KeywordDto("방학", keywordEmotionDtoList),

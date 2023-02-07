@@ -1,27 +1,9 @@
-DELETE FROM emotion;
+
+CALL INIT_EMOTION();
+
+
 DELETE FROM question;
 DELETE FROM extra_question;
-
-INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (1, "행복", now(), now());
-INSERT INTO emotion(emotion_id, emotion, created_at, updated_at ) VALUES (2, "여유", now(), now());
-INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (4, "슬픔", now(), now());
-INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (5, "복잡", now(), now());
-INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (6, "즐거움", now(), now());
-INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (7, "의욕", now(), now());
-INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (8, "쏘쏘", now(), now());
-INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (3, "안심", now(), now());
-INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (9, "아쉬움", now(), now());
-INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (10, "화남", now(), now());
-INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (11, "기대", now(), now());
-INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (12, "놀람", now(), now());
-INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (13, "외로움", now(), now());
-INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (14, "짜증", now(), now());
-INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (15, "힘듦", now(), now());
-INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (16, "뿌듯", now(), now());
-INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (17, "상쾌", now(), now());
-INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (18, "불안", now(), now());
-INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (19, "부담", now(), now());
-INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (20, "피곤", now(), now());
 
 INSERT INTO question(question_id, content, help, goal_id) VALUES (1, "이번주 나의 모습은 어땠나요?", "한가지 모습을 고르기 어렵다면, 가장 인상적인 (혹은 가장 기억에 남는) 모습에 대해 들려주세요.", 1);
 INSERT INTO question(question_id, content, help, goal_id) VALUES (2, "다른 내 모습도 들려줄래요? 이번주에 찾은 의외의 내 모습이 있다면요?", "우리의 일주일은 한가지 색만으로 이루어져있지 않아요! 가장 사소한 일부터 차근 차근 생각해보세요.", 1);

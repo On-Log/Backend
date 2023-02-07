@@ -1,19 +1,17 @@
 package com.nanal.backend.global.validation;
 
+import com.nanal.backend.domain.diary.entity.Emotion;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class ValueOfEnumValidator implements ConstraintValidator<ValueOfEnum, CharSequence> {
+public class ValueOfEmotionValidator implements ConstraintValidator<ValueOfEmotion, CharSequence> {
     private List<String> acceptedValues;
 
     @Override
-    public void initialize(ValueOfEnum annotation) {
-        acceptedValues = Stream.of(annotation.enumClass().getEnumConstants())
-                .map(Enum::name)
-                .collect(Collectors.toList());
+    public void initialize(ValueOfEmotion annotation) {
+        acceptedValues = Emotion.EMOTIONS;
     }
 
     @Override

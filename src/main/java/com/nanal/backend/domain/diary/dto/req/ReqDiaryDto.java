@@ -1,5 +1,6 @@
 package com.nanal.backend.domain.diary.dto.req;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Builder
 @AllArgsConstructor
@@ -30,4 +32,14 @@ public class ReqDiaryDto {
     @Valid
     @Size(min = 1, max = 5, message ="keyword 의 개수는 최소 1개, 최대 5개입니다.")
     private List<KeywordDto> keywords;
+
+    // 네이밍으로 인해 json parsing 대상. 어노테이션 제거시 Test 실패
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    public List<String> getEmotions() {
+        return this.keywords.stream()
+                .flatMap(keywordDto -> keywordDto.getKeywordEmotions().stream())
+                .map(keywordEmotionDto -> keywordEmotionDto.getEmotion())
+                .distinct()
+                .collect(Collectors.toList());
+    }
 }

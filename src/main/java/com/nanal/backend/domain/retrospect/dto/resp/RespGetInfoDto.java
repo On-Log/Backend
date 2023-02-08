@@ -22,13 +22,18 @@ public class RespGetInfoDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     Integer betweenDate;
 
+
+    //회고 개수가 5개인지 아닌지 체크
+    Boolean countRetrospect;
+
     //키워드 분류하고, 주차별로 나누기
     List<RespGetClassifiedKeywordDto> keywordList;
 
-    public static RespGetInfoDto makeRespGetInfoDto(List<String> existRetrospect, int betweenDate, List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos){
+    public static RespGetInfoDto makeRespGetInfoDto(List<String> existRetrospect, int betweenDate, boolean countRetrospect, List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos){
         RespGetInfoDto respGetInfoDto = RespGetInfoDto.builder()
                 .existRetrospect(existRetrospect)
                 .betweenDate(betweenDate)
+                .countRetrospect(countRetrospect)
                 .keywordList(respGetClassifiedKeywordDtos)
                 .build();
 

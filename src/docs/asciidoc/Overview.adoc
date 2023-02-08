@@ -78,4 +78,12 @@
 | `491 RETROSPECT_ALREADY_EXIST`
 | 회고 저장
 | 이미 요청한 날짜에 작성된 회고 존재
+
+| `492 RETROSPECT_ALL_DONE`
+| 회고 저장
+| 해당 달에 작성한 회고 개수가 5개 이상일 때
+
+| `493 RETROSPECT_TIME_DONE`
+| 회고 저장/수정
+| 회고 작성 기간이 지남
 |===

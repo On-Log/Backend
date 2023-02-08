@@ -1,6 +1,6 @@
 DROP PROCEDURE IF EXISTS INIT_EMOTION;
 
-DELIMITER $$
+$$
 CREATE PROCEDURE INIT_EMOTION()
 BEGIN
 
@@ -29,7 +29,7 @@ BEGIN
         INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (19, "부담", now(), now());
         INSERT INTO emotion(emotion_id, emotion, created_at, updated_at) VALUES (20, "피곤", now(), now());
     END IF;
-END $$;
+END $$
 
 -- DB에 만들어둔 Procedure 실행
 CALL INIT_EMOTION();

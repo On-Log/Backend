@@ -508,7 +508,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1116
+Content-Length: 1147
 
 {
   "isSuccess" : true,
@@ -517,6 +517,7 @@ Content-Length: 1116
   "result" : {
     "existRetrospect" : [ "자아탐색", "성취확인" ],
     "betweenDate" : 6,
+    "countRetrospect" : true,
     "keywordList" : [ {
       "classify" : [ {
         "weeklykeywords" : [ {
@@ -598,6 +599,11 @@ Content-Length: 1116
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.betweenDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">다음 회고까지 남은 날</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.countRetrospect</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고 개수 체크. 5개 이상일 시, false 보내 줌</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.keywordList[].val</code></p></td>

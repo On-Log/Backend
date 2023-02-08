@@ -45,6 +45,8 @@ public class RetrospectService {
     private final ExtraQuestionRepository extraQuestionRepository;
 
     public RespGetInfoDto getInfo(String socialId, ReqGetInfoDto reqGetInfoDto) {
+        int count = 0;
+        boolean checkRetrospectNumber = true;
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
         LocalDateTime currentDate = reqGetInfoDto.getCurrentDate();
@@ -55,7 +57,12 @@ public class RetrospectService {
         List<String> existRetrospect = new ArrayList<>();
         for (Retrospect t : getRetrospects) {
             existRetrospect.add(t.getGoal());
+            count++;
         }
+        System.out.println(count);
+        if (count >= 5)
+            checkRetrospectNumber = false;
+
 
         LocalDateTime postRetroDate = diaryService.getRetroDate(member.getRetrospectDay(), currentDate);
         // 회고 요일까지 남은 날짜
@@ -67,7 +74,7 @@ public class RetrospectService {
         // 회고 주제별로 분류 후 주차별로 분류
         List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = getKeyword(member, selectDate);
 
-        RespGetInfoDto respGetInfoDto = new RespGetInfoDto(existRetrospect, betweenDate, respGetClassifiedKeywordDtos);
+        RespGetInfoDto respGetInfoDto = new RespGetInfoDto(existRetrospect, betweenDate, checkRetrospectNumber, respGetClassifiedKeywordDtos);
 
         return respGetInfoDto;
     }

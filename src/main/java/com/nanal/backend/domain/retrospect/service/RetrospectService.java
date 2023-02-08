@@ -48,7 +48,6 @@ public class RetrospectService {
     private final ExtraQuestionRepository extraQuestionRepository;
 
     public RespGetInfoDto getInfo(String socialId, ReqGetInfoDto reqGetInfoDto) {
-        int count = 0;
         boolean checkRetrospectNumber = true;
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
@@ -125,8 +124,12 @@ public class RetrospectService {
     public void editRetrospect(String socialId, ReqEditRetroDto reqEditRetroDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
-
         LocalDateTime selectDate = reqEditRetroDto.getEditDate();
+        //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능)
+        DayOfWeek prevDay = selectDate.getDayOfWeek();
+        if(prevDay != member.getRetrospectDay())
+            throw RetrospectTimeDoneException.EXCEPTION;
+
         // 선택한 yyyy-MM 에 작성한 회고리스트 조회
         List<Retrospect> getRetrospects = getExistRetrospect(member, selectDate);
         // 선택한 yyyy-MM 에 작성한 회고 중, 수정하고자 하는 회고가 존재하지 않을 경우

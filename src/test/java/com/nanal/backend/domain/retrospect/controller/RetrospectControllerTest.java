@@ -391,7 +391,8 @@ public class RetrospectControllerTest extends CommonControllerTest {
     public void 회고_존재_여부() throws Exception {
         //given
         String currentDate = "2023-01-24T00:00:00";
-        willDoNothing().given(retrospectService).checkRetrospect(any(), any());
+        boolean output = false;
+        given(retrospectService.checkRetrospect(any(), any())).willReturn(output);
         //when
         ResultActions actions = mockMvc.perform(
                 get("/retrospect/exist")

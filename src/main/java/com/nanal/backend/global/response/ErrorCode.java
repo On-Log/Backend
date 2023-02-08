@@ -43,8 +43,9 @@ public enum ErrorCode {
 
     // Retrospect
     RETROSPECT_NOT_FOUND(false, 490, "조회하고자 하는 회고가 존재하지 않습니다."),
-    RETROSPECT_ALREADY_EXIST(false,491,"이미 요청한 날짜에 작성한 회고가 존재합니다.");
-
+    RETROSPECT_ALREADY_EXIST(false,491,"이미 요청한 날짜에 작성한 회고가 존재합니다."),
+    RETROSPECT_ALL_DONE(false,492,"이번 달에 작성할 수 있는 모든 회고를 작성했습니다."),
+    RETROSPECT_TIME_DONE(false,493,"회고 작성 및 수정은 회고일 당일 11시 59분까지만 가능합니다");
     private Boolean isSuccess;
     private int code;
     private String message;

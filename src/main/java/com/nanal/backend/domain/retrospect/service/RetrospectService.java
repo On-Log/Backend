@@ -5,7 +5,9 @@ import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.retrospect.dto.req.*;
 import com.nanal.backend.domain.retrospect.dto.resp.*;
 import com.nanal.backend.domain.retrospect.entity.*;
+import com.nanal.backend.domain.retrospect.exception.RetrospectAllDoneException;
 import com.nanal.backend.domain.retrospect.exception.RetrospectAlreadyExistException;
+import com.nanal.backend.domain.retrospect.exception.RetrospectTimeDoneException;
 import com.nanal.backend.domain.retrospect.repository.ExtraQuestionRepository;
 import com.nanal.backend.domain.retrospect.repository.QuestionRepository;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
@@ -22,6 +24,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -57,11 +60,8 @@ public class RetrospectService {
         List<String> existRetrospect = new ArrayList<>();
         for (Retrospect t : getRetrospects) {
             existRetrospect.add(t.getGoal());
-            count++;
         }
-        System.out.println(count);
-        if (count >= 5)
-            checkRetrospectNumber = false;
+        checkRetrospectNumber = countRetro(member, reqGetInfoDto.getSelectDate());
 
 
         LocalDateTime postRetroDate = diaryService.getRetroDate(member.getRetrospectDay(), currentDate);
@@ -83,6 +83,13 @@ public class RetrospectService {
     public void saveRetrospect(String socialId, ReqSaveRetroDto reqSaveRetroDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+        //작성한 회고가 5개 넘어가는지 여부
+        if(countRetro(member, reqSaveRetroDto.getCurrentDate()) == false)
+            throw RetrospectAllDoneException.EXCEPTION;
+        //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능)
+        DayOfWeek prevDay = reqSaveRetroDto.getCurrentDate().getDayOfWeek();
+        if(prevDay != member.getRetrospectDay())
+            throw RetrospectTimeDoneException.EXCEPTION;
         // 해당 날짜에 작성한 일기 존재하는지 체크
         checkRetrospectAlreadyExist(reqSaveRetroDto, member);
         // 회고 Entity 생성
@@ -296,6 +303,19 @@ public class RetrospectService {
             return true;
         else
             return false;
+    }
+
+    //회고 개수 count
+    private boolean countRetro(Member member, LocalDateTime dateTime) {
+        int count = 0;
+        List<Retrospect> getRetrospects = getExistRetrospect(member, dateTime);
+        for (Retrospect t : getRetrospects) {
+            count++;
+        }
+        if (count >= 5)
+            return false;
+        else
+            return true;
     }
 
     private List<Retrospect> getExistRetrospect(Member member, LocalDateTime selectTime) {

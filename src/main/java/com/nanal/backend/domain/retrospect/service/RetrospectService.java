@@ -68,7 +68,7 @@ public class RetrospectService {
         // 회고 요일까지 남은 날짜
         Period period = Period.between(currentDate.toLocalDate(), postRetroDate.toLocalDate());
         int betweenDate = period.getDays();
-        if(checkRetro(member, currentDate) == true)
+        if (checkRetro(member, currentDate) == true)
             betweenDate = 7;
 
         // 회고 주제별로 분류 후 주차별로 분류
@@ -271,15 +271,10 @@ public class RetrospectService {
     }
 
     //회고 존재 여부 API 사용
-    public void checkRetrospect(String socialId, ReqCheckRetroDto reqCheckRetroDto) {
+    public boolean checkRetrospect(String socialId, ReqCheckRetroDto reqCheckRetroDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
-        // 질의할 sql 의 Like 절에 해당하게끔 변환
-        String yearMonthDay = reqCheckRetroDto.getCurrentDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
-        // 선택한 yyyy-MM-dd 에 작성한 회고 조회
-        List<Retrospect> existRetrospect = retrospectRepository.findListByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
-
-        if(existRetrospect.size() != 0) throw RetrospectAlreadyExistException.EXCEPTION;
+        return checkRetro(member, reqCheckRetroDto.getCurrentDate());
     }
 
     //회고 저장시 예외처리

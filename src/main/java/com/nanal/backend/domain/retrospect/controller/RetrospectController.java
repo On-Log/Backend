@@ -160,9 +160,10 @@ public class RetrospectController {
         if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
 
         // 요청 날짜에 작성한 회고가 있는지 체크
-        retrospectService.checkRetrospect(user.getSocialId(), reqCheckRetroDto);
-
-        return new CommonResponse<>(ErrorCode.SUCCESS);
+        if (retrospectService.checkRetrospect(user.getSocialId(), reqCheckRetroDto) == false)
+            return new CommonResponse<>(ErrorCode.SUCCESS);
+        else
+            return new CommonResponse<>(ErrorCode.SUCCESS_BUT);
     }
 
 

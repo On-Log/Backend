@@ -37,7 +37,7 @@ public class SchedulingConfig {
     }
 
     @Transactional
-    @Scheduled(cron = "0 0 7 * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void setRetroEditStatus() {
 
         LocalDateTime currentTime = LocalDateTime.now();

@@ -129,7 +129,7 @@ public class DiaryService {
     private Diary getDiary(Long memberId, LocalDateTime date) {
         LocalDate tempDate = date.toLocalDate();
         LocalDateTime startDate = tempDate.atStartOfDay();
-        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX);
+        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);
 
         // 선택한 날에 작성한 일기 조회
         Diary findDiary = diaryRepository.findDiaryByMemberAndWriteDate(memberId, startDate, endDate)
@@ -148,7 +148,7 @@ public class DiaryService {
     private void checkRetrospectAlreadyExist(Long memberId, LocalDateTime date) {
         LocalDate tempDate = date.toLocalDate();
         LocalDateTime startDate = tempDate.atStartOfDay();
-        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX);
+        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);
 
         Optional<Retrospect> findRetrospect = retrospectRepository.findByMemberAndWriteDate(memberId, startDate, endDate);
 
@@ -158,7 +158,7 @@ public class DiaryService {
     private void checkDiaryAlreadyExist(Long memberId, LocalDateTime date) {
         LocalDate tempDate = date.toLocalDate();
         LocalDateTime startDate = tempDate.atStartOfDay();
-        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX);
+        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);
 
         List<Diary> findDiaryList = diaryRepository.findDiaryListByMemberAndWriteDate(memberId, startDate, endDate);
 
@@ -168,7 +168,7 @@ public class DiaryService {
     private List<LocalDateTime> getExistDiaryDateList(Long memberId, LocalDateTime date) {
         LocalDate tempDate = date.toLocalDate();
         LocalDateTime startDate = tempDate.withDayOfMonth(1).atStartOfDay();
-        LocalDateTime endDate = tempDate.withDayOfMonth(tempDate.lengthOfMonth()).atTime(LocalTime.MAX);
+        LocalDateTime endDate = tempDate.withDayOfMonth(tempDate.lengthOfMonth()).atTime(LocalTime.MAX).withNano(0);
 
         // 선택한 날에 작성한 일기리스트 조회
         List<Diary> writeDates = diaryRepository.findDiaryListByMemberAndWriteDate(memberId, startDate, endDate);

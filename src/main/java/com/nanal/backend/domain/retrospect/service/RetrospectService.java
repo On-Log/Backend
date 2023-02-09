@@ -171,7 +171,9 @@ public class RetrospectService {
                 true
                 );
 
-        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.makeRespGetKeywordAndEmotionDto(diaries);
+        LocalDateTime requestTime = LocalDateTime.now();
+
+        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.makeRespGetKeywordAndEmotionDto(diaries,requestTime);
 
         return respGetKeywordAndEmotionDto;
     }

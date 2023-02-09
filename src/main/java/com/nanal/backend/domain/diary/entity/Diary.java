@@ -50,7 +50,7 @@ public class Diary extends BaseTime {
     public static Diary createDiary(Member member, ReqSaveDiaryDto reqSaveDiaryDto, List<Emotion> findEmotions) {
         Diary diary = Diary.builder()
                 .content(reqSaveDiaryDto.getContent())
-                .writeDate(reqSaveDiaryDto.getDate())
+                .writeDate(reqSaveDiaryDto.getDate().withNano(0))
                 .editStatus(true)
                 .build();
 

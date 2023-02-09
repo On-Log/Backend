@@ -27,7 +27,6 @@ public class KeywordEmotion {
     @JoinColumn(name = "emotion_id")
     private Emotion emotion;
 
-
     //==생성 메서드==//
     public static KeywordEmotion createKeywordEmotion(Emotion emotion) {
         return KeywordEmotion.builder()

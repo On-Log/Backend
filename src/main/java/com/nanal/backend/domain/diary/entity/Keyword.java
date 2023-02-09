@@ -35,16 +35,12 @@ public class Keyword extends BaseTime {
     @OneToMany(mappedBy = "keyword", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<KeywordEmotion> keywordEmotions = new ArrayList<>();
 
-    @Embedded
-    private EmotionList emotionList;
-
     //==생성 메서드==//
     public static Keyword createKeyword(Diary diary, KeywordDto keywordDto, List<Emotion> emotions) {
 
         Keyword keyword = Keyword.builder()
                 .word(keywordDto.getKeyword())
                 .diary(diary)
-                .emotionList(EmotionList.createEmotionList(keywordDto.getKeywordEmotions()))
                 .build();
 
         for (KeywordEmotionDto ke : keywordDto.getKeywordEmotions()) {

@@ -9,6 +9,7 @@ import com.nanal.backend.domain.diary.entity.Emotion;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.diary.exception.DiaryAlreadyExistException;
 import com.nanal.backend.domain.diary.exception.DiaryNotFoundException;
+import com.nanal.backend.domain.diary.exception.NotInDiaryWritableDateException;
 import com.nanal.backend.domain.diary.exception.RetrospectAlreadyWrittenException;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import com.nanal.backend.domain.retrospect.repository.RetrospectRepository;
@@ -65,6 +66,8 @@ public class DiaryService {
     public void saveDiary(String socialId, ReqSaveDiaryDto reqSaveDiaryDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+        // 일기 작성 가능주간인지 체크
+        checkWritableWeek(member, reqSaveDiaryDto.getDate());
         // 해당 날짜에 작성한 회고 존재하는지 체크
         checkRetrospectAlreadyExist(member.getMemberId(), reqSaveDiaryDto.getDate());
         // 해당 날짜에 작성한 일기 존재하는지 체크
@@ -135,6 +138,12 @@ public class DiaryService {
         return findDiary;
     }
 
+    private void checkWritableWeek(Member member, LocalDateTime date) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime nextDayOfPrevRetroDate = getNextDayOfPrevRetroDate(member.getRetrospectDay(), now);
+        // validation 을 통해 현재보다 미래의 날짜가 들어오지 않는 것을 보장
+        if(!(date.isEqual(nextDayOfPrevRetroDate) || date.isAfter(nextDayOfPrevRetroDate))) throw NotInDiaryWritableDateException.EXCEPTION;
+    }
 
     private void checkRetrospectAlreadyExist(Long memberId, LocalDateTime date) {
         LocalDate tempDate = date.toLocalDate();
@@ -172,12 +181,12 @@ public class DiaryService {
 
     public LocalDateTime getRetroDate(DayOfWeek retrospectDay, LocalDateTime now) {
         // 다음 회고일
-        return now.with(TemporalAdjusters.nextOrSame(retrospectDay));
+        return now.with(TemporalAdjusters.nextOrSame(retrospectDay)).with(LocalTime.MIN);
     }
 
     private LocalDateTime getNextDayOfPrevRetroDate(DayOfWeek retrospectDay, LocalDateTime now) {
         // 이전 회고일
-        LocalDateTime prevRetroDate = now.with(TemporalAdjusters.previous(retrospectDay));
+        LocalDateTime prevRetroDate = now.with(TemporalAdjusters.previous(retrospectDay)).with(LocalTime.MIN);
 
         // 해당 주는 이전 회고일 다음날부터 다음 회고 일까지이므로 '이전 회고일 + 1' 을 해줘야함
         return prevRetroDate.plusDays(1);

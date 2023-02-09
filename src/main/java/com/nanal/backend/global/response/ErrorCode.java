@@ -33,8 +33,10 @@ public enum ErrorCode {
     DIARY_NOT_FOUND(false, 470, "요청한 날짜에 작성된 일기가 없습니다."),
     // 일기 저장시 해당 날짜에 일기가 이미 존재할 때.
     DIARY_ALREADY_EXIST(false, 471, "이미 요청한 날짜에 작성한 일기가 존재합니다."),
-    // 일기 저장시 회고가 이미 작성되어 있을 때.
+    // 회고가 이미 작성되어 있을 때.
     RETROSPECT_ALREADY_WRITTEN(false,472,"이미 회고가 작성되어 일기 작성이 불가능합니다."),
+    // 작성날짜가 일기 작성 주간이 아닐 때.
+    NOT_IN_WRITABLE_DATE(false,473,"현재 일기작성주간에 작성가능한 날짜가 아닙니다."),
 
     // MyPage
     // 중복된 회고일을 입력할 때.

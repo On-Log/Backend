@@ -46,6 +46,14 @@
 | `471 DIARY_ALREADY_EXIST`
 | 일기 저장
 | 이미 요청한 날짜에 작성된 일기 존재
+
+| `472 RETROSPECT_ALREADY_WRITTEN`
+| 일기 저장
+| 회고가 이미 작성되어 있음
+
+| `473 NOT_IN_WRITABLE_DATE`
+| 일기 저장
+| 작성날짜가 일기 작성 주간이 아님
 |===
 
 

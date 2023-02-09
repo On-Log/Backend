@@ -9,6 +9,9 @@ import com.nanal.backend.domain.diary.entity.Emotion;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.diary.exception.DiaryAlreadyExistException;
 import com.nanal.backend.domain.diary.exception.DiaryNotFoundException;
+import com.nanal.backend.domain.diary.exception.RetrospectAlreadyWrittenException;
+import com.nanal.backend.domain.retrospect.entity.Retrospect;
+import com.nanal.backend.domain.retrospect.repository.RetrospectRepository;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
 import com.nanal.backend.domain.diary.repository.EmotionRepository;
@@ -23,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -33,6 +37,7 @@ public class DiaryService {
     private final MemberRepository memberRepository;
     private final DiaryRepository diaryRepository;
     private final EmotionRepository emotionRepository;
+    private final RetrospectRepository retrospectRepository;
 
     public RespGetCalendarDto getCalendar(String socialId, ReqGetCalendarDto reqGetCalendarDto) {
         // socialId 로 유저 조회
@@ -46,7 +51,6 @@ public class DiaryService {
         List<LocalDateTime> existDiaryDate = getExistDiaryDateList(member.getMemberId(), reqGetCalendarDto.getSelectDate());
 
         // 회고 요일과 현재 날짜로 일기 작성 가능주 구하기
-
         LocalDateTime nextDayOfPrevRetroDate = getNextDayOfPrevRetroDate(member.getRetrospectDay(), now);
         LocalDateTime retroDate = getRetroDate(member.getRetrospectDay(), now);
 
@@ -61,10 +65,12 @@ public class DiaryService {
     public void saveDiary(String socialId, ReqSaveDiaryDto reqSaveDiaryDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
-        List<Emotion> findEmotions = emotionRepository.findEmotionsIn(reqSaveDiaryDto.getEmotions());
-
+        // 해당 날짜에 작성한 회고 존재하는지 체크
+        checkRetrospectAlreadyExist(member.getMemberId(), reqSaveDiaryDto.getDate());
         // 해당 날짜에 작성한 일기 존재하는지 체크
         checkDiaryAlreadyExist(member.getMemberId(), reqSaveDiaryDto.getDate());
+
+        List<Emotion> findEmotions = emotionRepository.findEmotionsIn(reqSaveDiaryDto.getEmotions());
 
         // 일기 Entity 생성
         Diary diary = Diary.createDiary(member, reqSaveDiaryDto, findEmotions);
@@ -72,6 +78,7 @@ public class DiaryService {
         // 일기 저장
         diaryRepository.save(diary);
     }
+
 
     public RespGetDiaryDto getDiary(String socialId, ReqGetDiaryDto reqGetDiaryDto) {
         // socialId 로 유저 조회
@@ -126,6 +133,17 @@ public class DiaryService {
                 .orElseThrow(() -> DiaryNotFoundException.EXCEPTION);
 
         return findDiary;
+    }
+
+
+    private void checkRetrospectAlreadyExist(Long memberId, LocalDateTime date) {
+        LocalDate tempDate = date.toLocalDate();
+        LocalDateTime startDate = tempDate.atStartOfDay();
+        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX);
+
+        Optional<Retrospect> findRetrospect = retrospectRepository.findByMemberAndWriteDate(memberId, startDate, endDate);
+
+        if(findRetrospect.isPresent()) throw RetrospectAlreadyWrittenException.EXCEPTION;
     }
 
     private void checkDiaryAlreadyExist(Long memberId, LocalDateTime date) {

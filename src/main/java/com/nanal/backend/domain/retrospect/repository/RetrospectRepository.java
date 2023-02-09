@@ -6,7 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface RetrospectRepository extends JpaRepository<Retrospect, Long> {
 
@@ -21,6 +23,9 @@ public interface RetrospectRepository extends JpaRepository<Retrospect, Long> {
 
     @Query(value = "SELECT * FROM retrospect re WHERE re.member_id = :memberId", nativeQuery = true)
     List<Retrospect> findListByMember(Long memberId);
+
+    @Query(value = "SELECT r FROM Retrospect r WHERE r.member.memberId = :memberId AND (r.writeDate BETWEEN :startDate AND :endDate)")
+    Optional<Retrospect> findByMemberAndWriteDate(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
 }
 
 

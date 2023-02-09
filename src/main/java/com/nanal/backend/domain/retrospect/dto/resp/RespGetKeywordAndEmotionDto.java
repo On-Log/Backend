@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +16,11 @@ import java.util.List;
 @Builder
 @Data
 public class RespGetKeywordAndEmotionDto {
+    @NotNull(message = "boolean 값은 비어있을 수 없습니다.")
     private Boolean isInTime;
 
+    @NotNull(message = "currentTime 값이 올바르지 않습니다.")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime currentTime;
 
     private List<KeywordWriteDateDto> weeklyKeywords;

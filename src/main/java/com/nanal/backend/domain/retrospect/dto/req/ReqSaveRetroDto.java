@@ -5,9 +5,11 @@ import com.nanal.backend.domain.retrospect.dto.RetrospectKeywordDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 @NoArgsConstructor
@@ -15,6 +17,8 @@ import java.util.List;
 @Data
 public class ReqSaveRetroDto {
 
+    @NotNull(message = "currentDate 값이 올바르지 않습니다.")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime currentDate;
 
     @NotBlank(message = "goal 은 비어있을 수 없습니다.")

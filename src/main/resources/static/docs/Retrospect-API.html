@@ -1129,7 +1129,9 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Retrospect-일기작성날짜-키워드-감정어-조회_http_response">HTTP response</h4>
+<h4 id="_자정_이전에_호출했을_때">자정 이전에 호출했을 때</h4>
+<div class="sect4">
+<h5 id="_자정_이전에_호출했을_때_http_response">HTTP response</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
@@ -1179,8 +1181,121 @@ Content-Length: 930
 </div>
 </div>
 </div>
+<div class="sect4">
+<h5 id="_자정_이전에_호출했을_때_response_fields">Response fields</h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isSuccess</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성공 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상태 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결과 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.isInTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">자정 안에 API 호출했는지 여부. 자정 안에 호출했다면 true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.currentTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">서버에게 요청 한 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.weeklyKeywords[].writeDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일기 작성 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.weeklyKeywords[].keywords[].keyword</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">해당 날짜에 작성한 일기 키워드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.weeklyKeywords[].keywords[].keywordEmotions[].emotion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">키워드에 해당하는 감정어</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div class="sect3">
-<h4 id="Retrospect-일기작성날짜-키워드-감정어-조회_response_fields">Response fields</h4>
+<h4 id="_자정_이후에_호출했을_때">자정 이후에 호출했을 때</h4>
+<div class="sect4">
+<h5 id="_자정_이후에_호출했을_때_http_response">HTTP response</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Content-Length: 931
+
+{
+  "isSuccess" : true,
+  "code" : 200,
+  "message" : "요청에 성공하였습니다.",
+  "result" : {
+    "isInTime" : false,
+    "currentTime" : "2023-01-24T00:00:00",
+    "weeklyKeywords" : [ {
+      "writeDate" : "2023-01-24",
+      "keywords" : [ {
+        "keyword" : "창업",
+        "keywordEmotions" : [ {
+          "emotion" : "아쉬움"
+        }, {
+          "emotion" : "복잡"
+        }, {
+          "emotion" : "기대"
+        } ]
+      }, {
+        "keyword" : "취업",
+        "keywordEmotions" : [ {
+          "emotion" : "아쉬움"
+        }, {
+          "emotion" : "복잡"
+        }, {
+          "emotion" : "기대"
+        } ]
+      }, {
+        "keyword" : "막학기",
+        "keywordEmotions" : [ {
+          "emotion" : "아쉬움"
+        }, {
+          "emotion" : "복잡"
+        }, {
+          "emotion" : "기대"
+        } ]
+      } ]
+    } ]
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_자정_이후에_호출했을_때_response_fields">Response fields</h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1239,6 +1354,7 @@ Content-Length: 930
 </table>
 </div>
 <hr>
+</div>
 </div>
 <div class="sect2">
 <h3 id="Retrospect-회고질문-도움말-조회">Retrospect 회고질문 + 도움말 조회</h3>
@@ -1558,12 +1674,15 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 94
+Content-Length: 147
 
 {
   "isSuccess" : true,
   "code" : 200,
-  "message" : "요청에 성공하였습니다."
+  "message" : "요청에 성공하였습니다.",
+  "result" : {
+    "firstRetrospect" : false
+  }
 }</code></pre>
 </div>
 </div>
@@ -1598,6 +1717,11 @@ Content-Length: 94
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">결과 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.firstRetrospect</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고일 변경 이후 첫 회고인지. false이면 첫 회고 아님.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1731,7 +1855,7 @@ Content-Length: 189
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-02-10 04:29:13 +0900
+Last updated 2023-02-10 04:57:19 +0900
 </div>
 </div>
 </body>

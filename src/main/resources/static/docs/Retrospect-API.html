@@ -1134,15 +1134,16 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 862
+Content-Length: 906
 
 {
   "isSuccess" : true,
   "code" : 200,
   "message" : "요청에 성공하였습니다.",
   "result" : {
+    "currentTime" : "2023-01-24T00:00:00",
     "weeklyKeywords" : [ {
-      "writeDate" : "2023-01-21",
+      "writeDate" : "2023-01-24",
       "keywords" : [ {
         "keyword" : "창업",
         "keywordEmotions" : [ {
@@ -1207,6 +1208,11 @@ Content-Length: 862
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">결과 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.currentTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">서버에게 요청 한 시간</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.weeklyKeywords[].writeDate</code></p></td>
@@ -1596,7 +1602,7 @@ Content-Length: 94
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-01-30 18:52:53 +0900
+Last updated 2023-02-09 21:27:58 +0900
 </div>
 </div>
 </body>

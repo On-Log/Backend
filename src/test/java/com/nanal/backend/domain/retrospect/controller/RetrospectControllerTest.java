@@ -272,8 +272,8 @@ public class RetrospectControllerTest extends CommonControllerTest {
                 new KeywordDto("막학기", keywordEmotionDtoList)
         ));
 
-        List<KeywordWriteDateDto> keywordWriteDateDtos = new ArrayList<>(Arrays.asList(new KeywordWriteDateDto(LocalDateTime.parse("2023-01-21T00:00:00"),keywordDtoList)));
-        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = new RespGetKeywordAndEmotionDto(keywordWriteDateDtos);
+        List<KeywordWriteDateDto> keywordWriteDateDtos = new ArrayList<>(Arrays.asList(new KeywordWriteDateDto(LocalDateTime.parse("2023-01-24T00:00:00"),keywordDtoList)));
+        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = new RespGetKeywordAndEmotionDto(LocalDateTime.parse("2023-01-24T00:00:00"),keywordWriteDateDtos);
         given(retrospectService.getKeywordAndEmotion(any(), any())).willReturn(respGetKeywordAndEmotionDto);
 
         //when
@@ -299,6 +299,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.currentTime").description("서버에게 요청 한 시간"),
                                         fieldWithPath("result.weeklyKeywords[].writeDate").description("일기 작성 날짜"),
                                         fieldWithPath("result.weeklyKeywords[].keywords[].keyword").description("해당 날짜에 작성한 일기 키워드"),
                                         fieldWithPath("result.weeklyKeywords[].keywords[].keywordEmotions[].emotion").description("키워드에 해당하는 감정어")

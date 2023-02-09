@@ -25,13 +25,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import static java.lang.Math.abs;
 
 @EnableScheduling
 @RequiredArgsConstructor
@@ -85,9 +89,14 @@ public class RetrospectService {
         //작성한 회고가 5개 넘어가는지 여부
         if(countRetro(member, reqSaveRetroDto.getCurrentDate()) == false)
             throw RetrospectAllDoneException.EXCEPTION;
-        //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능)
+        //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능) 1. 요청 들어온 요일이 유저 회고요일과 같은지 체크
         DayOfWeek prevDay = reqSaveRetroDto.getCurrentDate().getDayOfWeek();
         if(prevDay != member.getRetrospectDay())
+            throw RetrospectTimeDoneException.EXCEPTION;
+        //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능) 2. 요청 들어온 날짜와 회고 날짜가 차이가 1일인지 체크
+        LocalDateTime currentTime = reqSaveRetroDto.getCurrentDate();
+        LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
+        if(abs(ChronoUnit.DAYS.between(prevRetroDate.toLocalDate(),  LocalDate.now())) != 0)
             throw RetrospectTimeDoneException.EXCEPTION;
         // 해당 날짜에 작성한 일기 존재하는지 체크
         checkRetrospectAlreadyExist(reqSaveRetroDto, member);
@@ -96,8 +105,6 @@ public class RetrospectService {
         // 회고 저장
         retrospectRepository.save(retrospect);
         //회고 저장 후 일주일 일기 리스트 editstatus 변경
-        LocalDateTime currentTime = reqSaveRetroDto.getCurrentDate();
-        LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
         List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate(),true);
         for(Diary t : diaries) {
             t.changeEditStatus(false);
@@ -128,6 +135,12 @@ public class RetrospectService {
         //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능)
         DayOfWeek prevDay = selectDate.getDayOfWeek();
         if(prevDay != member.getRetrospectDay())
+            throw RetrospectTimeDoneException.EXCEPTION;
+
+        //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능) 2. 요청 들어온 날짜와 회고 날짜가 차이가 1일인지 체크
+        LocalDateTime currentTime = reqEditRetroDto.getEditDate();
+        LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
+        if(abs(ChronoUnit.DAYS.between(prevRetroDate.toLocalDate(),  LocalDate.now())) != 0)
             throw RetrospectTimeDoneException.EXCEPTION;
 
         // 선택한 yyyy-MM 에 작성한 회고리스트 조회

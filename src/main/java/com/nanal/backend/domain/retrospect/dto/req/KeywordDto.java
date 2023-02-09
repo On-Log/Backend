@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Builder
 @AllArgsConstructor
@@ -24,12 +25,8 @@ public class KeywordDto {
     private List<KeywordEmotionDto> keywordEmotions;
 
     public static List<KeywordEmotionDto> makeKeywordDtoList(Keyword keyword) {
-        List<KeywordEmotionDto> keywordEmotionDtos = new ArrayList<>();
-
-        keywordEmotionDtos.add(new KeywordEmotionDto(keyword.getEmotionList().getFirstEmotion()));
-        keywordEmotionDtos.add(new KeywordEmotionDto(keyword.getEmotionList().getSecondEmotion()));
-        keywordEmotionDtos.add(new KeywordEmotionDto(keyword.getEmotionList().getThirdEmotion()));
-
-        return keywordEmotionDtos;
+        return keyword.getKeywordEmotions().stream()
+                .map(ke -> new KeywordEmotionDto(ke.getEmotion().getEmotion()))
+                .collect(Collectors.toList());
     }
 }

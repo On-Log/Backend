@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Builder
 @AllArgsConstructor
@@ -27,12 +27,8 @@ public class KeywordDto {
 
     public KeywordDto(Keyword keyword) {
         this.keyword = keyword.getWord();
-
-        List<KeywordEmotionDto> keywordEmotionDtos = new ArrayList<>();
-        keywordEmotionDtos.add(new KeywordEmotionDto(keyword.getEmotionList().getFirstEmotion()));
-        keywordEmotionDtos.add(new KeywordEmotionDto(keyword.getEmotionList().getSecondEmotion()));
-        keywordEmotionDtos.add(new KeywordEmotionDto(keyword.getEmotionList().getThirdEmotion()));
-
-        this.keywordEmotions = keywordEmotionDtos;
+        this.keywordEmotions = keyword.getKeywordEmotions().stream()
+                            .map(ke -> new KeywordEmotionDto(ke.getEmotion().getEmotion()))
+                            .collect(Collectors.toList());
     }
 }

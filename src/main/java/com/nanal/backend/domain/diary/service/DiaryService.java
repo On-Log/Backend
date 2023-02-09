@@ -46,7 +46,6 @@ public class DiaryService {
         List<LocalDateTime> existDiaryDate = getExistDiaryDateList(member.getMemberId(), reqGetCalendarDto.getSelectDate());
 
         // 회고 요일과 현재 날짜로 일기 작성 가능주 구하기
-
         LocalDateTime nextDayOfPrevRetroDate = getNextDayOfPrevRetroDate(member.getRetrospectDay(), now);
         LocalDateTime retroDate = getRetroDate(member.getRetrospectDay(), now);
 
@@ -61,10 +60,10 @@ public class DiaryService {
     public void saveDiary(String socialId, ReqSaveDiaryDto reqSaveDiaryDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
-        List<Emotion> findEmotions = emotionRepository.findEmotionsIn(reqSaveDiaryDto.getEmotions());
-
         // 해당 날짜에 작성한 일기 존재하는지 체크
         checkDiaryAlreadyExist(member.getMemberId(), reqSaveDiaryDto.getDate());
+
+        List<Emotion> findEmotions = emotionRepository.findEmotionsIn(reqSaveDiaryDto.getEmotions());
 
         // 일기 Entity 생성
         Diary diary = Diary.createDiary(member, reqSaveDiaryDto, findEmotions);

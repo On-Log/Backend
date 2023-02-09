@@ -14,11 +14,13 @@ import java.util.List;
 @Builder
 @Data
 public class RespGetKeywordAndEmotionDto {
+    private Boolean isInTime;
+
     private LocalDateTime currentTime;
 
     private List<KeywordWriteDateDto> weeklyKeywords;
 
-    public static RespGetKeywordAndEmotionDto makeRespGetKeywordAndEmotionDto(List<Diary> diaries, LocalDateTime currentTime){
+    public static RespGetKeywordAndEmotionDto makeRespGetKeywordAndEmotionDto(boolean isInTime, LocalDateTime currentTime, List<Diary> diaries){
         List<KeywordWriteDateDto> keywordList = new ArrayList<>();
         for(Diary d : diaries) {
             KeywordWriteDateDto keywordWriteDateDto = KeywordWriteDateDto.makeKeywordWriteDateDto(d);
@@ -26,11 +28,13 @@ public class RespGetKeywordAndEmotionDto {
             keywordList.add(keywordWriteDateDto);
         }
         RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.builder()
+                .isInTime(isInTime)
                 .currentTime(currentTime)
                 .weeklyKeywords(keywordList)
                 .build();
 
         return respGetKeywordAndEmotionDto;
     }
+
 
 }

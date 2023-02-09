@@ -157,11 +157,16 @@ public class RetrospectService {
 
 
     public RespGetKeywordAndEmotionDto getKeywordAndEmotion(String socialId, ReqGetKeywordAndEmotionDto reqGetKeywordAndEmotionDto){
+        //자정 안에 호출했는지 체크. 자정 안이라면 true, 아니면 false
+        boolean isInTime = true;
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         LocalDateTime currentTime = reqGetKeywordAndEmotionDto.getCurrentDate();
         LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
+        if(abs(ChronoUnit.DAYS.between(prevRetroDate.toLocalDate(), currentTime)) != 0)
+            isInTime = false;
+
 
         //일주일 일기 리스트 조회
         List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(
@@ -169,11 +174,10 @@ public class RetrospectService {
                 prevRetroDate.toLocalDate().minusDays(6),
                 currentTime.toLocalDate(),
                 true
-                );
+        );
 
-        LocalDateTime requestTime = LocalDateTime.now();
 
-        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.makeRespGetKeywordAndEmotionDto(diaries,requestTime);
+        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.makeRespGetKeywordAndEmotionDto(isInTime, currentTime, diaries);
 
         return respGetKeywordAndEmotionDto;
     }

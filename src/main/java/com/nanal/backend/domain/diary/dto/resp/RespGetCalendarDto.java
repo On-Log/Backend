@@ -15,6 +15,8 @@ import java.util.List;
 @Data
 public class RespGetCalendarDto {
 
+    private String nickname;
+
     private Boolean isRetrospectDay;
 
     private List<LocalDateTime> existDiaryDate;

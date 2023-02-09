@@ -260,6 +260,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
     public void 일기_키워드_감정어_조회() throws Exception{
         //given
         String currentDate = "2023-01-24T00:00:00";
+        boolean isInTime = true;
         List<KeywordEmotionDto> keywordEmotionDtoList = new ArrayList<>(Arrays.asList(
                 new KeywordEmotionDto("아쉬움"),
                 new KeywordEmotionDto("복잡"),
@@ -273,7 +274,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
         ));
 
         List<KeywordWriteDateDto> keywordWriteDateDtos = new ArrayList<>(Arrays.asList(new KeywordWriteDateDto(LocalDateTime.parse("2023-01-24T00:00:00"),keywordDtoList)));
-        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = new RespGetKeywordAndEmotionDto(LocalDateTime.parse("2023-01-24T00:00:00"),keywordWriteDateDtos);
+        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = new RespGetKeywordAndEmotionDto(isInTime,LocalDateTime.parse("2023-01-24T00:00:00"),keywordWriteDateDtos);
         given(retrospectService.getKeywordAndEmotion(any(), any())).willReturn(respGetKeywordAndEmotionDto);
 
         //when
@@ -299,6 +300,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.isInTime").description("자정 안에 API 호출했는지 여부. 자정 안에 호출했다면 true"),
                                         fieldWithPath("result.currentTime").description("서버에게 요청 한 시간"),
                                         fieldWithPath("result.weeklyKeywords[].writeDate").description("일기 작성 날짜"),
                                         fieldWithPath("result.weeklyKeywords[].keywords[].keyword").description("해당 날짜에 작성한 일기 키워드"),
@@ -308,6 +310,62 @@ public class RetrospectControllerTest extends CommonControllerTest {
                 );
 
     }
+
+    @Test
+    public void 자정_이후_호출() throws Exception{
+        //given
+        String currentDate = "2023-01-24T00:00:00";
+        boolean isInTime = false;
+        List<KeywordEmotionDto> keywordEmotionDtoList = new ArrayList<>(Arrays.asList(
+                new KeywordEmotionDto("아쉬움"),
+                new KeywordEmotionDto("복잡"),
+                new KeywordEmotionDto("기대")
+        ));
+
+        List<KeywordDto> keywordDtoList = new ArrayList<>(Arrays.asList(
+                new KeywordDto("창업", keywordEmotionDtoList),
+                new KeywordDto("취업", keywordEmotionDtoList),
+                new KeywordDto("막학기", keywordEmotionDtoList)
+        ));
+
+        List<KeywordWriteDateDto> keywordWriteDateDtos = new ArrayList<>(Arrays.asList(new KeywordWriteDateDto(LocalDateTime.parse("2023-01-24T00:00:00"),keywordDtoList)));
+        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = new RespGetKeywordAndEmotionDto(isInTime,LocalDateTime.parse("2023-01-24T00:00:00"),keywordWriteDateDtos);
+        given(retrospectService.getKeywordAndEmotion(any(), any())).willReturn(respGetKeywordAndEmotionDto);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/retrospect/keyword")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("currentDate", currentDate)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestParameters(
+                                        parameterWithName("currentDate").description("현재 날짜")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.isInTime").description("자정 안에 API 호출했는지 여부. 자정 안에 호출했다면 true"),
+                                        fieldWithPath("result.currentTime").description("서버에게 요청 한 시간"),
+                                        fieldWithPath("result.weeklyKeywords[].writeDate").description("일기 작성 날짜"),
+                                        fieldWithPath("result.weeklyKeywords[].keywords[].keyword").description("해당 날짜에 작성한 일기 키워드"),
+                                        fieldWithPath("result.weeklyKeywords[].keywords[].keywordEmotions[].emotion").description("키워드에 해당하는 감정어")
+                                )
+                        )
+                );
+
+    }
+
 
     @Test
     public void 회고질문_도움말_조회() throws Exception {

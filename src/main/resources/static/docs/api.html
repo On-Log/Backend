@@ -3436,13 +3436,14 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 906
+Content-Length: 930
 
 {
   "isSuccess" : true,
   "code" : 200,
   "message" : "요청에 성공하였습니다.",
   "result" : {
+    "isInTime" : true,
     "currentTime" : "2023-01-24T00:00:00",
     "weeklyKeywords" : [ {
       "writeDate" : "2023-01-24",
@@ -3510,6 +3511,11 @@ Content-Length: 906
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">결과 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.isInTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">자정 안에 API 호출했는지 여부. 자정 안에 호출했다면 true</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.currentTime</code></p></td>
@@ -3847,7 +3853,9 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Retrospect-회고-존재-여부-및-회고일-변경-이후-첫-회고-여부-체크_http_response"><a class="link" href="#Retrospect-회고-존재-여부-및-회고일-변경-이후-첫-회고-여부-체크_http_response">HTTP response</a></h4>
+<h4 id="_이미_작성한_회고가_없고_회고일_변경_이후_첫_회고가_아닐_때"><a class="link" href="#_이미_작성한_회고가_없고_회고일_변경_이후_첫_회고가_아닐_때">이미 작성한 회고가 없고, 회고일 변경 이후 첫 회고가 아닐 때</a></h4>
+<div class="sect4">
+<h5 id="_이미_작성한_회고가_없고_회고일_변경_이후_첫_회고가_아닐_때_http_response"><a class="link" href="#_이미_작성한_회고가_없고_회고일_변경_이후_첫_회고가_아닐_때_http_response">HTTP response</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -3862,8 +3870,8 @@ Content-Length: 94
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="Retrospect-회고-존재-여부-및-회고일-변경-이후-첫-회고-여부-체크_response_fields"><a class="link" href="#Retrospect-회고-존재-여부-및-회고일-변경-이후-첫-회고-여부-체크_response_fields">Response fields</a></h4>
+<div class="sect4">
+<h5 id="_이미_작성한_회고가_없고_회고일_변경_이후_첫_회고가_아닐_때_response_fields"><a class="link" href="#_이미_작성한_회고가_없고_회고일_변경_이후_첫_회고가_아닐_때_response_fields">Response fields</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -3895,6 +3903,7 @@ Content-Length: 94
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_회고_이미_작성했을_때"><a class="link" href="#_회고_이미_작성했을_때">회고 이미 작성했을 때</a></h4>

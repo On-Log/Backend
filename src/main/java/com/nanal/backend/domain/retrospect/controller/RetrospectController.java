@@ -91,7 +91,7 @@ public class RetrospectController {
     }
 
     /**
-     * 일기 작성 날짜+키워드+감정어 조회
+     * 일기 작성 날짜+키워드+감정어 조회 (회고 시작하기 버튼에서 사용 됨)
      * [GET] /retrospect/keyword
      * 작성자 : 장세은
      * 수정일 :

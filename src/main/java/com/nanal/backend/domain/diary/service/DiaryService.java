@@ -56,6 +56,7 @@ public class DiaryService {
         LocalDateTime retroDate = getRetroDate(member.getRetrospectDay(), now);
 
         return RespGetCalendarDto.builder()
+                .nickname(member.getNickname())
                 .isRetrospectDay(isRetrospectDay)
                 .existDiaryDate(existDiaryDate)
                 .nextDayOfPrevRetroDate(nextDayOfPrevRetroDate)

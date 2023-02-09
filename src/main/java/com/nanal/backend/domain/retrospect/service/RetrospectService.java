@@ -72,7 +72,7 @@ public class RetrospectService {
         // 회고 요일까지 남은 날짜
         Period period = Period.between(currentDate.toLocalDate(), postRetroDate.toLocalDate());
         int betweenDate = period.getDays();
-        if (checkRetro(member, currentDate) == true)
+        if (checkExistRetro(member, currentDate) == true)
             betweenDate = 7;
 
         // 회고 주제별로 분류 후 주차별로 분류
@@ -311,7 +311,7 @@ public class RetrospectService {
     public boolean checkRetrospect(String socialId, ReqCheckRetroDto reqCheckRetroDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
-        return checkRetro(member, reqCheckRetroDto.getCurrentDate());
+        return checkExistRetro(member, reqCheckRetroDto.getCurrentDate());
     }
 
     //회고 저장시 예외처리
@@ -325,16 +325,16 @@ public class RetrospectService {
     }
 
     //회고 메인탭 회고 체크 편의 메서드
-    private boolean checkRetro(Member member, LocalDateTime currentDate) {
+    private boolean checkExistRetro(Member member, LocalDateTime currentDate) {
         String yearMonthDay = currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
         // 선택한 yyyy-MM-dd 에 작성한 회고 조회
         List<Retrospect> existRetrospect = retrospectRepository.findListByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
+        //회고가 이미 존재하면 true 리턴
         if(existRetrospect.size() != 0)
             return true;
         else
             return false;
     }
-
     //회고 개수 count
     private boolean countRetro(Member member, LocalDateTime dateTime) {
         int count = 0;

@@ -396,6 +396,10 @@ public class RetrospectService {
                 classifyDto = ClassifyDto.makeClassifyDto(classifiedKeyword);
                 classifyDtos.add(classifyDto);
             }
+            for(int j = 0; j < (5-writeRetrospect.size()); j++){
+                ClassifyDto classifyDto = new ClassifyDto();
+                classifyDtos.add(classifyDto);
+            }
             // i 번째 분류 과정 완
             respGetClassifiedKeywordDto = RespGetClassifiedKeywordDto.makeRespGetExistRetrospectKeyword(classifyDtos, keyWordClass.get(i));
             respGetClassifiedKeywordDtos.add(respGetClassifiedKeywordDto);

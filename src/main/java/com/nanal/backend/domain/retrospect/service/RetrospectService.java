@@ -52,7 +52,8 @@ public class RetrospectService {
     private final ExtraQuestionRepository extraQuestionRepository;
 
     public RespGetInfoDto getInfo(String socialId, ReqGetInfoDto reqGetInfoDto) {
-        boolean checkRetrospectNumber = true;
+        //회고 개수가 5개인지 5개 아니면 true, 이상이면 false
+        boolean isRetroNumberNotFive = true;
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
         LocalDateTime currentDate = reqGetInfoDto.getCurrentDate();
@@ -64,7 +65,7 @@ public class RetrospectService {
         for (Retrospect t : getRetrospects) {
             existRetrospect.add(t.getGoal());
         }
-        checkRetrospectNumber = countRetro(member, reqGetInfoDto.getSelectDate());
+        isRetroNumberNotFive = countRetro(member, reqGetInfoDto.getSelectDate());
 
 
         LocalDateTime postRetroDate = diaryService.getRetroDate(member.getRetrospectDay(), currentDate);
@@ -77,7 +78,7 @@ public class RetrospectService {
         // 회고 주제별로 분류 후 주차별로 분류
         List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = getKeyword(member, selectDate);
 
-        RespGetInfoDto respGetInfoDto = new RespGetInfoDto(existRetrospect, betweenDate, checkRetrospectNumber, respGetClassifiedKeywordDtos);
+        RespGetInfoDto respGetInfoDto = new RespGetInfoDto(existRetrospect, betweenDate, isRetroNumberNotFive, respGetClassifiedKeywordDtos);
 
         return respGetInfoDto;
     }
@@ -207,11 +208,6 @@ public class RetrospectService {
         }
         // 회고 추가 질문 + 도움말 조회
         List<ExtraQuestion> extraRetrospectQuestions = extraQuestionRepository.findListByGoal(reqGetGoalDto.getGoalIndex());
-        System.out.println(extraRetrospectQuestions.size());
-        System.out.println(contents);
-        System.out.println(extraRetrospectQuestions.get(1));
-        System.out.println(contents.contains(extraRetrospectQuestions.get(1).getContent()));
-        System.out.println(extraRetrospectQuestions.size());
         //작성한 질문 인덱스 담는 리스트
         ArrayList<Integer> windex = new ArrayList<>();
         //아직 모든 질문에 대한 답을 안했을 때
@@ -223,10 +219,6 @@ public class RetrospectService {
                 windex = new ArrayList<>();
             }
         }
-
-        System.out.println();
-        System.out.println(windex.size());
-        System.out.println(extraRetrospectQuestions.size());
         List<ExtraQuestion> selected = new ArrayList<>();
         //중복없는 랜덤 숫자
         int a[] = new int[2];
@@ -253,9 +245,6 @@ public class RetrospectService {
             for (int i = 0; i < 2; i++) {
                 System.out.println(i);
                 a[i] = r.nextInt(extraRetrospectQuestions.size());
-                System.out.println(i);
-                System.out.println(a[i]);
-                System.out.println(windex.contains(a[i]));
                 if (windex.contains(a[i]) == true) {
                     i--;
                     continue;

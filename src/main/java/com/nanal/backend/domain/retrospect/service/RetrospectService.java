@@ -273,6 +273,25 @@ public class RetrospectService {
         return respGetExtraQuestionAndHelpDto;
     }
 
+    public RespCheckFirstRetrospect checkFirstRetrospect(String socialId, ReqCheckRetroDto reqCheckRetroDto) {
+        //회고일 변경 후 첫 회고 판별. 첫 회고가 맞다면 true 반환, 아니면 false 반환
+        boolean checkfirstRetrospect = false;
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+
+        LocalDateTime postRetroDate = diaryService.getRetroDate(member.getRetrospectDay(), member.getPrevRetrospectDate());
+        System.out.println(postRetroDate);
+
+        if(abs(ChronoUnit.DAYS.between(postRetroDate.toLocalDate(),  reqCheckRetroDto.getCurrentDate())) == 0)
+            checkfirstRetrospect = true;
+
+        if (checkfirstRetrospect == true)
+            return RespCheckFirstRetrospect.firstRetrospectAfterChange(member.getPrevRetrospectDate(),true);
+        else
+            return RespCheckFirstRetrospect.notFirstRetrospectAfterChange(false);
+
+    }
+
     //===편의 메서드===//
     private Retrospect createRetrospect(Member member, String goal, LocalDateTime date, List<RetrospectKeywordDto> keywordDtos, List<RetrospectContentDto> contentDtos) {
         // Retrospect 생성에 필요한 keyword, content 리스트 생성

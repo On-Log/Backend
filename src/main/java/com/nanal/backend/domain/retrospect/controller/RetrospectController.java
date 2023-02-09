@@ -147,7 +147,7 @@ public class RetrospectController {
     }
 
     /**
-     * 회고 존재 여부 체크
+     * 회고 존재 여부 체크 + 회고일 변경 이후 최초 회고인지
      * [GET] /retrospect/exist
      * 작성자 : 장세은
      * 수정일 :
@@ -158,10 +158,10 @@ public class RetrospectController {
                                                   BindingResult bindingResult) {
 
         if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
-
+        RespCheckFirstRetrospect respCheckFirstRetrospect = retrospectService.checkFirstRetrospect(user.getSocialId(), reqCheckRetroDto);
         // 요청 날짜에 작성한 회고가 있는지 체크
         if (retrospectService.checkRetrospect(user.getSocialId(), reqCheckRetroDto) == false)
-            return new CommonResponse<>(ErrorCode.SUCCESS);
+            return new CommonResponse<>(respCheckFirstRetrospect);
         else
             return new CommonResponse<>(ErrorCode.SUCCESS_BUT);
     }

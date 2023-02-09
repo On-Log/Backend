@@ -389,10 +389,45 @@ public class RetrospectControllerTest extends CommonControllerTest {
     }
 
     @Test
-    public void 회고_존재_여부() throws Exception {
+    public void 회고_존재_여부_및_변경_이후_첫_회고_여부_체크() throws Exception {
         //given
         String currentDate = "2023-01-24T00:00:00";
-        boolean output = false;
+        RespCheckFirstRetrospect respCheckFirstRetrospect = RespCheckFirstRetrospect.notFirstRetrospectAfterChange(false);
+        given(retrospectService.checkFirstRetrospect(any(), any())).willReturn(respCheckFirstRetrospect);
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/retrospect/exist")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("currentDate", currentDate)
+        );
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestParameters(
+                                        parameterWithName("currentDate").description("현재 날짜")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.firstRetrospect").description("회고일 변경 이후 첫 회고인지. false이면 첫 회고 아님.")
+
+                                )
+                        )
+                );
+
+    }
+    @Test
+    public void 회고_이미_존재() throws Exception {
+        //given
+        String currentDate = "2023-01-24T00:00:00";
+        boolean output = true;
         given(retrospectService.checkRetrospect(any(), any())).willReturn(output);
         //when
         ResultActions actions = mockMvc.perform(
@@ -416,6 +451,44 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지")
+
+                                )
+                        )
+                );
+
+    }
+
+    @Test
+    public void 회고_없음_회고_변경_이후_첫_회고() throws Exception {
+        //given
+        String currentDate = "2023-01-24T00:00:00";
+        String changeDate = "2023-01-19T00:00:00";
+        RespCheckFirstRetrospect respCheckFirstRetrospect = RespCheckFirstRetrospect.firstRetrospectAfterChange(LocalDateTime.parse("2023-01-19T00:00:00"),true);
+        given(retrospectService.checkFirstRetrospect(any(), any())).willReturn(respCheckFirstRetrospect);
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/retrospect/exist")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("currentDate", currentDate)
+        );
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestParameters(
+                                        parameterWithName("currentDate").description("현재 날짜")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.changeDate").description("회고일 변경한 날짜"),
+                                        fieldWithPath("result.firstRetrospect").description("회고일 변경 이후 첫 회고인지. false이면 첫 회고 아님.")
 
                                 )
                         )

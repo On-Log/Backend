@@ -492,7 +492,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#Retrospect-일기작성날짜-키워드-감정어-조회">Retrospect 일기 작성 날짜 + 키워드 + 감정어 조회</a></li>
 <li><a href="#Retrospect-회고질문-도움말-조회">Retrospect 회고질문 + 도움말 조회</a></li>
 <li><a href="#Retrospect-추가질문-도움말-조회">Retrospect 추가질문 + 도움말 조회</a></li>
-<li><a href="#Retrospect-회고-존재-여부">Retrospect 회고 존재 여부</a></li>
+<li><a href="#Retrospect-회고-존재-여부-및-회고일-변경-이후-첫-회고-여부-체크">Retrospect 회고 존재 여부 및 회고일 변경 이후 첫 회고 여부 체크</a></li>
 </ul>
 </li>
 <li><a href="#Search-API">Search API</a>
@@ -3792,9 +3792,9 @@ Content-Length: 687
 <hr>
 </div>
 <div class="sect2">
-<h3 id="Retrospect-회고-존재-여부"><a class="link" href="#Retrospect-회고-존재-여부">Retrospect 회고 존재 여부</a></h3>
+<h3 id="Retrospect-회고-존재-여부-및-회고일-변경-이후-첫-회고-여부-체크"><a class="link" href="#Retrospect-회고-존재-여부-및-회고일-변경-이후-첫-회고-여부-체크">Retrospect 회고 존재 여부 및 회고일 변경 이후 첫 회고 여부 체크</a></h3>
 <div class="sect3">
-<h4 id="Retrospect-회고-존재-여부_http_request"><a class="link" href="#Retrospect-회고-존재-여부_http_request">HTTP request</a></h4>
+<h4 id="Retrospect-회고-존재-여부-및-회고일-변경-이후-첫-회고-여부-체크_http_request"><a class="link" href="#Retrospect-회고-존재-여부-및-회고일-변경-이후-첫-회고-여부-체크_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /retrospect/exist?currentDate=2023-01-24T00%3A00%3A00 HTTP/1.1
@@ -3805,7 +3805,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="Retrospect-회고-존재-여부_request_headers"><a class="link" href="#Retrospect-회고-존재-여부_request_headers">Request headers</a></h4>
+<h4 id="Retrospect-회고-존재-여부-및-회고일-변경-이후-첫-회고-여부-체크_request_headers"><a class="link" href="#Retrospect-회고-존재-여부-및-회고일-변경-이후-첫-회고-여부-체크_request_headers">Request headers</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -3826,7 +3826,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Retrospect-회고-존재-여부_request_parameters"><a class="link" href="#Retrospect-회고-존재-여부_request_parameters">Request parameters</a></h4>
+<h4 id="Retrospect-회고-존재-여부-및-회고일-변경-이후-첫-회고-여부-체크_request_parameters"><a class="link" href="#Retrospect-회고-존재-여부-및-회고일-변경-이후-첫-회고-여부-체크_request_parameters">Request parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -3847,7 +3847,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="Retrospect-회고-존재-여부_http_response"><a class="link" href="#Retrospect-회고-존재-여부_http_response">HTTP response</a></h4>
+<h4 id="Retrospect-회고-존재-여부-및-회고일-변경-이후-첫-회고-여부-체크_http_response"><a class="link" href="#Retrospect-회고-존재-여부-및-회고일-변경-이후-첫-회고-여부-체크_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -3863,7 +3863,7 @@ Content-Length: 94
 </div>
 </div>
 <div class="sect3">
-<h4 id="Retrospect-회고-존재-여부_response_fields"><a class="link" href="#Retrospect-회고-존재-여부_response_fields">Response fields</a></h4>
+<h4 id="Retrospect-회고-존재-여부-및-회고일-변경-이후-첫-회고-여부-체크_response_fields"><a class="link" href="#Retrospect-회고-존재-여부-및-회고일-변경-이후-첫-회고-여부-체크_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -3896,7 +3896,127 @@ Content-Length: 94
 </tbody>
 </table>
 </div>
+<div class="sect3">
+<h4 id="_회고_이미_작성했을_때"><a class="link" href="#_회고_이미_작성했을_때">회고 이미 작성했을 때</a></h4>
+<div class="sect4">
+<h5 id="_회고_이미_작성했을_때_http_response"><a class="link" href="#_회고_이미_작성했을_때_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Content-Length: 95
+
+{
+  "isSuccess" : false,
+  "code" : 200,
+  "message" : "요청에 성공하였습니다."
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_회고_이미_작성했을_때_response_fields"><a class="link" href="#_회고_이미_작성했을_때_response_fields">Response fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isSuccess</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성공 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상태 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결과 메시지</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_이미_작성한_회고가_없고_회고일_변경_이후_첫_회고일_때"><a class="link" href="#_이미_작성한_회고가_없고_회고일_변경_이후_첫_회고일_때">이미 작성한 회고가 없고, 회고일 변경 이후 첫 회고일 때</a></h4>
+<div class="sect4">
+<h5 id="_이미_작성한_회고가_없고_회고일_변경_이후_첫_회고일_때_http_response"><a class="link" href="#_이미_작성한_회고가_없고_회고일_변경_이후_첫_회고일_때_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Content-Length: 189
+
+{
+  "isSuccess" : true,
+  "code" : 200,
+  "message" : "요청에 성공하였습니다.",
+  "result" : {
+    "changeDate" : "2023-01-19T00:00:00",
+    "firstRetrospect" : true
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_이미_작성한_회고가_없고_회고일_변경_이후_첫_회고일_때_response_fields"><a class="link" href="#_이미_작성한_회고가_없고_회고일_변경_이후_첫_회고일_때_response_fields">Response fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isSuccess</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성공 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상태 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결과 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.changeDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고일 변경한 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.firstRetrospect</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고일 변경 이후 첫 회고인지. false이면 첫 회고 아님.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
+</div>
 </div>
 </div>
 </div>
@@ -4139,7 +4259,7 @@ Content-Length: 1678
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-01-29 21:29:59 +0900
+Last updated 2023-02-10 03:29:33 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

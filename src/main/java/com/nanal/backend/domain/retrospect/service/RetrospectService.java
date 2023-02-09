@@ -90,14 +90,14 @@ public class RetrospectService {
         if(countRetro(member, reqSaveRetroDto.getCurrentDate()) == false)
             throw RetrospectAllDoneException.EXCEPTION;
         //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능) 1. 요청 들어온 요일이 유저 회고요일과 같은지 체크
-        DayOfWeek prevDay = reqSaveRetroDto.getCurrentDate().getDayOfWeek();
-        if(prevDay != member.getRetrospectDay())
-            throw RetrospectTimeDoneException.EXCEPTION;
+//        DayOfWeek prevDay = reqSaveRetroDto.getCurrentDate().getDayOfWeek();
+//        if(prevDay != member.getRetrospectDay())
+//            throw RetrospectTimeDoneException.EXCEPTION;
         //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능) 2. 요청 들어온 날짜와 회고 날짜가 차이가 1일인지 체크
         LocalDateTime currentTime = reqSaveRetroDto.getCurrentDate();
         LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
-        if(abs(ChronoUnit.DAYS.between(prevRetroDate.toLocalDate(),  LocalDate.now())) != 0)
-            throw RetrospectTimeDoneException.EXCEPTION;
+//        if(abs(ChronoUnit.DAYS.between(prevRetroDate.toLocalDate(),  LocalDate.now())) != 0)
+//            throw RetrospectTimeDoneException.EXCEPTION;
         // 해당 날짜에 작성한 일기 존재하는지 체크
         checkRetrospectAlreadyExist(reqSaveRetroDto, member);
         // 회고 Entity 생성
@@ -394,6 +394,10 @@ public class RetrospectService {
                 ClassifyDto classifyDto = new ClassifyDto();
                 //t차 회고의 i 번째 분류 과정 시작 가장 첫 시작은 첫번째 회고의 첫번째 분류
                 classifyDto = ClassifyDto.makeClassifyDto(classifiedKeyword);
+                classifyDtos.add(classifyDto);
+            }
+            for(int j = 0; j < (5-writeRetrospect.size()); j++){
+                ClassifyDto classifyDto = new ClassifyDto();
                 classifyDtos.add(classifyDto);
             }
             // i 번째 분류 과정 완

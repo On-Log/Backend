@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Builder
@@ -23,6 +26,7 @@ public class RespGetInfoDto {
     Integer betweenDate;
 
 
+    @NotNull(message = "boolean 값은 비어있을 수 없습니다.")
     //회고 개수가 5개인지 아닌지 체크
     Boolean countRetrospect;
 

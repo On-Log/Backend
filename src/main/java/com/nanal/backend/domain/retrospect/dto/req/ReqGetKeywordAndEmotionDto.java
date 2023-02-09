@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class ReqGetKeywordAndEmotionDto {
 
     //현재 시간
-    @NotNull(message = "currentDate 는 비어있을 수 없습니다.")
+    @NotNull(message = "currentDate 값이 올바르지 않습니다..")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime currentDate;
 }

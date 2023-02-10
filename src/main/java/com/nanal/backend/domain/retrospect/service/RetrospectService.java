@@ -2,6 +2,10 @@ package com.nanal.backend.domain.retrospect.service;
 
 import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.auth.entity.Member;
+import com.nanal.backend.domain.diary.entity.Emotion;
+import com.nanal.backend.domain.diary.entity.Keyword;
+import com.nanal.backend.domain.diary.entity.KeywordEmotion;
+import com.nanal.backend.domain.diary.repository.EmotionRepository;
 import com.nanal.backend.domain.retrospect.dto.req.*;
 import com.nanal.backend.domain.retrospect.dto.resp.*;
 import com.nanal.backend.domain.retrospect.entity.*;
@@ -32,6 +36,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -50,6 +55,7 @@ public class RetrospectService {
     private final RetrospectKeywordRepository retrospectKeywordRepository;
     private final QuestionRepository questionRepository;
     private final ExtraQuestionRepository extraQuestionRepository;
+    private final EmotionRepository emotionRepository;
 
     public RespGetInfoDto getInfo(String socialId, ReqGetInfoDto reqGetInfoDto) {
         //회고 개수가 5개인지 5개 아니면 true, 이상이면 false
@@ -177,8 +183,10 @@ public class RetrospectService {
                 true
         );
 
+        //감정어 필터링 이후 count
+        List<CountEmotion> countEmotions = getEmotionCount(diaries);
 
-        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.makeRespGetKeywordAndEmotionDto(isInTime, currentTime, diaries);
+        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.makeRespGetKeywordAndEmotionDto(isInTime, currentTime, diaries, countEmotions);
 
         return respGetKeywordAndEmotionDto;
     }
@@ -417,5 +425,35 @@ public class RetrospectService {
             respGetClassifiedKeywordDtos.add(respGetClassifiedKeywordDto);
         }
         return respGetClassifiedKeywordDtos;
+    }
+
+    private List<CountEmotion> getEmotionCount(List<Diary> diaries) {
+        List<CountEmotion> countEmotions = new ArrayList<>();
+        List<String> emotions = new ArrayList<>();
+        for( Diary d : diaries ) {
+            d.getKeywords();
+            for(Keyword k : d.getKeywords()) {
+                k.getKeywordEmotions();
+                for(KeywordEmotion ke : k.getKeywordEmotions()) {
+                    emotions.add(ke.getEmotion().getEmotion());
+                }
+            }
+        }
+        List<Emotion> findEmotions = emotionRepository.findAll();
+        for( Emotion e : findEmotions ) {
+            int frequency = 0;
+            int count = Collections.frequency(emotions, e.getEmotion());
+            if (count == 0)
+                frequency = 0;
+            else if (count >= 1 && count <= 10)
+                frequency = 1;
+            else if (count >= 11 && count <= 20)
+                frequency = 2;
+            else
+                frequency = 3;
+            CountEmotion countEmotion = CountEmotion.makeCountEmotion(e.getEmotion(), frequency);
+            countEmotions.add(countEmotion);
+        }
+        return countEmotions;
     }
 }

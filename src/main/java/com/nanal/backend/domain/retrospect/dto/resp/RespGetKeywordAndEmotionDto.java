@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,7 +26,10 @@ public class RespGetKeywordAndEmotionDto {
 
     private List<KeywordWriteDateDto> weeklyKeywords;
 
-    public static RespGetKeywordAndEmotionDto makeRespGetKeywordAndEmotionDto(boolean isInTime, LocalDateTime currentTime, List<Diary> diaries){
+    @NotBlank(message = "list는 비어있을 수 없습니다.")
+    List<CountEmotion> countEmotions;
+
+    public static RespGetKeywordAndEmotionDto makeRespGetKeywordAndEmotionDto(boolean isInTime, LocalDateTime currentTime, List<Diary> diaries, List<CountEmotion> countEmotions){
         List<KeywordWriteDateDto> keywordList = new ArrayList<>();
         for(Diary d : diaries) {
             KeywordWriteDateDto keywordWriteDateDto = KeywordWriteDateDto.makeKeywordWriteDateDto(d);
@@ -36,10 +40,10 @@ public class RespGetKeywordAndEmotionDto {
                 .isInTime(isInTime)
                 .currentTime(currentTime)
                 .weeklyKeywords(keywordList)
+                .countEmotions(countEmotions)
                 .build();
 
         return respGetKeywordAndEmotionDto;
     }
-
 
 }

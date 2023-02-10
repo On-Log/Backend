@@ -273,8 +273,15 @@ public class RetrospectControllerTest extends CommonControllerTest {
                 new KeywordDto("막학기", keywordEmotionDtoList)
         ));
 
+        List<CountEmotion> countEmotions = new ArrayList<>(Arrays.asList(
+                new CountEmotion("행복", 1),
+                new CountEmotion("여유", 0),
+                new CountEmotion("안심", 0)
+        ));
+
+
         List<KeywordWriteDateDto> keywordWriteDateDtos = new ArrayList<>(Arrays.asList(new KeywordWriteDateDto(LocalDateTime.parse("2023-01-24T00:00:00"),keywordDtoList)));
-        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = new RespGetKeywordAndEmotionDto(isInTime,LocalDateTime.parse("2023-01-24T00:00:00"),keywordWriteDateDtos);
+        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = new RespGetKeywordAndEmotionDto(isInTime,LocalDateTime.parse("2023-01-24T00:00:00"),keywordWriteDateDtos, countEmotions);
         given(retrospectService.getKeywordAndEmotion(any(), any())).willReturn(respGetKeywordAndEmotionDto);
 
         //when
@@ -304,7 +311,9 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("result.currentTime").description("서버에게 요청 한 시간"),
                                         fieldWithPath("result.weeklyKeywords[].writeDate").description("일기 작성 날짜"),
                                         fieldWithPath("result.weeklyKeywords[].keywords[].keyword").description("해당 날짜에 작성한 일기 키워드"),
-                                        fieldWithPath("result.weeklyKeywords[].keywords[].keywordEmotions[].emotion").description("키워드에 해당하는 감정어")
+                                        fieldWithPath("result.weeklyKeywords[].keywords[].keywordEmotions[].emotion").description("키워드에 해당하는 감정어"),
+                                        fieldWithPath("result.countEmotions[].emotion").description("감정어"),
+                                        fieldWithPath("result.countEmotions[].frequency").description("감정어 선택 빈도")
                                 )
                         )
                 );
@@ -328,8 +337,14 @@ public class RetrospectControllerTest extends CommonControllerTest {
                 new KeywordDto("막학기", keywordEmotionDtoList)
         ));
 
+        List<CountEmotion> countEmotions = new ArrayList<>(Arrays.asList(
+                new CountEmotion("행복", 1),
+                new CountEmotion("여유", 0),
+                new CountEmotion("안심", 0)
+        ));
+
         List<KeywordWriteDateDto> keywordWriteDateDtos = new ArrayList<>(Arrays.asList(new KeywordWriteDateDto(LocalDateTime.parse("2023-01-24T00:00:00"),keywordDtoList)));
-        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = new RespGetKeywordAndEmotionDto(isInTime,LocalDateTime.parse("2023-01-24T00:00:00"),keywordWriteDateDtos);
+        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = new RespGetKeywordAndEmotionDto(isInTime,LocalDateTime.parse("2023-01-24T00:00:00"),keywordWriteDateDtos, countEmotions);
         given(retrospectService.getKeywordAndEmotion(any(), any())).willReturn(respGetKeywordAndEmotionDto);
 
         //when
@@ -359,7 +374,9 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("result.currentTime").description("서버에게 요청 한 시간"),
                                         fieldWithPath("result.weeklyKeywords[].writeDate").description("일기 작성 날짜"),
                                         fieldWithPath("result.weeklyKeywords[].keywords[].keyword").description("해당 날짜에 작성한 일기 키워드"),
-                                        fieldWithPath("result.weeklyKeywords[].keywords[].keywordEmotions[].emotion").description("키워드에 해당하는 감정어")
+                                        fieldWithPath("result.weeklyKeywords[].keywords[].keywordEmotions[].emotion").description("키워드에 해당하는 감정어"),
+                                        fieldWithPath("result.countEmotions[].emotion").description("감정어"),
+                                        fieldWithPath("result.countEmotions[].frequency").description("감정어 선택 빈도")
                                 )
                         )
                 );

@@ -287,7 +287,7 @@ public class RetrospectService {
             checkfirstRetrospect = true;
 
         if (checkfirstRetrospect == true)
-            return RespCheckFirstRetrospect.firstRetrospectAfterChange(member.getPrevRetrospectDate(),checkfirstRetrospect);
+            return RespCheckFirstRetrospect.firstRetrospectAfterChange(checkfirstRetrospect);
         else
             return RespCheckFirstRetrospect.notFirstRetrospectAfterChange(checkfirstRetrospect);
 

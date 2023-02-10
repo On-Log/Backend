@@ -537,8 +537,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
     public void 회고_없음_회고_변경_이후_첫_회고() throws Exception {
         //given
         String currentDate = "2023-01-24T00:00:00";
-        String changeDate = "2023-01-19T00:00:00";
-        RespCheckFirstRetrospect respCheckFirstRetrospect = RespCheckFirstRetrospect.firstRetrospectAfterChange(LocalDateTime.parse("2023-01-19T00:00:00"),true);
+        RespCheckFirstRetrospect respCheckFirstRetrospect = RespCheckFirstRetrospect.firstRetrospectAfterChange(true);
         given(retrospectService.checkFirstRetrospect(any(), any())).willReturn(respCheckFirstRetrospect);
         //when
         ResultActions actions = mockMvc.perform(
@@ -562,7 +561,6 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
-                                        fieldWithPath("result.changeDate").description("회고일 변경한 날짜"),
                                         fieldWithPath("result.firstRetrospect").description("회고일 변경 이후 첫 회고인지. false이면 첫 회고 아님.")
 
                                 )

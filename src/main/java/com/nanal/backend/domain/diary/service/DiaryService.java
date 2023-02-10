@@ -7,10 +7,7 @@ import com.nanal.backend.domain.diary.dto.resp.RespGetEmotionDto;
 import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.diary.entity.Emotion;
 import com.nanal.backend.domain.auth.entity.Member;
-import com.nanal.backend.domain.diary.exception.DiaryAlreadyExistException;
-import com.nanal.backend.domain.diary.exception.DiaryNotFoundException;
-import com.nanal.backend.domain.diary.exception.NotInDiaryWritableDateException;
-import com.nanal.backend.domain.diary.exception.RetrospectAlreadyWrittenException;
+import com.nanal.backend.domain.diary.exception.*;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import com.nanal.backend.domain.retrospect.repository.RetrospectRepository;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
@@ -102,6 +99,8 @@ public class DiaryService {
 
         // 수정할 일기 조회
         Diary updateDiary = getDiary(member.getMemberId(), reqEditDiary.getDate());
+        // 일기 수정 가능 여부 체크
+        checkUpdatable(updateDiary);
 
         // 일기 수정
         updateDiary.updateDiary(reqEditDiary, findEmotions);
@@ -137,6 +136,10 @@ public class DiaryService {
                 .orElseThrow(() -> DiaryNotFoundException.EXCEPTION);
 
         return findDiary;
+    }
+
+    private static void checkUpdatable(Diary updateDiary) {
+        if(!updateDiary.getEditStatus()) throw DiaryChangeUnavailable.EXCEPTION;
     }
 
     private void checkWritableWeek(Member member, LocalDateTime date) {

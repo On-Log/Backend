@@ -37,6 +37,8 @@ public enum ErrorCode {
     RETROSPECT_ALREADY_WRITTEN(false,472,"이미 회고가 작성되어 일기 작성이 불가능합니다."),
     // 작성날짜가 일기 작성 주간이 아닐 때.
     NOT_IN_WRITABLE_DATE(false,473,"현재 일기작성주간에 작성가능한 날짜가 아닙니다."),
+    // 일기 수정이 불가능할 때
+    DIARY_CHANGE_UNAVAILABLE(false,475,"일기 수정이 불가능합니다."),
 
     // MyPage
     // 중복된 회고일을 입력할 때.

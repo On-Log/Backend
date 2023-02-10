@@ -1136,7 +1136,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 930
+Content-Length: 1143
 
 {
   "isSuccess" : true,
@@ -1175,6 +1175,16 @@ Content-Length: 930
           "emotion" : "기대"
         } ]
       } ]
+    } ],
+    "countEmotions" : [ {
+      "emotion" : "행복",
+      "frequency" : 1
+    }, {
+      "emotion" : "여유",
+      "frequency" : 0
+    }, {
+      "emotion" : "안심",
+      "frequency" : 0
     } ]
   }
 }</code></pre>
@@ -1237,6 +1247,16 @@ Content-Length: 930
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">키워드에 해당하는 감정어</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.countEmotions[].emotion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">감정어</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.countEmotions[].frequency</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">감정어 선택 빈도</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1249,7 +1269,7 @@ Content-Length: 930
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 931
+Content-Length: 1144
 
 {
   "isSuccess" : true,
@@ -1288,6 +1308,16 @@ Content-Length: 931
           "emotion" : "기대"
         } ]
       } ]
+    } ],
+    "countEmotions" : [ {
+      "emotion" : "행복",
+      "frequency" : 1
+    }, {
+      "emotion" : "여유",
+      "frequency" : 0
+    }, {
+      "emotion" : "안심",
+      "frequency" : 0
     } ]
   }
 }</code></pre>
@@ -1349,6 +1379,16 @@ Content-Length: 931
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.weeklyKeywords[].keywords[].keywordEmotions[].emotion</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">키워드에 해당하는 감정어</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.countEmotions[].emotion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">감정어</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.countEmotions[].frequency</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">감정어 선택 빈도</p></td>
 </tr>
 </tbody>
 </table>
@@ -1855,7 +1895,7 @@ Content-Length: 189
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-02-10 04:57:19 +0900
+Last updated 2023-02-10 20:45:25 +0900
 </div>
 </div>
 </body>

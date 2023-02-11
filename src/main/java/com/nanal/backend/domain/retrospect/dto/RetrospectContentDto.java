@@ -13,11 +13,11 @@ import javax.validation.constraints.Size;
 public class RetrospectContentDto {
 
     @NotBlank(message = "question 은 비어있을 수 없습니다.")
-    @Size(max = 100, message="question 은 최대 100개의 문자만 입력 가능합니다.")
+    @Size(min = 1, max = 100, message="question은 최소 1개, 최대 100개의 문자만 입력 가능합니다.")
     String question;
 
     @NotBlank(message = "answer 는 비어있을 수 없습니다.")
-    @Size(max = 300, message="answer 는 최대 300개의 문자만 입력 가능합니다.")
+    @Size(min = 1, max = 300, message="answer는 최소 1개, 최대 300개의 문자만 입력 가능합니다.")
     String answer;
     
     public RetrospectContentDto(RetrospectContent retrospectContent) {

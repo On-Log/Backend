@@ -12,6 +12,6 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @Data
 public class ClassifyKeywordDto {
-    @Size(max = 5, message = "keyword 는 최대 5개의 문자만 입력 가능합니다.")
+    @Size(min = 1, max = 5, message = "keyword 는 최소 1개, 최대 5개의 문자만 입력 가능합니다.")
     private String keyword;
 }

@@ -268,9 +268,9 @@ public class RetrospectControllerTest extends CommonControllerTest {
         ));
 
         List<KeywordDto> keywordDtoList = new ArrayList<>(Arrays.asList(
-                new KeywordDto("창업", keywordEmotionDtoList),
-                new KeywordDto("취업", keywordEmotionDtoList),
-                new KeywordDto("막학기", keywordEmotionDtoList)
+                new KeywordDto("20230124_0","창업", keywordEmotionDtoList),
+                new KeywordDto("20230124_1","취업", keywordEmotionDtoList),
+                new KeywordDto("20230124_2","막학기", keywordEmotionDtoList)
         ));
 
         List<CountEmotion> countEmotions = new ArrayList<>(Arrays.asList(
@@ -310,6 +310,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("result.isInTime").description("자정 안에 API 호출했는지 여부. 자정 안에 호출했다면 true"),
                                         fieldWithPath("result.currentTime").description("서버에게 요청 한 시간"),
                                         fieldWithPath("result.weeklyKeywords[].writeDate").description("일기 작성 날짜"),
+                                        fieldWithPath("result.weeklyKeywords[].keywords[].specifyKey").description("키워드 고유 키"),
                                         fieldWithPath("result.weeklyKeywords[].keywords[].keyword").description("해당 날짜에 작성한 일기 키워드"),
                                         fieldWithPath("result.weeklyKeywords[].keywords[].keywordEmotions[].emotion").description("키워드에 해당하는 감정어"),
                                         fieldWithPath("result.countEmotions[].emotion").description("감정어"),
@@ -332,9 +333,9 @@ public class RetrospectControllerTest extends CommonControllerTest {
         ));
 
         List<KeywordDto> keywordDtoList = new ArrayList<>(Arrays.asList(
-                new KeywordDto("창업", keywordEmotionDtoList),
-                new KeywordDto("취업", keywordEmotionDtoList),
-                new KeywordDto("막학기", keywordEmotionDtoList)
+                new KeywordDto("20230124_0","창업", keywordEmotionDtoList),
+                new KeywordDto("20230124_1","취업", keywordEmotionDtoList),
+                new KeywordDto("20230124_2","막학기", keywordEmotionDtoList)
         ));
 
         List<CountEmotion> countEmotions = new ArrayList<>(Arrays.asList(
@@ -373,6 +374,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("result.isInTime").description("자정 안에 API 호출했는지 여부. 자정 안에 호출했다면 true"),
                                         fieldWithPath("result.currentTime").description("서버에게 요청 한 시간"),
                                         fieldWithPath("result.weeklyKeywords[].writeDate").description("일기 작성 날짜"),
+                                        fieldWithPath("result.weeklyKeywords[].keywords[].specifyKey").description("키워드 고유 키"),
                                         fieldWithPath("result.weeklyKeywords[].keywords[].keyword").description("해당 날짜에 작성한 일기 키워드"),
                                         fieldWithPath("result.weeklyKeywords[].keywords[].keywordEmotions[].emotion").description("키워드에 해당하는 감정어"),
                                         fieldWithPath("result.countEmotions[].emotion").description("감정어"),

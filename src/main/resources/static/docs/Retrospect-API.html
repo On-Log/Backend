@@ -1136,7 +1136,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1143
+Content-Length: 1257
 
 {
   "isSuccess" : true,
@@ -1148,6 +1148,7 @@ Content-Length: 1143
     "weeklyKeywords" : [ {
       "writeDate" : "2023-01-24",
       "keywords" : [ {
+        "specifyKey" : "20230124_0",
         "keyword" : "창업",
         "keywordEmotions" : [ {
           "emotion" : "아쉬움"
@@ -1157,6 +1158,7 @@ Content-Length: 1143
           "emotion" : "기대"
         } ]
       }, {
+        "specifyKey" : "20230124_1",
         "keyword" : "취업",
         "keywordEmotions" : [ {
           "emotion" : "아쉬움"
@@ -1166,6 +1168,7 @@ Content-Length: 1143
           "emotion" : "기대"
         } ]
       }, {
+        "specifyKey" : "20230124_2",
         "keyword" : "막학기",
         "keywordEmotions" : [ {
           "emotion" : "아쉬움"
@@ -1238,6 +1241,11 @@ Content-Length: 1143
 <td class="tableblock halign-left valign-top"><p class="tableblock">일기 작성 날짜</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.weeklyKeywords[].keywords[].specifyKey</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">키워드 고유 키</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.weeklyKeywords[].keywords[].keyword</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 날짜에 작성한 일기 키워드</p></td>
@@ -1269,7 +1277,7 @@ Content-Length: 1143
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1144
+Content-Length: 1258
 
 {
   "isSuccess" : true,
@@ -1281,6 +1289,7 @@ Content-Length: 1144
     "weeklyKeywords" : [ {
       "writeDate" : "2023-01-24",
       "keywords" : [ {
+        "specifyKey" : "20230124_0",
         "keyword" : "창업",
         "keywordEmotions" : [ {
           "emotion" : "아쉬움"
@@ -1290,6 +1299,7 @@ Content-Length: 1144
           "emotion" : "기대"
         } ]
       }, {
+        "specifyKey" : "20230124_1",
         "keyword" : "취업",
         "keywordEmotions" : [ {
           "emotion" : "아쉬움"
@@ -1299,6 +1309,7 @@ Content-Length: 1144
           "emotion" : "기대"
         } ]
       }, {
+        "specifyKey" : "20230124_2",
         "keyword" : "막학기",
         "keywordEmotions" : [ {
           "emotion" : "아쉬움"
@@ -1369,6 +1380,11 @@ Content-Length: 1144
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.weeklyKeywords[].writeDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">일기 작성 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.weeklyKeywords[].keywords[].specifyKey</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">키워드 고유 키</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.weeklyKeywords[].keywords[].keyword</code></p></td>
@@ -1889,7 +1905,7 @@ Content-Length: 146
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-02-10 22:09:11 +0900
+Last updated 2023-02-11 14:12:15 +0900
 </div>
 </div>
 </body>

@@ -1,4 +1,4 @@
-package com.nanal.backend.domain.retrospect.dto;
+package com.nanal.backend.domain.retrospect.dto.resp;
 
 import com.nanal.backend.domain.retrospect.entity.RetrospectKeyword;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package com.nanal.backend.domain.retrospect.dto.req;
+package com.nanal.backend.domain.retrospect.dto.resp;
 
 import com.nanal.backend.domain.diary.dto.req.KeywordEmotionDto;
 import com.nanal.backend.domain.diary.entity.Keyword;

@@ -2,8 +2,8 @@ package com.nanal.backend.domain.search.dto;
 
 import com.nanal.backend.domain.diary.dto.req.KeywordDto;
 import com.nanal.backend.domain.diary.entity.Diary;
-import com.nanal.backend.domain.retrospect.dto.RetrospectContentDto;
-import com.nanal.backend.domain.retrospect.dto.RetrospectKeywordDto;
+import com.nanal.backend.domain.retrospect.dto.resp.RetrospectContentDto;
+import com.nanal.backend.domain.retrospect.dto.resp.RetrospectKeywordDto;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

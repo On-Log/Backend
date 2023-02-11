@@ -3,7 +3,6 @@ package com.nanal.backend.domain.retrospect.dto.resp;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.diary.entity.Keyword;
-import com.nanal.backend.domain.retrospect.dto.req.KeywordDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

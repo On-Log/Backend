@@ -1,7 +1,7 @@
 package com.nanal.backend.domain.retrospect.dto.req;
 
-import com.nanal.backend.domain.retrospect.dto.RetrospectContentDto;
-import com.nanal.backend.domain.retrospect.dto.RetrospectKeywordDto;
+import com.nanal.backend.domain.retrospect.dto.resp.RetrospectContentDto;
+import com.nanal.backend.domain.retrospect.dto.resp.RetrospectKeywordDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,5 @@
 package com.nanal.backend.domain.retrospect.dto.resp;
 
-import com.nanal.backend.domain.retrospect.dto.req.ClassifyDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

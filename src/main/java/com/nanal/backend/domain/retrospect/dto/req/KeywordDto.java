@@ -18,6 +18,9 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Data
 public class KeywordDto {
+    //키워드 구분하기 위한 specifyKey
+    private String specifyKey;
+
     @Size(min = 1, max = 5, message = "keyword 는 최소 1개, 최대 5개의 문자만 입력 가능합니다.")
     private String keyword;
 

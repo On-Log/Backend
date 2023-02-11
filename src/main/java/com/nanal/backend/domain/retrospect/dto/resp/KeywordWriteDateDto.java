@@ -25,11 +25,14 @@ public class KeywordWriteDateDto {
     private List<KeywordDto> keywords;
 
     public static KeywordWriteDateDto makeKeywordWriteDateDto(Diary d) {
+        int index = 0;
         List<KeywordDto> keywords = new ArrayList<>();
         for(Keyword k : d.getKeywords()){
-            KeywordDto keywordDto = new KeywordDto(k.getWord(), KeywordDto.makeKeywordDtoList(k));
+            String key = makeKey(d.getWriteDate(), k, index);
+            KeywordDto keywordDto = new KeywordDto(key, k.getWord(), KeywordDto.makeKeywordDtoList(k));
 
             keywords.add(keywordDto);
+            index++;
         }
         KeywordWriteDateDto  keywordWriteDateDto = KeywordWriteDateDto.builder()
                 .writeDate(d.getWriteDate())
@@ -37,5 +40,13 @@ public class KeywordWriteDateDto {
                 .build();
 
         return keywordWriteDateDto;
+    }
+
+    public static String makeKey(LocalDateTime date, Keyword k, Integer index) {
+        String key = date.toString();
+        key = key.substring(0,10);
+        key = key.replaceAll("-", "");
+        key = key + "_" + index.toString();
+        return key;
     }
 }

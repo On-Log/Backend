@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Data
 public class KeywordEmotionDto {
-    @Size(max = 5, message = "emotion 은 최대 5개의 문자만 입력 가능합니다.")
+    @Size(min = 1, max = 5, message = "emotion 은 최소 1개, 최대 5개의 문자만 입력 가능합니다.")
     private String emotion;
 
 }

@@ -13,11 +13,11 @@ import javax.validation.constraints.Size;
 @Data
 public class RetrospectKeywordDto {
     @NotBlank(message = "classify 는 비어있을 수 없습니다.")
-    @Size(max = 20, message="classify 는 최대 20개의 문자만 입력 가능합니다.")
+    @Size(min = 1, max = 20, message="classify는 최소 1개, 최대 20개의 문자만 입력 가능합니다.")
     String classify;
 
     @NotBlank(message = "keyword 는 비어있을 수 없습니다.")
-    @Size(max = 5, message="keyword 는 최대 5개의 문자만 입력 가능합니다.")
+    @Size(min = 1, max = 5, message="keyword 는 최소 1개, 최대 5개의 문자만 입력 가능합니다.")
     String keyword;
 
     public RetrospectKeywordDto(RetrospectKeyword retrospectKeyword) {

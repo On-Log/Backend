@@ -28,6 +28,8 @@ public class AuthService {
     private final ClientGoogle clientGoogle;
 
     public LoginInfo commonAuth(String accessToken, String providerInfo) {
+        // Access Token 검증
+        verifyAccessToken(accessToken, providerInfo);
         // 플랫폼에서 사용자 정보 조회
         Member member = getUserDataFromPlatform(accessToken, providerInfo);
 
@@ -44,6 +46,7 @@ public class AuthService {
         return new LoginInfo(loginMember.getNickname(), token);
     }
 
+
     public Token reissue(String token) {
         // refresh 토큰이 유효한지 확인
         if (token != null && tokenUtil.verifyToken(token)) {
@@ -58,6 +61,11 @@ public class AuthService {
     }
 
     //===편의 메서드===//
+    private void verifyAccessToken(String accessToken, String providerInfo) {
+        if(providerInfo.contains("google")) clientGoogle.verifyAccessToken(accessToken);
+        else if(providerInfo.contains("kakao")) clientKakao.verifyAccessToken(accessToken);
+    }
+
     private Member getUserDataFromPlatform(String accessToken, String providerInfo) {
         if(providerInfo.contains("google")) return clientGoogle.getUserData(accessToken);
         else if(providerInfo.contains("kakao")) return clientKakao.getUserData(accessToken);

@@ -44,4 +44,7 @@ public class ClientGoogle {
                 .role(Member.Role.USER)
                 .build();
     }
+
+    public void verifyAccessToken(String accessToken) {
+    }
 }

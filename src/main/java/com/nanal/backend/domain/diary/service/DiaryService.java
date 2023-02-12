@@ -4,6 +4,7 @@ import com.nanal.backend.domain.diary.dto.req.*;
 import com.nanal.backend.domain.diary.dto.resp.RespGetCalendarDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetDiaryDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetEmotionDto;
+import com.nanal.backend.domain.diary.dto.resp.RetrospectInfoDto;
 import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.diary.entity.Emotion;
 import com.nanal.backend.domain.auth.entity.Member;
@@ -52,14 +53,18 @@ public class DiaryService {
         LocalDateTime nextDayOfPrevRetroDate = getNextDayOfPrevRetroDate(member.getRetrospectDay(), now);
         LocalDateTime retroDate = getRetroDate(member.getRetrospectDay(), now);
 
+        List<RetrospectInfoDto> retrospectInfoList = getRetrospectList(member.getMemberId(), reqGetCalendarDto.getSelectDate());
+
         return RespGetCalendarDto.builder()
                 .nickname(member.getNickname())
                 .isRetrospectDay(isRetrospectDay)
                 .existDiaryDate(existDiaryDate)
                 .nextDayOfPrevRetroDate(nextDayOfPrevRetroDate)
                 .retroDate(retroDate)
+                .retrospectInfoList(retrospectInfoList)
                 .build();
     }
+
 
     public void saveDiary(String socialId, ReqSaveDiaryDto reqSaveDiaryDto) {
         // socialId 로 유저 조회
@@ -180,6 +185,20 @@ public class DiaryService {
         // 일기리스트의 작성날짜 List 생성
         return writeDates.stream()
                 .map(Diary::getWriteDate)
+                .collect(Collectors.toList());
+    }
+
+    private List<RetrospectInfoDto> getRetrospectList(Long memberId, LocalDateTime date) {
+        LocalDate tempDate = date.toLocalDate();
+        LocalDateTime startDate = tempDate.withDayOfMonth(1).atStartOfDay();
+        LocalDateTime endDate = tempDate.withDayOfMonth(tempDate.lengthOfMonth()).atTime(LocalTime.MAX).withNano(0);
+
+        // 선택한 날에 작성된 회고 조회
+        List<Retrospect> retrospectList = retrospectRepository.findDiaryListByMemberAndWriteDate(memberId, startDate, endDate);
+
+        // 회고 List 생성
+        return retrospectList.stream()
+                .map(RetrospectInfoDto::new)
                 .collect(Collectors.toList());
     }
 

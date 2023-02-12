@@ -504,7 +504,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 416
+Content-Length: 628
 
 {
   "isSuccess" : true,
@@ -515,7 +515,14 @@ Content-Length: 416
     "isRetrospectDay" : true,
     "existDiaryDate" : [ "2023-01-01T00:00:00", "2023-01-03T00:00:00", "2023-01-09T00:00:00", "2023-01-13T00:00:00", "2023-01-16T00:00:00" ],
     "nextDayOfPrevRetroDate" : "2023-01-18T00:00:00",
-    "retroDate" : "2023-01-24T00:00:00"
+    "retroDate" : "2023-01-24T00:00:00",
+    "retrospectInfoList" : [ {
+      "retrospectDate" : "2023-01-03T00:00:00",
+      "goal" : "자아탐색"
+    }, {
+      "retrospectDate" : "2023-01-10T00:00:00",
+      "goal" : "성취확인"
+    } ]
   }
 }</code></pre>
 </div>
@@ -576,6 +583,16 @@ Content-Length: 416
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retroDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">이번주 회고일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectInfoList[].retrospectDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고 작성일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectInfoList[].goal</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고 목적</p></td>
 </tr>
 </tbody>
 </table>
@@ -1272,7 +1289,7 @@ Content-Length: 156
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-02-11 14:12:15 +0900
+Last updated 2023-02-02 23:02:54 +0900
 </div>
 </div>
 </body>

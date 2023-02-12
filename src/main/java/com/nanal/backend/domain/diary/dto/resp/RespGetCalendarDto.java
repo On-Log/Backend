@@ -26,4 +26,6 @@ public class RespGetCalendarDto {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime retroDate;
+
+    private List<RetrospectInfoDto> retrospectInfoList;
 }

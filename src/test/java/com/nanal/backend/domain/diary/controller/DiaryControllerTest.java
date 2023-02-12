@@ -5,6 +5,7 @@ import com.nanal.backend.domain.diary.dto.req.*;
 import com.nanal.backend.domain.diary.dto.resp.RespGetCalendarDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetDiaryDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetEmotionDto;
+import com.nanal.backend.domain.diary.dto.resp.RetrospectInfoDto;
 import com.nanal.backend.domain.diary.service.DiaryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -44,12 +45,18 @@ class DiaryControllerTest extends CommonControllerTest {
                 LocalDateTime.parse("2023-01-16T00:00:00"))
         );
 
+        List<RetrospectInfoDto> retrospectInfoDtoList = new ArrayList<>(Arrays.asList(
+                new RetrospectInfoDto(LocalDateTime.parse("2023-01-03T00:00:00"), "자아탐색"),
+                new RetrospectInfoDto(LocalDateTime.parse("2023-01-10T00:00:00"), "성취확인")
+        ));
+
         RespGetCalendarDto output = new RespGetCalendarDto(
                 "nickname",
                 true,
                 existDiaryDate,
                 LocalDateTime.parse("2023-01-18T00:00:00"),
-                LocalDateTime.parse("2023-01-24T00:00:00")
+                LocalDateTime.parse("2023-01-24T00:00:00"),
+                retrospectInfoDtoList
         );
 
         given(diaryService.getCalendar(any(), any())).willReturn(output);
@@ -81,7 +88,9 @@ class DiaryControllerTest extends CommonControllerTest {
                                         fieldWithPath("result.isRetrospectDay").description("오늘이 회고일인지 체크"),
                                         fieldWithPath("result.existDiaryDate").description("일기 존재 날짜"),
                                         fieldWithPath("result.nextDayOfPrevRetroDate").description("이전 회고일의 다음일"),
-                                        fieldWithPath("result.retroDate").description("이번주 회고일")
+                                        fieldWithPath("result.retroDate").description("이번주 회고일"),
+                                        fieldWithPath("result.retrospectInfoList[].retrospectDate").description("회고 작성일"),
+                                        fieldWithPath("result.retrospectInfoList[].goal").description("회고 목적")
                                 )
                         )
                 );

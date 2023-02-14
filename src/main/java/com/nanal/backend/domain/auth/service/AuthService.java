@@ -1,14 +1,16 @@
 package com.nanal.backend.domain.auth.service;
 
 import com.nanal.backend.domain.auth.dto.LoginInfo;
+import com.nanal.backend.domain.auth.event.RegisterEvent;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.auth.entity.Member;
-import com.nanal.backend.global.response.ErrorCode;
 import com.nanal.backend.global.security.jwt.Token;
 import com.nanal.backend.global.security.jwt.TokenUtil;
 import com.nanal.backend.domain.auth.exception.RefreshTokenInvalidException;
+import com.nanal.backend.global.slack.SlackAlertHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -26,7 +28,9 @@ public class AuthService {
     private final ClientNaver clientNaver;
     private final ClientKakao clientKakao;
     private final ClientGoogle clientGoogle;
+    private final ApplicationEventPublisher publisher;
 
+    @Transactional
     public LoginInfo commonAuth(String accessToken, String providerInfo) {
         // 플랫폼에서 사용자 정보 조회
         Member member = getUserDataFromPlatform(accessToken, providerInfo);
@@ -67,7 +71,12 @@ public class AuthService {
 
     private Member auth(Member member) {
         Optional<Member> findMember = memberRepository.findBySocialId(member.getSocialId());
-        if(newSubscribe(findMember)) return register(member);
+        if(newSubscribe(findMember)) {
+            Member register = register(member);
+            publisher.publishEvent(new RegisterEvent(register.getNickname(), register.getEmail()));
+
+            return register;
+        }
         else return login(findMember);
     }
 

@@ -1,6 +1,7 @@
 package com.nanal.backend.global.exception;
 
 import com.nanal.backend.global.exception.customexception.BindingResultException;
+import com.nanal.backend.global.exception.customexception.NanalAuthException;
 import com.nanal.backend.global.exception.customexception.NanalException;
 import com.nanal.backend.global.security.AuthenticationUtil;
 import com.nanal.backend.global.response.CommonResponse;
@@ -71,13 +72,21 @@ public class CommonExceptionHandler {
         return new CommonResponse<>(e.getErrorCode());
     }
 
+    @ExceptionHandler(NanalAuthException.class)
+    public CommonResponse<?> nanalExceptionHandler(HttpServletResponse response, NanalAuthException e) {
+        response.setStatus(e.getErrorCode().getCode());
+        log.error("[{}] {}", e.getClass().getSimpleName(), e.getErrorCode().getMessage());
+        return new CommonResponse<>(e.getErrorCode());
+    }
+
     /**
      *  서버 에러
      */
     @ExceptionHandler(Exception.class)
     public CommonResponse<?> internalServerErrorHandler(HttpServletResponse response, Exception e) {
         response.setStatus(ErrorCode.INTERNAL_SERVER_ERROR.getCode());
-        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(), e.getClass().getSimpleName(), e.getMessage());
+        log.error("[{}] {}", e.getClass().getSimpleName(), e.getMessage());
+        //log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(), e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 }

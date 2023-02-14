@@ -3,23 +3,16 @@ package com.nanal.backend.domain.auth.dto;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class GoogleUserResponseDto {
+public class KakaoAccessTokenResponseDto {
 
-    private String aud;
-    private String sub;
-    private String email;
-    private String name;
-    private String picture;
-
-    public void adaptResponse() {
-        if(email.length() > 50) email = email.substring(0, 50);
-        if(name.length() > 7) name = name.substring(0, 7);
-    }
+    private String appId;
 }

@@ -83,7 +83,7 @@ public class TokenUtil {
 
     public Token tokenReissue(String token) {
         String socialId = getSocialId(token);
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(()-> MemberAuthException.EXCEPTION);
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(()-> RefreshTokenInvalidException.EXCEPTION);
         // socialId 에 해당하는 refreshToken redis 에서 가져오기
         String storedRefreshToken = redisTemplate.opsForValue().get(socialId);
         // socialId 에 해당하는 refreshToken 이 없거나 일치하지 않을 때

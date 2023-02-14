@@ -44,6 +44,7 @@ public class AuthService {
         return new LoginInfo(loginMember.getNickname(), token);
     }
 
+
     public Token reissue(String token) {
         // refresh 토큰이 유효한지 확인
         if (token != null && tokenUtil.verifyToken(token)) {

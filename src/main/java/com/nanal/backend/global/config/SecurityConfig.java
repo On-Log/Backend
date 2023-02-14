@@ -20,13 +20,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    private final CustomOAuth2UserService oAuth2UserService;
-    private final OAuth2SuccessHandler successHandler;
-    private final OAuth2FailureHandler failureHandler;
     private final ExceptionFilter exceptionFilter;
-
     private final JwtAuthFilter jwtAuthFilter;
+
     // Filter 제외 요청들
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -44,13 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests().antMatchers("/main","/auth/**", "/docs/**", "/favicon.ico").permitAll()
-                .anyRequest().authenticated()
-
-                .and()
-                .oauth2Login()
-                .successHandler(successHandler)
-                .failureHandler(failureHandler)
-                .userInfoEndpoint().userService(oAuth2UserService);
+                .anyRequest().authenticated();
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 // ControllerAdvice 로는 filter 에서 발생하는 예외를 다룰 수 없으므로 ExceptionFilter 추가.

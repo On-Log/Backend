@@ -38,6 +38,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import static com.nanal.backend.domain.retrospect.dto.resp.RespGetInfoDto.makeRespGetInfoDto;
 import static java.lang.Math.abs;
 
 @EnableScheduling
@@ -82,7 +83,7 @@ public class RetrospectService {
         // 회고 주제별로 분류 후 주차별로 분류
         List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = getKeyword(member, selectDate);
 
-        RespGetInfoDto respGetInfoDto = new RespGetInfoDto(existRetrospect, betweenDate, isRetroNumberNotFive, respGetClassifiedKeywordDtos);
+        RespGetInfoDto respGetInfoDto = makeRespGetInfoDto(member.getNickname(),existRetrospect, betweenDate, isRetroNumberNotFive, respGetClassifiedKeywordDtos);
 
         return respGetInfoDto;
     }

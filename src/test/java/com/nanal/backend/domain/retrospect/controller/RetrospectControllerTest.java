@@ -87,7 +87,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
                 new RespGetClassifiedKeywordDto(classifyDtos3, "돌아보니, 다른 의미로 다가온 기억")
         ));
 
-        RespGetInfoDto respGetInfoDto = new RespGetInfoDto(new ArrayList<>(Arrays.asList("자아탐색", "성취확인")), 6, true, respGetClassifiedKeywordDtos);
+        RespGetInfoDto respGetInfoDto = new RespGetInfoDto("사용자 닉네임", new ArrayList<>(Arrays.asList("자아탐색", "성취확인")), 6, true, respGetClassifiedKeywordDtos);
         given(retrospectService.getInfo(any(), any())).willReturn(respGetInfoDto);
 
         //when
@@ -115,6 +115,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.nickName").description("사용자 닉네임"),
                                         fieldWithPath("result.existRetrospect").description("회고 목적"),
                                         fieldWithPath("result.betweenDate").description("다음 회고까지 남은 날"),
                                         fieldWithPath("result.countRetrospect").description("회고 개수 체크. 5개 이상일 시, false 보내 줌"),

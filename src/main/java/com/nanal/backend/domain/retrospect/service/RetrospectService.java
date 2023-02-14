@@ -465,7 +465,8 @@ public class RetrospectService {
             return 2;
         else if (goal.equals("감정정리"))
             return 3;
-        else
+        else if (goal.equals("관계고민"))
             return 4;
+        else throw GoalNotFoundException.EXCEPTION;
     }
 }

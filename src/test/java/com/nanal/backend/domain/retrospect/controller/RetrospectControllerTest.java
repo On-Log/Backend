@@ -390,7 +390,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
     @Test
     public void 회고질문_도움말_조회() throws Exception {
         //given
-        int goalIndex = 1;
+        String goal = "자아탐색";
         List<QuestionsDto> questionsDtos = new ArrayList<>(Arrays.asList(new QuestionsDto("이번주 나의 모습은 어땠나요?", "이번주 나의 모습을 묘사하기 어려우신가요? 가장 먼저 떠오르는 내 모습, 혹은 가장 자주 보였던 나의 모습을 떠올려보세요."),
                 new QuestionsDto("다른 내 모습도 들려줄래요? 이번주에 찾은 의외의 내 모습이 있다면요?", "우리의 일주일은 한가지 색만으로 이루어져있지 않아요! 가장 사소한 일부터 차근 차근 생각해보세요."),
                 new QuestionsDto("다음주에도 유지하고 싶은 나의 모습이 있을까요? 혹은 새롭게 찾고 싶은 나의 모습이 있다면 무엇인가요?", "그 모습의 나는 구체적으로 어떤 행동을 하게 될까요? 그 모습이 되려면 어떤 노력을 해야할지도 생각해봅시다.")));
@@ -402,7 +402,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
                 get("/retrospect/question")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("goalIndex", String.valueOf(goalIndex))
+                        .param("goal", goal)
         );
 
         //then
@@ -414,7 +414,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         headerWithName("Token").description("접근 토큰")
                                 ),
                                 requestParameters(
-                                        parameterWithName("goalIndex").description("선택한 회고 목적 1.자아탐색 2.성취확인 3.감정정리 4.관계고민")
+                                        parameterWithName("goal").description("선택한 회고 목적 1.자아탐색 2.성취확인 3.감정정리 4.관계고민")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),
@@ -430,7 +430,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
     @Test
     public void 추가질문_도움말_조회() throws Exception {
         //given
-        int goalIndex = 1;
+        String goal = "자아탐색";
         List<ExtraQuestionsDto> extraQuestionsDtos = new ArrayList<>(Arrays.asList(new ExtraQuestionsDto("이번주 나의 모습은 어땠나요?", "이번주 나의 모습을 묘사하기 어려우신가요? 가장 먼저 떠오르는 내 모습, 혹은 가장 자주 보였던 나의 모습을 떠올려보세요."),
                 new ExtraQuestionsDto("다른 내 모습도 들려줄래요? 이번주에 찾은 의외의 내 모습이 있다면요?", "우리의 일주일은 한가지 색만으로 이루어져있지 않아요! 가장 사소한 일부터 차근 차근 생각해보세요.")));
         RespGetExtraQuestionAndHelpDto respGetExtraQuestionAndHelpDto = new RespGetExtraQuestionAndHelpDto(extraQuestionsDtos );
@@ -441,7 +441,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
                 get("/retrospect/extra")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("goalIndex", String.valueOf(goalIndex))
+                        .param("goal", goal)
         );
 
         //then
@@ -453,7 +453,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         headerWithName("Token").description("접근 토큰")
                                 ),
                                 requestParameters(
-                                        parameterWithName("goalIndex").description("선택한 회고 목적 1.자아탐색 2.성취확인 3.감정정리 4.관계고민")
+                                        parameterWithName("goal").description("선택한 회고 목적 1.자아탐색 2.성취확인 3.감정정리 4.관계고민")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),

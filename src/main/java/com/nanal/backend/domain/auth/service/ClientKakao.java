@@ -4,6 +4,7 @@ import com.nanal.backend.domain.auth.dto.KakaoAccessTokenResponseDto;
 import com.nanal.backend.domain.auth.dto.KakaoUserResponseDto;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.auth.enumerate.MemberProvider;
+import com.nanal.backend.global.exception.customexception.InternalServerErrorException;
 import com.nanal.backend.global.exception.customexception.TokenInvalidException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,8 +34,8 @@ public class ClientKakao{
                 .headers(h -> h.setBearerAuth(accessToken)) // JWT 토큰을 Bearer 토큰으로 지정
                 .retrieve()
                 // 아래의 onStatus는 error handling
-                .onStatus(HttpStatus::is4xxClientError, response -> Mono.error(new RuntimeException("Social Access Token is unauthorized")))
-                .onStatus(HttpStatus::is5xxServerError, response -> Mono.error(new RuntimeException("Internal Server Error")))
+                .onStatus(HttpStatus::is4xxClientError, response -> Mono.error(TokenInvalidException.EXCEPTION))
+                .onStatus(HttpStatus::is5xxServerError, response -> Mono.error(new InternalServerErrorException("Kakao Internal Server Error ")))
                 .bodyToMono(KakaoUserResponseDto.class) // KAKAO의 유저 정보를 넣을 Dto 클래스
                 .block();
 
@@ -63,7 +64,7 @@ public class ClientKakao{
                 .retrieve()
                 // 아래의 onStatus는 error handling
                 .onStatus(HttpStatus::is4xxClientError, response -> Mono.error(TokenInvalidException.EXCEPTION))
-                .onStatus(HttpStatus::is5xxServerError, response -> Mono.error(new RuntimeException("Internal Server Error")))
+                .onStatus(HttpStatus::is5xxServerError, response -> Mono.error(new InternalServerErrorException("Kakao Internal Server Error ")))
                 .bodyToMono(KakaoAccessTokenResponseDto.class) // Access Token 정보를 넣을 Dto 클래스
                 .block();
 

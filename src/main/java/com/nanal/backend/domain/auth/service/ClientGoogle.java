@@ -4,6 +4,7 @@ import com.nanal.backend.domain.auth.dto.GoogleUserResponseDto;
 import com.nanal.backend.domain.auth.dto.KakaoAccessTokenResponseDto;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.auth.enumerate.MemberProvider;
+import com.nanal.backend.global.exception.customexception.InternalServerErrorException;
 import com.nanal.backend.global.exception.customexception.TokenInvalidException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,8 +42,8 @@ public class ClientGoogle {
                 .uri("https://oauth2.googleapis.com/tokeninfo", builder -> builder.queryParam("id_token", accessToken).build())
                 // KAKAO와 달리 GOOGLE을 IdToken을 query parameter로 받습니다. 이로 인해 KAKAO와 uri 작성 방식이 상이합니다.
                 .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, response -> Mono.error(new RuntimeException("Social Access Token is unauthorized")))
-                .onStatus(HttpStatus::is5xxServerError, response -> Mono.error(new RuntimeException("Internal Server Error")))
+                .onStatus(HttpStatus::is4xxClientError, response -> Mono.error(TokenInvalidException.EXCEPTION))
+                .onStatus(HttpStatus::is5xxServerError, response -> Mono.error(new InternalServerErrorException("Google Internal Server Error ")))
                 .bodyToMono(GoogleUserResponseDto.class)
                 .block();
 

@@ -3,6 +3,8 @@ package com.nanal.backend.domain.auth.service;
 import com.nanal.backend.domain.auth.dto.NaverUserResponseDto;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.auth.enumerate.MemberProvider;
+import com.nanal.backend.global.exception.customexception.InternalServerErrorException;
+import com.nanal.backend.global.exception.customexception.TokenInvalidException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -23,8 +25,8 @@ public class ClientNaver {
                 .headers(h -> h.setBearerAuth(accessToken)) // JWT 토큰을 Bearer 토큰으로 지정
                 .retrieve()
                 // 아래의 onStatus는 error handling
-                .onStatus(HttpStatus::is4xxClientError, response -> Mono.error(new RuntimeException("Social Access Token is unauthorized")))
-                .onStatus(HttpStatus::is5xxServerError, response -> Mono.error(new RuntimeException("Internal Server Error")))
+                .onStatus(HttpStatus::is4xxClientError, response -> Mono.error(TokenInvalidException.EXCEPTION))
+                .onStatus(HttpStatus::is5xxServerError, response -> Mono.error(new InternalServerErrorException("Naver Internal Server Error ")))
                 .bodyToMono(NaverUserResponseDto.class) // Naver의 유저 정보를 넣을 Dto 클래스
                 .block();
 

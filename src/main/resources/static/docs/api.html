@@ -2827,13 +2827,14 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1147
+Content-Length: 1188
 
 {
   "isSuccess" : true,
   "code" : 200,
   "message" : "요청에 성공하였습니다.",
   "result" : {
+    "nickName" : "사용자 닉네임",
     "existRetrospect" : [ "자아탐색", "성취확인" ],
     "betweenDate" : 6,
     "countRetrospect" : true,
@@ -2908,6 +2909,11 @@ Content-Length: 1147
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">결과 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.nickName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사용자 닉네임</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.existRetrospect</code></p></td>
@@ -4459,7 +4465,7 @@ Content-Length: 1678
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-01-29 21:29:59 +0900
+Last updated 2023-02-14 19:15:48 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

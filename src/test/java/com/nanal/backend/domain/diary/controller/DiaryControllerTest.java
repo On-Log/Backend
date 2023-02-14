@@ -5,6 +5,7 @@ import com.nanal.backend.domain.diary.dto.req.*;
 import com.nanal.backend.domain.diary.dto.resp.RespGetCalendarDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetDiaryDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetEmotionDto;
+import com.nanal.backend.domain.diary.dto.resp.RetrospectInfoDto;
 import com.nanal.backend.domain.diary.service.DiaryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -34,7 +35,6 @@ class DiaryControllerTest extends CommonControllerTest {
     @Test
     public void 일기_탭() throws Exception {
         //given
-        String currentDate = "2023-01-22T00:00:00";
         String selectDate = "2023-01-13T00:00:00";
 
         List<LocalDateTime> existDiaryDate = new ArrayList<>(Arrays.asList(
@@ -45,10 +45,18 @@ class DiaryControllerTest extends CommonControllerTest {
                 LocalDateTime.parse("2023-01-16T00:00:00"))
         );
 
+        List<RetrospectInfoDto> retrospectInfoDtoList = new ArrayList<>(Arrays.asList(
+                new RetrospectInfoDto(LocalDateTime.parse("2023-01-03T00:00:00"), "자아탐색"),
+                new RetrospectInfoDto(LocalDateTime.parse("2023-01-10T00:00:00"), "성취확인")
+        ));
+
         RespGetCalendarDto output = new RespGetCalendarDto(
+                "nickname",
+                true,
                 existDiaryDate,
                 LocalDateTime.parse("2023-01-18T00:00:00"),
-                LocalDateTime.parse("2023-01-24T00:00:00")
+                LocalDateTime.parse("2023-01-24T00:00:00"),
+                retrospectInfoDtoList
         );
 
         given(diaryService.getCalendar(any(), any())).willReturn(output);
@@ -58,7 +66,6 @@ class DiaryControllerTest extends CommonControllerTest {
                 get("/diary")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("currentDate", currentDate)
                         .param("selectDate", selectDate)
         );
 
@@ -71,16 +78,19 @@ class DiaryControllerTest extends CommonControllerTest {
                                         headerWithName("Token").description("접근 토큰")
                                 ),
                                 requestParameters(
-                                        parameterWithName("currentDate").description("현재 날짜"),
                                         parameterWithName("selectDate").description("선택 날짜")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.nickname").description("사용자 닉네임"),
+                                        fieldWithPath("result.isRetrospectDay").description("오늘이 회고일인지 체크"),
                                         fieldWithPath("result.existDiaryDate").description("일기 존재 날짜"),
                                         fieldWithPath("result.nextDayOfPrevRetroDate").description("이전 회고일의 다음일"),
-                                        fieldWithPath("result.postRetroDate").description("다음 회고일")
+                                        fieldWithPath("result.retroDate").description("이번주 회고일"),
+                                        fieldWithPath("result.retrospectInfoList[].retrospectDate").description("회고 작성일"),
+                                        fieldWithPath("result.retrospectInfoList[].goal").description("회고 목적")
                                 )
                         )
                 );
@@ -92,9 +102,9 @@ class DiaryControllerTest extends CommonControllerTest {
         String saveDate = "2023-01-22T00:00:00";
 
         List<KeywordEmotionDto> keywordEmotionDtoList = new ArrayList<>(Arrays.asList(
-                new KeywordEmotionDto("아쉬움"),
-                new KeywordEmotionDto("복잡"),
-                new KeywordEmotionDto("기대")
+                new KeywordEmotionDto("행복"),
+                new KeywordEmotionDto("안심"),
+                new KeywordEmotionDto("의욕")
         ));
         List<KeywordDto> keywordDtoList = new ArrayList<>(Arrays.asList(
                 new KeywordDto("창업", keywordEmotionDtoList),
@@ -149,9 +159,9 @@ class DiaryControllerTest extends CommonControllerTest {
         String date = "2023-01-15T00:00:00";
 
         List<KeywordEmotionDto> keywordEmotionDtoList = new ArrayList<>(Arrays.asList(
-                new KeywordEmotionDto("아쉬움"),
-                new KeywordEmotionDto("복잡"),
-                new KeywordEmotionDto("기대")
+                new KeywordEmotionDto("놀람"),
+                new KeywordEmotionDto("힘듦"),
+                new KeywordEmotionDto("상쾌")
         ));
         List<KeywordDto> keywordDtoList = new ArrayList<>(Arrays.asList(
                 new KeywordDto("창업", keywordEmotionDtoList),
@@ -205,9 +215,9 @@ class DiaryControllerTest extends CommonControllerTest {
         String editDate = "2023-01-15T00:00:00";
 
         List<KeywordEmotionDto> keywordEmotionDtoList = new ArrayList<>(Arrays.asList(
-                new KeywordEmotionDto("행복"),
+                new KeywordEmotionDto("즐거움"),
                 new KeywordEmotionDto("여유"),
-                new KeywordEmotionDto("안심")
+                new KeywordEmotionDto("부담")
         ));
         List<KeywordDto> keywordDtoList = new ArrayList<>(Arrays.asList(
                 new KeywordDto("방학", keywordEmotionDtoList),
@@ -223,7 +233,7 @@ class DiaryControllerTest extends CommonControllerTest {
 
         String body = objectMapper.writeValueAsString(input);
 
-        willDoNothing().given(diaryService).editDiary(any(), any());
+        willDoNothing().given(diaryService).updateDiary(any(), any());
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -260,14 +270,18 @@ class DiaryControllerTest extends CommonControllerTest {
     public void 일기_삭제() throws Exception {
         //given
         String deleteDate = "2023-01-15T00:00:00";
+
+        ReqDeleteDiaryDto input = new ReqDeleteDiaryDto(LocalDateTime.parse(deleteDate));
+        String body = objectMapper.writeValueAsString(input);
+
         willDoNothing().given(diaryService).deleteDiary(any(), any());
 
         //when
         ResultActions actions = mockMvc.perform(
                 delete("/diary")
                         .header("Token", "ACCESS_TOKEN")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("date" ,deleteDate)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body)
         );
 
         //then
@@ -278,8 +292,8 @@ class DiaryControllerTest extends CommonControllerTest {
                                 requestHeaders(
                                         headerWithName("Token").description("접근 토큰")
                                 ),
-                                requestParameters(
-                                        parameterWithName("date").description("삭제 날짜")
+                                requestFields(
+                                        fieldWithPath("date").description("삭제 날짜")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),

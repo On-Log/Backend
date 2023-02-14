@@ -1,8 +1,6 @@
 package com.nanal.backend.domain.retrospect.dto.resp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.nanal.backend.domain.retrospect.dto.RetrospectContentDto;
-import com.nanal.backend.domain.retrospect.dto.RetrospectKeywordDto;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import com.nanal.backend.domain.retrospect.entity.RetrospectContent;
 import com.nanal.backend.domain.retrospect.entity.RetrospectKeyword;

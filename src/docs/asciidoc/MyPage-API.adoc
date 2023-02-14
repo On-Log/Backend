@@ -15,10 +15,13 @@ operation::mypage-controller-test/닉네임_변경[snippets='http-request,reques
 
 [[MyPage-회고일-변경-가능-여부]]
 === MyPage 회고일 변경 가능 여부
-operation::mypage-controller-test/회고일_변경_가능_여부[snippets='http-request,request-headers,http-response,response-fields']
+operation::mypage-controller-test/회고일_변경_가능_여부[snippets='http-request,request-headers']
 
-=== MyPage 회고일 변경 불가능
-operation::mypage-controller-test/회고일_변경_불가능[snippets='http-request,request-headers,http-response,response-fields']
+==== 회고일 변경 가능
+operation::mypage-controller-test/회고일_변경_가능_여부[snippets='http-response,response-fields']
+
+==== 회고일 변경 불가능
+operation::mypage-controller-test/회고일_변경_불가능[snippets='http-response,response-fields']
 
 ---
 
@@ -31,6 +34,12 @@ operation::mypage-controller-test/회고일_변경[snippets='http-request,reques
 [[MyPage-서비스-사용기간-조회]]
 === MyPage 서비스 사용기간 조회
 operation::mypage-controller-test/서비스_사용기간_조회[snippets='http-request,request-headers,http-response,response-fields']
+
+---
+
+[[MyPage-로그아웃]]
+=== MyPage 로그아웃
+operation::mypage-controller-test/로그아웃[snippets='http-request,request-headers,http-response,response-fields']
 
 ---
 

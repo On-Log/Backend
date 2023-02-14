@@ -30,7 +30,7 @@ public class NaverUserResponseDto {
     }
     public void adaptResponse() {
         if(response.gender == null || response.gender.isBlank()) response.gender = "undef";
-        if(response.age == null || response.gender.isBlank()) response.age = "undef";
+        if(response.age == null || response.age.isBlank()) response.age = "undef";
         if(response.email.length() > 50) response.email = response.email.substring(0, 50);
         if(response.nickname.length() > 7) response.nickname = response.nickname.substring(0, 7);
     }

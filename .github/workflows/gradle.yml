@@ -59,7 +59,7 @@ jobs:
         run: |
           cd ./src/main/resources
           touch ./application-prod.yml
-          echo "${{ secrets.PROPERTIES_PROD_TEST}}" > ./application-prod.yml
+          echo "${{ secrets.PROPERTIES_TEST }}" > ./application-prod.yml
         shell: bash
 
       ##CD

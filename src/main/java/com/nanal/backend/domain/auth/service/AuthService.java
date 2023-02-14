@@ -1,9 +1,9 @@
 package com.nanal.backend.domain.auth.service;
 
-import com.nanal.backend.domain.auth.dto.req.ReqAuthDto;
+import com.nanal.backend.domain.auth.dto.LoginInfo;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.auth.entity.Member;
-import com.nanal.backend.global.security.AuthenticationUtil;
+import com.nanal.backend.global.response.ErrorCode;
 import com.nanal.backend.global.security.jwt.Token;
 import com.nanal.backend.global.security.jwt.TokenUtil;
 import com.nanal.backend.domain.auth.exception.RefreshTokenInvalidException;
@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,83 +27,59 @@ public class AuthService {
     private final ClientKakao clientKakao;
     private final ClientGoogle clientGoogle;
 
-    public Token naverAuth(ReqAuthDto reqAuthDto) {
-        Member naverMember = clientNaver.getUserData(reqAuthDto.getAccessToken());
-        String socialId = naverMember.getSocialId();
+    public LoginInfo commonAuth(String accessToken, String providerInfo) {
+        // 플랫폼에서 사용자 정보 조회
+        Member member = getUserDataFromPlatform(accessToken, providerInfo);
 
-        // 최초 로그인이라면 회원가입 처리를 한다.
-        if(memberRepository.findBySocialId(socialId).isEmpty()) memberRepository.save(naverMember);
-
-        // socialId로 Authentication 정보 생성
-        AuthenticationUtil.makeAuthentication(socialId, naverMember.getEmail());
+        // 회원가입(가입 정보 없는 유저일 때만) 및 로그인
+        Member loginMember = auth(member);
 
         // 토큰 생성
-        Token token = tokenUtil.generateToken(socialId);
+        Token token = tokenUtil.generateToken(loginMember);
         log.info("{}", token);
 
         // Redis에 Refresh Token 저장
-        tokenUtil.storeRefreshToken(socialId, token);
+        tokenUtil.storeRefreshToken(loginMember.getSocialId(), token);
 
-        log.info("Redis 저장 완료");
-
-        return token;
+        return new LoginInfo(loginMember.getNickname(), token);
     }
 
-    public Token kakaoAuth(ReqAuthDto reqAuthDto) {
-        Member kakaoMember = clientKakao.getUserData(reqAuthDto.getAccessToken());
-        String socialId = kakaoMember.getSocialId();
-
-        // 최초 로그인이라면 회원가입 처리를 한다.
-        if(memberRepository.findBySocialId(socialId).isEmpty()) memberRepository.save(kakaoMember);
-
-        // socialId로 Authentication 정보 생성
-        AuthenticationUtil.makeAuthentication(socialId, kakaoMember.getEmail());
-
-        // 토큰 생성
-        Token token = tokenUtil.generateToken(socialId);
-        log.info("{}", token);
-
-        // Redis에 Refresh Token 저장
-        tokenUtil.storeRefreshToken(socialId, token);
-
-        log.info("Redis 저장 완료");
-
-        return token;
-    }
-
-    public Token googleAuth(ReqAuthDto reqAuthDto) {
-        Member googleMember = clientGoogle.getUserData(reqAuthDto.getAccessToken());
-        String socialId = googleMember.getSocialId();
-
-        // 최초 로그인이라면 회원가입 처리를 한다.
-        if(memberRepository.findBySocialId(socialId).isEmpty()) memberRepository.save(googleMember);
-
-        // socialId로 Authentication 정보 생성
-        AuthenticationUtil.makeAuthentication(socialId, googleMember.getEmail());
-
-        // 토큰 생성
-        Token token = tokenUtil.generateToken(socialId);
-        log.info("{}", token);
-
-        // Redis에 Refresh Token 저장
-        tokenUtil.storeRefreshToken(socialId, token);
-
-        log.info("Redis 저장 완료");
-
-        return token;
-    }
 
     public Token reissue(String token) {
         // refresh 토큰이 유효한지 확인
         if (token != null && tokenUtil.verifyToken(token)) {
-            String socialId = tokenUtil.getUid(token);
+
             // 토큰 새로 받아오기
             Token reissueToken = tokenUtil.tokenReissue(token);
 
             return reissueToken;
         }
 
-        throw new RefreshTokenInvalidException("Refresh Token 이 유효하지 않습니다.");
+        throw RefreshTokenInvalidException.EXCEPTION;
     }
 
+    //===편의 메서드===//
+    private Member getUserDataFromPlatform(String accessToken, String providerInfo) {
+        if(providerInfo.contains("google")) return clientGoogle.getUserData(accessToken);
+        else if(providerInfo.contains("kakao")) return clientKakao.getUserData(accessToken);
+        else return clientNaver.getUserData(accessToken);
+    }
+
+    private Member auth(Member member) {
+        Optional<Member> findMember = memberRepository.findBySocialId(member.getSocialId());
+        if(newSubscribe(findMember)) return register(member);
+        else return login(findMember);
+    }
+
+    private static boolean newSubscribe(Optional<Member> findMember) {
+        return findMember.isEmpty();
+    }
+
+    private Member register(Member member) {
+        return memberRepository.save(member);
+    }
+
+    private Member login(Optional<Member> member) {
+        return member.get();
+    }
 }

@@ -27,10 +27,38 @@ operation::retrospect-controller-test/회고_수정[snippets='http-request,reque
 
 [[Retrospect-일기작성날짜-키워드-감정어-조회]]
 === Retrospect 일기 작성 날짜 + 키워드 + 감정어 조회
-operation::retrospect-controller-test/일기_키워드_감정어_조회[snippets='http-request,request-headers,request-parameters,http-response,response-fields']
+operation::retrospect-controller-test/일기_키워드_감정어_조회[snippets='http-request,request-headers,request-parameters']
 
+==== 자정 이전에 호출했을 때
+operation::retrospect-controller-test/일기_키워드_감정어_조회[snippets='http-response,response-fields']
+
+==== 자정 이후에 호출했을 때
+operation::retrospect-controller-test/자정_이후_호출[snippets='http-response,response-fields']
 ---
 
 [[Retrospect-회고질문-도움말-조회]]
 === Retrospect 회고질문 + 도움말 조회
 operation::retrospect-controller-test/회고질문_도움말_조회[snippets='http-request,request-headers,request-parameters,http-response,response-fields']
+
+---
+
+[[Retrospect-추가질문-도움말-조회]]
+=== Retrospect 추가질문 + 도움말 조회
+operation::retrospect-controller-test/추가질문_도움말_조회[snippets='http-request,request-headers,request-parameters,http-response,response-fields']
+
+---
+
+[[Retrospect-회고-존재-여부-및-회고일-변경-이후-첫-회고-여부-체크]]
+=== Retrospect 회고 존재 여부 및 회고일 변경 이후 첫 회고 여부 체크
+operation::retrospect-controller-test/회고_존재_여부_및_변경_이후_첫_회고_여부_체크[snippets='http-request,request-headers,request-parameters']
+
+==== 이미 작성한 회고가 없고, 회고일 변경 이후 첫 회고가 아닐 때
+operation::retrospect-controller-test/회고_존재_여부_및_변경_이후_첫_회고_여부_체크[snippets='http-response,response-fields']
+
+==== 회고 이미 작성했을 때
+operation::retrospect-controller-test/회고_이미_존재[snippets='http-response,response-fields']
+
+==== 이미 작성한 회고가 없고, 회고일 변경 이후 첫 회고일 때
+operation::retrospect-controller-test/회고_없음_회고_변경_이후_첫_회고[snippets='http-response,response-fields']
+
+---

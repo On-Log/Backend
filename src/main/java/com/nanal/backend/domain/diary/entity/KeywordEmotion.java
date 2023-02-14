@@ -1,7 +1,5 @@
 package com.nanal.backend.domain.diary.entity;
 
-
-import com.nanal.backend.global.config.BaseTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Entity
-public class KeywordEmotion extends BaseTime {
+public class KeywordEmotion {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "keyword_emotion_id")
@@ -25,27 +23,18 @@ public class KeywordEmotion extends BaseTime {
     @JoinColumn(name = "keyword_id")
     private Keyword keyword;
 
-    @Column(nullable = false, length = 5)
-    private String emotion;
-
-    //==설정 메서드==//
-    private void changeEmotion(String emotion) {
-        this.emotion = emotion;
-    }
-
-    public void changeKeyword(Keyword keyword) {
-        this.keyword = keyword;
-    }
-
-    //==연관관계 메서드==//
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "emotion_id")
+    private Emotion emotion;
 
     //==생성 메서드==//
-    public static KeywordEmotion makeKeywordEmotion(String emotion) {
-        KeywordEmotion keywordEmotion = new KeywordEmotion();
-        keywordEmotion.changeEmotion(emotion);
-        return keywordEmotion;
+    public static KeywordEmotion createKeywordEmotion(Emotion emotion) {
+        return KeywordEmotion.builder()
+                .emotion(emotion)
+                .build();
     }
 
-
+    public void setKeyword(Keyword keyword) {
+        this.keyword = keyword;
+    }
 }

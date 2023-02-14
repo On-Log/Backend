@@ -10,10 +10,11 @@ public enum ErrorCode {
 
     // Success
     SUCCESS(true, HttpStatus.OK.value(), "요청에 성공하였습니다."),
+    SUCCESS_BUT(false, HttpStatus.OK.value(), "요청에 성공하였습니다."),
 
 
     // 특정 정보를 권한이 없는 유저가 요청하거나, 존재하지 않는 정보를 요청할 때.
-    BAD_REQUEST(false, 400, "잘못된 요청입니다."),
+    BAD_REQUEST(false, 400, "잘못된 요청 형식입니다."),
 
     // Validation
     INVALID_INPUT_VALUE(false, 455, "잘못된 입력값입니다."),
@@ -32,7 +33,12 @@ public enum ErrorCode {
     DIARY_NOT_FOUND(false, 470, "요청한 날짜에 작성된 일기가 없습니다."),
     // 일기 저장시 해당 날짜에 일기가 이미 존재할 때.
     DIARY_ALREADY_EXIST(false, 471, "이미 요청한 날짜에 작성한 일기가 존재합니다."),
-
+    // 회고가 이미 작성되어 있을 때.
+    RETROSPECT_ALREADY_WRITTEN(false,472,"이미 회고가 작성되어 일기 작성이 불가능합니다."),
+    // 작성날짜가 일기 작성 주간이 아닐 때.
+    NOT_IN_WRITABLE_DATE(false,473,"현재 일기작성주간에 작성가능한 날짜가 아닙니다."),
+    // 일기 수정이 불가능할 때
+    DIARY_CHANGE_UNAVAILABLE(false,475,"일기 수정이 불가능합니다."),
 
     // MyPage
     // 중복된 회고일을 입력할 때.
@@ -41,8 +47,10 @@ public enum ErrorCode {
     RETROSPECT_DATE_CHANGE_IMPOSSIBLE(false, 481, "30일이 지나지 않아 회고일 변경이 불가능합니다."),
 
     // Retrospect
-    RETROSPECT_NOT_FOUND(false, 490, "조회하고자 하는 회고가 존재하지 않습니다.");
-
+    RETROSPECT_NOT_FOUND(false, 490, "조회하고자 하는 회고가 존재하지 않습니다."),
+    RETROSPECT_ALREADY_EXIST(false,491,"이미 요청한 날짜에 작성한 회고가 존재합니다."),
+    RETROSPECT_ALL_DONE(false,492,"이번 달에 작성할 수 있는 모든 회고를 작성했습니다."),
+    RETROSPECT_TIME_DONE(false,493,"회고 작성 및 수정은 회고일 당일 11시 59분까지만 가능합니다");
     private Boolean isSuccess;
     private int code;
     private String message;

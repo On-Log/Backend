@@ -26,7 +26,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         String socialId = user.getSocialId();
 
         // socialId 를 갖는 사용자 존재 여부
-        memberRepository.findBySocialId(socialId).orElseThrow(() -> new MemberAuthException("존재하지 않는 유저입니다."));
+        memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
         return true;
     }
 }

@@ -1,9 +1,10 @@
 package com.nanal.backend.domain.auth.controller;
 
+import com.nanal.backend.domain.auth.dto.LoginInfo;
 import com.nanal.backend.domain.auth.dto.req.ReqAuthDto;
 import com.nanal.backend.domain.auth.service.AuthService;
-import com.nanal.backend.global.security.jwt.Token;
 import com.nanal.backend.global.response.CommonResponse;
+import com.nanal.backend.global.security.jwt.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,11 +23,11 @@ public class AuthController {
      * NAVER 소셜 로그인 기능
      */
     @PostMapping(value = "/auth/naver")
-    public CommonResponse<?> naverAuth(@RequestBody ReqAuthDto reqAuthDto) {
+    public CommonResponse<?> naverAuth(@RequestBody ReqAuthDto reqAuthDto, HttpServletRequest request) {
 
         // 최초 로그인 - 회원가입 후 토큰 발행.
         // 기존 유저 - 토큰 발행.
-        Token token = authService.naverAuth(reqAuthDto);
+        LoginInfo token = authService.commonAuth(reqAuthDto.getAccessToken(), request.getRequestURI());
 
         return new CommonResponse<>(token);
     }
@@ -35,27 +36,28 @@ public class AuthController {
      * KAKAO 소셜 로그인 기능
      */
     @PostMapping(value = "/auth/kakao")
-    public CommonResponse<?> kakaoAuth(@RequestBody ReqAuthDto reqAuthDto) {
+    public CommonResponse<?> kakaoAuth(@RequestBody ReqAuthDto reqAuthDto, HttpServletRequest request) {
 
         // 최초 로그인 - 회원가입 후 토큰 발행.
         // 기존 유저 - 토큰 발행.
-        Token token = authService.kakaoAuth(reqAuthDto);
+        LoginInfo loginInfo = authService.commonAuth(reqAuthDto.getAccessToken(), request.getRequestURI());
 
-        return new CommonResponse<>(token);
+        return new CommonResponse<>(loginInfo);
     }
 
     /**
      * GOOGLE 소셜 로그인 기능
      */
     @PostMapping(value = "/auth/google")
-    public CommonResponse<?> googleAuth(@RequestBody ReqAuthDto reqAuthDto) {
+    public CommonResponse<?> googleAuth(@RequestBody ReqAuthDto reqAuthDto, HttpServletRequest request) {
 
         // 최초 로그인 - 회원가입 후 토큰 발행.
         // 기존 유저 - 토큰 발행.
-        Token token = authService.googleAuth(reqAuthDto);
+        LoginInfo loginInfo = authService.commonAuth(reqAuthDto.getAccessToken(), request.getRequestURI());
 
-        return new CommonResponse<>(token);
+        return new CommonResponse<>(loginInfo);
     }
+
 
     /**
      * Token 재발급

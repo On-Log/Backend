@@ -1,54 +1,44 @@
 package com.nanal.backend.domain.diary.entity;
 
 import com.nanal.backend.domain.auth.entity.Member;
+import com.nanal.backend.domain.diary.dto.req.ReqDiaryDto;
+import com.nanal.backend.domain.diary.dto.req.ReqSaveDiaryDto;
 import com.nanal.backend.global.config.BaseTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Data
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Table(name = "diary")
 @Entity
 public class Diary extends BaseTime {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "diary_id")
     private Long diaryId;
 
-    @Column(length = 500, nullable = true)
+    @Column(length = 500, nullable = false)
     private String content;
 
     private LocalDateTime writeDate;
 
     private Boolean editStatus;
 
-    @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL)
-    private List<Keyword> keywords = new ArrayList<>();
+    @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<Keyword> keywords = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
-    //==설정 메서드==//
-    public void changeContentAndWriteDateAndEditStatus(String content, LocalDateTime writeDate, Boolean editStatus) {
-        this.content = content;
-        this.writeDate = writeDate;
-        this.editStatus = editStatus;
-    }
-
-    public void changeEditStatus(Boolean editStatus) {
-        this.editStatus = editStatus;
-    }
-
 
     //==연관관계 메서드==//
     public void setMember(Member member) {
@@ -56,27 +46,38 @@ public class Diary extends BaseTime {
         member.getDiaries().add(this);
     }
 
-    public void addKeyword(Keyword keyword) {
-        keywords.add(keyword);
-        keyword.changeDiary(this);
-    }
-
     //==생성 메서드==//
-    public static Diary makeDiary(Member member, List<Keyword> keywords, String content, LocalDateTime writeDate) {
+    public static Diary createDiary(Member member, ReqSaveDiaryDto reqSaveDiaryDto, List<Emotion> findEmotions) {
+        Diary diary = Diary.builder()
+                .content(reqSaveDiaryDto.getContent())
+                .writeDate(reqSaveDiaryDto.getDate().withNano(0))
+                .editStatus(true)
+                .build();
 
-        Diary diary = new Diary();
+        // 키워드 생성 후 삽입
+        List<Keyword> keywordList = reqSaveDiaryDto.getKeywords().stream()
+                .map(keywordDto -> Keyword.createKeyword(diary, keywordDto, findEmotions))
+                .collect(Collectors.toList());
+        diary.getKeywords().addAll(keywordList);
 
         // 연관 관계 생성
         diary.setMember(member);
-        for (Keyword keyword : keywords) {
-            diary.addKeyword(keyword);
-        }
-
-        // 속성 설정++
-        diary.changeContentAndWriteDateAndEditStatus(content, writeDate, true);
 
         return diary;
     }
 
+    //==설정 메서드==//
+    public void changeEditStatus(Boolean editStatus) {
+        this.editStatus = editStatus;
+    }
 
+    public void updateDiary(ReqDiaryDto reqDiaryDto, List<Emotion> findEmotions) {
+        this.content = reqDiaryDto.getContent();
+
+        this.keywords.clear();
+        List<Keyword> keywordList = reqDiaryDto.getKeywords().stream()
+                .map(keywordDto -> Keyword.createKeyword(this, keywordDto, findEmotions))
+                .collect(Collectors.toList());
+        this.keywords.addAll(keywordList);
+    }
 }

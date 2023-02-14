@@ -13,11 +13,11 @@
 
 | `400 BAD_REQUEST`
 | 전체
-| 잘못된 요청
+| 요청 형식 자체가 틀림
 
 | `455 INVALID_INPUT_VALUE`
 | 전체
-| 잘못된 입력 형식
+| 잘못된 입력 형식(사이즈, 개수...)
 
 | `456 INVALID_TOKEN`
 | 전체
@@ -46,6 +46,14 @@
 | `471 DIARY_ALREADY_EXIST`
 | 일기 저장
 | 이미 요청한 날짜에 작성된 일기 존재
+
+| `472 RETROSPECT_ALREADY_WRITTEN`
+| 일기 저장
+| 회고가 이미 작성되어 있음
+
+| `473 NOT_IN_WRITABLE_DATE`
+| 일기 저장
+| 작성날짜가 일기 작성 주간이 아님
 |===
 
 
@@ -74,4 +82,16 @@
 | `490 RETROSPECT_NOT_FOUND`
 | 회고 조회/수정
 | 요청한 기간에 작성된 회고 존재하지 않음
+
+| `491 RETROSPECT_ALREADY_EXIST`
+| 회고 저장
+| 이미 요청한 날짜에 작성된 회고 존재
+
+| `492 RETROSPECT_ALL_DONE`
+| 회고 저장
+| 해당 달에 작성한 회고 개수가 5개 이상일 때
+
+| `493 RETROSPECT_TIME_DONE`
+| 회고 저장/수정
+| 회고 작성 기간이 지남
 |===

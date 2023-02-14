@@ -1,7 +1,10 @@
 package com.nanal.backend.global.config;
 
-import com.nanal.backend.global.exception.ExceptionFilter;
-import com.nanal.backend.global.security.jwt.JwtAuthFilter;
+import com.nanal.backend.global.security.filter.ExceptionFilter;
+import com.nanal.backend.global.security.filter.JwtAuthFilter;
+import com.nanal.backend.global.security.oauth.CustomOAuth2UserService;
+import com.nanal.backend.global.security.oauth.OAuth2FailureHandler;
+import com.nanal.backend.global.security.oauth.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,10 +20,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
     private final ExceptionFilter exceptionFilter;
-
     private final JwtAuthFilter jwtAuthFilter;
+
     // Filter 제외 요청들
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -37,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
-                .authorizeRequests().antMatchers("/auth/**", "/docs/**", "/favicon.ico").permitAll()
+                .authorizeRequests().antMatchers("/main","/auth/**", "/docs/**", "/favicon.ico").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

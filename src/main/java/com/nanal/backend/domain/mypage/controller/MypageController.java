@@ -13,7 +13,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 
 
 @RequiredArgsConstructor
@@ -41,12 +40,12 @@ public class MypageController {
      */
     @PutMapping("/mypage/nickname")
     public CommonResponse<?> updateNickname(@AuthenticationPrincipal User user,
-                                                              @RequestBody @Valid ReqEditNicknameDto reqEditNickname) {
+                                            @RequestBody @Valid ReqEditNicknameDto reqEditNickname) {
 
         // 닉네임 변경
-        RespEditNicknameDto respEditNicknameDto = mypageService.updateNickname(user.getSocialId(), reqEditNickname);
+        mypageService.updateNickname(user.getSocialId(), reqEditNickname);
 
-        return new CommonResponse<>(respEditNicknameDto);
+        return new CommonResponse<>(ErrorCode.SUCCESS);
     }
 
     /**
@@ -59,7 +58,8 @@ public class MypageController {
         // 회고일 변경 가능 여부
         RespCheckChangeAvailability respCheckChangeAvailability = mypageService.checkChangeAvailability(user.getSocialId());
 
-        return new CommonResponse<>(respCheckChangeAvailability);
+        if(respCheckChangeAvailability.getChangeableDate() == null) return new CommonResponse<>(respCheckChangeAvailability);
+        else return new CommonResponse<>(ErrorCode.SUCCESS_BUT, respCheckChangeAvailability);
     }
 
     /**
@@ -86,6 +86,18 @@ public class MypageController {
         RespGetServiceLife respGetServiceLife = mypageService.getServiceLife(user.getSocialId());
 
         return new CommonResponse<>(respGetServiceLife);
+    }
+
+    /**
+     * 로그아웃
+     */
+    @GetMapping("/mypage/logout")
+    public CommonResponse<?> logout(@AuthenticationPrincipal User user) {
+
+        // 로그 아웃
+        mypageService.logout(user.getSocialId());
+
+        return new CommonResponse<>(ErrorCode.SUCCESS);
     }
 
     /**

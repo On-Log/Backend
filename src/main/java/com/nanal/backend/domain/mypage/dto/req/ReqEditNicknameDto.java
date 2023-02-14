@@ -14,6 +14,6 @@ import javax.validation.constraints.Size;
 @Data
 public class ReqEditNicknameDto {
     @NotBlank(message = "nickname 은 비어있을 수 없습니다.")
-    @Size(max = 7, message="nickname 은 최대 7개의 문자만 입력 가능합니다.")
+    @Size(min = 1, max = 7, message="nickname 은 최소 1개, 최대 7개의 문자만 입력 가능합니다.")
     private String nickname;
 }

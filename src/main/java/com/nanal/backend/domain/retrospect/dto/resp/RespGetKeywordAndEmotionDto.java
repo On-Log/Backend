@@ -5,7 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 @AllArgsConstructor
@@ -13,10 +17,19 @@ import java.util.List;
 @Builder
 @Data
 public class RespGetKeywordAndEmotionDto {
+    @NotNull(message = "boolean 값은 비어있을 수 없습니다.")
+    private Boolean isInTime;
 
-    private List<KeywordWriteDateDto> keywords;
+    @NotNull(message = "currentTime 값이 올바르지 않습니다.")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime currentTime;
 
-    public static RespGetKeywordAndEmotionDto makeRespGetKeywordAndEmotionDto(List<Diary> diaries){
+    private List<KeywordWriteDateDto> weeklyKeywords;
+
+    @NotBlank(message = "list는 비어있을 수 없습니다.")
+    List<CountEmotion> countEmotions;
+
+    public static RespGetKeywordAndEmotionDto makeRespGetKeywordAndEmotionDto(boolean isInTime, LocalDateTime currentTime, List<Diary> diaries, List<CountEmotion> countEmotions){
         List<KeywordWriteDateDto> keywordList = new ArrayList<>();
         for(Diary d : diaries) {
             KeywordWriteDateDto keywordWriteDateDto = KeywordWriteDateDto.makeKeywordWriteDateDto(d);
@@ -24,7 +37,10 @@ public class RespGetKeywordAndEmotionDto {
             keywordList.add(keywordWriteDateDto);
         }
         RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.builder()
-                .keywords(keywordList)
+                .isInTime(isInTime)
+                .currentTime(currentTime)
+                .weeklyKeywords(keywordList)
+                .countEmotions(countEmotions)
                 .build();
 
         return respGetKeywordAndEmotionDto;

@@ -2,9 +2,10 @@ package com.nanal.backend.domain.retrospect.controller;
 
 import com.nanal.backend.config.CommonControllerTest;
 import com.nanal.backend.domain.diary.dto.req.KeywordEmotionDto;
-import com.nanal.backend.domain.retrospect.dto.QuestionsDto;
-import com.nanal.backend.domain.retrospect.dto.RetrospectContentDto;
-import com.nanal.backend.domain.retrospect.dto.RetrospectKeywordDto;
+import com.nanal.backend.domain.retrospect.dto.resp.ExtraQuestionsDto;
+import com.nanal.backend.domain.retrospect.dto.resp.QuestionsDto;
+import com.nanal.backend.domain.retrospect.dto.resp.RetrospectContentDto;
+import com.nanal.backend.domain.retrospect.dto.resp.RetrospectKeywordDto;
 import com.nanal.backend.domain.retrospect.dto.req.*;
 import com.nanal.backend.domain.retrospect.dto.resp.*;
 import com.nanal.backend.domain.retrospect.service.RetrospectService;
@@ -86,7 +87,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
                 new RespGetClassifiedKeywordDto(classifyDtos3, "돌아보니, 다른 의미로 다가온 기억")
         ));
 
-        RespGetInfoDto respGetInfoDto = new RespGetInfoDto(new ArrayList<>(Arrays.asList("자아탐색", "성취확인")), 6, respGetClassifiedKeywordDtos);
+        RespGetInfoDto respGetInfoDto = new RespGetInfoDto(new ArrayList<>(Arrays.asList("자아탐색", "성취확인")), 6, true, respGetClassifiedKeywordDtos);
         given(retrospectService.getInfo(any(), any())).willReturn(respGetInfoDto);
 
         //when
@@ -116,6 +117,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("message").description("결과 메시지"),
                                         fieldWithPath("result.existRetrospect").description("회고 목적"),
                                         fieldWithPath("result.betweenDate").description("다음 회고까지 남은 날"),
+                                        fieldWithPath("result.countRetrospect").description("회고 개수 체크. 5개 이상일 시, false 보내 줌"),
                                         fieldWithPath("result.keywordList[].val").description("키워드 분류 주제"),
                                         fieldWithPath("result.keywordList[].classify[].weeklykeywords[].keyword").description("주차별 키워드. 1차 회고부터 순서대로임")
 
@@ -258,6 +260,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
     public void 일기_키워드_감정어_조회() throws Exception{
         //given
         String currentDate = "2023-01-24T00:00:00";
+        boolean isInTime = true;
         List<KeywordEmotionDto> keywordEmotionDtoList = new ArrayList<>(Arrays.asList(
                 new KeywordEmotionDto("아쉬움"),
                 new KeywordEmotionDto("복잡"),
@@ -265,13 +268,20 @@ public class RetrospectControllerTest extends CommonControllerTest {
         ));
 
         List<KeywordDto> keywordDtoList = new ArrayList<>(Arrays.asList(
-                new KeywordDto("창업", keywordEmotionDtoList),
-                new KeywordDto("취업", keywordEmotionDtoList),
-                new KeywordDto("막학기", keywordEmotionDtoList)
+                new KeywordDto("20230124_0","창업", keywordEmotionDtoList),
+                new KeywordDto("20230124_1","취업", keywordEmotionDtoList),
+                new KeywordDto("20230124_2","막학기", keywordEmotionDtoList)
         ));
 
-        List<KeywordWriteDateDto> keywordWriteDateDtos = new ArrayList<>(Arrays.asList(new KeywordWriteDateDto(LocalDateTime.parse("2023-01-21T00:00:00"),keywordDtoList)));
-        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = new RespGetKeywordAndEmotionDto(keywordWriteDateDtos);
+        List<CountEmotion> countEmotions = new ArrayList<>(Arrays.asList(
+                new CountEmotion("행복", 1),
+                new CountEmotion("여유", 0),
+                new CountEmotion("안심", 0)
+        ));
+
+
+        List<KeywordWriteDateDto> keywordWriteDateDtos = new ArrayList<>(Arrays.asList(new KeywordWriteDateDto(LocalDateTime.parse("2023-01-24T00:00:00"),keywordDtoList)));
+        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = new RespGetKeywordAndEmotionDto(isInTime,LocalDateTime.parse("2023-01-24T00:00:00"),keywordWriteDateDtos, countEmotions);
         given(retrospectService.getKeywordAndEmotion(any(), any())).willReturn(respGetKeywordAndEmotionDto);
 
         //when
@@ -297,14 +307,84 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
-                                        fieldWithPath("result.keywords[].writeDate").description("일기 작성 날짜"),
-                                        fieldWithPath("result.keywords[].keywords[].keyword").description("해당 날짜에 작성한 일기 키워드"),
-                                        fieldWithPath("result.keywords[].keywords[].keywordEmotions[].emotion").description("키워드에 해당하는 감정어")
+                                        fieldWithPath("result.isInTime").description("자정 안에 API 호출했는지 여부. 자정 안에 호출했다면 true"),
+                                        fieldWithPath("result.currentTime").description("서버에게 요청 한 시간"),
+                                        fieldWithPath("result.weeklyKeywords[].writeDate").description("일기 작성 날짜"),
+                                        fieldWithPath("result.weeklyKeywords[].keywords[].specifyKey").description("키워드 고유 키"),
+                                        fieldWithPath("result.weeklyKeywords[].keywords[].keyword").description("해당 날짜에 작성한 일기 키워드"),
+                                        fieldWithPath("result.weeklyKeywords[].keywords[].keywordEmotions[].emotion").description("키워드에 해당하는 감정어"),
+                                        fieldWithPath("result.countEmotions[].emotion").description("감정어"),
+                                        fieldWithPath("result.countEmotions[].frequency").description("감정어 선택 빈도")
                                 )
                         )
                 );
 
     }
+
+    @Test
+    public void 자정_이후_호출() throws Exception{
+        //given
+        String currentDate = "2023-01-24T00:00:00";
+        boolean isInTime = false;
+        List<KeywordEmotionDto> keywordEmotionDtoList = new ArrayList<>(Arrays.asList(
+                new KeywordEmotionDto("아쉬움"),
+                new KeywordEmotionDto("복잡"),
+                new KeywordEmotionDto("기대")
+        ));
+
+        List<KeywordDto> keywordDtoList = new ArrayList<>(Arrays.asList(
+                new KeywordDto("20230124_0","창업", keywordEmotionDtoList),
+                new KeywordDto("20230124_1","취업", keywordEmotionDtoList),
+                new KeywordDto("20230124_2","막학기", keywordEmotionDtoList)
+        ));
+
+        List<CountEmotion> countEmotions = new ArrayList<>(Arrays.asList(
+                new CountEmotion("행복", 1),
+                new CountEmotion("여유", 0),
+                new CountEmotion("안심", 0)
+        ));
+
+        List<KeywordWriteDateDto> keywordWriteDateDtos = new ArrayList<>(Arrays.asList(new KeywordWriteDateDto(LocalDateTime.parse("2023-01-24T00:00:00"),keywordDtoList)));
+        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = new RespGetKeywordAndEmotionDto(isInTime,LocalDateTime.parse("2023-01-24T00:00:00"),keywordWriteDateDtos, countEmotions);
+        given(retrospectService.getKeywordAndEmotion(any(), any())).willReturn(respGetKeywordAndEmotionDto);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/retrospect/keyword")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("currentDate", currentDate)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestParameters(
+                                        parameterWithName("currentDate").description("현재 날짜")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.isInTime").description("자정 안에 API 호출했는지 여부. 자정 안에 호출했다면 true"),
+                                        fieldWithPath("result.currentTime").description("서버에게 요청 한 시간"),
+                                        fieldWithPath("result.weeklyKeywords[].writeDate").description("일기 작성 날짜"),
+                                        fieldWithPath("result.weeklyKeywords[].keywords[].specifyKey").description("키워드 고유 키"),
+                                        fieldWithPath("result.weeklyKeywords[].keywords[].keyword").description("해당 날짜에 작성한 일기 키워드"),
+                                        fieldWithPath("result.weeklyKeywords[].keywords[].keywordEmotions[].emotion").description("키워드에 해당하는 감정어"),
+                                        fieldWithPath("result.countEmotions[].emotion").description("감정어"),
+                                        fieldWithPath("result.countEmotions[].frequency").description("감정어 선택 빈도")
+                                )
+                        )
+                );
+
+    }
+
 
     @Test
     public void 회고질문_도움말_조회() throws Exception {
@@ -346,4 +426,148 @@ public class RetrospectControllerTest extends CommonControllerTest {
                 );
     }
 
+    @Test
+    public void 추가질문_도움말_조회() throws Exception {
+        //given
+        int goalIndex = 1;
+        List<ExtraQuestionsDto> extraQuestionsDtos = new ArrayList<>(Arrays.asList(new ExtraQuestionsDto("이번주 나의 모습은 어땠나요?", "이번주 나의 모습을 묘사하기 어려우신가요? 가장 먼저 떠오르는 내 모습, 혹은 가장 자주 보였던 나의 모습을 떠올려보세요."),
+                new ExtraQuestionsDto("다른 내 모습도 들려줄래요? 이번주에 찾은 의외의 내 모습이 있다면요?", "우리의 일주일은 한가지 색만으로 이루어져있지 않아요! 가장 사소한 일부터 차근 차근 생각해보세요.")));
+        RespGetExtraQuestionAndHelpDto respGetExtraQuestionAndHelpDto = new RespGetExtraQuestionAndHelpDto(extraQuestionsDtos );
+        given(retrospectService.getExtraQuestionAndHelp(any(), any())).willReturn(respGetExtraQuestionAndHelpDto);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/retrospect/extra")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("goalIndex", String.valueOf(goalIndex))
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestParameters(
+                                        parameterWithName("goalIndex").description("선택한 회고 목적 1.자아탐색 2.성취확인 3.감정정리 4.관계고민")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.questionAndHelp[].question").description("회고 목적에 대한 질문"),
+                                        fieldWithPath("result.questionAndHelp[].help").description("질문에 대한 도움말")
+                                )
+                        )
+                );
+    }
+
+    @Test
+    public void 회고_존재_여부_및_변경_이후_첫_회고_여부_체크() throws Exception {
+        //given
+        String currentDate = "2023-01-24T00:00:00";
+        RespCheckFirstRetrospect respCheckFirstRetrospect = RespCheckFirstRetrospect.notFirstRetrospectAfterChange(false);
+        given(retrospectService.checkFirstRetrospect(any(), any())).willReturn(respCheckFirstRetrospect);
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/retrospect/exist")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("currentDate", currentDate)
+        );
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestParameters(
+                                        parameterWithName("currentDate").description("현재 날짜")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.firstRetrospect").description("회고일 변경 이후 첫 회고인지. false이면 첫 회고 아님.")
+
+                                )
+                        )
+                );
+
+    }
+    @Test
+    public void 회고_이미_존재() throws Exception {
+        //given
+        String currentDate = "2023-01-24T00:00:00";
+        boolean output = true;
+        given(retrospectService.checkRetrospect(any(), any())).willReturn(output);
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/retrospect/exist")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("currentDate", currentDate)
+        );
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestParameters(
+                                        parameterWithName("currentDate").description("현재 날짜")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지")
+
+                                )
+                        )
+                );
+
+    }
+
+    @Test
+    public void 회고_없음_회고_변경_이후_첫_회고() throws Exception {
+        //given
+        String currentDate = "2023-01-24T00:00:00";
+        RespCheckFirstRetrospect respCheckFirstRetrospect = RespCheckFirstRetrospect.firstRetrospectAfterChange(true);
+        given(retrospectService.checkFirstRetrospect(any(), any())).willReturn(respCheckFirstRetrospect);
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/retrospect/exist")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("currentDate", currentDate)
+        );
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestParameters(
+                                        parameterWithName("currentDate").description("현재 날짜")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.firstRetrospect").description("회고일 변경 이후 첫 회고인지. false이면 첫 회고 아님.")
+
+                                )
+                        )
+                );
+
+    }
 }

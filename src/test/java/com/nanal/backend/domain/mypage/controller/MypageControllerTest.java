@@ -61,9 +61,9 @@ public class MypageControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
-                                        fieldWithPath("result.userNickname").description("유저 닉네임"),
-                                        fieldWithPath("result.userEmail").description("유저 이메일"),
-                                        fieldWithPath("result.userRetrospectDay").description("유저의 회고일")
+                                        fieldWithPath("result.nickname").description("유저 닉네임"),
+                                        fieldWithPath("result.email").description("유저 이메일"),
+                                        fieldWithPath("result.retrospectDay").description("유저의 회고일")
                                 )
                         )
                 );
@@ -72,16 +72,15 @@ public class MypageControllerTest extends CommonControllerTest {
     @Test
     public void 닉네임_변경() throws Exception {
         //given
-        ReqEditNicknameDto reqEditNicknameDto = new ReqEditNicknameDto("변경 닉네임");
-        RespEditNicknameDto respEditNicknameDto = new RespEditNicknameDto("변경 닉네임");
-        given(mypageService.updateNickname(any(), any())).willReturn(respEditNicknameDto);
+        ReqEditNicknameDto input = new ReqEditNicknameDto("변경 닉네임");
+        willDoNothing().given(mypageService).updateNickname(any(), any());
 
         //when
         ResultActions actions = mockMvc.perform(
                 put("/mypage/nickname")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reqEditNicknameDto))
+                        .content(objectMapper.writeValueAsString(input))
         );
 
         //then
@@ -98,8 +97,7 @@ public class MypageControllerTest extends CommonControllerTest {
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
-                                        fieldWithPath("message").description("결과 메시지"),
-                                        fieldWithPath("result.nickname").description("변경한 닉네임")
+                                        fieldWithPath("message").description("결과 메시지")
                                 )
                         )
                 );
@@ -108,10 +106,10 @@ public class MypageControllerTest extends CommonControllerTest {
     @Test
     public void 회고일_변경_가능_여부() throws Exception {
         //given
-        RespCheckChangeAvailability output = RespCheckChangeAvailability.builder()
-                .nextChangeableDate(LocalDateTime.of(2023, 1, 12, 6, 0))
-                .curRetrospectDay(DayOfWeek.SUNDAY)
-                .build();
+        RespCheckChangeAvailability output = RespCheckChangeAvailability.changeable(
+                LocalDateTime.of(2023, 1, 12, 6, 0),
+                DayOfWeek.SUNDAY);
+
         given(mypageService.checkChangeAvailability(any())).willReturn(output);
 
         //when
@@ -143,9 +141,10 @@ public class MypageControllerTest extends CommonControllerTest {
     @Test
     public void 회고일_변경_불가능() throws Exception {
         //given
-        given(mypageService.checkChangeAvailability(any())).willThrow(new ChangeRetrospectDateException(
-                ErrorCode.RETROSPECT_DATE_CHANGE_IMPOSSIBLE.getMessage(),
-                LocalDateTime.of(2023, 1, 12, 6, 0)));
+        RespCheckChangeAvailability output = RespCheckChangeAvailability.unchangeable(
+                LocalDateTime.of(2023, 1, 15, 8, 0));
+
+        given(mypageService.checkChangeAvailability(any())).willReturn(output);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -155,7 +154,7 @@ public class MypageControllerTest extends CommonControllerTest {
 
         //then
         actions
-                .andExpect(status().is(481))
+                .andExpect(status().isOk())
                 .andDo(
                         restDocs.document(
                                 requestHeaders(
@@ -165,7 +164,7 @@ public class MypageControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
-                                        fieldWithPath("result").description("다음 회고 변경 가능일")
+                                        fieldWithPath("result.changeableDate").description("회고 변경 가능일")
                                 )
                         )
                 );
@@ -175,7 +174,7 @@ public class MypageControllerTest extends CommonControllerTest {
     @Test
     public void 회고일_변경() throws Exception {
         //given
-        ReqEditRetrospectDayDto reqEditRetrospectDayDto = new ReqEditRetrospectDayDto(LocalDate.of(2023, 1, 12).getDayOfWeek());
+        ReqEditRetrospectDayDto reqEditRetrospectDayDto = new ReqEditRetrospectDayDto(LocalDate.of(2023, 1, 12).getDayOfWeek().toString());
         willDoNothing().given(mypageService).updateRetrospectDay(any(), any());
 
         //when
@@ -233,6 +232,35 @@ public class MypageControllerTest extends CommonControllerTest {
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
                                         fieldWithPath("result.serviceLife").description("서비스 사용기간")
+                                )
+                        )
+                );
+
+    }
+
+    @Test
+    public void 로그아웃() throws Exception {
+        //given
+        willDoNothing().given(mypageService).logout(any());
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/mypage/logout")
+                        .header("Token", "ACCESS_TOKEN")
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지")
                                 )
                         )
                 );

@@ -17,11 +17,11 @@ import java.util.List;
 public class ReqWithdrawMembership {
 
     @Valid
-    @Size(min = 1, max = 4, message ="reason의 개수는 최소 1개, 최대 4개입니다.")
+    @Size(min = 1, max = 4, message ="reason 의 개수는 최소 1개, 최대 4개입니다.")
     private List<Reason> reasons;
 
-    @NotBlank(message = "detail는 비어있을 수 없습니다.")
-    @Size(max = 500, message="detail은 최대 500개의 문자만 입력 가능합니다.")
+    @NotBlank(message = "detail 는 비어있을 수 없습니다.")
+    @Size(min = 1, max = 500, message="detail 은 최소 1개, 최대 500개의 문자만 입력 가능합니다.")
     private String detail;
 
     @Builder
@@ -29,8 +29,8 @@ public class ReqWithdrawMembership {
     @NoArgsConstructor
     @Data
     static public class Reason {
-        @NotBlank(message = "content는 비어있을 수 없습니다.")
-        @Size(max = 50, message="content는 최대 50개의 문자만 입력 가능합니다.")
+        @NotBlank(message = "content 는 비어있을 수 없습니다.")
+        @Size(min = 1, max = 50, message="content 는 최소 1개, 최대 50개의 문자만 입력 가능합니다.")
         private String content;
     }
 }

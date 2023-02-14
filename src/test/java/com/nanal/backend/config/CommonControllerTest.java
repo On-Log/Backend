@@ -5,8 +5,10 @@ import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.global.interceptor.AuthInterceptor;
 import com.nanal.backend.global.security.AuthenticationUtil;
-import com.nanal.backend.global.security.User;
 import com.nanal.backend.global.security.jwt.TokenUtil;
+import com.nanal.backend.global.security.oauth.CustomOAuth2UserService;
+import com.nanal.backend.global.security.oauth.OAuth2FailureHandler;
+import com.nanal.backend.global.security.oauth.OAuth2SuccessHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +20,7 @@ import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -55,6 +56,17 @@ public class CommonControllerTest {
     @MockBean
     public MemberRepository memberRepository;
 
+    @MockBean
+    public CustomOAuth2UserService customOAuth2UserService;
+
+    @MockBean
+    public OAuth2SuccessHandler oAuth2SuccessHandler;
+
+    @MockBean
+    public OAuth2FailureHandler oAuth2FailureHandler;
+
+    @MockBean
+    public ClientRegistrationRepository clientRegistrationRepository;
 
     @BeforeEach
     public void setUp(WebApplicationContext context, RestDocumentationContextProvider provider) throws Exception {
@@ -71,9 +83,9 @@ public class CommonControllerTest {
         // user.getSocialId() 에서 NullPointerException 방지를 위한 Authentication 생성
         AuthenticationUtil.makeAuthentication(member.getSocialId(), member.getEmail());
 
-        given(tokenUtil.verifyToken(any())).willReturn(true);
-        given(tokenUtil.getUid(any())).willReturn(member.getSocialId());
-        given(memberRepository.findBySocialId(any())).willReturn(Optional.of(member));
+        //given(tokenUtil.verifyToken(any())).willReturn(true);
+        //given(tokenUtil.getSocialId(any())).willReturn(member.getSocialId());
+        //given(tokenUtil.getEmail(any())).willReturn(member.getEmail());
 
         //인터셉터 통과
         given(authInterceptor.preHandle(any(), any(), any())).willReturn(true);

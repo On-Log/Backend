@@ -1,22 +1,40 @@
 package com.nanal.backend.domain.auth.service;
 
 import com.nanal.backend.domain.auth.dto.GoogleUserResponseDto;
+import com.nanal.backend.domain.auth.dto.KakaoAccessTokenResponseDto;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.auth.enumerate.MemberProvider;
+import com.nanal.backend.global.exception.customexception.TokenInvalidException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.StringTokenizer;
 
 @Component
 @RequiredArgsConstructor
 public class ClientGoogle {
 
+    @Value("${app-id.google}")
+    private String appId;
+
     private final WebClient webClient;
+
+    public void verifyAccessToken(String aud) {
+        String appId = Arrays.stream(aud.split("-"))
+                .findFirst()
+                .orElseThrow(() -> TokenInvalidException.EXCEPTION);
+
+        if(!aud.equals(appId)) throw TokenInvalidException.EXCEPTION;
+    }
 
     public Member getUserData(String accessToken) {
         GoogleUserResponseDto googleUserResponseDto = webClient.get()
@@ -27,6 +45,8 @@ public class ClientGoogle {
                 .onStatus(HttpStatus::is5xxServerError, response -> Mono.error(new RuntimeException("Internal Server Error")))
                 .bodyToMono(GoogleUserResponseDto.class)
                 .block();
+
+        verifyAccessToken(googleUserResponseDto.getAud());
 
         googleUserResponseDto.adaptResponse();
 

@@ -17,8 +17,8 @@ import java.util.List;
 @Data
 public class RespGetInfoDto {
     //유저 닉네임
-    @NotNull(message = "nickName 값은 비어있을 수 없습니다.")
-    String nickName;
+    @NotNull(message = "nickname 값은 비어있을 수 없습니다.")
+    String nickname;
     //회고 목적
     @NotBlank(message = "list는 비어있을 수 없습니다.")
     List<String> existRetrospect;
@@ -36,9 +36,9 @@ public class RespGetInfoDto {
     //키워드 분류하고, 주차별로 나누기
     List<RespGetClassifiedKeywordDto> keywordList;
 
-    public static RespGetInfoDto makeRespGetInfoDto(String nickName, List<String> existRetrospect, int betweenDate, boolean countRetrospect, List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos){
+    public static RespGetInfoDto makeRespGetInfoDto(String nickname, List<String> existRetrospect, int betweenDate, boolean countRetrospect, List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos){
         RespGetInfoDto respGetInfoDto = RespGetInfoDto.builder()
-                .nickName(nickName)
+                .nickname(nickname)
                 .existRetrospect(existRetrospect)
                 .betweenDate(betweenDate)
                 .countRetrospect(countRetrospect)

@@ -115,7 +115,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
-                                        fieldWithPath("result.nickName").description("사용자 닉네임"),
+                                        fieldWithPath("result.nickname").description("사용자 닉네임"),
                                         fieldWithPath("result.existRetrospect").description("회고 목적"),
                                         fieldWithPath("result.betweenDate").description("다음 회고까지 남은 날"),
                                         fieldWithPath("result.countRetrospect").description("회고 개수 체크. 5개 이상일 시, false 보내 줌"),

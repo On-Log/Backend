@@ -1,6 +1,7 @@
 package com.nanal.backend.global.slack;
 
 import com.nanal.backend.domain.auth.event.RegisterEvent;
+import com.nanal.backend.global.config.SchedulingConfig;
 import com.slack.api.Slack;
 import com.slack.api.methods.SlackApiException;
 import lombok.extern.slf4j.Slf4j;
@@ -38,5 +39,20 @@ public class SlackAlertHandler {
         }
     }
 
+    @TransactionalEventListener(
+            phase = TransactionPhase.AFTER_COMMIT,
+            classes = SchedulingConfig.SchedulingEvent.class
+    )
+    public void publishSchedulingEvent(SchedulingConfig.SchedulingEvent schedulingEvent){
+        try{
+            String message = "[Scheduling Info] \n" +
+                    "Message : " + schedulingEvent.getMessage();
 
+            Slack slack = Slack.getInstance();
+            slack.methods(token).chatPostMessage(req -> req.channel(channel).text(message));
+
+        } catch (SlackApiException | IOException e) {
+            log.error(e.getMessage());
+        }
+    }
 }

@@ -85,7 +85,8 @@ public class CommonExceptionHandler {
     @ExceptionHandler(Exception.class)
     public CommonResponse<?> internalServerErrorHandler(HttpServletResponse response, Exception e) {
         response.setStatus(ErrorCode.INTERNAL_SERVER_ERROR.getCode());
-        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(), e.getClass().getSimpleName(), e.getMessage());
+        log.error("[{}] {}", e.getClass().getSimpleName(), e.getMessage());
+        //log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(), e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 }

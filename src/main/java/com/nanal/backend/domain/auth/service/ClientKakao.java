@@ -24,22 +24,10 @@ public class ClientKakao{
 
     private final WebClient webClient;
 
-    public void verifyAccessToken(String accessToken) {
-        KakaoAccessTokenResponseDto kakaoAccessTokenResponseDto = webClient.get()
-                .uri("https://kapi.kakao.com/v1/user/access_token_info") // KAKAO의 유저 정보 받아오는 url
-                .headers(h -> h.setBearerAuth(accessToken)) // JWT 토큰을 Bearer 토큰으로 지정
-                .retrieve()
-                // 아래의 onStatus는 error handling
-                .onStatus(HttpStatus::is4xxClientError, response -> Mono.error(TokenInvalidException.EXCEPTION))
-                .onStatus(HttpStatus::is5xxServerError, response -> Mono.error(new RuntimeException("Internal Server Error")))
-                .bodyToMono(KakaoAccessTokenResponseDto.class) // KAKAO의 유저 정보를 넣을 Dto 클래스
-                .block();
-
-        if(!kakaoAccessTokenResponseDto.getAppId().equals(appId)) throw TokenInvalidException.EXCEPTION;
-    }
-
-
     public Member getUserData(String accessToken) {
+        // Access Token 검증
+        verifyAccessToken(accessToken);
+
         KakaoUserResponseDto kakaoUserResponseDto = webClient.get()
                 .uri("https://kapi.kakao.com/v2/user/me") // KAKAO의 유저 정보 받아오는 url
                 .headers(h -> h.setBearerAuth(accessToken)) // JWT 토큰을 Bearer 토큰으로 지정
@@ -68,5 +56,17 @@ public class ClientKakao{
                 .build();
     }
 
+    public void verifyAccessToken(String accessToken) {
+        KakaoAccessTokenResponseDto kakaoAccessTokenResponseDto = webClient.get()
+                .uri("https://kapi.kakao.com/v1/user/access_token_info") // Access Token 정보 요청
+                .headers(h -> h.setBearerAuth(accessToken)) // JWT 토큰을 Bearer 토큰으로 지정
+                .retrieve()
+                // 아래의 onStatus는 error handling
+                .onStatus(HttpStatus::is4xxClientError, response -> Mono.error(TokenInvalidException.EXCEPTION))
+                .onStatus(HttpStatus::is5xxServerError, response -> Mono.error(new RuntimeException("Internal Server Error")))
+                .bodyToMono(KakaoAccessTokenResponseDto.class) // Access Token 정보를 넣을 Dto 클래스
+                .block();
 
+        if(!kakaoAccessTokenResponseDto.getAppId().equals(appId)) throw TokenInvalidException.EXCEPTION;
+    }
 }

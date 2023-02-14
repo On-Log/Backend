@@ -9,5 +9,5 @@ import javax.validation.constraints.NotNull;
 public class ReqGetGoalDto {
 
     @NotNull(message = "goalIndex는 비어있을 수 없습니다.")
-    private Long goalIndex;
+    private String goal;
 }

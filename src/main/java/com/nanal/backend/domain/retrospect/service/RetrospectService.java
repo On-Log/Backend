@@ -9,9 +9,7 @@ import com.nanal.backend.domain.diary.repository.EmotionRepository;
 import com.nanal.backend.domain.retrospect.dto.req.*;
 import com.nanal.backend.domain.retrospect.dto.resp.*;
 import com.nanal.backend.domain.retrospect.entity.*;
-import com.nanal.backend.domain.retrospect.exception.RetrospectAllDoneException;
-import com.nanal.backend.domain.retrospect.exception.RetrospectAlreadyExistException;
-import com.nanal.backend.domain.retrospect.exception.RetrospectTimeDoneException;
+import com.nanal.backend.domain.retrospect.exception.*;
 import com.nanal.backend.domain.retrospect.repository.ExtraQuestionRepository;
 import com.nanal.backend.domain.retrospect.repository.QuestionRepository;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
@@ -20,7 +18,6 @@ import com.nanal.backend.domain.diary.service.DiaryService;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.retrospect.repository.RetrospectKeywordRepository;
 import com.nanal.backend.domain.retrospect.repository.RetrospectRepository;
-import com.nanal.backend.domain.retrospect.exception.RetrospectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
@@ -192,8 +189,9 @@ public class RetrospectService {
 
 
     public RespGetQuestionAndHelpDto getQuestionAndHelp(ReqGetGoalDto reqGetGoalDto) {
+        long goalIndex = getGoalIndex(reqGetGoalDto.getGoal());
         // 회고 질문 + 도움말 조회
-        List<Question> retrospectQuestions = questionRepository.findListByGoal(reqGetGoalDto.getGoalIndex());
+        List<Question> retrospectQuestions = questionRepository.findListByGoal(goalIndex);
 
         RespGetQuestionAndHelpDto respGetQuestionAndHelpDto = RespGetQuestionAndHelpDto.makeRespGetQuestionAndHelpDto(retrospectQuestions);
 
@@ -201,6 +199,7 @@ public class RetrospectService {
     }
 
     public RespGetExtraQuestionAndHelpDto getExtraQuestionAndHelp(String socialId, ReqGetGoalDto reqGetGoalDto){
+        long goalIndex = getGoalIndex(reqGetGoalDto.getGoal());
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
         //유저가 작성한 회고 리스트
@@ -214,7 +213,7 @@ public class RetrospectService {
             }
         }
         // 회고 추가 질문 + 도움말 조회
-        List<ExtraQuestion> extraRetrospectQuestions = extraQuestionRepository.findListByGoal(reqGetGoalDto.getGoalIndex());
+        List<ExtraQuestion> extraRetrospectQuestions = extraQuestionRepository.findListByGoal(goalIndex);
         //작성한 질문 인덱스 담는 리스트
         ArrayList<Integer> windex = new ArrayList<>();
         //아직 모든 질문에 대한 답을 안했을 때
@@ -454,5 +453,17 @@ public class RetrospectService {
             countEmotions.add(countEmotion);
         }
         return countEmotions;
+    }
+
+    private long getGoalIndex(String goal) {
+        if (goal.equals("자아탐색"))
+            return 1;
+        else if (goal.equals("성취확인"))
+            return 2;
+        else if (goal.equals("감정정리"))
+            return 3;
+        else if (goal.equals("관계고민"))
+            return 4;
+        else throw GoalNotFoundException.EXCEPTION;
     }
 }

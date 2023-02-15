@@ -30,11 +30,11 @@ public class ClientGoogle {
     private final WebClient webClient;
 
     public void verifyAccessToken(String aud) {
-        String appId = Arrays.stream(aud.split("-"))
+        String extractedAppId = Arrays.stream(aud.split("-"))
                 .findFirst()
                 .orElseThrow(() -> TokenInvalidException.EXCEPTION);
 
-        if(!aud.equals(appId)) throw TokenInvalidException.EXCEPTION;
+        if(!appId.equals(extractedAppId)) throw TokenInvalidException.EXCEPTION;
     }
 
     public Member getUserData(String accessToken) {

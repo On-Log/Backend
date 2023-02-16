@@ -2,8 +2,11 @@ package com.nanal.backend.domain.auth.controller;
 
 import com.nanal.backend.domain.auth.dto.LoginInfo;
 import com.nanal.backend.domain.auth.dto.req.ReqAuthDto;
+import com.nanal.backend.domain.auth.dto.req.ReqEmailConfirmDto;
 import com.nanal.backend.domain.auth.dto.req.ReqRegisterDto;
+import com.nanal.backend.domain.auth.dto.resp.RespEmailConfirmDto;
 import com.nanal.backend.domain.auth.service.AuthService;
+import com.nanal.backend.domain.auth.service.EmailService;
 import com.nanal.backend.global.response.CommonResponse;
 import com.nanal.backend.global.response.ErrorCode;
 import com.nanal.backend.global.security.jwt.Token;
@@ -20,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 public class AuthController {
 
     private final AuthService authService;
+    private final EmailService emailService;
 
     /**
      * 일반 회원가입 기능
@@ -30,6 +34,14 @@ public class AuthController {
         authService.generalRegister(reqRegisterDto);
 
         return new CommonResponse<>(ErrorCode.SUCCESS);
+    }
+
+    @PostMapping("/auth/emailConfirm")
+    public CommonResponse<?> emailConfirm(@RequestBody ReqEmailConfirmDto reqEmailConfirmDto) throws Exception {
+
+        RespEmailConfirmDto respEmailConfirmDto = emailService.sendSimpleMessage(reqEmailConfirmDto.getEmail());
+
+        return new CommonResponse<>(respEmailConfirmDto);
     }
 
     /**

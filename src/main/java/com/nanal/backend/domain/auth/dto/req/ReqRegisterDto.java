@@ -16,7 +16,7 @@ public class ReqRegisterDto {
 
     private String ageRange;
 
-    private String emailAuthValue;
+    private String emailConfirmValue;
 
     public void encodePassword() {
         this.password = AuthenticationUtil.passwordEncoder.encode(password);

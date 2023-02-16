@@ -71,6 +71,9 @@ dependencies {
     implementation("com.slack.api:bolt:1.27.3")
     implementation("com.slack.api:bolt-servlet:1.27.3")
     implementation("com.slack.api:bolt-jetty:1.27.3")
+
+    // Email 인증
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {

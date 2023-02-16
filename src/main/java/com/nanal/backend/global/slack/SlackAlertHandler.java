@@ -17,9 +17,9 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Component
 public class SlackAlertHandler {
     @Value(value = "${slack.token}")
-    String token;
+    private String token;
     @Value(value = "${slack.channel.monitor}")
-    String channel;
+    private String channel;
 
     @TransactionalEventListener(
             phase = TransactionPhase.AFTER_COMMIT,
@@ -33,7 +33,6 @@ public class SlackAlertHandler {
 
             Slack slack = Slack.getInstance();
             slack.methods(token).chatPostMessage(req -> req.channel(channel).text(message));
-
         } catch (SlackApiException | IOException e) {
             log.error(e.getMessage());
         }

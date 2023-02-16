@@ -4,6 +4,7 @@ import com.nanal.backend.config.CommonControllerTest;
 import com.nanal.backend.domain.auth.dto.LoginInfo;
 import com.nanal.backend.domain.auth.dto.req.ReqAuthDto;
 import com.nanal.backend.domain.auth.service.AuthService;
+import com.nanal.backend.domain.auth.service.EmailService;
 import com.nanal.backend.global.security.jwt.Token;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,6 +26,9 @@ class AuthControllerTest extends CommonControllerTest {
 
     @MockBean
     private AuthService authService;
+
+    @MockBean
+    private EmailService emailService;
 
     @Test
     public void Naver_소셜_로그인() throws Exception {

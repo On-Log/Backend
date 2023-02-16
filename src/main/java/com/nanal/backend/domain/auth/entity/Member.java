@@ -1,11 +1,13 @@
 package com.nanal.backend.domain.auth.entity;
 
+import com.nanal.backend.domain.auth.dto.req.ReqRegisterDto;
 import com.nanal.backend.domain.auth.enumerate.MemberProvider;
 import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.mypage.exception.ChangeRetrospectDateException;
 import com.nanal.backend.domain.mypage.exception.RetrospectDayDupException;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import com.nanal.backend.global.config.BaseTime;
+import com.nanal.backend.global.security.AuthenticationUtil;
 import lombok.*;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
@@ -34,8 +36,11 @@ public class Member extends BaseTime {
     private String socialId;
 
     // RFC 표준상 최대 320자.
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false)
+    private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -92,6 +97,23 @@ public class Member extends BaseTime {
                 .prevRetrospectDate(LocalDateTime.now().minusDays(30))
                 .gender((String) attributes.get("gender"))
                 .ageRange((String) attributes.get("age"))
+                .role(Member.Role.USER)
+                .build();
+    }
+
+    public static Member createNewMember(ReqRegisterDto reqRegisterDto) {
+        return Member.builder()
+                .socialId(MemberProvider.GENERAL + "@" + AuthenticationUtil.passwordEncoder.encode(reqRegisterDto.getEmail()))
+                .provider(MemberProvider.GENERAL)
+                .name(reqRegisterDto.getNickname())
+                .nickname(reqRegisterDto.getNickname())
+                .email(MemberProvider.GENERAL + "#" + reqRegisterDto.getEmail())
+                .password(reqRegisterDto.getPassword())
+                // 당일로 회고일 설정
+                .retrospectDay(LocalDate.now().getDayOfWeek())
+                .prevRetrospectDate(LocalDateTime.now().minusDays(30))
+                .gender(reqRegisterDto.getGender())
+                .ageRange(reqRegisterDto.getAgeRange())
                 .role(Member.Role.USER)
                 .build();
     }

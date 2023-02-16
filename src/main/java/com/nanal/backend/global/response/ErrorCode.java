@@ -27,6 +27,9 @@ public enum ErrorCode {
 
     // Auth
     MEMBER_NOT_FOUND(false, 460, "존재하지 않는 사용자입니다."),
+    EMAIL_ALREADY_EXIST(false, 461, "이미 존재하는 Email 입니다."),
+    ACCOUNT_NOT_EXIST(false, 462, "존재하지 않는 계정입니다."),
+    PASSWORD_INCORRECT(false, 463, "잘못된 비밀번호 입니다."),
 
     // Diary
     // 일기 조회시 해당 날짜에 일기가 존재하지 않을 때.
@@ -52,6 +55,8 @@ public enum ErrorCode {
     RETROSPECT_ALL_DONE(false,492,"이번 달에 작성할 수 있는 모든 회고를 작성했습니다."),
     RETROSPECT_TIME_DONE(false,493,"회고 작성 및 수정은 회고일 당일 11시 59분까지만 가능합니다"),
     GOAL_NOT_FOUND(false,494,"해당 회고 목적은 존재하지 않습니다.");
+
+
     private Boolean isSuccess;
     private int code;
     private String message;

@@ -2,8 +2,10 @@ package com.nanal.backend.domain.auth.controller;
 
 import com.nanal.backend.domain.auth.dto.LoginInfo;
 import com.nanal.backend.domain.auth.dto.req.ReqAuthDto;
+import com.nanal.backend.domain.auth.dto.req.ReqRegisterDto;
 import com.nanal.backend.domain.auth.service.AuthService;
 import com.nanal.backend.global.response.CommonResponse;
+import com.nanal.backend.global.response.ErrorCode;
 import com.nanal.backend.global.security.jwt.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,29 @@ import javax.servlet.http.HttpServletRequest;
 public class AuthController {
 
     private final AuthService authService;
+
+    /**
+     * 일반 회원가입 기능
+     */
+    @PostMapping(value = "/auth/register")
+    public CommonResponse<?> generalRegister(@RequestBody ReqRegisterDto reqRegisterDto) {
+
+        authService.generalRegister(reqRegisterDto);
+
+        return new CommonResponse<>(ErrorCode.SUCCESS);
+    }
+
+    /**
+     * 일반 로그인 기능
+     */
+    @PostMapping(value = "/auth/login")
+    public CommonResponse<?> generalLogin(@RequestBody ReqRegisterDto reqRegisterDto) {
+
+        LoginInfo token = authService.generalLogin(reqRegisterDto);
+
+        return new CommonResponse<>(token);
+    }
+
 
     /**
      * NAVER 소셜 로그인 기능

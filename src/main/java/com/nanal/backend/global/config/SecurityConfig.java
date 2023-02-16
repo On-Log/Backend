@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -22,6 +23,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final ExceptionFilter exceptionFilter;
     private final JwtAuthFilter jwtAuthFilter;
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     // Filter 제외 요청들
     @Override
@@ -39,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
-                .authorizeRequests().antMatchers("/main","/auth/**", "/docs/**", "/favicon.ico").permitAll()
+                .authorizeRequests().antMatchers("/main", "/auth/**", "/docs/**", "/favicon.ico").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

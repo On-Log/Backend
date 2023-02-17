@@ -30,6 +30,7 @@ public enum ErrorCode {
     EMAIL_ALREADY_EXIST(false, 461, "이미 존재하는 Email 입니다."),
     ACCOUNT_NOT_EXIST(false, 462, "존재하지 않는 계정입니다."),
     PASSWORD_INCORRECT(false, 463, "잘못된 비밀번호 입니다."),
+    INVALID_CONFIRM_VALUE(false, 464, "잘못된 인증값 입니다."),
 
     // Diary
     // 일기 조회시 해당 날짜에 일기가 존재하지 않을 때.

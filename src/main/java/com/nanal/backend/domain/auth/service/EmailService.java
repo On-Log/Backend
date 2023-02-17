@@ -1,6 +1,9 @@
 package com.nanal.backend.domain.auth.service;
 
 import com.nanal.backend.domain.auth.dto.resp.RespEmailConfirmDto;
+import com.nanal.backend.domain.auth.enumerate.MemberProvider;
+import com.nanal.backend.domain.auth.exception.EmailAlreadyExistException;
+import com.nanal.backend.domain.auth.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +24,10 @@ public class EmailService {
 
     @Value("${AdminMail.id}")
     private String senderEmail;
+    @Value("${mail.smtp.timeout}")
+    private Long timeout;
 
+    private final MemberRepository memberRepository;
     private final RedisTemplate<String, String> redisTemplate;
     private final JavaMailSender emailSender;
 
@@ -81,6 +87,10 @@ public class EmailService {
     }
 
     public RespEmailConfirmDto sendSimpleMessage(String receiverEmail)throws Exception {
+        // 이미 가입된 이메일인지 체크
+        memberRepository.findByEmail(MemberProvider.GENERAL + "#" + receiverEmail)
+                .ifPresent(m -> { throw EmailAlreadyExistException.EXCEPTION; });
+
         String ePw = createKey();
         // TODO Auto-generated method stub
         MimeMessage message = createMessage(receiverEmail, ePw);
@@ -90,7 +100,7 @@ public class EmailService {
             redisTemplate.opsForValue().set(
                     receiverEmail,
                     ePw,
-                    60L,
+                    timeout,
                     TimeUnit.SECONDS
             );
             log.info("이메일 인증값 저장 완료");

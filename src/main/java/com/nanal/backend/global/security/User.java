@@ -1,7 +1,8 @@
 package com.nanal.backend.global.security;
 
-import com.nanal.backend.domain.auth.entity.Member;
 import lombok.*;
+
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -10,5 +11,5 @@ import lombok.*;
 public class User {
     private String socialId;
     private String email;
-    private String role;
+    private List<String> roles;
 }

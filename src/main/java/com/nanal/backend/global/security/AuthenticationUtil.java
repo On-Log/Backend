@@ -4,12 +4,16 @@ import com.nanal.backend.domain.auth.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -23,16 +27,21 @@ public class AuthenticationUtil {
     }
 
     public static Authentication getAuthentication(User user) {
+
+        List<GrantedAuthority> grantedAuthorities = user.getRoles().stream()
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList());
+
         return new UsernamePasswordAuthenticationToken(user, "",
-                Arrays.asList(new SimpleGrantedAuthority(user.getRole())));
+                grantedAuthorities);
     }
 
-    public static void makeAuthentication(String socialId, String email, String role) {
+    public static void makeAuthentication(String socialId, String email, List<String> roles) {
         // Authentication 정보 만들기
         User user = User.builder()
                 .socialId(socialId)
                 .email(email)
-                .role(role)
+                .roles(roles)
                 .build();
 
         // ContextHolder 에 Authentication 정보 저장

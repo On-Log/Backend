@@ -17,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 
 @Slf4j
 @Component
@@ -49,7 +50,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 Member member = memberRepository.findBySocialId(socialId).get();
 
                 // 이메일로 Authentication 정보 생성
-                AuthenticationUtil.makeAuthentication(socialId, member.getEmail(), member.getRole().getKey());
+                AuthenticationUtil.makeAuthentication(socialId, member.getEmail(), Arrays.asList(member.getRole().getKey()));
             } catch (Exception e) {
                 throw TokenInvalidException.EXCEPTION;
             }

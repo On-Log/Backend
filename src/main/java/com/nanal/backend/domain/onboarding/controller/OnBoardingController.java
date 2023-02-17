@@ -1,6 +1,5 @@
 package com.nanal.backend.domain.onboarding.controller;
 
-import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.onboarding.dto.ReqSetRetrospectDayDto;
 import com.nanal.backend.domain.onboarding.service.OnBoardingService;
 import com.nanal.backend.global.response.CommonResponse;

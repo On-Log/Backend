@@ -71,9 +71,12 @@ public class AuthController {
 
         // 최초 로그인 - 회원가입 후 토큰 발행.
         // 기존 유저 - 토큰 발행.
-        LoginInfo token = authService.commonAuth(reqAuthDto.getAccessToken(), request.getRequestURI());
+        LoginInfo loginInfo = authService.commonAuth(reqAuthDto.getAccessToken(), request.getRequestURI());
 
-        return new CommonResponse<>(token);
+        if(loginInfo.getOnBoarding())
+            return new CommonResponse<>(ErrorCode.SUCCESS_BUT, loginInfo);
+        else
+            return new CommonResponse<>(loginInfo);
     }
 
     /**
@@ -86,7 +89,10 @@ public class AuthController {
         // 기존 유저 - 토큰 발행.
         LoginInfo loginInfo = authService.commonAuth(reqAuthDto.getAccessToken(), request.getRequestURI());
 
-        return new CommonResponse<>(loginInfo);
+        if(loginInfo.getOnBoarding())
+            return new CommonResponse<>(ErrorCode.SUCCESS_BUT, loginInfo);
+        else
+            return new CommonResponse<>(loginInfo);
     }
 
     /**
@@ -99,7 +105,10 @@ public class AuthController {
         // 기존 유저 - 토큰 발행.
         LoginInfo loginInfo = authService.commonAuth(reqAuthDto.getAccessToken(), request.getRequestURI());
 
-        return new CommonResponse<>(loginInfo);
+        if(loginInfo.getOnBoarding())
+            return new CommonResponse<>(ErrorCode.SUCCESS_BUT, loginInfo);
+        else
+            return new CommonResponse<>(loginInfo);
     }
 
 

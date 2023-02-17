@@ -69,26 +69,17 @@ public class AuthService {
         Member member = getUserDataFromPlatform(accessToken, providerInfo);
 
         // 회원가입(가입 정보 없는 유저일 때만) 및 로그인
-        Member loginMember;
-        Optional<Member> findMember = memberRepository.findBySocialId(member.getSocialId());
-        if(isNewMember(findMember)) {
-            Member register = register(member);
-            publisher.publishEvent(new RegisterEvent(register.getNickname(), register.getEmail()));
-            loginMember = register;
-        } else {
-            loginMember = login(findMember);
-        }
+        Member authenticatedMember = auth(member);
 
         // 토큰 생성
-        Token token = tokenUtil.generateToken(loginMember);
+        Token token = tokenUtil.generateToken(authenticatedMember);
         log.info("{}", token);
 
         // Redis에 Refresh Token 저장
-        tokenUtil.storeRefreshToken(loginMember.getSocialId(), token);
+        tokenUtil.storeRefreshToken(authenticatedMember.getSocialId(), token);
 
-        return new LoginInfo(loginMember.getNickname(), token);
+        return new LoginInfo(authenticatedMember.getNickname(), token, authenticatedMember.getRole().equals(Member.Role.ONBOARDER));
     }
-
 
     public Token reissue(String token) {
         // refresh 토큰이 유효한지 확인
@@ -112,13 +103,16 @@ public class AuthService {
 
     private Member auth(Member member) {
         Optional<Member> findMember = memberRepository.findBySocialId(member.getSocialId());
-        if(isNewMember(findMember)) {
-            Member register = register(member);
-            publisher.publishEvent(new RegisterEvent(register.getNickname(), register.getEmail()));
+        if(isNewMember(findMember))
+            return joinMembership(member);
+        else
+            return login(findMember);
+    }
 
-            return register;
-        }
-        else return login(findMember);
+    private Member joinMembership(Member member) {
+        Member newMember = register(member);
+        publisher.publishEvent(new RegisterEvent(newMember.getNickname(), newMember.getEmail()));
+        return newMember;
     }
 
     private static boolean isNewMember(Optional<Member> findMember) {

@@ -43,6 +43,7 @@ class AuthControllerTest extends CommonControllerTest {
                 .nickname("유저 닉네임")
                 .token("SERVER_ACCESS_TOKEN")
                 .refreshToken("SERVER_REFRESH_TOKEN")
+                .onBoarding(false)
                 .build();
 
         given(authService.commonAuth(any(), any())).willReturn(output);
@@ -87,6 +88,7 @@ class AuthControllerTest extends CommonControllerTest {
                 .nickname("유저 닉네임")
                 .token("SERVER_ACCESS_TOKEN")
                 .refreshToken("SERVER_REFRESH_TOKEN")
+                .onBoarding(false)
                 .build();
 
         given(authService.commonAuth(any(), any())).willReturn(output);
@@ -131,6 +133,7 @@ class AuthControllerTest extends CommonControllerTest {
                 .nickname("유저 닉네임")
                 .token("SERVER_ACCESS_TOKEN")
                 .refreshToken("SERVER_REFRESH_TOKEN")
+                .onBoarding(false)
                 .build();
 
         given(authService.commonAuth(any(), any())).willReturn(output);

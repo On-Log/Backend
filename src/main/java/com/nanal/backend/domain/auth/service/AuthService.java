@@ -4,21 +4,16 @@ import com.nanal.backend.domain.auth.dto.LoginInfo;
 import com.nanal.backend.domain.auth.dto.req.ReqRegisterDto;
 import com.nanal.backend.domain.auth.enumerate.MemberProvider;
 import com.nanal.backend.domain.auth.event.RegisterEvent;
-import com.nanal.backend.domain.auth.exception.AccountNotExistException;
-import com.nanal.backend.domain.auth.exception.EmailAlreadyExistException;
-import com.nanal.backend.domain.auth.exception.PasswordIncorrectException;
+import com.nanal.backend.domain.auth.exception.*;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.global.security.AuthenticationUtil;
 import com.nanal.backend.global.security.jwt.Token;
 import com.nanal.backend.global.security.jwt.TokenUtil;
-import com.nanal.backend.domain.auth.exception.RefreshTokenInvalidException;
-import com.nanal.backend.global.slack.SlackAlertHandler;
-import com.slack.api.model.Login;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -37,9 +32,12 @@ public class AuthService {
     private final ClientKakao clientKakao;
     private final ClientGoogle clientGoogle;
     private final ApplicationEventPublisher publisher;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public void generalRegister(ReqRegisterDto reqRegisterDto) {
         // todo : 이메일 인증완료시 redis 에 저장해둔 이메일:인증값과 요청으로 들어온 값들이 일치하는지 확인후에 일치하면 값 삭제
+        verifyEmailConfirmValue(reqRegisterDto.getEmail(), reqRegisterDto.getEmailConfirmValue());
+
         memberRepository.findByEmail(MemberProvider.GENERAL + "#" + reqRegisterDto.getEmail())
                 .ifPresent(m -> { throw EmailAlreadyExistException.EXCEPTION; });
 
@@ -133,5 +131,14 @@ public class AuthService {
 
     private boolean isIncorrectPassword(String rawPassword, String encodedPassword) {
         return !AuthenticationUtil.passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
+    private void verifyEmailConfirmValue(String email, String emailConfirmValue) {
+        if(isIncorrectEmailConfirmValue(email, emailConfirmValue)) throw InvalidConfirmValueException.EXCEPTION;
+        redisTemplate.delete(email);
+    }
+
+    private boolean isIncorrectEmailConfirmValue(String email, String emailConfirmValue) {
+        return !emailConfirmValue.equals(redisTemplate.opsForValue().get(email));
     }
 }

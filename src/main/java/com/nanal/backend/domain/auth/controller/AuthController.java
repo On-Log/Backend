@@ -36,6 +36,9 @@ public class AuthController {
         return new CommonResponse<>(ErrorCode.SUCCESS);
     }
 
+    /**
+     * 이메일 인증
+     */
     @PostMapping("/auth/emailConfirm")
     public CommonResponse<?> emailConfirm(@RequestBody ReqEmailConfirmDto reqEmailConfirmDto) throws Exception {
 
@@ -54,6 +57,10 @@ public class AuthController {
 
         return new CommonResponse<>(token);
     }
+
+    /**
+     * 비밀번호 찾기
+     */
 
 
     /**

@@ -1,5 +1,6 @@
 package com.nanal.backend.global.security;
 
+import com.nanal.backend.domain.auth.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,14 +24,15 @@ public class AuthenticationUtil {
 
     public static Authentication getAuthentication(User user) {
         return new UsernamePasswordAuthenticationToken(user, "",
-                Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
+                Arrays.asList(new SimpleGrantedAuthority(user.getRole())));
     }
 
-    public static void makeAuthentication(String socialId, String email) {
+    public static void makeAuthentication(String socialId, String email, String role) {
         // Authentication 정보 만들기
         User user = User.builder()
                 .socialId(socialId)
                 .email(email)
+                .role(role)
                 .build();
 
         // ContextHolder 에 Authentication 정보 저장

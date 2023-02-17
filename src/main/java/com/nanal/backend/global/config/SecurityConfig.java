@@ -1,10 +1,9 @@
 package com.nanal.backend.global.config;
 
+import com.nanal.backend.domain.auth.entity.Member;
+import com.nanal.backend.global.security.CustomAccessDeniedHandler;
 import com.nanal.backend.global.security.filter.ExceptionFilter;
 import com.nanal.backend.global.security.filter.JwtAuthFilter;
-import com.nanal.backend.global.security.oauth.CustomOAuth2UserService;
-import com.nanal.backend.global.security.oauth.OAuth2FailureHandler;
-import com.nanal.backend.global.security.oauth.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -23,11 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final ExceptionFilter exceptionFilter;
     private final JwtAuthFilter jwtAuthFilter;
-
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    private final AccessDeniedHandler accessDeniedHandler;
 
     // Filter 제외 요청들
     @Override
@@ -46,12 +41,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests().antMatchers("/main", "/auth/**", "/docs/**", "/favicon.ico").permitAll()
-                .anyRequest().authenticated();
+                .antMatchers("/onBoarding").hasRole("ONBOARDER")
+                .anyRequest().hasRole("USER");
+
+        http.exceptionHandling()
+                        .accessDeniedHandler(accessDeniedHandler);
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 // ControllerAdvice 로는 filter 에서 발생하는 예외를 다룰 수 없으므로 ExceptionFilter 추가.
                 .addFilterBefore(exceptionFilter, JwtAuthFilter.class);
-
     }
 
     @Bean

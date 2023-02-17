@@ -78,7 +78,7 @@ public class Member extends BaseTime {
     @Getter
     @RequiredArgsConstructor
     public enum Role {
-        USER("ROLE_USER"), ADMIN("ROLE_ADMIN");
+        ONBOARDER("ROLE_ONBOARDER"), USER("ROLE_USER"), ADMIN("ROLE_ADMIN");
 
         private final String key;
     }
@@ -97,7 +97,7 @@ public class Member extends BaseTime {
                 .prevRetrospectDate(LocalDateTime.now().minusDays(30))
                 .gender((String) attributes.get("gender"))
                 .ageRange((String) attributes.get("age"))
-                .role(Member.Role.USER)
+                .role((Role) attributes.get("role"))
                 .build();
     }
 
@@ -129,6 +129,11 @@ public class Member extends BaseTime {
 
         this.retrospectDay = retrospectDay;
         this.prevRetrospectDate = now;
+    }
+
+    public void setRetrospectDay(DayOfWeek retrospectDay) {
+        this.retrospectDay = retrospectDay;
+        this.role = Role.USER;
     }
 
     //==비즈니스 메서드==//

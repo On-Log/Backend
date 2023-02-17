@@ -21,6 +21,7 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -56,17 +57,20 @@ public class CommonControllerTest {
     @MockBean
     public MemberRepository memberRepository;
 
-    @MockBean
-    public CustomOAuth2UserService customOAuth2UserService;
-
-    @MockBean
-    public OAuth2SuccessHandler oAuth2SuccessHandler;
-
-    @MockBean
-    public OAuth2FailureHandler oAuth2FailureHandler;
+//    @MockBean
+//    public CustomOAuth2UserService customOAuth2UserService;
+//
+//    @MockBean
+//    public OAuth2SuccessHandler oAuth2SuccessHandler;
+//
+//    @MockBean
+//    public OAuth2FailureHandler oAuth2FailureHandler;
 
     @MockBean
     public ClientRegistrationRepository clientRegistrationRepository;
+
+    @MockBean
+    public AccessDeniedHandler accessDeniedHandler;
 
     @BeforeEach
     public void setUp(WebApplicationContext context, RestDocumentationContextProvider provider) throws Exception {
@@ -81,7 +85,7 @@ public class CommonControllerTest {
                 .build();
 
         // user.getSocialId() 에서 NullPointerException 방지를 위한 Authentication 생성
-        AuthenticationUtil.makeAuthentication(member.getSocialId(), member.getEmail());
+        AuthenticationUtil.makeAuthentication(member.getSocialId(), member.getEmail(), member.getRole().getKey());
 
         //given(tokenUtil.verifyToken(any())).willReturn(true);
         //given(tokenUtil.getSocialId(any())).willReturn(member.getSocialId());

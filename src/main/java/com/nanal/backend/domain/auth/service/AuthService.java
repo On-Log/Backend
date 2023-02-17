@@ -69,7 +69,15 @@ public class AuthService {
         Member member = getUserDataFromPlatform(accessToken, providerInfo);
 
         // 회원가입(가입 정보 없는 유저일 때만) 및 로그인
-        Member loginMember = auth(member);
+        Member loginMember;
+        Optional<Member> findMember = memberRepository.findBySocialId(member.getSocialId());
+        if(isNewMember(findMember)) {
+            Member register = register(member);
+            publisher.publishEvent(new RegisterEvent(register.getNickname(), register.getEmail()));
+            loginMember = register;
+        } else {
+            loginMember = login(findMember);
+        }
 
         // 토큰 생성
         Token token = tokenUtil.generateToken(loginMember);
@@ -104,7 +112,7 @@ public class AuthService {
 
     private Member auth(Member member) {
         Optional<Member> findMember = memberRepository.findBySocialId(member.getSocialId());
-        if(newSubscribe(findMember)) {
+        if(isNewMember(findMember)) {
             Member register = register(member);
             publisher.publishEvent(new RegisterEvent(register.getNickname(), register.getEmail()));
 
@@ -113,7 +121,7 @@ public class AuthService {
         else return login(findMember);
     }
 
-    private static boolean newSubscribe(Optional<Member> findMember) {
+    private static boolean isNewMember(Optional<Member> findMember) {
         return findMember.isEmpty();
     }
 

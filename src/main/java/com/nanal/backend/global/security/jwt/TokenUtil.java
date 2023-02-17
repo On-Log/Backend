@@ -115,6 +115,10 @@ public class TokenUtil {
         return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("email");
     }
 
+    public String getRole(String token) {
+        return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("role");
+    }
+
     public void storeRefreshToken(String socialId, Token token) {
         redisTemplate.opsForValue().set(
                 socialId,
@@ -129,9 +133,9 @@ public class TokenUtil {
         // claim 에 socialId 정보 추가
         Claims claims = Jwts.claims().setSubject(member.getSocialId());
         // claim 에 email 정보 추가
-        claims.put("email", member.getEmail());
+        //claims.put("email", member.getEmail());
         // claim 에 권한 정보 추가
-        claims.put("role", member.getRole());
+        //claims.put("role", member.getRole().getKey());
         return claims;
     }
 

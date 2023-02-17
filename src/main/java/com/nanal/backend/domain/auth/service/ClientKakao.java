@@ -54,7 +54,7 @@ public class ClientKakao{
                 .nickname(kakaoUserResponseDto.getProperties().getNickname())
                 .gender(kakaoUserResponseDto.getKakaoAccount().getGender())
                 .ageRange(kakaoUserResponseDto.getKakaoAccount().getAgeRange())
-                .role(Member.Role.USER)
+                .role(Member.Role.ONBOARDER)
                 .build();
     }
 

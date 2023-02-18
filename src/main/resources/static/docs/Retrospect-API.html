@@ -1736,14 +1736,15 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 147
+Content-Length: 175
 
 {
   "isSuccess" : true,
   "code" : 200,
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "firstRetrospect" : false
+    "firstRetrospect" : false,
+    "writtenDiary" : true
   }
 }</code></pre>
 </div>
@@ -1784,6 +1785,11 @@ Content-Length: 147
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.firstRetrospect</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회고일 변경 이후 첫 회고인지. false이면 첫 회고 아님.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.writtenDiary</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고일 당일에 작성한 일기가 있는지. true면 작성한 일기가 있음.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1850,14 +1856,15 @@ Content-Length: 95
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 146
+Content-Length: 175
 
 {
   "isSuccess" : true,
   "code" : 200,
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "firstRetrospect" : true
+    "firstRetrospect" : true,
+    "writtenDiary" : false
   }
 }</code></pre>
 </div>
@@ -1899,6 +1906,11 @@ Content-Length: 146
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회고일 변경 이후 첫 회고인지. false이면 첫 회고 아님.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.writtenDiary</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고일 당일에 작성한 일기가 있는지. true면 작성한 일기가 있음.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1911,7 +1923,7 @@ Content-Length: 146
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-02-10 22:09:11 +0900
+Last updated 2023-02-18 19:27:20 +0900
 </div>
 </div>
 </body>

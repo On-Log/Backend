@@ -296,6 +296,17 @@ public class RetrospectService {
 
     }
 
+    public void deleteRetro(String socialId, ReqDeleteRetroDto reqDeleteRetroDto) {
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+
+        // 삭제할 일기 가져오기
+        Retrospect deleteRetro = getRetrospect(member.getMemberId(), reqDeleteRetroDto.getDate());
+        // 기존 일기 삭제
+        retrospectRepository.delete(deleteRetro);
+    }
+
+
     //===편의 메서드===//
     private Retrospect createRetrospect(Member member, String goal, LocalDateTime date, List<RetrospectKeywordDto> keywordDtos, List<RetrospectContentDto> contentDtos) {
         // Retrospect 생성에 필요한 keyword, content 리스트 생성
@@ -323,6 +334,19 @@ public class RetrospectService {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
         return checkExistRetro(member, reqCheckRetroDto.getCurrentDate());
+    }
+
+    //삭제할 회고 가져오기
+    public Retrospect getRetrospect(Long memberId, LocalDateTime date) {
+        LocalDate tempDate = date.toLocalDate();
+        LocalDateTime startDate = tempDate.atStartOfDay();
+        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);
+
+        // 선택한 날에 작성한 회고 조회
+        Retrospect findRetro = retrospectRepository.findByMemberAndWriteDate(memberId, startDate, endDate)
+                .orElseThrow(() -> RetrospectNotFoundException.EXCEPTION);
+
+        return findRetro;
     }
 
     //회고 저장시 예외처리

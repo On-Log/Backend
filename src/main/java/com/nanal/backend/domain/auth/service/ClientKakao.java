@@ -39,6 +39,7 @@ public class ClientKakao{
                 .bodyToMono(KakaoUserResponseDto.class) // KAKAO의 유저 정보를 넣을 Dto 클래스
                 .block();
 
+        System.out.println(kakaoUserResponseDto);
         kakaoUserResponseDto.adaptResponse();
 
         // 닉네임 길이체크해야함

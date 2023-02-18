@@ -51,7 +51,7 @@ public class ClientGoogle {
                 .socialId(MemberProvider.GOOGLE + "@" + googleUserResponseDto.getSub())
                 .provider(MemberProvider.GOOGLE)
                 .name(googleUserResponseDto.getName())
-                .email(MemberProvider.GOOGLE + "#" +googleUserResponseDto.getEmail())
+                .email(googleUserResponseDto.getEmail())
                 .password("undef")
                 // 당일로 회고일 설정
                 .retrospectDay(LocalDate.now().getDayOfWeek())

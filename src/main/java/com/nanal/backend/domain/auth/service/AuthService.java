@@ -69,7 +69,7 @@ public class AuthService {
         Member member = getUserDataFromPlatform(accessToken, providerInfo);
 
         // 회원가입(가입 정보 없는 유저일 때만) 및 로그인
-        Member authenticatedMember = auth(member);
+        Member authenticatedMember = auth(member, providerInfo);
 
         // 토큰 생성
         Token token = tokenUtil.generateToken(authenticatedMember);
@@ -101,12 +101,12 @@ public class AuthService {
         else return clientNaver.getUserData(accessToken);
     }
 
-    private Member auth(Member member) {
-        Optional<Member> findMember = memberRepository.findBySocialId(member.getSocialId());
+    private Member auth(Member member, String providerInfo) {
+        Optional<Member> findMember = memberRepository.findByEmail(member.getEmail());
         if(isNewMember(findMember))
             return joinMembership(member);
         else
-            return login(findMember);
+            return login(findMember, providerInfo);
     }
 
     private Member joinMembership(Member member) {
@@ -123,8 +123,11 @@ public class AuthService {
         return memberRepository.save(member);
     }
 
-    private Member login(Optional<Member> member) {
-        return member.get();
+    private Member login(Optional<Member> member, String providerInfo) {
+        Member loginMember = member.get();
+        if(!providerInfo.contains((loginMember.getProvider().name().toLowerCase())))
+            throw AccountAlreadyExistException.EXCEPTION;
+        return loginMember;
     }
 
     private void verifyPassword(String rawPassword, String encodedPassword) {

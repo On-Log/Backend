@@ -36,7 +36,7 @@ public class ClientNaver {
                 .socialId(MemberProvider.NAVER + "@" + naverUserResponseDto.getResponse().getId())
                 .provider(MemberProvider.NAVER)
                 .name(naverUserResponseDto.getResponse().getNickname())
-                .email(MemberProvider.NAVER + "#" +naverUserResponseDto.getResponse().getEmail())
+                .email(naverUserResponseDto.getResponse().getEmail())
                 .password("undef")
                 // 당일로 회고일 설정
                 .retrospectDay(LocalDate.now().getDayOfWeek())

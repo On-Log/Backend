@@ -46,7 +46,7 @@ public class ClientKakao{
                 .socialId(MemberProvider.KAKAO + "@" + kakaoUserResponseDto.getId())
                 .provider(MemberProvider.KAKAO)
                 .name(kakaoUserResponseDto.getProperties().getNickname())
-                .email(MemberProvider.KAKAO + "#" + kakaoUserResponseDto.getKakaoAccount().getEmail())
+                .email(kakaoUserResponseDto.getKakaoAccount().getEmail())
                 .password("undef")
                 // 당일로 회고일 설정
                 .retrospectDay(LocalDate.now().getDayOfWeek())

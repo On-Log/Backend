@@ -62,3 +62,7 @@ operation::retrospect-controller-test/회고_이미_존재[snippets='http-respon
 operation::retrospect-controller-test/회고_없음_회고_변경_이후_첫_회고[snippets='http-response,response-fields']
 
 ---
+
+[[Retrospect-회고-삭제]]
+=== Retrospect 회고 삭제
+operation::retrospect-controller-test/회고_삭제[snippets='http-request,request-headers,request-fields,http-response,response-fields']

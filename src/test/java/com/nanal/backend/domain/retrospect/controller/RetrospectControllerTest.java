@@ -2,6 +2,7 @@ package com.nanal.backend.domain.retrospect.controller;
 
 import com.nanal.backend.config.CommonControllerTest;
 import com.nanal.backend.domain.diary.dto.req.KeywordEmotionDto;
+import com.nanal.backend.domain.diary.dto.req.ReqDeleteDiaryDto;
 import com.nanal.backend.domain.retrospect.dto.resp.ExtraQuestionsDto;
 import com.nanal.backend.domain.retrospect.dto.resp.QuestionsDto;
 import com.nanal.backend.domain.retrospect.dto.resp.RetrospectContentDto;
@@ -570,5 +571,43 @@ public class RetrospectControllerTest extends CommonControllerTest {
                         )
                 );
 
+    }
+
+    @Test
+    public void 회고_삭제() throws Exception {
+        //given
+        String deleteDate = "2023-01-15T00:00:00";
+
+        ReqDeleteDiaryDto input = new ReqDeleteDiaryDto(LocalDateTime.parse(deleteDate));
+        String body = objectMapper.writeValueAsString(input);
+
+        willDoNothing().given(retrospectService).deleteRetro(any(), any());
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                delete("/retrospect")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestFields(
+                                        fieldWithPath("date").description("삭제 날짜")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지")
+                                )
+                        )
+                );
     }
 }

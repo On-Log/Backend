@@ -470,7 +470,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
     public void 회고_존재_여부_및_변경_이후_첫_회고_여부_체크() throws Exception {
         //given
         String currentDate = "2023-01-24T00:00:00";
-        RespCheckFirstRetrospect respCheckFirstRetrospect = RespCheckFirstRetrospect.notFirstRetrospectAfterChange(false);
+        RespCheckFirstRetrospect respCheckFirstRetrospect = RespCheckFirstRetrospect.notFirstRetrospectAfterChange(false, true);
         given(retrospectService.checkFirstRetrospect(any(), any())).willReturn(respCheckFirstRetrospect);
         //when
         ResultActions actions = mockMvc.perform(
@@ -494,8 +494,8 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
-                                        fieldWithPath("result.firstRetrospect").description("회고일 변경 이후 첫 회고인지. false이면 첫 회고 아님.")
-
+                                        fieldWithPath("result.firstRetrospect").description("회고일 변경 이후 첫 회고인지. false이면 첫 회고 아님."),
+                                        fieldWithPath("result.writtenDiary").description("회고일 당일에 작성한 일기가 있는지. true면 작성한 일기가 있음.")
                                 )
                         )
                 );
@@ -540,7 +540,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
     public void 회고_없음_회고_변경_이후_첫_회고() throws Exception {
         //given
         String currentDate = "2023-01-24T00:00:00";
-        RespCheckFirstRetrospect respCheckFirstRetrospect = RespCheckFirstRetrospect.firstRetrospectAfterChange(true);
+        RespCheckFirstRetrospect respCheckFirstRetrospect = RespCheckFirstRetrospect.firstRetrospectAfterChange(true, false);
         given(retrospectService.checkFirstRetrospect(any(), any())).willReturn(respCheckFirstRetrospect);
         //when
         ResultActions actions = mockMvc.perform(
@@ -564,8 +564,8 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
-                                        fieldWithPath("result.firstRetrospect").description("회고일 변경 이후 첫 회고인지. false이면 첫 회고 아님.")
-
+                                        fieldWithPath("result.firstRetrospect").description("회고일 변경 이후 첫 회고인지. false이면 첫 회고 아님."),
+                                        fieldWithPath("result.writtenDiary").description("회고일 당일에 작성한 일기가 있는지. true면 작성한 일기가 있음.")
                                 )
                         )
                 );

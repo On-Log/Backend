@@ -472,9 +472,9 @@ public class RetrospectService {
             int count = Collections.frequency(emotions, e.getEmotion());
             if (count == 0)
                 frequency = 0;
-            else if (count >= 1 && count <= 10)
+            else if (count >= 1 && count <= 5)
                 frequency = 1;
-            else if (count >= 11 && count <= 20)
+            else if (count >= 6 && count <= 10)
                 frequency = 2;
             else
                 frequency = 3;

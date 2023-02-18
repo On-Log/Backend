@@ -39,6 +39,7 @@ public class ClientKakao{
                 .bodyToMono(KakaoUserResponseDto.class) // KAKAO의 유저 정보를 넣을 Dto 클래스
                 .block();
 
+        System.out.println(kakaoUserResponseDto);
         kakaoUserResponseDto.adaptResponse();
 
         // 닉네임 길이체크해야함
@@ -46,7 +47,7 @@ public class ClientKakao{
                 .socialId(MemberProvider.KAKAO + "@" + kakaoUserResponseDto.getId())
                 .provider(MemberProvider.KAKAO)
                 .name(kakaoUserResponseDto.getProperties().getNickname())
-                .email(MemberProvider.KAKAO + "#" + kakaoUserResponseDto.getKakaoAccount().getEmail())
+                .email(kakaoUserResponseDto.getKakaoAccount().getEmail())
                 .password("undef")
                 // 당일로 회고일 설정
                 .retrospectDay(LocalDate.now().getDayOfWeek())

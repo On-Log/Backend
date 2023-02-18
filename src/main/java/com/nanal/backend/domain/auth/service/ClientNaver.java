@@ -44,7 +44,7 @@ public class ClientNaver {
                 .nickname(naverUserResponseDto.getResponse().getNickname())
                 .gender(naverUserResponseDto.getResponse().getGender())
                 .ageRange(naverUserResponseDto.getResponse().getAge())
-                .role(Member.Role.USER)
+                .role(Member.Role.ONBOARDER)
                 .build();
     }
 }

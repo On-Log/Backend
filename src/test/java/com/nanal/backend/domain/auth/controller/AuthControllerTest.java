@@ -43,6 +43,52 @@ class AuthControllerTest extends CommonControllerTest {
                 .nickname("유저 닉네임")
                 .token("SERVER_ACCESS_TOKEN")
                 .refreshToken("SERVER_REFRESH_TOKEN")
+                .onBoarding(false)
+                .build();
+
+        given(authService.commonAuth(any(), any())).willReturn(output);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/auth/naver")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("accessToken").description("사용자 정보 접근용 플랫폼 Token")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.nickname").description("유저 닉네임"),
+                                        fieldWithPath("result.token").description("서버 접근용 Token"),
+                                        fieldWithPath("result.refreshToken").description("서버 접근용 Refresh Token")
+                                )
+                        )
+                );
+    }
+
+    @Test
+    public void Naver_소셜_로그인_온보딩() throws Exception {
+        //given
+        ReqAuthDto input = ReqAuthDto.builder()
+                .accessToken("Platform_ACCESS_TOKEN")
+                .build();
+
+        String body = objectMapper.writeValueAsString(input);
+
+        LoginInfo output = LoginInfo.builder()
+                .nickname("유저 닉네임")
+                .token("SERVER_ACCESS_TOKEN")
+                .refreshToken("SERVER_REFRESH_TOKEN")
+                .onBoarding(true)
                 .build();
 
         given(authService.commonAuth(any(), any())).willReturn(output);
@@ -87,6 +133,52 @@ class AuthControllerTest extends CommonControllerTest {
                 .nickname("유저 닉네임")
                 .token("SERVER_ACCESS_TOKEN")
                 .refreshToken("SERVER_REFRESH_TOKEN")
+                .onBoarding(false)
+                .build();
+
+        given(authService.commonAuth(any(), any())).willReturn(output);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/auth/kakao")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("accessToken").description("사용자 정보 접근용 플랫폼 Token")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.nickname").description("유저 닉네임"),
+                                        fieldWithPath("result.token").description("서버 접근용 Token"),
+                                        fieldWithPath("result.refreshToken").description("서버 접근용 Refresh Token")
+                                )
+                        )
+                );
+    }
+
+    @Test
+    public void Kakao_소셜_로그인_온보딩() throws Exception {
+        //given
+        ReqAuthDto input = ReqAuthDto.builder()
+                .accessToken("PLATFORM_ACCESS_TOKEN")
+                .build();
+
+        String body = objectMapper.writeValueAsString(input);
+
+        LoginInfo output = LoginInfo.builder()
+                .nickname("유저 닉네임")
+                .token("SERVER_ACCESS_TOKEN")
+                .refreshToken("SERVER_REFRESH_TOKEN")
+                .onBoarding(true)
                 .build();
 
         given(authService.commonAuth(any(), any())).willReturn(output);
@@ -131,6 +223,52 @@ class AuthControllerTest extends CommonControllerTest {
                 .nickname("유저 닉네임")
                 .token("SERVER_ACCESS_TOKEN")
                 .refreshToken("SERVER_REFRESH_TOKEN")
+                .onBoarding(false)
+                .build();
+
+        given(authService.commonAuth(any(), any())).willReturn(output);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/auth/google")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("accessToken").description("사용자 정보 접근용 플랫폼 Token")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지"),
+                                        fieldWithPath("result.nickname").description("유저 닉네임"),
+                                        fieldWithPath("result.token").description("서버 접근용 Token"),
+                                        fieldWithPath("result.refreshToken").description("서버 접근용 Refresh Token")
+                                )
+                        )
+                );
+    }
+
+    @Test
+    public void Google_소셜_로그인_온보딩() throws Exception {
+        //given
+        ReqAuthDto input = ReqAuthDto.builder()
+                .accessToken("Platform_ACCESS_TOKEN")
+                .build();
+
+        String body = objectMapper.writeValueAsString(input);
+
+        LoginInfo output = LoginInfo.builder()
+                .nickname("유저 닉네임")
+                .token("SERVER_ACCESS_TOKEN")
+                .refreshToken("SERVER_REFRESH_TOKEN")
+                .onBoarding(true)
                 .build();
 
         given(authService.commonAuth(any(), any())).willReturn(output);

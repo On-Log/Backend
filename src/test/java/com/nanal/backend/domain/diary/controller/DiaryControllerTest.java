@@ -52,6 +52,7 @@ class DiaryControllerTest extends CommonControllerTest {
 
         RespGetCalendarDto output = new RespGetCalendarDto(
                 "nickname",
+                false,
                 true,
                 existDiaryDate,
                 LocalDateTime.parse("2023-01-18T00:00:00"),
@@ -85,6 +86,7 @@ class DiaryControllerTest extends CommonControllerTest {
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
                                         fieldWithPath("result.nickname").description("사용자 닉네임"),
+                                        fieldWithPath("result.existRetrospect").description("이번주 회고의 작성 여부"),
                                         fieldWithPath("result.isRetrospectDay").description("오늘이 회고일인지 체크"),
                                         fieldWithPath("result.existDiaryDate").description("일기 존재 날짜"),
                                         fieldWithPath("result.nextDayOfPrevRetroDate").description("이전 회고일의 다음일"),

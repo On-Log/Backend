@@ -55,9 +55,13 @@ public class DiaryService {
 
         List<RetrospectInfoDto> retrospectInfoList = getRetrospectList(member.getMemberId(), reqGetCalendarDto.getSelectDate());
 
+        // 회고 작성 여부
+        Boolean existRetrospect = existDiaryDate(member.getMemberId(), retroDate);
+
         return RespGetCalendarDto.builder()
                 .nickname(member.getNickname())
                 .isRetrospectDay(isRetrospectDay)
+                .existRetrospect(existRetrospect)
                 .existDiaryDate(existDiaryDate)
                 .nextDayOfPrevRetroDate(nextDayOfPrevRetroDate)
                 .retroDate(retroDate)
@@ -172,6 +176,17 @@ public class DiaryService {
         List<Diary> findDiaryList = diaryRepository.findDiaryListByMemberAndWriteDate(memberId, startDate, endDate);
 
         if (findDiaryList.size() != 0) throw DiaryAlreadyExistException.EXCEPTION;
+    }
+
+    private Boolean existDiaryDate(Long memberId, LocalDateTime date) {
+        LocalDate tempDate = date.toLocalDate();
+        LocalDateTime startDate = tempDate.atStartOfDay();
+        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);
+
+        Optional<Retrospect> findRetrospect = retrospectRepository.findByMemberAndWriteDate(memberId, startDate, endDate);
+
+        if(findRetrospect.isPresent()) return true;
+        else return false;
     }
 
     private List<LocalDateTime> getExistDiaryDateList(Long memberId, LocalDateTime date) {

@@ -2082,7 +2082,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 628
+Content-Length: 660
 
 {
   "isSuccess" : true,
@@ -2090,6 +2090,7 @@ Content-Length: 628
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "nickname" : "nickname",
+    "existRetrospect" : false,
     "isRetrospectDay" : true,
     "existDiaryDate" : [ "2023-01-01T00:00:00", "2023-01-03T00:00:00", "2023-01-09T00:00:00", "2023-01-13T00:00:00", "2023-01-16T00:00:00" ],
     "nextDayOfPrevRetroDate" : "2023-01-18T00:00:00",
@@ -2141,6 +2142,11 @@ Content-Length: 628
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.nickname</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">사용자 닉네임</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.existRetrospect</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이번주 회고의 작성 여부</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.isRetrospectDay</code></p></td>
@@ -4701,7 +4707,7 @@ Content-Length: 1678
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-02-19 02:09:27 +0900
+Last updated 2023-02-19 03:02:33 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

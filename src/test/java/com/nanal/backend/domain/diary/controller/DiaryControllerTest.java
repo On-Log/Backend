@@ -173,6 +173,7 @@ class DiaryControllerTest extends CommonControllerTest {
                 .writeDate(LocalDateTime.parse(date))
                 .content("마지막 방학... 계절 학기 언제 끝나...")
                 .keywords(keywordDtoList)
+                .editStatus(true)
                 .build();
 
         given(diaryService.getDiary(any(), any())).willReturn(output);
@@ -203,7 +204,8 @@ class DiaryControllerTest extends CommonControllerTest {
                                         fieldWithPath("result.writeDate").description("작성 날짜"),
                                         fieldWithPath("result.content").description("일기 내용"),
                                         fieldWithPath("result.keywords[].keyword").description("키워드"),
-                                        fieldWithPath("result.keywords[].keywordEmotions[].emotion").description("감정어")
+                                        fieldWithPath("result.keywords[].keywordEmotions[].emotion").description("감정어"),
+                                        fieldWithPath("result.editStatus").description("일기 수정 가능한지 여부. true면 수정 가능")
                                 )
                         )
                 );

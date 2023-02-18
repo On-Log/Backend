@@ -2,6 +2,7 @@ package com.nanal.backend.domain.retrospect.controller;
 
 import com.nanal.backend.config.CommonControllerTest;
 import com.nanal.backend.domain.diary.dto.req.KeywordEmotionDto;
+import com.nanal.backend.domain.diary.dto.req.ReqDeleteDiaryDto;
 import com.nanal.backend.domain.retrospect.dto.resp.ExtraQuestionsDto;
 import com.nanal.backend.domain.retrospect.dto.resp.QuestionsDto;
 import com.nanal.backend.domain.retrospect.dto.resp.RetrospectContentDto;
@@ -470,7 +471,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
     public void 회고_존재_여부_및_변경_이후_첫_회고_여부_체크() throws Exception {
         //given
         String currentDate = "2023-01-24T00:00:00";
-        RespCheckFirstRetrospect respCheckFirstRetrospect = RespCheckFirstRetrospect.notFirstRetrospectAfterChange(false);
+        RespCheckFirstRetrospect respCheckFirstRetrospect = RespCheckFirstRetrospect.notFirstRetrospectAfterChange(false, true);
         given(retrospectService.checkFirstRetrospect(any(), any())).willReturn(respCheckFirstRetrospect);
         //when
         ResultActions actions = mockMvc.perform(
@@ -494,8 +495,8 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
-                                        fieldWithPath("result.firstRetrospect").description("회고일 변경 이후 첫 회고인지. false이면 첫 회고 아님.")
-
+                                        fieldWithPath("result.firstRetrospect").description("회고일 변경 이후 첫 회고인지. false이면 첫 회고 아님."),
+                                        fieldWithPath("result.writtenDiary").description("회고일 당일에 작성한 일기가 있는지. true면 작성한 일기가 있음.")
                                 )
                         )
                 );
@@ -540,7 +541,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
     public void 회고_없음_회고_변경_이후_첫_회고() throws Exception {
         //given
         String currentDate = "2023-01-24T00:00:00";
-        RespCheckFirstRetrospect respCheckFirstRetrospect = RespCheckFirstRetrospect.firstRetrospectAfterChange(true);
+        RespCheckFirstRetrospect respCheckFirstRetrospect = RespCheckFirstRetrospect.firstRetrospectAfterChange(true, false);
         given(retrospectService.checkFirstRetrospect(any(), any())).willReturn(respCheckFirstRetrospect);
         //when
         ResultActions actions = mockMvc.perform(
@@ -564,11 +565,49 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
-                                        fieldWithPath("result.firstRetrospect").description("회고일 변경 이후 첫 회고인지. false이면 첫 회고 아님.")
-
+                                        fieldWithPath("result.firstRetrospect").description("회고일 변경 이후 첫 회고인지. false이면 첫 회고 아님."),
+                                        fieldWithPath("result.writtenDiary").description("회고일 당일에 작성한 일기가 있는지. true면 작성한 일기가 있음.")
                                 )
                         )
                 );
 
+    }
+
+    @Test
+    public void 회고_삭제() throws Exception {
+        //given
+        String deleteDate = "2023-01-15T00:00:00";
+
+        ReqDeleteDiaryDto input = new ReqDeleteDiaryDto(LocalDateTime.parse(deleteDate));
+        String body = objectMapper.writeValueAsString(input);
+
+        willDoNothing().given(retrospectService).deleteRetro(any(), any());
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                delete("/retrospect")
+                        .header("Token", "ACCESS_TOKEN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Token").description("접근 토큰")
+                                ),
+                                requestFields(
+                                        fieldWithPath("date").description("삭제 날짜")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").description("성공 여부"),
+                                        fieldWithPath("code").description("상태 코드"),
+                                        fieldWithPath("message").description("결과 메시지")
+                                )
+                        )
+                );
     }
 }

@@ -15,16 +15,19 @@ import java.time.LocalDateTime;
 public class RespCheckFirstRetrospect {
     //회고일 변경 후 첫 회고인지 첫 회고이면 true, 아니면 false
     Boolean firstRetrospect;
+    Boolean writtenDiary;
 
-    static public RespCheckFirstRetrospect firstRetrospectAfterChange(boolean firstRetrospect) {
+    static public RespCheckFirstRetrospect firstRetrospectAfterChange(boolean firstRetrospect, boolean writtenDiary) {
         return RespCheckFirstRetrospect.builder()
                 .firstRetrospect(firstRetrospect)
+                .writtenDiary(writtenDiary)
                 .build();
     }
 
-    static public RespCheckFirstRetrospect notFirstRetrospectAfterChange(boolean firstRetrospect) {
+    static public RespCheckFirstRetrospect notFirstRetrospectAfterChange(boolean firstRetrospect, boolean writtenDiary) {
         return RespCheckFirstRetrospect.builder()
                 .firstRetrospect(firstRetrospect)
+                .writtenDiary(writtenDiary)
                 .build();
     }
 

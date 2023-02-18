@@ -5,6 +5,7 @@ import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.diary.entity.Emotion;
 import com.nanal.backend.domain.diary.entity.Keyword;
 import com.nanal.backend.domain.diary.entity.KeywordEmotion;
+import com.nanal.backend.domain.diary.exception.DiaryNotFoundException;
 import com.nanal.backend.domain.diary.repository.EmotionRepository;
 import com.nanal.backend.domain.retrospect.dto.req.*;
 import com.nanal.backend.domain.retrospect.dto.resp.*;
@@ -23,17 +24,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Period;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static com.nanal.backend.domain.retrospect.dto.resp.RespGetInfoDto.makeRespGetInfoDto;
 import static java.lang.Math.abs;
@@ -275,21 +270,42 @@ public class RetrospectService {
     public RespCheckFirstRetrospect checkFirstRetrospect(String socialId, ReqCheckRetroDto reqCheckRetroDto) {
         //회고일 변경 후 첫 회고 판별. 첫 회고가 맞다면 true 반환, 아니면 false 반환
         boolean checkfirstRetrospect = false;
+        //회고일에 작성한 일기가 있는지. 있다면 true, 없다면 false
+        boolean writtenDiary = false;
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         LocalDateTime postRetroDate = diaryService.getRetroDate(member.getRetrospectDay(), member.getPrevRetrospectDate());
-        System.out.println(postRetroDate);
+        LocalDate tempDate = reqCheckRetroDto.getCurrentDate().toLocalDate();
+        LocalDateTime startDate = tempDate.atStartOfDay();
+        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);
+        Optional<Diary> findDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), startDate, endDate);
+        System.out.println(findDiary);
 
         if(abs(ChronoUnit.DAYS.between(postRetroDate.toLocalDate(),  reqCheckRetroDto.getCurrentDate())) == 0)
             checkfirstRetrospect = true;
 
+        if(findDiary.isEmpty() == false)
+            writtenDiary = true;
+
+
         if (checkfirstRetrospect == true)
-            return RespCheckFirstRetrospect.firstRetrospectAfterChange(checkfirstRetrospect);
+            return RespCheckFirstRetrospect.firstRetrospectAfterChange(checkfirstRetrospect, writtenDiary);
         else
-            return RespCheckFirstRetrospect.notFirstRetrospectAfterChange(checkfirstRetrospect);
+            return RespCheckFirstRetrospect.notFirstRetrospectAfterChange(checkfirstRetrospect, writtenDiary);
 
     }
+
+    public void deleteRetro(String socialId, ReqDeleteRetroDto reqDeleteRetroDto) {
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+
+        // 삭제할 일기 가져오기
+        Retrospect deleteRetro = getRetrospect(member.getMemberId(), reqDeleteRetroDto.getDate());
+        // 기존 일기 삭제
+        retrospectRepository.delete(deleteRetro);
+    }
+
 
     //===편의 메서드===//
     private Retrospect createRetrospect(Member member, String goal, LocalDateTime date, List<RetrospectKeywordDto> keywordDtos, List<RetrospectContentDto> contentDtos) {
@@ -318,6 +334,19 @@ public class RetrospectService {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
         return checkExistRetro(member, reqCheckRetroDto.getCurrentDate());
+    }
+
+    //삭제할 회고 가져오기
+    public Retrospect getRetrospect(Long memberId, LocalDateTime date) {
+        LocalDate tempDate = date.toLocalDate();
+        LocalDateTime startDate = tempDate.atStartOfDay();
+        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);
+
+        // 선택한 날에 작성한 회고 조회
+        Retrospect findRetro = retrospectRepository.findByMemberAndWriteDate(memberId, startDate, endDate)
+                .orElseThrow(() -> RetrospectNotFoundException.EXCEPTION);
+
+        return findRetro;
     }
 
     //회고 저장시 예외처리

@@ -24,7 +24,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        setErrorResponse(response, ErrorCode.BAD_REQUEST);
+        setErrorResponse(response, ErrorCode.FORBIDDEN);
     }
 
     private void setErrorResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException {

@@ -1,13 +1,7 @@
 package com.nanal.backend.global.config;
 
-import com.nanal.backend.domain.analysis.entity.AuthLog;
-import com.nanal.backend.domain.analysis.entity.DiaryLog;
-import com.nanal.backend.domain.analysis.entity.MypageLog;
-import com.nanal.backend.domain.analysis.entity.RetrospectLog;
-import com.nanal.backend.domain.analysis.repository.AuthLogRepository;
-import com.nanal.backend.domain.analysis.repository.DiaryLogRepository;
-import com.nanal.backend.domain.analysis.repository.MypageLogRepository;
-import com.nanal.backend.domain.analysis.repository.RetrospectLogRepository;
+import com.nanal.backend.domain.analysis.entity.*;
+import com.nanal.backend.domain.analysis.repository.*;
 import com.nanal.backend.global.security.AuthenticationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +21,35 @@ public class AspectConfig {
     private final MypageLogRepository mypageLogRepository;
     private final RetrospectLogRepository retrospectLogRepository;
     private final AuthLogRepository authLogRepository;
+
+    private final OnBoardingLogRepository onBoardingLogRepository;
+
+    @Around("execution(* com..onboarding..*Service.*(..))")
+    public Object onBoardingLogging(ProceedingJoinPoint joinPoint) throws Throwable {
+
+        StopWatch stopWatch = new StopWatch();
+        String email = AuthenticationUtil.getCurrentUserEmail();
+        String methodName = joinPoint.getSignature().getName();
+
+        log.info("[{}]{} - START", email, methodName);
+
+        stopWatch.start();
+        Object result = joinPoint.proceed();
+        stopWatch.stop();
+        Long executionTime = stopWatch.getTotalTimeMillis();
+
+        log.info("[{}]{} - FINISHED | EXECUTION TIME => {} ms", email, methodName, executionTime);
+
+        OnBoardingLog onBoardingLog = OnBoardingLog.builder()
+                .userEmail(email)
+                .serviceName(methodName)
+                .executionTime(executionTime)
+                .build();
+
+        onBoardingLogRepository.save(onBoardingLog);
+
+        return result;
+    }
 
     @Around("execution(* com..diary..*Service.*(..))")
     public Object diaryLogging(ProceedingJoinPoint joinPoint) throws Throwable {

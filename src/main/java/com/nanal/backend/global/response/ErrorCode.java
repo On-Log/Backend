@@ -15,6 +15,7 @@ public enum ErrorCode {
 
     // 특정 정보를 권한이 없는 유저가 요청하거나, 존재하지 않는 정보를 요청할 때.
     BAD_REQUEST(false, 400, "잘못된 요청입니다."),
+    FORBIDDEN(false, 403, "해당 요청에 대한 권한이 존재하지 않습니다."),
 
     // Validation
     INVALID_INPUT_VALUE(false, 455, "잘못된 입력값입니다."),

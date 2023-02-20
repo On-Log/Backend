@@ -1,6 +1,5 @@
 package com.nanal.backend.domain.analysis.entity;
 
-import com.nanal.backend.global.config.BaseTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -11,12 +10,11 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class MypageLog extends BaseTime {
-
+public class OnBoardingLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "mypage_log_id")
-    private Long mypageLogId;
+    @Column(name = "onBoarding_log_id")
+    private Long onBoardingLogId;
 
     @Column(name = "user_email", nullable = false, length = 50)
     private String userEmail;

@@ -5,7 +5,10 @@ import com.nanal.backend.domain.analysis.repository.*;
 import com.nanal.backend.global.security.AuthenticationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
@@ -31,14 +34,14 @@ public class AspectConfig {
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();
 
-        log.info("[{}]{} - START", email, methodName);
+        log.info("[{}] {} - START", email, methodName);
 
         stopWatch.start();
         Object result = joinPoint.proceed();
         stopWatch.stop();
         Long executionTime = stopWatch.getTotalTimeMillis();
 
-        log.info("[{}]{} - FINISHED | EXECUTION TIME => {} ms", email, methodName, executionTime);
+        log.info("[{}] {} - FINISHED | EXECUTION TIME => {} ms", email, methodName, executionTime);
 
         OnBoardingLog onBoardingLog = OnBoardingLog.builder()
                 .userEmail(email)
@@ -58,14 +61,14 @@ public class AspectConfig {
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();
 
-        log.info("[{}]{} - START", email, methodName);
+        log.info("[{}] {} - START", email, methodName);
 
         stopWatch.start();
         Object result = joinPoint.proceed();
         stopWatch.stop();
         Long executionTime = stopWatch.getTotalTimeMillis();
 
-        log.info("[{}]{} - FINISHED | EXECUTION TIME => {} ms", email, methodName, executionTime);
+        log.info("[{}] {} - FINISHED | EXECUTION TIME => {} ms", email, methodName, executionTime);
 
         DiaryLog diaryLog = DiaryLog.builder()
                 .userEmail(email)
@@ -85,14 +88,14 @@ public class AspectConfig {
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();
 
-        log.info("[{}]{} - START", email, methodName);
+        log.info("[{}] {} - START", email, methodName);
 
         stopWatch.start();
         Object result = joinPoint.proceed();
         stopWatch.stop();
         Long executionTime = stopWatch.getTotalTimeMillis();
 
-        log.info("[{}]{} - FINISHED | EXECUTION TIME => {} ms", email, methodName, executionTime);
+        log.info("[{}] {} - FINISHED | EXECUTION TIME => {} ms", email, methodName, executionTime);
 
         MypageLog mypageLog = MypageLog.builder()
                 .userEmail(email)
@@ -112,14 +115,14 @@ public class AspectConfig {
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();
 
-        log.info("[{}]{} - START", email, methodName);
+        log.info("[{}] {} - START", email, methodName);
 
         stopWatch.start();
         Object result = joinPoint.proceed();
         stopWatch.stop();
         Long executionTime = stopWatch.getTotalTimeMillis();
 
-        log.info("[{}]{} - FINISHED | EXECUTION TIME => {} ms", email, methodName, executionTime);
+        log.info("[{}] {} - FINISHED | EXECUTION TIME => {} ms", email, methodName, executionTime);
 
         RetrospectLog retrospectLog = RetrospectLog.builder()
                 .userEmail(email)
@@ -132,15 +135,13 @@ public class AspectConfig {
         return result;
     }
 
-    @Around("execution(* com..AuthController.signUp(..))")
-    public Object authLogging(ProceedingJoinPoint joinPoint) throws Throwable {
-
-        Object result = joinPoint.proceed();
+    @AfterReturning("execution(* com..AuthService.commonAuth(..))")
+    public void authLogging(JoinPoint joinPoint) {
 
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();
 
-        log.info("[{}] Token Issue", email);
+        log.info("[{}] 로그인/회원가입 및 토큰 발급 완료", email);
 
         AuthLog authLog = AuthLog.builder()
                 .userEmail(email)
@@ -148,7 +149,5 @@ public class AspectConfig {
                 .build();
 
         authLogRepository.save(authLog);
-
-        return result;
     }
 }

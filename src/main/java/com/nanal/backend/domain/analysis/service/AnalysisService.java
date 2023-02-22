@@ -2,6 +2,7 @@ package com.nanal.backend.domain.analysis.service;
 
 import com.nanal.backend.domain.analysis.dto.resp.*;
 import com.nanal.backend.domain.analysis.repository.AuthLogRepository;
+import com.nanal.backend.domain.analysis.repository.DiaryLogRepository;
 import com.nanal.backend.domain.analysis.repository.RetrospectLogRepository;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,16 +22,17 @@ import java.util.List;
 public class AnalysisService {
 
     private final AuthLogRepository authLogRepository;
+    private final DiaryLogRepository diaryLogRepository;
     private final RetrospectLogRepository retrospectLogRepository;
     private final MemberRepository memberRepository;
 
     public RespGetDauDto getDau() {
         LocalDateTime currentDate = LocalDate.now().atStartOfDay();
 
-        LocalDateTime first = currentDate.withDayOfMonth(1);
-        LocalDateTime last = currentDate.withDayOfMonth(1).plusMonths(1);
+        LocalDateTime from = currentDate.withDayOfMonth(1);
+        LocalDateTime to = currentDate.withDayOfMonth(1).plusMonths(1);
 
-        List<DayDto> dayDtoList = authLogRepository.dauQuery(first, last);
+        List<DayDto> dayDtoList = diaryLogRepository.dauQuery(from, to);
 
         return RespGetDauDto.builder()
                 .dayDtoList(dayDtoList)

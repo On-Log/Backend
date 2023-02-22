@@ -17,6 +17,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Slf4j
@@ -71,10 +72,10 @@ public class AuthService {
         // 회원가입(가입 정보 없는 유저일 때만) 및 로그인
         Member authenticatedMember = auth(member, providerInfo);
 
+        AuthenticationUtil.makeAuthentication(authenticatedMember);
+
         // 토큰 생성
         Token token = tokenUtil.generateToken(authenticatedMember);
-        log.info("{}", token);
-
         // Redis에 Refresh Token 저장
         tokenUtil.storeRefreshToken(authenticatedMember.getSocialId(), token);
 

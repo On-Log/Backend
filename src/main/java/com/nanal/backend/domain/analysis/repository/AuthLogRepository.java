@@ -13,11 +13,11 @@ import java.util.List;
 
 public interface AuthLogRepository extends JpaRepository<AuthLog, Long> {
 
-    @Query(value = "SELECT new com.nanal.backend.domain.analysis.dto.resp.DayDto(DAY(al.createdAt), COUNT(DISTINCT al.userEmail)) " +
-            "FROM AuthLog al " +
-            "WHERE al.createdAt >= :first AND al.createdAt < :last " +
-            "GROUP BY DAY(al.createdAt)")
-    List<DayDto> dauQuery(@Param("first")LocalDateTime first, @Param("last")LocalDateTime last);
+//    @Query(value = "SELECT new com.nanal.backend.domain.analysis.dto.resp.DayDto(DAY(al.createdAt), COUNT(DISTINCT al.userEmail)) " +
+//            "FROM AuthLog al " +
+//            "WHERE al.createdAt >= :first AND al.createdAt < :last " +
+//            "GROUP BY DAY(al.createdAt)")
+//    List<DayDto> dauQuery(@Param("first")LocalDateTime first, @Param("last")LocalDateTime last);
 
     @Query(value = "SELECT new com.nanal.backend.domain.analysis.dto.resp.WeekDto(WEEK(al.createdAt) - WEEK(:first) + 1, COUNT(DISTINCT al.userEmail)) " +
             "FROM AuthLog al " +

@@ -36,12 +36,12 @@ public class AuthenticationUtil {
                 grantedAuthorities);
     }
 
-    public static void makeAuthentication(String socialId, String email, List<String> roles) {
+    public static void makeAuthentication(Member member) {
         // Authentication 정보 만들기
         User user = User.builder()
-                .socialId(socialId)
-                .email(email)
-                .roles(roles)
+                .socialId(member.getSocialId())
+                .email(member.getEmail())
+                .roles(Arrays.asList(member.getRole().getKey()))
                 .build();
 
         // ContextHolder 에 Authentication 정보 저장

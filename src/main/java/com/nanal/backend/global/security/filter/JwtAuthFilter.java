@@ -52,7 +52,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 Member member = memberRepository.findBySocialId(socialId).get();
 
                 // 이메일로 Authentication 정보 생성
-                AuthenticationUtil.makeAuthentication(socialId, member.getEmail(), Arrays.asList(member.getRole().getKey()));
+                AuthenticationUtil.makeAuthentication(member);
             } catch (Exception e) {
                 throw TokenInvalidException.EXCEPTION;
             }

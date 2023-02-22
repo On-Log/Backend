@@ -24,6 +24,8 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+        String email = AuthenticationUtil.getCurrentUserEmail();
+        log.info("[{}] {}", email, ErrorCode.FORBIDDEN.getMessage());
         setErrorResponse(response, ErrorCode.FORBIDDEN);
     }
 

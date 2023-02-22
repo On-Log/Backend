@@ -73,7 +73,7 @@ public class CommonControllerTest {
                 .build();
 
         // user.getSocialId() 에서 NullPointerException 방지를 위한 Authentication 생성
-        AuthenticationUtil.makeAuthentication(member.getSocialId(), member.getEmail(), Arrays.asList("ROLE_USER", "ROLE_ONBOARDER"));
+        AuthenticationUtil.makeAuthentication(member);
 
         //given(tokenUtil.verifyToken(any())).willReturn(true);
         //given(tokenUtil.getSocialId(any())).willReturn(member.getSocialId());

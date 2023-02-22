@@ -126,7 +126,6 @@ public class TokenUtil {
                 refreshTokenStoragePeriod,
                 TimeUnit.SECONDS
         );
-        log.info("Refresh Token 저장 완료");
     }
 
     private static Claims getClaims(Member member) {

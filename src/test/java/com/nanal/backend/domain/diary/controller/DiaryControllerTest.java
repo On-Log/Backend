@@ -122,7 +122,7 @@ class DiaryControllerTest extends CommonControllerTest {
 
         String body = objectMapper.writeValueAsString(input);
 
-        willDoNothing().given(diaryService).saveDiary(any(), any());
+        willDoNothing().given(diaryService).writeDiary(any(), any());
 
         //when
         ResultActions actions = mockMvc.perform(

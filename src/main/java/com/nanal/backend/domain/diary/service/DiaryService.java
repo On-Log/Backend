@@ -48,22 +48,20 @@ public class DiaryService {
 
         // 회고 요일과 현재 날짜로 일기 작성 가능주 구하기
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime nextDayOfPrevRetroDate = getNextDayOfPrevRetroDate(member.getRetrospectDay(), now);
-        LocalDateTime retroDate = getRetroDate(member.getRetrospectDay(), now);
-        // DiaryWritableWeek diaryWritableWeek = DiaryWritableWeek.create(member.getRetrospectDay(), now);
+        DiaryWritableWeek diaryWritableWeek = DiaryWritableWeek.create(member.getRetrospectDay(), now);
 
         List<RetrospectInfoDto> retrospectInfoList = getRetrospectList(member.getMemberId(), reqGetCalendarDto.getSelectDate());
 
         // 회고 작성 여부
-        Boolean existRetrospect = existDiaryDate(member.getMemberId(), retroDate);
+        Boolean existRetrospect = existDiaryDate(member.getMemberId(), diaryWritableWeek.getRetroDate());
 
         return RespGetCalendarDto.builder()
                 .nickname(member.getNickname())
                 .isRetrospectDay(member.isRetrospectDay(now))
                 .existRetrospect(existRetrospect)
                 .existDiaryDate(existDiaryDate)
-                .nextDayOfPrevRetroDate(nextDayOfPrevRetroDate)
-                .retroDate(retroDate)
+                .nextDayOfPrevRetroDate(diaryWritableWeek.getNextDayOfPrevRetroDate())
+                .retroDate(diaryWritableWeek.getRetroDate())
                 .retrospectInfoList(retrospectInfoList)
                 .build();
     }
@@ -151,7 +149,7 @@ public class DiaryService {
 
     private void checkWritableWeek(Member member, LocalDateTime date) {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime nextDayOfPrevRetroDate = getNextDayOfPrevRetroDate(member.getRetrospectDay(), now);
+        LocalDateTime nextDayOfPrevRetroDate = DiaryWritableWeek.getNextDayOfPrevRetroDate(member.getRetrospectDay(), now);
         // validation 을 통해 현재보다 미래의 날짜가 들어오지 않는 것을 보장
         if(!(date.isEqual(nextDayOfPrevRetroDate) || date.isAfter(nextDayOfPrevRetroDate))) throw NotInDiaryWritableDateException.EXCEPTION;
     }
@@ -213,19 +211,6 @@ public class DiaryService {
         return retrospectList.stream()
                 .map(RetrospectInfoDto::new)
                 .collect(Collectors.toList());
-    }
-
-    public LocalDateTime getRetroDate(DayOfWeek retrospectDay, LocalDateTime now) {
-        // 다음 회고일
-        return now.with(TemporalAdjusters.nextOrSame(retrospectDay)).with(LocalTime.MIN);
-    }
-
-    private LocalDateTime getNextDayOfPrevRetroDate(DayOfWeek retrospectDay, LocalDateTime now) {
-        // 이전 회고일
-        LocalDateTime prevRetroDate = now.with(TemporalAdjusters.previous(retrospectDay)).with(LocalTime.MIN);
-
-        // 해당 주는 이전 회고일 다음날부터 다음 회고 일까지이므로 '이전 회고일 + 1' 을 해줘야함
-        return prevRetroDate.plusDays(1);
     }
 
     private RespGetEmotionDto getRespGetEmotionDto(List<Emotion> emotions) {

@@ -24,7 +24,7 @@ public class DiaryWritableWeek {
                 .build();
     }
 
-    private static LocalDateTime getNextDayOfPrevRetroDate(DayOfWeek retrospectDay, LocalDateTime now) {
+    public static LocalDateTime getNextDayOfPrevRetroDate(DayOfWeek retrospectDay, LocalDateTime now) {
         // 이전 회고일
         LocalDateTime prevRetroDate = now.with(TemporalAdjusters.previous(retrospectDay)).with(LocalTime.MIN);
 

@@ -1,5 +1,6 @@
 package com.nanal.backend.domain.retrospect.service;
 
+import com.nanal.backend.domain.diary.domain.DiaryWritableWeek;
 import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.diary.entity.Emotion;
@@ -65,7 +66,7 @@ public class RetrospectService {
         isRetroNumberNotFive = countRetro(member, reqGetInfoDto.getSelectDate());
 
 
-        LocalDateTime postRetroDate = diaryService.getRetroDate(member.getRetrospectDay(), currentDate);
+        LocalDateTime postRetroDate = DiaryWritableWeek.getRetroDate(member.getRetrospectDay(), currentDate);
         // 회고 요일까지 남은 날짜
         Period period = Period.between(currentDate.toLocalDate(), postRetroDate.toLocalDate());
         int betweenDate = period.getDays();
@@ -275,7 +276,7 @@ public class RetrospectService {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
-        LocalDateTime postRetroDate = diaryService.getRetroDate(member.getRetrospectDay(), member.getPrevRetrospectDate());
+        LocalDateTime postRetroDate = DiaryWritableWeek.getRetroDate(member.getRetrospectDay(), member.getPrevRetrospectDate());
         LocalDate tempDate = reqCheckRetroDto.getCurrentDate().toLocalDate();
         LocalDateTime startDate = tempDate.atStartOfDay();
         LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);

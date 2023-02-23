@@ -49,7 +49,7 @@ public class DiaryController {
                                        @RequestBody @Valid ReqSaveDiaryDto reqSaveDiaryDto) {
 
         // 요청 정보 기반으로 일기 저장
-        diaryService.saveDiary(user.getSocialId(), reqSaveDiaryDto);
+        diaryService.writeDiary(user.getSocialId(), reqSaveDiaryDto);
 
         return new CommonResponse<>(ErrorCode.SUCCESS);
     }

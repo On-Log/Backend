@@ -1,5 +1,6 @@
 package com.nanal.backend.domain.diary.service;
 
+import com.nanal.backend.domain.diary.domain.DiaryWritableWeek;
 import com.nanal.backend.domain.diary.dto.req.*;
 import com.nanal.backend.domain.diary.dto.resp.RespGetCalendarDto;
 import com.nanal.backend.domain.diary.dto.resp.RespGetDiaryDto;
@@ -40,45 +41,38 @@ public class DiaryService {
 
     public RespGetCalendarDto getCalendar(String socialId, ReqGetCalendarDto reqGetCalendarDto) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
-
-        // 회고일 체크
-        LocalDateTime now = LocalDateTime.now();
-        Boolean isRetrospectDay = member.isRetrospectDay(now);
+        Member member = findMember(socialId);
 
         // 요청된 기간내 유저의 기록이 존재하는 날 조회
         List<LocalDateTime> existDiaryDate = getExistDiaryDateList(member.getMemberId(), reqGetCalendarDto.getSelectDate());
 
         // 회고 요일과 현재 날짜로 일기 작성 가능주 구하기
-        LocalDateTime nextDayOfPrevRetroDate = getNextDayOfPrevRetroDate(member.getRetrospectDay(), now);
-        LocalDateTime retroDate = getRetroDate(member.getRetrospectDay(), now);
+        LocalDateTime now = LocalDateTime.now();
+        DiaryWritableWeek diaryWritableWeek = DiaryWritableWeek.create(member.getRetrospectDay(), now);
 
         List<RetrospectInfoDto> retrospectInfoList = getRetrospectList(member.getMemberId(), reqGetCalendarDto.getSelectDate());
 
         // 회고 작성 여부
-        Boolean existRetrospect = existDiaryDate(member.getMemberId(), retroDate);
+        Boolean existRetrospect = existDiaryDate(member.getMemberId(), diaryWritableWeek.getRetroDate());
 
         return RespGetCalendarDto.builder()
                 .nickname(member.getNickname())
-                .isRetrospectDay(isRetrospectDay)
+                .isRetrospectDay(member.isRetrospectDay(now))
                 .existRetrospect(existRetrospect)
                 .existDiaryDate(existDiaryDate)
-                .nextDayOfPrevRetroDate(nextDayOfPrevRetroDate)
-                .retroDate(retroDate)
+                .nextDayOfPrevRetroDate(diaryWritableWeek.getNextDayOfPrevRetroDate())
+                .retroDate(diaryWritableWeek.getRetroDate())
                 .retrospectInfoList(retrospectInfoList)
                 .build();
     }
 
 
-    public void saveDiary(String socialId, ReqSaveDiaryDto reqSaveDiaryDto) {
+    public void writeDiary(String socialId, ReqSaveDiaryDto reqSaveDiaryDto) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
-        // 일기 작성 가능주간인지 체크
-        checkWritableWeek(member, reqSaveDiaryDto.getDate());
-        // 해당 날짜에 작성한 회고 존재하는지 체크
-        checkRetrospectAlreadyExist(member.getMemberId(), reqSaveDiaryDto.getDate());
-        // 해당 날짜에 작성한 일기 존재하는지 체크
-        checkDiaryAlreadyExist(member.getMemberId(), reqSaveDiaryDto.getDate());
+        Member member = findMember(socialId);
+
+        // 일기 작성 가능성 검증
+        checkDiaryWritable(member, reqSaveDiaryDto);
 
         List<Emotion> findEmotions = emotionRepository.findEmotionsIn(reqSaveDiaryDto.getEmotions());
 
@@ -92,7 +86,7 @@ public class DiaryService {
 
     public RespGetDiaryDto getDiary(String socialId, ReqGetDiaryDto reqGetDiaryDto) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+        Member member = findMember(socialId);
 
         // 조회할 일기 가져오기
         Diary selectDiary = getDiary(member.getMemberId(), reqGetDiaryDto.getDate());
@@ -103,11 +97,12 @@ public class DiaryService {
 
     public void updateDiary(String socialId, ReqEditDiaryDto reqEditDiary) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+        Member member = findMember(socialId);
         List<Emotion> findEmotions = emotionRepository.findEmotionsIn(reqEditDiary.getEmotions());
 
         // 수정할 일기 조회
         Diary updateDiary = getDiary(member.getMemberId(), reqEditDiary.getDate());
+
         // 일기 수정 가능 여부 체크
         checkUpdatable(updateDiary);
 
@@ -117,10 +112,11 @@ public class DiaryService {
 
     public void deleteDiary(String socialId, ReqDeleteDiaryDto reqDeleteDiaryDto) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+        Member member = findMember(socialId);
 
         // 삭제할 일기 가져오기
         Diary deleteDiary = getDiary(member.getMemberId(), reqDeleteDiaryDto.getDate());
+
         // 기존 일기 삭제
         diaryRepository.delete(deleteDiary);
     }
@@ -153,7 +149,7 @@ public class DiaryService {
 
     private void checkWritableWeek(Member member, LocalDateTime date) {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime nextDayOfPrevRetroDate = getNextDayOfPrevRetroDate(member.getRetrospectDay(), now);
+        LocalDateTime nextDayOfPrevRetroDate = DiaryWritableWeek.getNextDayOfPrevRetroDate(member.getRetrospectDay(), now);
         // validation 을 통해 현재보다 미래의 날짜가 들어오지 않는 것을 보장
         if(!(date.isEqual(nextDayOfPrevRetroDate) || date.isAfter(nextDayOfPrevRetroDate))) throw NotInDiaryWritableDateException.EXCEPTION;
     }
@@ -217,24 +213,25 @@ public class DiaryService {
                 .collect(Collectors.toList());
     }
 
-    public LocalDateTime getRetroDate(DayOfWeek retrospectDay, LocalDateTime now) {
-        // 다음 회고일
-        return now.with(TemporalAdjusters.nextOrSame(retrospectDay)).with(LocalTime.MIN);
-    }
-
-    private LocalDateTime getNextDayOfPrevRetroDate(DayOfWeek retrospectDay, LocalDateTime now) {
-        // 이전 회고일
-        LocalDateTime prevRetroDate = now.with(TemporalAdjusters.previous(retrospectDay)).with(LocalTime.MIN);
-
-        // 해당 주는 이전 회고일 다음날부터 다음 회고 일까지이므로 '이전 회고일 + 1' 을 해줘야함
-        return prevRetroDate.plusDays(1);
-    }
-
     private RespGetEmotionDto getRespGetEmotionDto(List<Emotion> emotions) {
         List<String> emotionWords = emotions.stream()
                 .map(Emotion::getEmotion)
                 .collect(Collectors.toList());
 
         return new RespGetEmotionDto(emotionWords);
+    }
+
+    private Member findMember(String socialId) {
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+        return member;
+    }
+
+    private void checkDiaryWritable(Member member, ReqDiaryDto reqSaveDiaryDto) {
+        // 일기 작성 가능주간인지 체크
+        checkWritableWeek(member, reqSaveDiaryDto.getDate());
+        // 해당 날짜에 작성한 회고 존재하는지 체크
+        checkRetrospectAlreadyExist(member.getMemberId(), reqSaveDiaryDto.getDate());
+        // 해당 날짜에 작성한 일기 존재하는지 체크
+        checkDiaryAlreadyExist(member.getMemberId(), reqSaveDiaryDto.getDate());
     }
 }

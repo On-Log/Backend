@@ -17,18 +17,20 @@ import com.nanal.backend.domain.diary.repository.DiaryRepository;
 import com.nanal.backend.domain.diary.repository.EmotionRepository;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -39,6 +41,7 @@ public class DiaryService {
     private final EmotionRepository emotionRepository;
     private final RetrospectRepository retrospectRepository;
 
+    @Transactional(readOnly = true)
     public RespGetCalendarDto getCalendar(String socialId, ReqGetCalendarDto reqGetCalendarDto) {
         // socialId 로 유저 조회
         Member member = findMember(socialId);
@@ -83,7 +86,7 @@ public class DiaryService {
         diaryRepository.save(diary);
     }
 
-
+    @Transactional(readOnly = true)
     public RespGetDiaryDto getDiary(String socialId, ReqGetDiaryDto reqGetDiaryDto) {
         // socialId 로 유저 조회
         Member member = findMember(socialId);
@@ -121,6 +124,7 @@ public class DiaryService {
         diaryRepository.delete(deleteDiary);
     }
 
+    @Transactional(readOnly = true)
     public RespGetEmotionDto getEmotion() {
         // 감정어 조회
         RespGetEmotionDto respGetEmotionDto = getRespGetEmotionDto(emotionRepository.findAll());
@@ -222,8 +226,7 @@ public class DiaryService {
     }
 
     private Member findMember(String socialId) {
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
-        return member;
+        return memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
     }
 
     private void checkDiaryWritable(Member member, ReqDiaryDto reqSaveDiaryDto) {

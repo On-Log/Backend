@@ -7,11 +7,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.StopWatch;
 
 @RequiredArgsConstructor
@@ -24,12 +24,10 @@ public class AspectConfig {
     private final MypageLogRepository mypageLogRepository;
     private final RetrospectLogRepository retrospectLogRepository;
     private final AuthLogRepository authLogRepository;
-
     private final OnBoardingLogRepository onBoardingLogRepository;
 
     @Around("execution(* com..onboarding..*Service.*(..))")
     public Object onBoardingLogging(ProceedingJoinPoint joinPoint) throws Throwable {
-
         StopWatch stopWatch = new StopWatch();
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();
@@ -56,7 +54,6 @@ public class AspectConfig {
 
     @Around("execution(* com..diary..*Service.*(..))")
     public Object diaryLogging(ProceedingJoinPoint joinPoint) throws Throwable {
-
         StopWatch stopWatch = new StopWatch();
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();

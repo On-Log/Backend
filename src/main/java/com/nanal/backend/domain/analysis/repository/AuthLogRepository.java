@@ -4,14 +4,20 @@ import com.nanal.backend.domain.analysis.dto.resp.DayDto;
 import com.nanal.backend.domain.analysis.dto.resp.RespGetMauDto;
 import com.nanal.backend.domain.analysis.dto.resp.WeekDto;
 import com.nanal.backend.domain.analysis.entity.AuthLog;
+import com.nanal.backend.domain.analysis.entity.RetrospectLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AuthLogRepository extends JpaRepository<AuthLog, Long> {
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    AuthLog save(AuthLog authLog);
 
 //    @Query(value = "SELECT new com.nanal.backend.domain.analysis.dto.resp.DayDto(DAY(al.createdAt), COUNT(DISTINCT al.userEmail)) " +
 //            "FROM AuthLog al " +

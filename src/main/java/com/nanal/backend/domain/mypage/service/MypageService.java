@@ -28,9 +28,10 @@ public class MypageService {
     private final MemberRepository memberRepository;
     private final FeedbackRepository feedbackRepository;
 
+    @Transactional(readOnly = true)
     public RespGetUserDto getUser(String socialId) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+        Member member = findMember(socialId);
 
         return RespGetUserDto.builder()
                 .email(member.getEmail())
@@ -41,14 +42,15 @@ public class MypageService {
 
     public void updateNickname(String socialId, ReqEditNicknameDto reqEditNickname) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+        Member member = findMember(socialId);
 
         member.updateNickname(reqEditNickname.getNickname());
     }
 
+    @Transactional(readOnly = true)
     public RespCheckChangeAvailability checkChangeAvailability(String socialId) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+        Member member = findMember(socialId);
 
         LocalDateTime now = LocalDateTime.now();
         if(member.verifyChangingRetrospectDate(now))
@@ -57,18 +59,17 @@ public class MypageService {
             return RespCheckChangeAvailability.unchangeable(member.getPrevRetrospectDate().plusDays(30));
     }
 
-
     public void updateRetrospectDay(String socialId, ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
-
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+        Member member = findMember(socialId);
 
         member.updateRetrospectDay(DayOfWeek.valueOf(reqEditRetrospectDayDto.getRetrospectDay()));
     }
 
+    @Transactional(readOnly = true)
     public RespGetServiceLife getServiceLife(String socialId) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+        Member member = findMember(socialId);
 
         Integer serviceLife = member.getServiceLife();
 
@@ -77,18 +78,30 @@ public class MypageService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public void logout(String socialId) {
-
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+        Member member = findMember(socialId);
 
         tokenUtil.expireRefreshToken(member.getSocialId());
     }
 
     public void withdrawMembership(String socialId, ReqWithdrawMembership reqWithdrawMembership) {
         // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+        Member member = findMember(socialId);
 
+        saveWithdrawalReasons(reqWithdrawMembership, member);
+
+        memberRepository.delete(member);
+    }
+
+    //=== 편의 메서드 ===//
+
+    private Member findMember(String socialId) {
+        return memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+    }
+
+    private void saveWithdrawalReasons(ReqWithdrawMembership reqWithdrawMembership, Member member) {
         for(ReqWithdrawMembership.Reason r : reqWithdrawMembership.getReasons()){
             Feedback feedback = Feedback.builder()
                     .memberId(member.getMemberId())
@@ -106,7 +119,5 @@ public class MypageService {
                 .build();
 
         feedbackRepository.save(detail);
-
-        memberRepository.delete(member);
     }
 }

@@ -576,9 +576,10 @@ public class RetrospectControllerTest extends CommonControllerTest {
     @Test
     public void 회고_삭제() throws Exception {
         //given
-        String deleteDate = "2023-01-15T00:00:00";
+        String selectDate = "2023-01-15T00:00:00";
+        int week = 0;
 
-        ReqDeleteDiaryDto input = new ReqDeleteDiaryDto(LocalDateTime.parse(deleteDate));
+        ReqDeleteRetroDto input = new ReqDeleteRetroDto(LocalDateTime.parse(selectDate), week);
         String body = objectMapper.writeValueAsString(input);
 
         willDoNothing().given(retrospectService).deleteRetro(any(), any());
@@ -600,7 +601,8 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         headerWithName("Token").description("접근 토큰")
                                 ),
                                 requestFields(
-                                        fieldWithPath("date").description("삭제 날짜")
+                                        fieldWithPath("selectDate").description("선택 날짜"),
+                                        fieldWithPath("week").description("회고 주차 (index로 되어있어서 1주 차는 0, 2주 차는 1 이런 식으로 보내야 함)")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),

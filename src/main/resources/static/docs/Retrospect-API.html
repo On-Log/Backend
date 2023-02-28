@@ -1926,11 +1926,12 @@ Content-Length: 175
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /retrospect HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Token: ACCESS_TOKEN
-Content-Length: 38
+Content-Length: 59
 Host: localhost:8080
 
 {
-  "date" : "2023-01-15T00:00:00"
+  "selectDate" : "2023-01-15T00:00:00",
+  "week" : 0
 }</code></pre>
 </div>
 </div>
@@ -1973,9 +1974,14 @@ Host: localhost:8080
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>date</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>selectDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">삭제 날짜</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">선택 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>week</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고 주차 (index로 되어있어서 1주 차는 0, 2주 차는 1 이런 식으로 보내야 함)</p></td>
 </tr>
 </tbody>
 </table>

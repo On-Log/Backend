@@ -134,7 +134,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
         List<RetrospectKeywordDto> retrospectKeywordDtos = new ArrayList<>(Arrays.asList(new RetrospectKeywordDto("그때 그대로 의미있었던 행복한 기억", "키워드1"),
                 new RetrospectKeywordDto("나를 힘들게 했지만 도움이 된 기억", "키워드2"),
                 new RetrospectKeywordDto("돌아보니, 다른 의미로 다가온 기억", "키워드3")));
-        ReqSaveRetroDto reqSaveRetroDto = new ReqSaveRetroDto("자아탐색", retrospectContentDtos, retrospectKeywordDtos);
+        ReqSaveRetroDto reqSaveRetroDto = new ReqSaveRetroDto(LocalDateTime.parse("2023-01-24T00:00:00"), "자아탐색", retrospectContentDtos, retrospectKeywordDtos);
 
         willDoNothing().given(retrospectService).saveRetrospect(any(), any()); //void일때는 willDoNothing 사용
 
@@ -155,6 +155,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         headerWithName("Token").description("접근 토큰")
                                 ),
                                 requestFields(
+                                        fieldWithPath("currentDate").description("회고 저장 날짜"),
                                         fieldWithPath("goal").description("회고 목적"),
                                         fieldWithPath("contents[].question").description("회고 목적별 질문"),
                                         fieldWithPath("contents[].answer").description("질문에 대한 답변"),
@@ -169,7 +170,6 @@ public class RetrospectControllerTest extends CommonControllerTest {
                         )
                 );
     }
-
     @Test
     public void 회고_조회() throws Exception {
         //given

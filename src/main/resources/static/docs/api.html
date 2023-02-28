@@ -3071,10 +3071,11 @@ Content-Length: 1188
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /retrospect HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Token: ACCESS_TOKEN
-Content-Length: 838
+Content-Length: 880
 Host: localhost:8080
 
 {
+  "currentDate" : "2023-01-24T00:00:00",
   "goal" : "자아탐색",
   "contents" : [ {
     "question" : "이번주 나의 모습은 어땠나요?",
@@ -3137,6 +3138,11 @@ Host: localhost:8080
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>currentDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고 저장 날짜</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>goal</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>

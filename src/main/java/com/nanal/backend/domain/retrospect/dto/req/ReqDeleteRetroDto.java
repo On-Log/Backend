@@ -16,5 +16,8 @@ import java.time.LocalDateTime;
 public class ReqDeleteRetroDto {
     @NotNull(message = "date 값이 올바르지 않습니다.")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime date;
+    private LocalDateTime selectDate;
+
+    @NotNull(message = "week 은 비어있을 수 없습니다.")
+    private Integer week;
 }

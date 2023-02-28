@@ -174,7 +174,7 @@ public class RetrospectController {
     public CommonResponse<?> deleteDiary(@AuthenticationPrincipal User user,
                                          @Valid @RequestBody ReqDeleteRetroDto reqDeleteRetroDto) {
 
-        // 요청 날짜 기반으로 일기 삭제
+        // 요청 날짜 기반으로 회고 삭제
         retrospectService.deleteRetro(user.getSocialId(), reqDeleteRetroDto);
 
         return new CommonResponse<>(ErrorCode.SUCCESS);

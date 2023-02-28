@@ -17,10 +17,6 @@ import java.util.List;
 @Data
 public class ReqSaveRetroDto {
 
-    @NotNull(message = "currentDate 값이 올바르지 않습니다.")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime currentDate;
-
     @NotBlank(message = "goal 은 비어있을 수 없습니다.")
     private String goal;
 

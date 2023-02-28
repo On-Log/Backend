@@ -49,6 +49,7 @@ public class RetrospectService {
     private final ExtraQuestionRepository extraQuestionRepository;
     private final EmotionRepository emotionRepository;
 
+    @Transactional(readOnly = true)
     public RespGetInfoDto getInfo(String socialId, ReqGetInfoDto reqGetInfoDto) {
         //회고 개수가 5개인지 5개 아니면 true, 이상이면 false
         boolean isRetroNumberNotFive = true;
@@ -89,14 +90,14 @@ public class RetrospectService {
         if(countRetro(member, reqSaveRetroDto.getCurrentDate()) == false)
             throw RetrospectAllDoneException.EXCEPTION;
         //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능) 1. 요청 들어온 요일이 유저 회고요일과 같은지 체크
-        DayOfWeek prevDay = reqSaveRetroDto.getCurrentDate().getDayOfWeek();
-        if(prevDay != member.getRetrospectDay())
-            throw RetrospectTimeDoneException.EXCEPTION;
+//        DayOfWeek prevDay = reqSaveRetroDto.getCurrentDate().getDayOfWeek();
+//        if(prevDay != member.getRetrospectDay())
+//            throw RetrospectTimeDoneException.EXCEPTION;
         //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능) 2. 요청 들어온 날짜와 회고 날짜가 차이가 1일인지 체크
         LocalDateTime currentTime = reqSaveRetroDto.getCurrentDate();
         LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
-        if(abs(ChronoUnit.DAYS.between(prevRetroDate.toLocalDate(),  LocalDate.now())) != 0)
-            throw RetrospectTimeDoneException.EXCEPTION;
+//        if(abs(ChronoUnit.DAYS.between(prevRetroDate.toLocalDate(),  LocalDate.now())) != 0)
+//            throw RetrospectTimeDoneException.EXCEPTION;
         // 해당 날짜에 작성한 일기 존재하는지 체크
         checkRetrospectAlreadyExist(reqSaveRetroDto, member);
         // 회고 Entity 생성
@@ -301,8 +302,9 @@ public class RetrospectService {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
-        // 삭제할 일기 가져오기
-        Retrospect deleteRetro = getRetrospect(member.getMemberId(), reqDeleteRetroDto.getDate());
+        // 삭제할 회고 가져오기
+        Retrospect deleteRetro = getRetrospect(member, reqDeleteRetroDto);
+
         // 기존 일기 삭제
         retrospectRepository.delete(deleteRetro);
     }
@@ -338,16 +340,17 @@ public class RetrospectService {
     }
 
     //삭제할 회고 가져오기
-    public Retrospect getRetrospect(Long memberId, LocalDateTime date) {
-        LocalDate tempDate = date.toLocalDate();
-        LocalDateTime startDate = tempDate.atStartOfDay();
-        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);
+    public Retrospect getRetrospect(Member member, ReqDeleteRetroDto reqDeleteRetroDto) {
 
-        // 선택한 날에 작성한 회고 조회
-        Retrospect findRetro = retrospectRepository.findByMemberAndWriteDate(memberId, startDate, endDate)
-                .orElseThrow(() -> RetrospectNotFoundException.EXCEPTION);
+        LocalDateTime selectDate = reqDeleteRetroDto.getSelectDate();
+        // 선택한 yyyy-MM 에 작성한 회고리스트 조회
+        List<Retrospect> getRetrospects = getExistRetrospect(member, selectDate);
+        // 선택한 yyyy-MM 에 작성한 회고 중, 조회하고자 하는 회고가 존재하지 않을 경우
+        if(getRetrospects.size() < reqDeleteRetroDto.getWeek()) throw RetrospectNotFoundException.EXCEPTION;
 
-        return findRetro;
+        // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
+        Retrospect retrospect = getRetrospects.get(reqDeleteRetroDto.getWeek());
+        return retrospect;
     }
 
     //회고 저장시 예외처리

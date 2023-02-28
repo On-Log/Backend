@@ -27,7 +27,7 @@ operation::retrospect-controller-test/회고_수정[snippets='http-request,reque
 
 [[Retrospect-일기작성날짜-키워드-감정어-조회]]
 === Retrospect 일기 작성 날짜 + 키워드 + 감정어 조회
-operation::retrospect-controller-test/일기_키워드_감정어_조회[snippets='http-request,request-headers,request-parameters']
+operation::retrospect-controller-test/일기_키워드_감정어_조회[snippets='http-request,request-headers']
 
 ==== 자정 이전에 호출했을 때
 operation::retrospect-controller-test/일기_키워드_감정어_조회[snippets='http-response,response-fields']

@@ -96,7 +96,6 @@ public class RetrospectControllerTest extends CommonControllerTest {
                 get("/retrospect")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("currentDate", currentDate)
                         .param("selectDate", selectDate)
         );
 
@@ -109,7 +108,6 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         headerWithName("Token").description("접근 토큰")
                                 ),
                                 requestParameters(
-                                        parameterWithName("currentDate").description("현재 날짜"),
                                         parameterWithName("selectDate").description("선택 날짜")
                                 ),
                                 responseFields(
@@ -172,7 +170,6 @@ public class RetrospectControllerTest extends CommonControllerTest {
                         )
                 );
     }
-
     @Test
     public void 회고_조회() throws Exception {
         //given
@@ -224,7 +221,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
     @Test
     public void 회고_수정() throws Exception {
         //given
-        ReqEditRetroDto reqEditRetroDto = new ReqEditRetroDto(LocalDateTime.parse("2023-01-24T00:00:00"), "수정답변", 0, 0);
+        ReqEditRetroDto reqEditRetroDto = new ReqEditRetroDto("수정답변", 0, 0);
         willDoNothing().given(retrospectService).editRetrospect(any(), any());
 
         //when
@@ -244,7 +241,6 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         headerWithName("Token").description("접근 토큰")
                                 ),
                                 requestFields(
-                                        fieldWithPath("editDate").description("회고 수정 날짜"),
                                         fieldWithPath("answer").description("수정된 회고 질문에 대한 답변"),
                                         fieldWithPath("week").description("회고 주차 (index로 되어있어서 1주 차는 0, 2주 차는 1 이런 식으로 보내야 함)"),
                                         fieldWithPath("index").description("수정할 회고 질문 (index로 되어있어서 첫번째 질문은 0, 두번째 질문은 1 이런 식으로 보내야 함)")
@@ -261,7 +257,6 @@ public class RetrospectControllerTest extends CommonControllerTest {
     @Test
     public void 일기_키워드_감정어_조회() throws Exception{
         //given
-        String currentDate = "2023-01-24T00:00:00";
         boolean isInTime = true;
         List<KeywordEmotionDto> keywordEmotionDtoList = new ArrayList<>(Arrays.asList(
                 new KeywordEmotionDto("아쉬움"),
@@ -284,14 +279,13 @@ public class RetrospectControllerTest extends CommonControllerTest {
 
         List<KeywordWriteDateDto> keywordWriteDateDtos = new ArrayList<>(Arrays.asList(new KeywordWriteDateDto(LocalDateTime.parse("2023-01-24T00:00:00"),keywordDtoList)));
         RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = new RespGetKeywordAndEmotionDto(isInTime,LocalDateTime.parse("2023-01-24T00:00:00"),keywordWriteDateDtos, countEmotions);
-        given(retrospectService.getKeywordAndEmotion(any(), any())).willReturn(respGetKeywordAndEmotionDto);
+        given(retrospectService.getKeywordAndEmotion(any())).willReturn(respGetKeywordAndEmotionDto);
 
         //when
         ResultActions actions = mockMvc.perform(
                 get("/retrospect/keyword")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("currentDate", currentDate)
         );
 
         //then
@@ -301,9 +295,6 @@ public class RetrospectControllerTest extends CommonControllerTest {
                         restDocs.document(
                                 requestHeaders(
                                         headerWithName("Token").description("접근 토큰")
-                                ),
-                                requestParameters(
-                                        parameterWithName("currentDate").description("현재 날짜")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),
@@ -326,7 +317,6 @@ public class RetrospectControllerTest extends CommonControllerTest {
     @Test
     public void 자정_이후_호출() throws Exception{
         //given
-        String currentDate = "2023-01-24T00:00:00";
         boolean isInTime = false;
         List<KeywordEmotionDto> keywordEmotionDtoList = new ArrayList<>(Arrays.asList(
                 new KeywordEmotionDto("아쉬움"),
@@ -348,14 +338,13 @@ public class RetrospectControllerTest extends CommonControllerTest {
 
         List<KeywordWriteDateDto> keywordWriteDateDtos = new ArrayList<>(Arrays.asList(new KeywordWriteDateDto(LocalDateTime.parse("2023-01-24T00:00:00"),keywordDtoList)));
         RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = new RespGetKeywordAndEmotionDto(isInTime,LocalDateTime.parse("2023-01-24T00:00:00"),keywordWriteDateDtos, countEmotions);
-        given(retrospectService.getKeywordAndEmotion(any(), any())).willReturn(respGetKeywordAndEmotionDto);
+        given(retrospectService.getKeywordAndEmotion(any())).willReturn(respGetKeywordAndEmotionDto);
 
         //when
         ResultActions actions = mockMvc.perform(
                 get("/retrospect/keyword")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("currentDate", currentDate)
         );
 
         //then
@@ -365,9 +354,6 @@ public class RetrospectControllerTest extends CommonControllerTest {
                         restDocs.document(
                                 requestHeaders(
                                         headerWithName("Token").description("접근 토큰")
-                                ),
-                                requestParameters(
-                                        parameterWithName("currentDate").description("현재 날짜")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),
@@ -470,15 +456,13 @@ public class RetrospectControllerTest extends CommonControllerTest {
     @Test
     public void 회고_존재_여부_및_변경_이후_첫_회고_여부_체크() throws Exception {
         //given
-        String currentDate = "2023-01-24T00:00:00";
         RespCheckFirstRetrospect respCheckFirstRetrospect = RespCheckFirstRetrospect.notFirstRetrospectAfterChange(false, true);
-        given(retrospectService.checkFirstRetrospect(any(), any())).willReturn(respCheckFirstRetrospect);
+        given(retrospectService.checkFirstRetrospect(any())).willReturn(respCheckFirstRetrospect);
         //when
         ResultActions actions = mockMvc.perform(
                 get("/retrospect/exist")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("currentDate", currentDate)
         );
         //then
         actions
@@ -487,9 +471,6 @@ public class RetrospectControllerTest extends CommonControllerTest {
                         restDocs.document(
                                 requestHeaders(
                                         headerWithName("Token").description("접근 토큰")
-                                ),
-                                requestParameters(
-                                        parameterWithName("currentDate").description("현재 날짜")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),
@@ -505,15 +486,13 @@ public class RetrospectControllerTest extends CommonControllerTest {
     @Test
     public void 회고_이미_존재() throws Exception {
         //given
-        String currentDate = "2023-01-24T00:00:00";
         boolean output = true;
-        given(retrospectService.checkRetrospect(any(), any())).willReturn(output);
+        given(retrospectService.checkRetrospect(any())).willReturn(output);
         //when
         ResultActions actions = mockMvc.perform(
                 get("/retrospect/exist")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("currentDate", currentDate)
         );
         //then
         actions
@@ -522,9 +501,6 @@ public class RetrospectControllerTest extends CommonControllerTest {
                         restDocs.document(
                                 requestHeaders(
                                         headerWithName("Token").description("접근 토큰")
-                                ),
-                                requestParameters(
-                                        parameterWithName("currentDate").description("현재 날짜")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),
@@ -540,15 +516,13 @@ public class RetrospectControllerTest extends CommonControllerTest {
     @Test
     public void 회고_없음_회고_변경_이후_첫_회고() throws Exception {
         //given
-        String currentDate = "2023-01-24T00:00:00";
         RespCheckFirstRetrospect respCheckFirstRetrospect = RespCheckFirstRetrospect.firstRetrospectAfterChange(true, false);
-        given(retrospectService.checkFirstRetrospect(any(), any())).willReturn(respCheckFirstRetrospect);
+        given(retrospectService.checkFirstRetrospect(any())).willReturn(respCheckFirstRetrospect);
         //when
         ResultActions actions = mockMvc.perform(
                 get("/retrospect/exist")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("currentDate", currentDate)
         );
         //then
         actions
@@ -557,9 +531,6 @@ public class RetrospectControllerTest extends CommonControllerTest {
                         restDocs.document(
                                 requestHeaders(
                                         headerWithName("Token").description("접근 토큰")
-                                ),
-                                requestParameters(
-                                        parameterWithName("currentDate").description("현재 날짜")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),

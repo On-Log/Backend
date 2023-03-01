@@ -36,7 +36,7 @@ class DiaryControllerTest extends CommonControllerTest {
     public void 일기_탭() throws Exception {
         //given
         String fromDate = "2023-01-01T00:00:00";
-        String toDate = "2023-01-01T00:00:00";
+        String toDate = "2023-01-31T00:00:00";
 
         List<LocalDateTime> existDiaryDate = new ArrayList<>(Arrays.asList(
                 LocalDateTime.parse("2023-01-01T00:00:00"),

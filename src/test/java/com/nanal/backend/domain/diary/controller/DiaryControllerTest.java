@@ -35,7 +35,8 @@ class DiaryControllerTest extends CommonControllerTest {
     @Test
     public void 일기_탭() throws Exception {
         //given
-        String selectDate = "2023-01-13T00:00:00";
+        String fromDate = "2023-01-01T00:00:00";
+        String toDate = "2023-01-01T00:00:00";
 
         List<LocalDateTime> existDiaryDate = new ArrayList<>(Arrays.asList(
                 LocalDateTime.parse("2023-01-01T00:00:00"),
@@ -67,7 +68,8 @@ class DiaryControllerTest extends CommonControllerTest {
                 get("/diary")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("selectDate", selectDate)
+                        .param("fromDate", fromDate)
+                        .param("toDate", toDate)
         );
 
         //then
@@ -79,7 +81,8 @@ class DiaryControllerTest extends CommonControllerTest {
                                         headerWithName("Token").description("접근 토큰")
                                 ),
                                 requestParameters(
-                                        parameterWithName("selectDate").description("선택 날짜")
+                                        parameterWithName("fromDate").description("처음 날짜"),
+                                        parameterWithName("toDate").description("마지막 날짜")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),

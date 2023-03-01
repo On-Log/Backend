@@ -19,9 +19,7 @@ import com.nanal.backend.domain.auth.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -47,13 +45,17 @@ public class DiaryService {
         Member member = findMember(socialId);
 
         // 요청된 기간내 유저의 기록이 존재하는 날 조회
-        List<LocalDateTime> existDiaryDate = getExistDiaryDateList(member.getMemberId(), reqGetCalendarDto.getSelectDate());
+        List<LocalDateTime> existDiaryDate = getExistDiaryDateList(member.getMemberId(),
+                reqGetCalendarDto.getFromDate(),
+                reqGetCalendarDto.getToDate());
 
         // 회고 요일과 현재 날짜로 일기 작성 가능주 구하기
         LocalDateTime now = LocalDateTime.now();
         DiaryWritableWeek diaryWritableWeek = DiaryWritableWeek.create(member.getRetrospectDay(), now);
 
-        List<RetrospectInfoDto> retrospectInfoList = getRetrospectList(member.getMemberId(), reqGetCalendarDto.getSelectDate());
+        List<RetrospectInfoDto> retrospectInfoList = getRetrospectList(member.getMemberId(),
+                reqGetCalendarDto.getFromDate(),
+                reqGetCalendarDto.getToDate());
 
         // 회고 작성 여부
         Boolean existRetrospect = existDiaryDate(member.getMemberId(), diaryWritableWeek.getRetroDate());
@@ -189,10 +191,9 @@ public class DiaryService {
         else return false;
     }
 
-    private List<LocalDateTime> getExistDiaryDateList(Long memberId, LocalDateTime date) {
-        LocalDate tempDate = date.toLocalDate();
-        LocalDateTime startDate = tempDate.withDayOfMonth(1).atStartOfDay();
-        LocalDateTime endDate = tempDate.withDayOfMonth(tempDate.lengthOfMonth()).atTime(LocalTime.MAX).withNano(0);
+    private List<LocalDateTime> getExistDiaryDateList(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {
+        LocalDateTime startDate = fromDate.toLocalDate().atStartOfDay();
+        LocalDateTime endDate = toDate.toLocalDate().atTime(LocalTime.MAX).withNano(0);
 
         // 선택한 날에 작성한 일기리스트 조회
         List<Diary> writeDates = diaryRepository.findDiaryListByMemberAndWriteDate(memberId, startDate, endDate);
@@ -203,10 +204,9 @@ public class DiaryService {
                 .collect(Collectors.toList());
     }
 
-    private List<RetrospectInfoDto> getRetrospectList(Long memberId, LocalDateTime date) {
-        LocalDate tempDate = date.toLocalDate();
-        LocalDateTime startDate = tempDate.withDayOfMonth(1).atStartOfDay();
-        LocalDateTime endDate = tempDate.withDayOfMonth(tempDate.lengthOfMonth()).atTime(LocalTime.MAX).withNano(0);
+    private List<RetrospectInfoDto> getRetrospectList(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {
+        LocalDateTime startDate = fromDate.toLocalDate().atStartOfDay();
+        LocalDateTime endDate = toDate.toLocalDate().atTime(LocalTime.MAX).withNano(0);
 
         // 선택한 날에 작성된 회고 조회
         List<Retrospect> retrospectList = retrospectRepository.findDiaryListByMemberAndWriteDate(memberId, startDate, endDate);

@@ -99,7 +99,7 @@ public class RetrospectService {
     }
 
 
-
+    @Transactional(readOnly = true)
     public RespGetRetroDto getRetro(String socialId, ReqGetRetroDto reqGetRetroDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
@@ -132,7 +132,7 @@ public class RetrospectService {
         retrospectContents.get(reqEditRetroDto.getIndex()).changeAnswer(reqEditRetroDto.getAnswer());
     }
 
-
+    @Transactional(readOnly = true)
     public RespGetKeywordAndEmotionDto getKeywordAndEmotion(String socialId){
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
@@ -154,7 +154,7 @@ public class RetrospectService {
         return respGetKeywordAndEmotionDto;
     }
 
-
+    @Transactional(readOnly = true)
     public RespGetQuestionAndHelpDto getQuestionAndHelp(ReqGetGoalDto reqGetGoalDto) {
         long goalIndex = getGoalIndex(reqGetGoalDto.getGoal());
         // 회고 질문 + 도움말 조회
@@ -164,7 +164,7 @@ public class RetrospectService {
 
         return respGetQuestionAndHelpDto;
     }
-
+    @Transactional(readOnly = true)
     public RespGetExtraQuestionAndHelpDto getExtraQuestionAndHelp(String socialId, ReqGetGoalDto reqGetGoalDto){
         long goalIndex = getGoalIndex(reqGetGoalDto.getGoal());
         // socialId 로 유저 조회
@@ -178,7 +178,7 @@ public class RetrospectService {
 
         return respGetExtraQuestionAndHelpDto;
     }
-
+    @Transactional(readOnly = true)
     public RespCheckFirstRetrospect checkFirstRetrospect(String socialId) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
@@ -384,7 +384,7 @@ public class RetrospectService {
         else
             return true;
     }
-    
+
     //유저가 작성한 회고 리스트 반환 메서드
     private List<String> getContents(Long memberId) {
         List<Retrospect> getRetrospects = retrospectRepository.findListByMember(memberId);

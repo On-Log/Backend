@@ -27,6 +27,7 @@ public class ReqGetCalendarDto {
 
     @AssertTrue(message = "fromDate 는 toDate 보다 앞선 날짜여야 합니다.")
     public boolean isValidDate() {
+        if(fromDate == null || toDate == null) return true;
         return this.fromDate.isBefore(this.toDate);
     }
 }

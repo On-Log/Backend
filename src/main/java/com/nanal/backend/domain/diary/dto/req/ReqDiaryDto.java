@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Data
 public class ReqDiaryDto {
 
-    @PastOrPresent(message = "date 는 현재 또는 과거의 날짜만 가능합니다.")
+    //@PastOrPresent(message = "date 는 현재 또는 과거의 날짜만 가능합니다.")
     @NotNull(message = "date 값이 올바르지 않습니다.")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime date;

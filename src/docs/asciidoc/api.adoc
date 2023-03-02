@@ -10,6 +10,8 @@ include::Overview.adoc[]
 
 include::Auth-API.adoc[]
 
+include::OnBoarding-API.adoc[]
+
 include::MyPage-API.adoc[]
 
 include::Diary-API.adoc[]

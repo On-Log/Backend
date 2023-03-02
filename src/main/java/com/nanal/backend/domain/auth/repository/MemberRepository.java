@@ -13,6 +13,8 @@ import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
+    Optional<Member> findByEmail(String email);
+
     Optional<Member> findBySocialId(String socialId);
 
     @Query(value = "SELECT m.memberId FROM Member m WHERE m.retrospectDay = :dayOfWeek")
@@ -22,4 +24,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "FROM Member m " +
             "GROUP BY m.retrospectDay")
     List<DesignatedRetrospectDayDto> designatedRetrospectDayQuery();
+
 }

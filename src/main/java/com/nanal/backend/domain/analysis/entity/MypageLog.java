@@ -16,7 +16,7 @@ public class MypageLog extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mypage_log_id")
-    private Long MypageLogId;
+    private Long mypageLogId;
 
     @Column(name = "user_email", nullable = false, length = 50)
     private String userEmail;

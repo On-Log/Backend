@@ -66,6 +66,24 @@ dependencies {
     // Querydsl
     implementation 'com.querydsl:querydsl-jpa:5.0.0'
     annotationProcessor 'com.querydsl:querydsl-apt:5.0.0'
+
+    // Slack
+    implementation("com.slack.api:bolt:1.27.3")
+    implementation("com.slack.api:bolt-servlet:1.27.3")
+    implementation("com.slack.api:bolt-jetty:1.27.3")
+
+    // Email 인증
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    // Monitoring
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // Throttling
+    implementation 'com.bucket4j:bucket4j-core:8.1.1'
+    implementation 'com.bucket4j:bucket4j-jcache:8.1.1'
+    implementation 'javax.cache:cache-api:1.1.1'
+    implementation 'org.redisson:redisson:3.19.0'
 }
 
 tasks.named('test') {

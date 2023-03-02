@@ -97,14 +97,12 @@ public class RetrospectController {
      * 수정일 :
      */
     @GetMapping("/retrospect/keyword")
-    public CommonResponse<RespGetKeywordAndEmotionDto> getKeywordAndEmotion(@AuthenticationPrincipal User user,
-                                                                            @Valid ReqGetKeywordAndEmotionDto reqGetKeywordAndEmotionDto,
-                                                                            BindingResult bindingResult) {
+    public CommonResponse<RespGetKeywordAndEmotionDto> getKeywordAndEmotion(@AuthenticationPrincipal User user) {
 
-        if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
+//        if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
 
         // 일기 작성 날짜+키워드+감정어 조회
-        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = retrospectService.getKeywordAndEmotion(user.getSocialId(), reqGetKeywordAndEmotionDto);
+        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = retrospectService.getKeywordAndEmotion(user.getSocialId());
 
         return new CommonResponse<>(respGetKeywordAndEmotionDto);
     }
@@ -116,10 +114,9 @@ public class RetrospectController {
      * 수정일 :
      */
     @GetMapping("/retrospect/question")
-    public CommonResponse<RespGetQuestionAndHelpDto> getQuestionAndHelp(@Valid ReqGetGoalDto reqGetGoalDto,
-                                                                        BindingResult bindingResult) {
+    public CommonResponse<RespGetQuestionAndHelpDto> getQuestionAndHelp(@Valid ReqGetGoalDto reqGetGoalDto) {
 
-        if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
+//        if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
 
         // 회고질문 + 도움말 조회
         RespGetQuestionAndHelpDto respGetQuestionAndHelp = retrospectService.getQuestionAndHelp(reqGetGoalDto);
@@ -153,19 +150,30 @@ public class RetrospectController {
      * 수정일 :
      */
     @GetMapping("/retrospect/exist")
-    public CommonResponse<?> checkExistRetrospect(@AuthenticationPrincipal User user,
-                                                  @Valid ReqCheckRetroDto reqCheckRetroDto,
-                                                  BindingResult bindingResult) {
+    public CommonResponse<?> checkExistRetrospect(@AuthenticationPrincipal User user) {
 
-        if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
-        RespCheckFirstRetrospect respCheckFirstRetrospect = retrospectService.checkFirstRetrospect(user.getSocialId(), reqCheckRetroDto);
+//        if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
+        RespCheckFirstRetrospect respCheckFirstRetrospect = retrospectService.checkFirstRetrospect(user.getSocialId());
         // 요청 날짜에 작성한 회고가 있는지 체크
-        if (retrospectService.checkRetrospect(user.getSocialId(), reqCheckRetroDto) == false)
+        if (retrospectService.checkRetrospect(user.getSocialId()) == false)
             return new CommonResponse<>(respCheckFirstRetrospect);
         else
             return new CommonResponse<>(ErrorCode.SUCCESS_BUT);
     }
 
+    /**
+     * 회고 삭제
+     * [DELETE] /retrospect
+     */
+    @DeleteMapping("/retrospect")
+    public CommonResponse<?> deleteDiary(@AuthenticationPrincipal User user,
+                                         @Valid @RequestBody ReqDeleteRetroDto reqDeleteRetroDto) {
+
+        // 요청 날짜 기반으로 회고 삭제
+        retrospectService.deleteRetro(user.getSocialId(), reqDeleteRetroDto);
+
+        return new CommonResponse<>(ErrorCode.SUCCESS);
+    }
 
 
 }

@@ -100,7 +100,7 @@ jobs:
           script: |
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nanal-prod:green
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nanal-prod:blue
-            ./deploy.sh
+            ./deploy.sh > deploy-log/exce-log_$(date '+%Y-%m-%d-%H-%M-%S')
             
       #배포 ( 테스트용 )
       - name: Deploy (TEST)
@@ -115,4 +115,4 @@ jobs:
           script: |
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nanal-test:green
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nanal-test:blue
-            ./deploy.sh
+            ./deploy.sh > deploy-log/exce-log_$(date '+%Y-%m-%d-%H-%M-%S')

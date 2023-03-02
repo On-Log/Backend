@@ -14,7 +14,10 @@ public enum ErrorCode {
 
 
     // 특정 정보를 권한이 없는 유저가 요청하거나, 존재하지 않는 정보를 요청할 때.
-    BAD_REQUEST(false, 400, "잘못된 요청 형식입니다."),
+    BAD_REQUEST(false, 400, "잘못된 요청입니다."),
+    FORBIDDEN(false, 403, "해당 요청에 대한 권한이 존재하지 않습니다."),
+
+    TOO_MANY_REQUEST(false,410, "잠시후에 다시 요청해주세요."),
 
     // Validation
     INVALID_INPUT_VALUE(false, 455, "잘못된 입력값입니다."),
@@ -27,6 +30,11 @@ public enum ErrorCode {
 
     // Auth
     MEMBER_NOT_FOUND(false, 460, "존재하지 않는 사용자입니다."),
+    EMAIL_ALREADY_EXIST(false, 461, "이미 존재하는 Email 입니다."),
+    ACCOUNT_NOT_EXIST(false, 462, "존재하지 않는 계정입니다."),
+    PASSWORD_INCORRECT(false, 463, "잘못된 비밀번호 입니다."),
+    INVALID_CONFIRM_VALUE(false, 464, "잘못된 인증값 입니다."),
+    ACCOUNT_ALREADY_EXIST(false, 465, "이미 다른 채널로 가입된 이메일 입니다."),
 
     // Diary
     // 일기 조회시 해당 날짜에 일기가 존재하지 않을 때.
@@ -50,7 +58,10 @@ public enum ErrorCode {
     RETROSPECT_NOT_FOUND(false, 490, "조회하고자 하는 회고가 존재하지 않습니다."),
     RETROSPECT_ALREADY_EXIST(false,491,"이미 요청한 날짜에 작성한 회고가 존재합니다."),
     RETROSPECT_ALL_DONE(false,492,"이번 달에 작성할 수 있는 모든 회고를 작성했습니다."),
-    RETROSPECT_TIME_DONE(false,493,"회고 작성 및 수정은 회고일 당일 11시 59분까지만 가능합니다");
+    RETROSPECT_TIME_DONE(false,493,"회고 작성 및 수정은 회고일 당일 11시 59분까지만 가능합니다"),
+    GOAL_NOT_FOUND(false,494,"해당 회고 목적은 존재하지 않습니다.");
+
+
     private Boolean isSuccess;
     private int code;
     private String message;

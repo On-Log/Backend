@@ -24,6 +24,8 @@ public class RespGetDiaryDto {
 
     private List<KeywordDto> keywords;
 
+    private Boolean editStatus;
+
     public static RespGetDiaryDto createRespGetDiaryDto(Diary selectDiary) {
         List<KeywordDto> keywordDtoList = selectDiary.getKeywords().stream()
                 .map(keyword -> new KeywordDto(keyword))
@@ -33,6 +35,7 @@ public class RespGetDiaryDto {
                 .writeDate(selectDiary.getWriteDate())
                 .content(selectDiary.getContent())
                 .keywords(keywordDtoList)
+                .editStatus(selectDiary.getEditStatus())
                 .build();
         return respGetDiaryDto;
     }

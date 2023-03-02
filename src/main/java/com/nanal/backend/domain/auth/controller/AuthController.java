@@ -2,8 +2,13 @@ package com.nanal.backend.domain.auth.controller;
 
 import com.nanal.backend.domain.auth.dto.LoginInfo;
 import com.nanal.backend.domain.auth.dto.req.ReqAuthDto;
+import com.nanal.backend.domain.auth.dto.req.ReqEmailConfirmDto;
+import com.nanal.backend.domain.auth.dto.req.ReqRegisterDto;
+import com.nanal.backend.domain.auth.dto.resp.RespEmailConfirmDto;
 import com.nanal.backend.domain.auth.service.AuthService;
+import com.nanal.backend.domain.auth.service.EmailService;
 import com.nanal.backend.global.response.CommonResponse;
+import com.nanal.backend.global.response.ErrorCode;
 import com.nanal.backend.global.security.jwt.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +23,45 @@ import javax.servlet.http.HttpServletRequest;
 public class AuthController {
 
     private final AuthService authService;
+    private final EmailService emailService;
+
+    /**
+     * 일반 회원가입 기능
+     */
+    @PostMapping(value = "/auth/register")
+    public CommonResponse<?> generalRegister(@RequestBody ReqRegisterDto reqRegisterDto) {
+
+        authService.generalRegister(reqRegisterDto);
+
+        return new CommonResponse<>(ErrorCode.SUCCESS);
+    }
+
+    /**
+     * 이메일 인증
+     */
+    @PostMapping("/auth/emailConfirm")
+    public CommonResponse<?> emailConfirm(@RequestBody ReqEmailConfirmDto reqEmailConfirmDto) throws Exception {
+
+        RespEmailConfirmDto respEmailConfirmDto = emailService.sendSimpleMessage(reqEmailConfirmDto.getEmail());
+
+        return new CommonResponse<>(respEmailConfirmDto);
+    }
+
+    /**
+     * 일반 로그인 기능
+     */
+    @PostMapping(value = "/auth/login")
+    public CommonResponse<?> generalLogin(@RequestBody ReqRegisterDto reqRegisterDto) {
+
+        LoginInfo token = authService.generalLogin(reqRegisterDto);
+
+        return new CommonResponse<>(token);
+    }
+
+    /**
+     * 비밀번호 찾기
+     */
+
 
     /**
      * NAVER 소셜 로그인 기능
@@ -27,9 +71,12 @@ public class AuthController {
 
         // 최초 로그인 - 회원가입 후 토큰 발행.
         // 기존 유저 - 토큰 발행.
-        LoginInfo token = authService.commonAuth(reqAuthDto.getAccessToken(), request.getRequestURI());
+        LoginInfo loginInfo = authService.commonAuth(reqAuthDto.getAccessToken(), request.getRequestURI());
 
-        return new CommonResponse<>(token);
+        if(loginInfo.getOnBoarding())
+            return new CommonResponse<>(ErrorCode.SUCCESS_BUT, loginInfo);
+        else
+            return new CommonResponse<>(loginInfo);
     }
 
     /**
@@ -42,7 +89,10 @@ public class AuthController {
         // 기존 유저 - 토큰 발행.
         LoginInfo loginInfo = authService.commonAuth(reqAuthDto.getAccessToken(), request.getRequestURI());
 
-        return new CommonResponse<>(loginInfo);
+        if(loginInfo.getOnBoarding())
+            return new CommonResponse<>(ErrorCode.SUCCESS_BUT, loginInfo);
+        else
+            return new CommonResponse<>(loginInfo);
     }
 
     /**
@@ -55,7 +105,10 @@ public class AuthController {
         // 기존 유저 - 토큰 발행.
         LoginInfo loginInfo = authService.commonAuth(reqAuthDto.getAccessToken(), request.getRequestURI());
 
-        return new CommonResponse<>(loginInfo);
+        if(loginInfo.getOnBoarding())
+            return new CommonResponse<>(ErrorCode.SUCCESS_BUT, loginInfo);
+        else
+            return new CommonResponse<>(loginInfo);
     }
 
 

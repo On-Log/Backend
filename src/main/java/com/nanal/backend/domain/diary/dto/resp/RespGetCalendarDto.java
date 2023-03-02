@@ -17,6 +17,8 @@ public class RespGetCalendarDto {
 
     private String nickname;
 
+    private Boolean existRetrospect;
+
     private Boolean isRetrospectDay;
 
     private List<LocalDateTime> existDiaryDate;
@@ -28,4 +30,5 @@ public class RespGetCalendarDto {
     private LocalDateTime retroDate;
 
     private List<RetrospectInfoDto> retrospectInfoList;
+
 }

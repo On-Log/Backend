@@ -1,20 +1,17 @@
 package com.nanal.backend.global.config;
 
-import com.nanal.backend.domain.analysis.entity.AuthLog;
-import com.nanal.backend.domain.analysis.entity.DiaryLog;
-import com.nanal.backend.domain.analysis.entity.MypageLog;
-import com.nanal.backend.domain.analysis.entity.RetrospectLog;
-import com.nanal.backend.domain.analysis.repository.AuthLogRepository;
-import com.nanal.backend.domain.analysis.repository.DiaryLogRepository;
-import com.nanal.backend.domain.analysis.repository.MypageLogRepository;
-import com.nanal.backend.domain.analysis.repository.RetrospectLogRepository;
+import com.nanal.backend.domain.analysis.entity.*;
+import com.nanal.backend.domain.analysis.repository.*;
 import com.nanal.backend.global.security.AuthenticationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.StopWatch;
 
 @RequiredArgsConstructor
@@ -27,22 +24,48 @@ public class AspectConfig {
     private final MypageLogRepository mypageLogRepository;
     private final RetrospectLogRepository retrospectLogRepository;
     private final AuthLogRepository authLogRepository;
+    private final OnBoardingLogRepository onBoardingLogRepository;
 
-    @Around("execution(* com..diary..*Service.*(..))")
-    public Object diaryLogging(ProceedingJoinPoint joinPoint) throws Throwable {
-
+    @Around("execution(* com..onboarding..*Service.*(..))")
+    public Object onBoardingLogging(ProceedingJoinPoint joinPoint) throws Throwable {
         StopWatch stopWatch = new StopWatch();
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();
 
-        log.info("[{}]{} - START", email, methodName);
+        log.info("[{}] {} - START", email, methodName);
 
         stopWatch.start();
         Object result = joinPoint.proceed();
         stopWatch.stop();
         Long executionTime = stopWatch.getTotalTimeMillis();
 
-        log.info("[{}]{} - FINISHED | EXECUTION TIME => {} ms", email, methodName, executionTime);
+        log.info("[{}] {} - FINISHED | EXECUTION TIME => {} ms", email, methodName, executionTime);
+
+        OnBoardingLog onBoardingLog = OnBoardingLog.builder()
+                .userEmail(email)
+                .serviceName(methodName)
+                .executionTime(executionTime)
+                .build();
+
+        onBoardingLogRepository.save(onBoardingLog);
+
+        return result;
+    }
+
+    @Around("execution(* com..diary..*Service.*(..))")
+    public Object diaryLogging(ProceedingJoinPoint joinPoint) throws Throwable {
+        StopWatch stopWatch = new StopWatch();
+        String email = AuthenticationUtil.getCurrentUserEmail();
+        String methodName = joinPoint.getSignature().getName();
+
+        log.info("[{}] {} - START", email, methodName);
+
+        stopWatch.start();
+        Object result = joinPoint.proceed();
+        stopWatch.stop();
+        Long executionTime = stopWatch.getTotalTimeMillis();
+
+        log.info("[{}] {} - FINISHED | EXECUTION TIME => {} ms", email, methodName, executionTime);
 
         DiaryLog diaryLog = DiaryLog.builder()
                 .userEmail(email)
@@ -62,14 +85,14 @@ public class AspectConfig {
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();
 
-        log.info("[{}]{} - START", email, methodName);
+        log.info("[{}] {} - START", email, methodName);
 
         stopWatch.start();
         Object result = joinPoint.proceed();
         stopWatch.stop();
         Long executionTime = stopWatch.getTotalTimeMillis();
 
-        log.info("[{}]{} - FINISHED | EXECUTION TIME => {} ms", email, methodName, executionTime);
+        log.info("[{}] {} - FINISHED | EXECUTION TIME => {} ms", email, methodName, executionTime);
 
         MypageLog mypageLog = MypageLog.builder()
                 .userEmail(email)
@@ -89,14 +112,14 @@ public class AspectConfig {
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();
 
-        log.info("[{}]{} - START", email, methodName);
+        log.info("[{}] {} - START", email, methodName);
 
         stopWatch.start();
         Object result = joinPoint.proceed();
         stopWatch.stop();
         Long executionTime = stopWatch.getTotalTimeMillis();
 
-        log.info("[{}]{} - FINISHED | EXECUTION TIME => {} ms", email, methodName, executionTime);
+        log.info("[{}] {} - FINISHED | EXECUTION TIME => {} ms", email, methodName, executionTime);
 
         RetrospectLog retrospectLog = RetrospectLog.builder()
                 .userEmail(email)
@@ -109,15 +132,13 @@ public class AspectConfig {
         return result;
     }
 
-    @Around("execution(* com..AuthController.signUp(..))")
-    public Object authLogging(ProceedingJoinPoint joinPoint) throws Throwable {
-
-        Object result = joinPoint.proceed();
+    @AfterReturning("execution(* com..AuthService.commonAuth(..))")
+    public void authLogging(JoinPoint joinPoint) {
 
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();
 
-        log.info("[{}] Token Issue", email);
+        log.info("[{}] 로그인/회원가입 및 토큰 발급 완료", email);
 
         AuthLog authLog = AuthLog.builder()
                 .userEmail(email)
@@ -125,7 +146,5 @@ public class AspectConfig {
                 .build();
 
         authLogRepository.save(authLog);
-
-        return result;
     }
 }

@@ -1,14 +1,21 @@
 package com.nanal.backend.domain.analysis.repository;
 
 import com.nanal.backend.domain.analysis.dto.resp.WeekDayDao;
+import com.nanal.backend.domain.analysis.entity.DiaryLog;
+import com.nanal.backend.domain.analysis.entity.MypageLog;
 import com.nanal.backend.domain.analysis.entity.RetrospectLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RetrospectLogRepository extends JpaRepository<RetrospectLog, Long> {
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    RetrospectLog save(RetrospectLog retrospectLog);
 
     @Query(value = "SELECT new com.nanal.backend.domain.analysis.dto.resp.WeekDto(DAYOFWEEK(rl.createdAt), COUNT(rl.retrospectLogId)) " +
             "FROM RetrospectLog rl " +

@@ -35,7 +35,8 @@ class DiaryControllerTest extends CommonControllerTest {
     @Test
     public void 일기_탭() throws Exception {
         //given
-        String selectDate = "2023-01-13T00:00:00";
+        String fromDate = "2023-01-01T00:00:00";
+        String toDate = "2023-01-31T00:00:00";
 
         List<LocalDateTime> existDiaryDate = new ArrayList<>(Arrays.asList(
                 LocalDateTime.parse("2023-01-01T00:00:00"),
@@ -52,6 +53,7 @@ class DiaryControllerTest extends CommonControllerTest {
 
         RespGetCalendarDto output = new RespGetCalendarDto(
                 "nickname",
+                false,
                 true,
                 existDiaryDate,
                 LocalDateTime.parse("2023-01-18T00:00:00"),
@@ -66,7 +68,8 @@ class DiaryControllerTest extends CommonControllerTest {
                 get("/diary")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("selectDate", selectDate)
+                        .param("fromDate", fromDate)
+                        .param("toDate", toDate)
         );
 
         //then
@@ -78,13 +81,15 @@ class DiaryControllerTest extends CommonControllerTest {
                                         headerWithName("Token").description("접근 토큰")
                                 ),
                                 requestParameters(
-                                        parameterWithName("selectDate").description("선택 날짜")
+                                        parameterWithName("fromDate").description("처음 날짜"),
+                                        parameterWithName("toDate").description("마지막 날짜")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
                                         fieldWithPath("result.nickname").description("사용자 닉네임"),
+                                        fieldWithPath("result.existRetrospect").description("이번주 회고의 작성 여부"),
                                         fieldWithPath("result.isRetrospectDay").description("오늘이 회고일인지 체크"),
                                         fieldWithPath("result.existDiaryDate").description("일기 존재 날짜"),
                                         fieldWithPath("result.nextDayOfPrevRetroDate").description("이전 회고일의 다음일"),
@@ -120,7 +125,7 @@ class DiaryControllerTest extends CommonControllerTest {
 
         String body = objectMapper.writeValueAsString(input);
 
-        willDoNothing().given(diaryService).saveDiary(any(), any());
+        willDoNothing().given(diaryService).writeDiary(any(), any());
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -173,6 +178,7 @@ class DiaryControllerTest extends CommonControllerTest {
                 .writeDate(LocalDateTime.parse(date))
                 .content("마지막 방학... 계절 학기 언제 끝나...")
                 .keywords(keywordDtoList)
+                .editStatus(true)
                 .build();
 
         given(diaryService.getDiary(any(), any())).willReturn(output);
@@ -203,7 +209,8 @@ class DiaryControllerTest extends CommonControllerTest {
                                         fieldWithPath("result.writeDate").description("작성 날짜"),
                                         fieldWithPath("result.content").description("일기 내용"),
                                         fieldWithPath("result.keywords[].keyword").description("키워드"),
-                                        fieldWithPath("result.keywords[].keywordEmotions[].emotion").description("감정어")
+                                        fieldWithPath("result.keywords[].keywordEmotions[].emotion").description("감정어"),
+                                        fieldWithPath("result.editStatus").description("일기 수정 가능한지 여부. true면 수정 가능")
                                 )
                         )
                 );

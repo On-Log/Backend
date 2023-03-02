@@ -17,6 +17,8 @@ public enum ErrorCode {
     BAD_REQUEST(false, 400, "잘못된 요청입니다."),
     FORBIDDEN(false, 403, "해당 요청에 대한 권한이 존재하지 않습니다."),
 
+    TOO_MANY_REQUEST(false,410, "잠시후에 다시 요청해주세요."),
+
     // Validation
     INVALID_INPUT_VALUE(false, 455, "잘못된 입력값입니다."),
 

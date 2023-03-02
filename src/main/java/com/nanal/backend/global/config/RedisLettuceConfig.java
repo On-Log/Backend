@@ -9,13 +9,15 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-public class RedisConfig {
+public class RedisLettuceConfig {
 
     @Value("${redis.host}")
     private String redisHost;
 
     @Value("${redis.port}")
     private int redisPort;
+
+    private static final String REDISSON_HOST_PREFIX = "redis://";
 
     /*
     RedisTemplate을 이용한 방식

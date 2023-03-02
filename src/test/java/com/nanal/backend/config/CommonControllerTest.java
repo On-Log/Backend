@@ -6,6 +6,7 @@ import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.global.interceptor.AuthInterceptor;
 import com.nanal.backend.global.security.AuthenticationUtil;
 import com.nanal.backend.global.security.jwt.TokenUtil;
+import com.nanal.backend.global.throttling.ThrottlingInterceptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +49,11 @@ public class CommonControllerTest {
     @MockBean
     public TokenUtil tokenUtil;
 
+//    @MockBean
+//    public AuthInterceptor authInterceptor;
+
     @MockBean
-    public AuthInterceptor authInterceptor;
+    public ThrottlingInterceptor throttlingInterceptor;
 
     @MockBean
     public MemberRepository memberRepository;
@@ -80,7 +84,7 @@ public class CommonControllerTest {
         //given(tokenUtil.getEmail(any())).willReturn(member.getEmail());
 
         //인터셉터 통과
-        given(authInterceptor.preHandle(any(), any(), any())).willReturn(true);
+        given(throttlingInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)

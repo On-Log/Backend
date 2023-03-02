@@ -26,6 +26,11 @@ public class AuthenticationUtil {
         return user.getEmail();
     }
 
+    public static String getCurrentUserSocialId() {
+        User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return user.getSocialId();
+    }
+
     public static Authentication getAuthentication(User user) {
 
         List<GrantedAuthority> grantedAuthorities = user.getRoles().stream()

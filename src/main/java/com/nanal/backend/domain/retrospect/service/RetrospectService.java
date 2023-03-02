@@ -134,24 +134,17 @@ public class RetrospectService {
 
 
     public RespGetKeywordAndEmotionDto getKeywordAndEmotion(String socialId){
-        //자정 안에 호출했는지 체크. 자정 안이라면 true, 아니면 false
-        boolean isInTime = true;
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         LocalDateTime currentDate = LocalDateTime.now();
         LocalDateTime prevRetroDate = currentDate.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
-        if(abs(ChronoUnit.DAYS.between(prevRetroDate.toLocalDate(), currentDate)) != 0)
-            isInTime = false;
 
+        //자정 안에 호출했는지 체크. 자정 안이라면 true, 아니면 false
+        boolean isInTime = checkIsInTime(prevRetroDate, currentDate);
 
         //일주일 일기 리스트 조회
-        List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(
-                member.getMemberId(),
-                prevRetroDate.toLocalDate().minusDays(6),
-                currentDate.toLocalDate(),
-                true
-        );
+        List<Diary> diaries = getWeekDiaries(member.getMemberId(), prevRetroDate, currentDate);
 
         //감정어 필터링 이후 count
         List<CountEmotion> countEmotions = getEmotionCount(diaries);
@@ -425,6 +418,28 @@ public class RetrospectService {
         else
             return false;
     }
+
+    //자정 전에 호출 여부 체크 메서드
+    private boolean checkIsInTime(LocalDateTime prevRetroDate, LocalDateTime currentDate) {
+        if(abs(ChronoUnit.DAYS.between(prevRetroDate.toLocalDate(), currentDate)) != 0)
+            return false;
+        else
+            return true;
+    }
+
+    //일주일 일기 데이터 가져오기
+    private List<Diary> getWeekDiaries (Long memberId, LocalDateTime prevRetroDate, LocalDateTime currentDate) {
+        List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(
+                memberId,
+                prevRetroDate.toLocalDate().minusDays(6),
+                currentDate.toLocalDate(),
+                true
+        );
+
+        return diaries;
+    }
+
+
     //회고 개수 count
     private boolean countRetro(Member member, LocalDateTime dateTime) {
         int count = 0;

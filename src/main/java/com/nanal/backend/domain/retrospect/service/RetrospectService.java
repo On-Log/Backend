@@ -206,7 +206,7 @@ public class RetrospectService {
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         // 삭제할 회고 가져오기
-        Retrospect deleteRetro = getRetrospect(member, reqDeleteRetroDto);
+        Retrospect deleteRetro = getRetrospect(member.getMemberId(), reqDeleteRetroDto.getSelectDate(), reqDeleteRetroDto.getWeek());
 
         // 기존 일기 삭제
         retrospectRepository.delete(deleteRetro);
@@ -375,7 +375,7 @@ public class RetrospectService {
     //회고 개수 count
     private boolean countRetro(Member member, LocalDateTime dateTime) {
         int count = 0;
-        List<Retrospect> getRetrospects = getExistRetrospect(member, dateTime);
+        List<Retrospect> getRetrospects = getExistRetrospect(member.getMemberId(), dateTime);
         for (Retrospect t : getRetrospects) {
             count++;
         }
@@ -384,7 +384,7 @@ public class RetrospectService {
         else
             return true;
     }
-
+    
     //유저가 작성한 회고 리스트 반환 메서드
     private List<String> getContents(Long memberId) {
         List<Retrospect> getRetrospects = retrospectRepository.findListByMember(memberId);

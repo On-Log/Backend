@@ -51,29 +51,23 @@ public class RetrospectService {
 
     @Transactional(readOnly = true)
     public RespGetInfoDto getInfo(String socialId, ReqGetInfoDto reqGetInfoDto) {
-        //회고 개수가 5개인지 5개 아니면 true, 이상이면 false
-        boolean isRetroNumberNotFive = true;
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
-//        LocalDateTime currentDate = reqGetInfoDto.getCurrentDate();
+
         LocalDateTime currentDate = LocalDateTime.now();
         LocalDateTime selectDate = reqGetInfoDto.getSelectDate();
 
         // 선택한 월에 있는 회고 기록 ( 어떤 회고 목적을 선택했는가 )
-        List<Retrospect> getRetrospects = getExistRetrospect(member, selectDate);
-        List<String> existRetrospect = new ArrayList<>();
-        for (Retrospect t : getRetrospects) {
-            existRetrospect.add(t.getGoal());
-        }
-        isRetroNumberNotFive = countRetro(member, reqGetInfoDto.getSelectDate());
+        List<Retrospect> getRetrospects = getExistRetrospect(member.getMemberId(), selectDate);
+        List<String> existRetrospect = getgoal(getRetrospects);
 
+        //회고 개수가 5개인지 5개 아니면 true, 이상이면 false
+        boolean isRetroNumberNotFive = countRetro(member, reqGetInfoDto.getSelectDate());
 
-        LocalDateTime postRetroDate = DiaryWritableWeek.getRetroDate(member.getRetrospectDay(), currentDate);
         // 회고 요일까지 남은 날짜
+        LocalDateTime postRetroDate = DiaryWritableWeek.getRetroDate(member.getRetrospectDay(), currentDate);
         Period period = Period.between(currentDate.toLocalDate(), postRetroDate.toLocalDate());
-        int betweenDate = period.getDays();
-        if (checkExistRetro(member, currentDate) == true)
-            betweenDate = 7;
+        int betweenDate = getbetweenDate(member, currentDate, period);
 
         // 회고 주제별로 분류 후 주차별로 분류
         List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = getKeyword(member, selectDate);
@@ -314,6 +308,24 @@ public class RetrospectService {
 
 
     //===편의 메서드===//
+
+    //회고 목적 리스트 반환
+    private List<String> getgoal(List<Retrospect> retrospects) {
+        List<String> existRetrospect = new ArrayList<>();
+        for (Retrospect t : retrospects) {
+            existRetrospect.add(t.getGoal());
+        }
+        return  existRetrospect;
+    }
+
+    //다음 회고까지 남은 날 반환
+    public Integer getbetweenDate(Member member, LocalDateTime currentDate, Period period) {
+        int betweenDate = period.getDays();
+        if (checkExistRetro(member, currentDate) == true)
+            betweenDate = 7;
+        return betweenDate;
+    }
+    
     private Retrospect createRetrospect(Member member, String goal, LocalDateTime date, List<RetrospectKeywordDto> keywordDtos, List<RetrospectContentDto> contentDtos) {
         // Retrospect 생성에 필요한 keyword, content 리스트 생성
         List<RetrospectKeyword> keywords = new ArrayList<>();
@@ -393,18 +405,18 @@ public class RetrospectService {
             return true;
     }
 
-    private List<Retrospect> getExistRetrospect(Member member, LocalDateTime selectTime) {
-        System.out.println(selectTime);
+    private List<Retrospect> getExistRetrospect(Long memberId, LocalDateTime selectTime) {
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonth = selectTime.format(DateTimeFormatter.ofPattern("yyyy-MM")) + "%";
 
         // 선택한 yyyy-MM 에 작성한 회고 리스트 조회
         List<Retrospect> retrospects = retrospectRepository.findListByMemberAndWriteDate(
-                member.getMemberId(),
+                memberId,
                 yearMonth);
 
         return retrospects;
     }
+
 
     private List<RespGetClassifiedKeywordDto> getKeyword(Member member, LocalDateTime selectTime) {
         // 전체 분할한 키워드 리스트들

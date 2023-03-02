@@ -75,9 +75,15 @@ dependencies {
     // Email 인증
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
-    //모니터링
+    // Monitoring
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // Throttling
+    implementation 'com.bucket4j:bucket4j-core:8.1.1'
+    implementation 'com.bucket4j:bucket4j-jcache:8.1.1'
+    implementation 'javax.cache:cache-api:1.1.1'
+    implementation 'org.redisson:redisson:3.19.0'
 }
 
 tasks.named('test') {

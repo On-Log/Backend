@@ -180,10 +180,6 @@ public class RetrospectService {
     }
 
     public RespCheckFirstRetrospect checkFirstRetrospect(String socialId) {
-        //회고일 변경 후 첫 회고 판별. 첫 회고가 맞다면 true 반환, 아니면 false 반환
-        boolean checkfirstRetrospect = false;
-        //회고일에 작성한 일기가 있는지. 있다면 true, 없다면 false
-        boolean writtenDiary = false;
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
         //서버 현재 시간
@@ -192,15 +188,11 @@ public class RetrospectService {
         LocalDate tempDate = currentDate.toLocalDate();
         LocalDateTime startDate = tempDate.atStartOfDay();
         LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);
-        Optional<Diary> findDiary = diaryRepository.findDiaryByMemberAndWriteDate(member.getMemberId(), startDate, endDate);
-        System.out.println(findDiary);
 
-        if(abs(ChronoUnit.DAYS.between(postRetroDate.toLocalDate(),  currentDate)) == 0)
-            checkfirstRetrospect = true;
-
-        if(findDiary.isEmpty() == false)
-            writtenDiary = true;
-
+        //회고일 변경 후 첫 회고 판별. 첫 회고가 맞다면 true 반환, 아니면 false 반환
+        boolean checkfirstRetrospect = checkFirst(postRetroDate, currentDate);
+        //회고일에 작성한 일기가 있는지. 있다면 true, 없다면 false
+        boolean writtenDiary = checkWrittenDiary(member.getMemberId(), startDate, endDate);
 
         if (checkfirstRetrospect == true)
             return RespCheckFirstRetrospect.firstRetrospectAfterChange(checkfirstRetrospect, writtenDiary);
@@ -460,6 +452,23 @@ public class RetrospectService {
         }
 
         return selected;
+    }
+
+    // 첫번째 회고인지 파악 메서드
+    private boolean checkFirst (LocalDateTime postRetroDate, LocalDateTime currentDate) {
+        if(abs(ChronoUnit.DAYS.between(postRetroDate.toLocalDate(),  currentDate)) == 0)
+            return true;
+        else
+            return false;
+    }
+
+    //회고일에 작성한 일기 있는지 파악 메서드
+    private boolean checkWrittenDiary (Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
+        Optional<Diary> findDiary = diaryRepository.findDiaryByMemberAndWriteDate(memberId, startDate, endDate);
+        if(findDiary.isEmpty() == false)
+            return true;
+        else
+            return false;
     }
     private List<Retrospect> getExistRetrospect(Long memberId, LocalDateTime selectTime) {
         // 질의할 sql 의 Like 절에 해당하게끔 변환

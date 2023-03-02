@@ -104,14 +104,11 @@ public class RetrospectService {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
-        LocalDateTime selectDate = reqGetRetroDto.getSelectDate();
-        // 선택한 yyyy-MM 에 작성한 회고리스트 조회
-        List<Retrospect> getRetrospects = getExistRetrospect(member, selectDate);
-        // 선택한 yyyy-MM 에 작성한 회고 중, 조회하고자 하는 회고가 존재하지 않을 경우
-        if(getRetrospects.size() < reqGetRetroDto.getWeek()) throw RetrospectNotFoundException.EXCEPTION;
+        //조회할 회고 찾기
+        Retrospect selectRetrospect = getRetrospect(member.getMemberId(), reqGetRetroDto.getSelectDate(), reqGetRetroDto.getWeek());
 
         // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
-        RespGetRetroDto respGetRetroDto = RespGetRetroDto.makeRespGetRetroDto(getRetrospects.get(reqGetRetroDto.getWeek()));
+        RespGetRetroDto respGetRetroDto = RespGetRetroDto.makeRespGetRetroDto(selectRetrospect);
         return respGetRetroDto;
     }
 
@@ -385,18 +382,17 @@ public class RetrospectService {
     }
 
     //삭제할 회고 가져오기
-    public Retrospect getRetrospect(Member member, ReqDeleteRetroDto reqDeleteRetroDto) {
-
-        LocalDateTime selectDate = reqDeleteRetroDto.getSelectDate();
+    public Retrospect getRetrospect(Long memberId, LocalDateTime selectDate, Integer week) {
         // 선택한 yyyy-MM 에 작성한 회고리스트 조회
-        List<Retrospect> getRetrospects = getExistRetrospect(member, selectDate);
+        List<Retrospect> getRetrospects = getExistRetrospect(memberId, selectDate);
         // 선택한 yyyy-MM 에 작성한 회고 중, 조회하고자 하는 회고가 존재하지 않을 경우
-        if(getRetrospects.size() < reqDeleteRetroDto.getWeek()) throw RetrospectNotFoundException.EXCEPTION;
+        if(getRetrospects.size() < week) throw RetrospectNotFoundException.EXCEPTION;
 
         // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
-        Retrospect retrospect = getRetrospects.get(reqDeleteRetroDto.getWeek());
+        Retrospect retrospect = getRetrospects.get(week);
         return retrospect;
     }
+
 
     //회고 저장시 예외처리
     private void checkRetrospectAlreadyExist( Member member) {

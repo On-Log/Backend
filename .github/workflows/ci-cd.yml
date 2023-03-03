@@ -1,0 +1,117 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+
+name: Nanal Backend
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+permissions: write-all
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    #JDK 세팅
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+      #gradle Caching
+      - name: Gradle Cashing
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      #CI
+      #gradle 권한 추가
+      - name: Grant Execute Permission For Gradlew
+        run: chmod +x gradlew
+      #빌드(테스트 진행)
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      ## 배포용 application.yml 설정 (앱 출시용 )
+      - name: create application-prod.yml (PROD)
+        if: contains(github.ref, 'main')
+        run: |
+          cd ./src/main/resources
+          touch ./application-prod.yml
+          echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.yml
+        shell: bash
+
+      ## 배포용 application.yml 설정 (테스트용 )
+      - name: create application-prod.yml (TEST)
+        if: contains(github.ref, 'develop')
+        run: |
+          cd ./src/main/resources
+          touch ./application-prod.yml
+          echo "${{ secrets.PROPERTIES_TEST }}" > ./application-prod.yml
+        shell: bash
+
+      ##CD
+      #빌드(테스트 진행)
+      - name: Build With Gradle
+        run: ./gradlew build
+
+      #도커 빌드 & 푸시 (앱 출시용 )
+      - name: docker build and push (PROD)
+        if: contains(github.ref, 'main')
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -f Dockerfile-prod -t ${{ secrets.DOCKER_USERNAME }}/nanal-prod:green .
+          docker build -f Dockerfile-prod -t ${{ secrets.DOCKER_USERNAME }}/nanal-prod:blue .
+          docker push ${{ secrets.DOCKER_USERNAME }}/nanal-prod:green
+          docker push ${{ secrets.DOCKER_USERNAME }}/nanal-prod:blue
+      #도커 빌드 & 푸시 (테스트용 )
+      - name: docker build and push (TEST)
+        if: contains(github.ref, 'develop')
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -f Dockerfile-prod -t ${{ secrets.DOCKER_USERNAME }}/nanal-test:green .
+          docker build -f Dockerfile-prod -t ${{ secrets.DOCKER_USERNAME }}/nanal-test:blue .
+          docker push ${{ secrets.DOCKER_USERNAME }}/nanal-test:green
+          docker push ${{ secrets.DOCKER_USERNAME }}/nanal-test:blue
+          
+      #배포 (앱 출시용 )
+      - name: Deploy (PROD)
+        uses: appleboy/ssh-action@master
+        id: deploy-prod
+        if: contains(github.ref, 'main')
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          envs: GITHUB_SHA
+          script: |
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nanal-prod:green
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nanal-prod:blue
+            ./deploy.sh > deploy-log/exce-log_$(date '+%Y-%m-%d-%H-%M-%S')
+            
+      #배포 ( 테스트용 )
+      - name: Deploy (TEST)
+        uses: appleboy/ssh-action@master
+        id: deploy-prod-test
+        if: contains(github.ref, 'develop')
+        with:
+          host: ${{ secrets.EC2_HOST_TEST }}
+          username: ${{ secrets.EC2_USERNAME_TEST}}
+          key: ${{ secrets.EC2_PRIVATE_KEY_TEST}}
+          envs: GITHUB_SHA
+          script: |
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nanal-test:green
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nanal-test:blue
+            ./deploy.sh > deploy-log/exce-log_$(date '+%Y-%m-%d-%H-%M-%S')

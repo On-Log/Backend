@@ -11,7 +11,6 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.StopWatch;
 
 @RequiredArgsConstructor
@@ -134,7 +133,6 @@ public class AspectConfig {
 
     @AfterReturning("execution(* com..AuthService.commonAuth(..))")
     public void authLogging(JoinPoint joinPoint) {
-
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();
 

@@ -9,6 +9,8 @@ build/
 application-dev.yml
 application-prod.yml
 Dockerfile-dev
+*.yml
+prometheus.yml
 
 ### STS ###
 .apt_generated

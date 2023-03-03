@@ -7,7 +7,6 @@ import com.nanal.backend.global.exception.customexception.TokenInvalidException;
 import com.nanal.backend.global.security.jwt.TokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
@@ -18,8 +17,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.http.HttpResponse;
-import java.util.Arrays;
 
 @Slf4j
 @Component
@@ -27,8 +24,7 @@ import java.util.Arrays;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final MemberRepository memberRepository;
-    private final String[] ignoredPaths = {"/main", "/login/**", "/auth/**", "/docs/**", "/favicon.ico", "/actuator/**"};
-
+    private final String[] ignoredPaths = {"/main", "/login/**", "/auth/**", "/docs/**", "/favicon.ico", "/actuator/**", "/health"};
     private final TokenUtil tokenService;
 
     @Override

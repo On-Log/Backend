@@ -113,7 +113,10 @@ public class RetrospectController {
      * 수정일 :
      */
     @GetMapping("/retrospect/question")
-    public CommonResponse<RespGetQuestionAndHelpDto> getQuestionAndHelp(@Valid ReqGetGoalDto reqGetGoalDto) {
+    public CommonResponse<RespGetQuestionAndHelpDto> getQuestionAndHelp(@Valid ReqGetGoalDto reqGetGoalDto,
+                                                                        BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
 
         // 회고질문 + 도움말 조회
         RespGetQuestionAndHelpDto respGetQuestionAndHelp = retrospectService.getQuestionAndHelp(reqGetGoalDto);

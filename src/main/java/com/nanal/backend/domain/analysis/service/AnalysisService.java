@@ -5,6 +5,7 @@ import com.nanal.backend.domain.analysis.repository.AuthLogRepository;
 import com.nanal.backend.domain.analysis.repository.DiaryLogRepository;
 import com.nanal.backend.domain.analysis.repository.RetrospectLogRepository;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
+@Timed("analysis.api")
 @Slf4j
 @RequiredArgsConstructor
 @Transactional

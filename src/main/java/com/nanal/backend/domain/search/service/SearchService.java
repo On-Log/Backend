@@ -9,12 +9,13 @@ import com.nanal.backend.domain.search.dto.RespSearchDto;
 import com.nanal.backend.domain.search.repository.SearchDiaryRepository;
 import com.nanal.backend.domain.search.repository.SearchRetrospectRepository;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
+@Timed("search.api")
 @Transactional
 @RequiredArgsConstructor
 @Service

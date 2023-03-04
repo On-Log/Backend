@@ -6,7 +6,6 @@ import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.diary.entity.Emotion;
 import com.nanal.backend.domain.diary.entity.Keyword;
 import com.nanal.backend.domain.diary.entity.KeywordEmotion;
-import com.nanal.backend.domain.diary.exception.DiaryNotFoundException;
 import com.nanal.backend.domain.diary.repository.EmotionRepository;
 import com.nanal.backend.domain.retrospect.dto.req.*;
 import com.nanal.backend.domain.retrospect.dto.resp.*;
@@ -16,11 +15,12 @@ import com.nanal.backend.domain.retrospect.repository.ExtraQuestionRepository;
 import com.nanal.backend.domain.retrospect.repository.QuestionRepository;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
-import com.nanal.backend.domain.diary.service.DiaryService;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.retrospect.repository.RetrospectKeywordRepository;
 import com.nanal.backend.domain.retrospect.repository.RetrospectRepository;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +34,7 @@ import java.util.*;
 import static com.nanal.backend.domain.retrospect.dto.resp.RespGetInfoDto.makeRespGetInfoDto;
 import static java.lang.Math.abs;
 
+@Timed("retrospect.api")
 @EnableScheduling
 @RequiredArgsConstructor
 @Transactional
@@ -43,7 +44,6 @@ public class RetrospectService {
     private final MemberRepository memberRepository;
     private final DiaryRepository diaryRepository;
     private final RetrospectRepository retrospectRepository;
-    private final DiaryService diaryService;
     private final RetrospectKeywordRepository retrospectKeywordRepository;
     private final QuestionRepository questionRepository;
     private final ExtraQuestionRepository extraQuestionRepository;
@@ -225,7 +225,7 @@ public class RetrospectService {
     }
 
     //다음 회고까지 남은 날 반환
-    public Integer getbetweenDate(Member member, LocalDateTime currentDate, Period period) {
+    private Integer getbetweenDate(Member member, LocalDateTime currentDate, Period period) {
         int betweenDate = period.getDays();
         if (checkExistRetro(member, currentDate) == true)
             betweenDate = 7;
@@ -260,7 +260,7 @@ public class RetrospectService {
             throw RetrospectTimeDoneException.EXCEPTION;
     }
 
-    public void changeDiaryEditStatus (Member member, LocalDateTime prevRetroDate, LocalDateTime currentTime) {
+    private void changeDiaryEditStatus (Member member, LocalDateTime prevRetroDate, LocalDateTime currentTime) {
         List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate(),true);
         for(Diary t : diaries) {
             t.changeEditStatus(false);
@@ -315,7 +315,7 @@ public class RetrospectService {
     }
 
     //삭제할 회고 가져오기
-    public Retrospect getRetrospect(Long memberId, LocalDateTime selectDate, Integer week) {
+    private Retrospect getRetrospect(Long memberId, LocalDateTime selectDate, Integer week) {
         // 선택한 yyyy-MM 에 작성한 회고리스트 조회
         List<Retrospect> getRetrospects = getExistRetrospect(memberId, selectDate);
         // 선택한 yyyy-MM 에 작성한 회고 중, 조회하고자 하는 회고가 존재하지 않을 경우

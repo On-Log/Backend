@@ -10,6 +10,7 @@ import com.nanal.backend.domain.mypage.dto.resp.*;
 import com.nanal.backend.domain.mypage.entity.Feedback;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import com.nanal.backend.global.security.jwt.TokenUtil;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +19,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-
+@Timed("mypage.api")
 @RequiredArgsConstructor
 @Transactional
 @Service

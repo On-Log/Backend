@@ -225,7 +225,7 @@ public class RetrospectService {
     }
 
     //다음 회고까지 남은 날 반환
-    public Integer getbetweenDate(Member member, LocalDateTime currentDate, Period period) {
+    private Integer getbetweenDate(Member member, LocalDateTime currentDate, Period period) {
         int betweenDate = period.getDays();
         if (checkExistRetro(member, currentDate) == true)
             betweenDate = 7;
@@ -260,7 +260,7 @@ public class RetrospectService {
             throw RetrospectTimeDoneException.EXCEPTION;
     }
 
-    public void changeDiaryEditStatus (Member member, LocalDateTime prevRetroDate, LocalDateTime currentTime) {
+    private void changeDiaryEditStatus (Member member, LocalDateTime prevRetroDate, LocalDateTime currentTime) {
         List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate(),true);
         for(Diary t : diaries) {
             t.changeEditStatus(false);
@@ -315,7 +315,7 @@ public class RetrospectService {
     }
 
     //삭제할 회고 가져오기
-    public Retrospect getRetrospect(Long memberId, LocalDateTime selectDate, Integer week) {
+    private Retrospect getRetrospect(Long memberId, LocalDateTime selectDate, Integer week) {
         // 선택한 yyyy-MM 에 작성한 회고리스트 조회
         List<Retrospect> getRetrospects = getExistRetrospect(memberId, selectDate);
         // 선택한 yyyy-MM 에 작성한 회고 중, 조회하고자 하는 회고가 존재하지 않을 경우

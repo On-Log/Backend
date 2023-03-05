@@ -208,10 +208,9 @@ public class RetrospectService {
         // 삭제할 회고 가져오기
         Retrospect deleteRetro = getRetrospect(member.getMemberId(), reqDeleteRetroDto.getSelectDate(), reqDeleteRetroDto.getWeek());
 
-        // 기존 일기 삭제
-        retrospectRepository.delete(deleteRetro);
+        // 기존 회고 삭제
+        delete(member, deleteRetro);
     }
-
 
     //===편의 메서드===//
 
@@ -264,6 +263,13 @@ public class RetrospectService {
         List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate(),true);
         for(Diary t : diaries) {
             t.changeEditStatus(false);
+        }
+    }
+
+    private void changeDiaryEditStatusToTrue (Member member, LocalDateTime prevRetroDate, LocalDateTime currentTime) {
+        List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate(),false);
+        for(Diary t : diaries) {
+            t.changeEditStatus(true);
         }
     }
 
@@ -582,4 +588,19 @@ public class RetrospectService {
             return 4;
         else throw GoalNotFoundException.EXCEPTION;
     }
+
+    private void delete(Member member, Retrospect retrospect) {
+        //서버 현재 시간
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDate currentDate = currentTime.toLocalDate();
+        //회고 당일날에 회고 삭제
+        if(retrospect.getWriteDate().toLocalDate().compareTo(currentDate) == 0) {
+            retrospectRepository.delete(retrospect);
+            LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
+            changeDiaryEditStatusToTrue(member, prevRetroDate, currentTime);
+        }
+        else
+            retrospectRepository.delete(retrospect);
+    }
+
 }

@@ -184,6 +184,7 @@ public class RetrospectService {
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
         //서버 현재 시간
         LocalDateTime currentDate = LocalDateTime.now();
+        LocalDateTime prevRetroDate = currentDate.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
         LocalDateTime postRetroDate = DiaryWritableWeek.getRetroDate(member.getRetrospectDay(), member.getPrevRetrospectDate());
         LocalDate tempDate = currentDate.toLocalDate();
         LocalDateTime startDate = tempDate.atStartOfDay();
@@ -194,10 +195,13 @@ public class RetrospectService {
         //회고일에 작성한 일기가 있는지. 있다면 true, 없다면 false
         boolean writtenDiary = checkWrittenDiary(member.getMemberId(), startDate, endDate);
 
+        //일주일 일기 리스트 count
+        int diarycount = countDiary(member.getMemberId(), prevRetroDate, currentDate);
+
         if (checkfirstRetrospect == true)
-            return RespCheckFirstRetrospect.firstRetrospectAfterChange(checkfirstRetrospect, writtenDiary);
+            return RespCheckFirstRetrospect.firstRetrospectAfterChange(checkfirstRetrospect, writtenDiary, diarycount);
         else
-            return RespCheckFirstRetrospect.notFirstRetrospectAfterChange(checkfirstRetrospect, writtenDiary);
+            return RespCheckFirstRetrospect.notFirstRetrospectAfterChange(checkfirstRetrospect, writtenDiary, diarycount);
 
     }
 
@@ -486,6 +490,11 @@ public class RetrospectService {
                 yearMonth);
 
         return retrospects;
+    }
+
+    private Integer countDiary(Long memberId, LocalDateTime prevRetroDate, LocalDateTime currentDate) {
+        List<Diary> diaries = getWeekDiaries(memberId, prevRetroDate, currentDate);
+        return diaries.size();
     }
 
 

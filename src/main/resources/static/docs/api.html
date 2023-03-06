@@ -4133,7 +4133,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 175
+Content-Length: 198
 
 {
   "isSuccess" : true,
@@ -4141,7 +4141,8 @@ Content-Length: 175
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "firstRetrospect" : false,
-    "writtenDiary" : true
+    "writtenDiary" : true,
+    "diaryCount" : 1
   }
 }</code></pre>
 </div>
@@ -4187,6 +4188,11 @@ Content-Length: 175
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.writtenDiary</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회고일 당일에 작성한 일기가 있는지. true면 작성한 일기가 있음.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고 주간에 작성한 일기 개수</p></td>
 </tr>
 </tbody>
 </table>
@@ -4253,7 +4259,7 @@ Content-Length: 95
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 175
+Content-Length: 198
 
 {
   "isSuccess" : true,
@@ -4261,7 +4267,8 @@ Content-Length: 175
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "firstRetrospect" : true,
-    "writtenDiary" : false
+    "writtenDiary" : false,
+    "diaryCount" : 1
   }
 }</code></pre>
 </div>
@@ -4307,6 +4314,11 @@ Content-Length: 175
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.writtenDiary</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회고일 당일에 작성한 일기가 있는지. true면 작성한 일기가 있음.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고 주간에 작성한 일기 개수</p></td>
 </tr>
 </tbody>
 </table>
@@ -4675,7 +4687,7 @@ Content-Length: 1678
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-02-19 03:02:33 +0900
+Last updated 2023-03-06 14:37:14 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

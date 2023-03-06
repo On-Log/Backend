@@ -456,7 +456,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
     @Test
     public void 회고_존재_여부_및_변경_이후_첫_회고_여부_체크() throws Exception {
         //given
-        RespCheckFirstRetrospect respCheckFirstRetrospect = RespCheckFirstRetrospect.notFirstRetrospectAfterChange(false, true);
+        RespCheckFirstRetrospect respCheckFirstRetrospect = RespCheckFirstRetrospect.notFirstRetrospectAfterChange(false, true, 1);
         given(retrospectService.checkFirstRetrospect(any())).willReturn(respCheckFirstRetrospect);
         //when
         ResultActions actions = mockMvc.perform(
@@ -477,7 +477,8 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
                                         fieldWithPath("result.firstRetrospect").description("회고일 변경 이후 첫 회고인지. false이면 첫 회고 아님."),
-                                        fieldWithPath("result.writtenDiary").description("회고일 당일에 작성한 일기가 있는지. true면 작성한 일기가 있음.")
+                                        fieldWithPath("result.writtenDiary").description("회고일 당일에 작성한 일기가 있는지. true면 작성한 일기가 있음."),
+                                        fieldWithPath("result.diaryCount").description("회고 주간에 작성한 일기 개수")
                                 )
                         )
                 );
@@ -516,7 +517,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
     @Test
     public void 회고_없음_회고_변경_이후_첫_회고() throws Exception {
         //given
-        RespCheckFirstRetrospect respCheckFirstRetrospect = RespCheckFirstRetrospect.firstRetrospectAfterChange(true, false);
+        RespCheckFirstRetrospect respCheckFirstRetrospect = RespCheckFirstRetrospect.firstRetrospectAfterChange(true, false,1);
         given(retrospectService.checkFirstRetrospect(any())).willReturn(respCheckFirstRetrospect);
         //when
         ResultActions actions = mockMvc.perform(
@@ -537,7 +538,8 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
                                         fieldWithPath("result.firstRetrospect").description("회고일 변경 이후 첫 회고인지. false이면 첫 회고 아님."),
-                                        fieldWithPath("result.writtenDiary").description("회고일 당일에 작성한 일기가 있는지. true면 작성한 일기가 있음.")
+                                        fieldWithPath("result.writtenDiary").description("회고일 당일에 작성한 일기가 있는지. true면 작성한 일기가 있음."),
+                                        fieldWithPath("result.diaryCount").description("회고 주간에 작성한 일기 개수")
                                 )
                         )
                 );

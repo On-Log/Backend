@@ -448,7 +448,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel1">
 <li><a href="#Overview-http-status-codes">HTTP status codes</a>
 <ul class="sectlevel2">
-<li><a href="#Overview-common-status-codes">HTTP status codes</a></li>
+<li><a href="#Overview-common-status-codes">Common Status Codes</a></li>
+<li><a href="#Overview-auth-status-codes">Auth Status Codes</a></li>
 <li><a href="#Overview-diary-status-codes">Diary Status Codes</a></li>
 <li><a href="#Overview-MyPage-status-codes">MyPage Status Codes</a></li>
 <li><a href="#Overview-Retrospect-status-codes">Retrospect Status Codes</a></li>
@@ -514,7 +515,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="Overview-http-status-codes"><a class="link" href="#Overview-http-status-codes">HTTP status codes</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="Overview-common-status-codes"><a class="link" href="#Overview-common-status-codes">HTTP status codes</a></h3>
+<h3 id="Overview-common-status-codes"><a class="link" href="#Overview-common-status-codes">Common Status Codes</a></h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -564,10 +565,54 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">전체</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">유효하지 않은 RefreshToken</p></td>
 </tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="Overview-auth-status-codes"><a class="link" href="#Overview-auth-status-codes">Auth Status Codes</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Status</th>
+<th class="tableblock halign-left valign-top">Scope</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>460 MEMBER_NOT_FOUND</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">전체</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">존재하지 않는 사용자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>461 EMAIL_ALREADY_EXIST</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일반 회원가입</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이미 존재하는 이메일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>462 ACCOUNT_NOT_EXIST</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일반 로그인</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">존재하지 않는 계정</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>463 PASSWORD_INCORRECT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일반 로그인</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">잘못된 비밀번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>464 INVALID_CONFIRM_VALUE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일반 회원가입</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">잘못된 인증값</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>465 ACCOUNT_ALREADY_EXIST</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">소셜 로그인</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가입하려는 이메일이 다른 플랫폼 소셜로그인으로 이미 가입</p></td>
 </tr>
 </tbody>
 </table>
@@ -4687,7 +4732,7 @@ Content-Length: 1678
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-03-06 14:37:14 +0900
+Last updated 2023-02-19 03:02:33 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

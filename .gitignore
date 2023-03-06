@@ -11,6 +11,7 @@ application-prod.yml
 Dockerfile-dev
 *.yml
 prometheus.yml
+grafana_data
 
 ### STS ###
 .apt_generated

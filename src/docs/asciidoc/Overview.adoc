@@ -2,7 +2,7 @@
 == HTTP status codes
 
 [[Overview-common-status-codes]]
-=== HTTP status codes
+=== Common Status Codes
 
 |===
 | Status | Scope | Description
@@ -34,10 +34,38 @@
 | `457 INVALID_REFRESH_TOKEN`
 | 전체
 | 유효하지 않은 RefreshToken
+|===
+
+
+[[Overview-auth-status-codes]]
+=== Auth Status Codes
+
+|===
+| Status | Scope | Description
 
 | `460 MEMBER_NOT_FOUND`
 | 전체
 | 존재하지 않는 사용자
+
+| `461 EMAIL_ALREADY_EXIST`
+| 일반 회원가입
+| 이미 존재하는 이메일
+
+| `462 ACCOUNT_NOT_EXIST`
+| 일반 로그인
+| 존재하지 않는 계정
+
+| `463 PASSWORD_INCORRECT`
+| 일반 로그인
+| 잘못된 비밀번호
+
+| `464 INVALID_CONFIRM_VALUE`
+| 일반 회원가입
+| 잘못된 인증값
+
+| `465 ACCOUNT_ALREADY_EXIST`
+| 소셜 로그인
+| 가입하려는 이메일이 다른 플랫폼 소셜로그인으로 이미 가입
 |===
 
 

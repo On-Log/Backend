@@ -10,6 +10,7 @@ import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.global.security.AuthenticationUtil;
 import com.nanal.backend.global.security.jwt.Token;
 import com.nanal.backend.global.security.jwt.TokenUtil;
+import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,7 @@ public class AuthService {
     private final ApplicationEventPublisher publisher;
     private final RedisTemplate<String, String> redisTemplate;
 
+    @Counted("auth.api.count")
     public void generalRegister(ReqRegisterDto reqRegisterDto) {
         // todo : 이메일 인증완료시 redis 에 저장해둔 이메일:인증값과 요청으로 들어온 값들이 일치하는지 확인후에 일치하면 값 삭제
         verifyEmailConfirmValue(reqRegisterDto.getEmail(), reqRegisterDto.getEmailConfirmValue());
@@ -48,6 +50,7 @@ public class AuthService {
         memberRepository.save(newMember);
     }
 
+    @Counted("auth.api.count")
     public LoginInfo generalLogin(ReqRegisterDto reqRegisterDto) {
         Member loginMember = memberRepository.findByEmail(MemberProvider.GENERAL + "#" + reqRegisterDto.getEmail())
                 .orElseThrow(() -> AccountNotExistException.EXCEPTION);
@@ -64,6 +67,7 @@ public class AuthService {
         return new LoginInfo(loginMember.getNickname(), token);
     }
 
+    @Counted("auth.api.count")
     public LoginInfo commonAuth(String accessToken, String providerInfo) {
         // 플랫폼에서 사용자 정보 조회
         Member member = getUserDataFromPlatform(accessToken, providerInfo);
@@ -83,6 +87,7 @@ public class AuthService {
         return new LoginInfo(authenticatedMember.getNickname(), token, authenticatedMember.getRole().equals(Member.Role.ONBOARDER));
     }
 
+    @Counted("auth.api.count")
     public Token reissue(String token) {
         // refresh 토큰이 유효한지 확인
         if (token != null && tokenUtil.verifyToken(token)) {

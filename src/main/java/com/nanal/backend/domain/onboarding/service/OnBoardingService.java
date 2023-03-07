@@ -3,12 +3,13 @@ package com.nanal.backend.domain.onboarding.service;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.DayOfWeek;
-
+@Timed("onboarding.api")
 @RequiredArgsConstructor
 @Transactional
 @Service

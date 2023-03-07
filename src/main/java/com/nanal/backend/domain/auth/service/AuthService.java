@@ -10,6 +10,7 @@ import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.global.security.AuthenticationUtil;
 import com.nanal.backend.global.security.jwt.Token;
 import com.nanal.backend.global.security.jwt.TokenUtil;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.Optional;
-
+@Timed("auth.api")
 @Slf4j
 @RequiredArgsConstructor
 @Transactional

@@ -6,7 +6,6 @@ import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.diary.entity.Emotion;
 import com.nanal.backend.domain.diary.entity.Keyword;
 import com.nanal.backend.domain.diary.entity.KeywordEmotion;
-import com.nanal.backend.domain.diary.exception.DiaryNotFoundException;
 import com.nanal.backend.domain.diary.repository.EmotionRepository;
 import com.nanal.backend.domain.retrospect.dto.req.*;
 import com.nanal.backend.domain.retrospect.dto.resp.*;
@@ -16,11 +15,12 @@ import com.nanal.backend.domain.retrospect.repository.ExtraQuestionRepository;
 import com.nanal.backend.domain.retrospect.repository.QuestionRepository;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
-import com.nanal.backend.domain.diary.service.DiaryService;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.retrospect.repository.RetrospectKeywordRepository;
 import com.nanal.backend.domain.retrospect.repository.RetrospectRepository;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +34,7 @@ import java.util.*;
 import static com.nanal.backend.domain.retrospect.dto.resp.RespGetInfoDto.makeRespGetInfoDto;
 import static java.lang.Math.abs;
 
+@Timed("retrospect.api")
 @EnableScheduling
 @RequiredArgsConstructor
 @Transactional
@@ -43,7 +44,6 @@ public class RetrospectService {
     private final MemberRepository memberRepository;
     private final DiaryRepository diaryRepository;
     private final RetrospectRepository retrospectRepository;
-    private final DiaryService diaryService;
     private final RetrospectKeywordRepository retrospectKeywordRepository;
     private final QuestionRepository questionRepository;
     private final ExtraQuestionRepository extraQuestionRepository;
@@ -184,6 +184,7 @@ public class RetrospectService {
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
         //서버 현재 시간
         LocalDateTime currentDate = LocalDateTime.now();
+        LocalDateTime prevRetroDate = currentDate.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
         LocalDateTime postRetroDate = DiaryWritableWeek.getRetroDate(member.getRetrospectDay(), member.getPrevRetrospectDate());
         LocalDate tempDate = currentDate.toLocalDate();
         LocalDateTime startDate = tempDate.atStartOfDay();
@@ -194,10 +195,13 @@ public class RetrospectService {
         //회고일에 작성한 일기가 있는지. 있다면 true, 없다면 false
         boolean writtenDiary = checkWrittenDiary(member.getMemberId(), startDate, endDate);
 
+        //일주일 일기 리스트 count
+        int diarycount = countDiary(member.getMemberId(), prevRetroDate, currentDate);
+
         if (checkfirstRetrospect == true)
-            return RespCheckFirstRetrospect.firstRetrospectAfterChange(checkfirstRetrospect, writtenDiary);
+            return RespCheckFirstRetrospect.firstRetrospectAfterChange(checkfirstRetrospect, writtenDiary, diarycount);
         else
-            return RespCheckFirstRetrospect.notFirstRetrospectAfterChange(checkfirstRetrospect, writtenDiary);
+            return RespCheckFirstRetrospect.notFirstRetrospectAfterChange(checkfirstRetrospect, writtenDiary, diarycount);
 
     }
 
@@ -208,10 +212,9 @@ public class RetrospectService {
         // 삭제할 회고 가져오기
         Retrospect deleteRetro = getRetrospect(member.getMemberId(), reqDeleteRetroDto.getSelectDate(), reqDeleteRetroDto.getWeek());
 
-        // 기존 일기 삭제
-        retrospectRepository.delete(deleteRetro);
+        // 기존 회고 삭제
+        delete(member, deleteRetro);
     }
-
 
     //===편의 메서드===//
 
@@ -225,7 +228,7 @@ public class RetrospectService {
     }
 
     //다음 회고까지 남은 날 반환
-    public Integer getbetweenDate(Member member, LocalDateTime currentDate, Period period) {
+    private Integer getbetweenDate(Member member, LocalDateTime currentDate, Period period) {
         int betweenDate = period.getDays();
         if (checkExistRetro(member, currentDate) == true)
             betweenDate = 7;
@@ -260,10 +263,17 @@ public class RetrospectService {
             throw RetrospectTimeDoneException.EXCEPTION;
     }
 
-    public void changeDiaryEditStatus (Member member, LocalDateTime prevRetroDate, LocalDateTime currentTime) {
+    private void changeDiaryEditStatus (Member member, LocalDateTime prevRetroDate, LocalDateTime currentTime) {
         List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate(),true);
         for(Diary t : diaries) {
             t.changeEditStatus(false);
+        }
+    }
+
+    private void changeDiaryEditStatusToTrue (Member member, LocalDateTime prevRetroDate, LocalDateTime currentTime) {
+        List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate(),false);
+        for(Diary t : diaries) {
+            t.changeEditStatus(true);
         }
     }
 
@@ -315,7 +325,7 @@ public class RetrospectService {
     }
 
     //삭제할 회고 가져오기
-    public Retrospect getRetrospect(Long memberId, LocalDateTime selectDate, Integer week) {
+    private Retrospect getRetrospect(Long memberId, LocalDateTime selectDate, Integer week) {
         // 선택한 yyyy-MM 에 작성한 회고리스트 조회
         List<Retrospect> getRetrospects = getExistRetrospect(memberId, selectDate);
         // 선택한 yyyy-MM 에 작성한 회고 중, 조회하고자 하는 회고가 존재하지 않을 경우
@@ -482,6 +492,11 @@ public class RetrospectService {
         return retrospects;
     }
 
+    private Integer countDiary(Long memberId, LocalDateTime prevRetroDate, LocalDateTime currentDate) {
+        List<Diary> diaries = getWeekDiaries(memberId, prevRetroDate, currentDate);
+        return diaries.size();
+    }
+
 
     private List<RespGetClassifiedKeywordDto> getKeyword(Member member, LocalDateTime selectTime) {
         // 전체 분할한 키워드 리스트들
@@ -582,4 +597,19 @@ public class RetrospectService {
             return 4;
         else throw GoalNotFoundException.EXCEPTION;
     }
+
+    private void delete(Member member, Retrospect retrospect) {
+        //서버 현재 시간
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDate currentDate = currentTime.toLocalDate();
+        //회고 당일날에 회고 삭제
+        if(retrospect.getWriteDate().toLocalDate().compareTo(currentDate) == 0) {
+            retrospectRepository.delete(retrospect);
+            LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
+            changeDiaryEditStatusToTrue(member, prevRetroDate, currentTime);
+        }
+        else
+            retrospectRepository.delete(retrospect);
+    }
+
 }

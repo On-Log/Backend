@@ -10,6 +10,7 @@ import com.nanal.backend.domain.mypage.dto.resp.*;
 import com.nanal.backend.domain.mypage.entity.Feedback;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import com.nanal.backend.global.security.jwt.TokenUtil;
+import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class MypageService {
     private final MemberRepository memberRepository;
     private final FeedbackRepository feedbackRepository;
 
+    @Counted("mypage.api.count")
     @Transactional(readOnly = true)
     public RespGetUserDto getUser(String socialId) {
         // socialId 로 유저 조회
@@ -41,6 +43,7 @@ public class MypageService {
                 .build();
     }
 
+    @Counted("mypage.api.count")
     public void updateNickname(String socialId, ReqEditNicknameDto reqEditNickname) {
         // socialId 로 유저 조회
         Member member = findMember(socialId);
@@ -48,6 +51,7 @@ public class MypageService {
         member.updateNickname(reqEditNickname.getNickname());
     }
 
+    @Counted("mypage.api.count")
     @Transactional(readOnly = true)
     public RespCheckChangeAvailability checkChangeAvailability(String socialId) {
         // socialId 로 유저 조회
@@ -60,6 +64,7 @@ public class MypageService {
             return RespCheckChangeAvailability.unchangeable(member.getPrevRetrospectDate().plusDays(30));
     }
 
+    @Counted("mypage.api.count")
     public void updateRetrospectDay(String socialId, ReqEditRetrospectDayDto reqEditRetrospectDayDto) {
         // socialId 로 유저 조회
         Member member = findMember(socialId);
@@ -67,6 +72,7 @@ public class MypageService {
         member.updateRetrospectDay(DayOfWeek.valueOf(reqEditRetrospectDayDto.getRetrospectDay()));
     }
 
+    @Counted("mypage.api.count")
     @Transactional(readOnly = true)
     public RespGetServiceLife getServiceLife(String socialId) {
         // socialId 로 유저 조회
@@ -79,6 +85,7 @@ public class MypageService {
                 .build();
     }
 
+    @Counted("mypage.api.count")
     @Transactional(readOnly = true)
     public void logout(String socialId) {
         // socialId 로 유저 조회
@@ -87,6 +94,7 @@ public class MypageService {
         tokenUtil.expireRefreshToken(member.getSocialId());
     }
 
+    @Counted("mypage.api.count")
     public void withdrawMembership(String socialId, ReqWithdrawMembership reqWithdrawMembership) {
         // socialId 로 유저 조회
         Member member = findMember(socialId);

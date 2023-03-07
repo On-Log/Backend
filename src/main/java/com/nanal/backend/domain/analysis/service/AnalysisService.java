@@ -5,6 +5,7 @@ import com.nanal.backend.domain.analysis.repository.AuthLogRepository;
 import com.nanal.backend.domain.analysis.repository.DiaryLogRepository;
 import com.nanal.backend.domain.analysis.repository.RetrospectLogRepository;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
+import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ public class AnalysisService {
     private final RetrospectLogRepository retrospectLogRepository;
     private final MemberRepository memberRepository;
 
+    @Counted("analysis.api.count")
     public RespGetDauDto getDau() {
         LocalDateTime currentDate = LocalDate.now().atStartOfDay();
 
@@ -40,6 +42,7 @@ public class AnalysisService {
                 .build();
     }
 
+    @Counted("analysis.api.count")
     public RespGetWauDto getWau() {
         LocalDateTime currentDate = LocalDate.now().atStartOfDay();
 
@@ -53,6 +56,7 @@ public class AnalysisService {
                 .build();
     }
 
+    @Counted("analysis.api.count")
     public RespGetMauDto getMau() {
         LocalDateTime currentDate = LocalDate.now().atStartOfDay();
 
@@ -63,6 +67,7 @@ public class AnalysisService {
         return respGetMauDto;
     }
 
+    @Counted("analysis.api.count")
     public RespGetWeekDayRetrospectDto getWeekDayRetrospect() {
         LocalDateTime currentDate = LocalDate.now().atStartOfDay();
 
@@ -90,7 +95,7 @@ public class AnalysisService {
                 .build();
     }
 
-
+    @Counted("analysis.api.count")
     public RespGetDesignatedRetrospectDayDto getDesignatedRetrospectDay() {
 
         List<DesignatedRetrospectDayDto> designatedRetrospectDayDtoList = memberRepository.designatedRetrospectDayQuery();

@@ -4,6 +4,7 @@ import com.nanal.backend.domain.auth.dto.resp.RespEmailConfirmDto;
 import com.nanal.backend.domain.auth.enumerate.MemberProvider;
 import com.nanal.backend.domain.auth.exception.EmailAlreadyExistException;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
+import io.micrometer.core.annotation.Counted;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -86,6 +87,7 @@ public class EmailService {
         return key.toString();
     }
 
+    @Counted("auth.api.count")
     public RespEmailConfirmDto sendSimpleMessage(String receiverEmail)throws Exception {
         // 이미 가입된 이메일인지 체크
         memberRepository.findByEmail(MemberProvider.GENERAL + "#" + receiverEmail)

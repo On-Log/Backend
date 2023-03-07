@@ -16,6 +16,7 @@ import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
 import com.nanal.backend.domain.diary.repository.EmotionRepository;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
+import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,7 @@ public class DiaryService {
     private final EmotionRepository emotionRepository;
     private final RetrospectRepository retrospectRepository;
 
+    @Counted("diary.api.count")
     @Transactional(readOnly = true)
     public RespGetCalendarDto getCalendar(String socialId, ReqGetCalendarDto reqGetCalendarDto) {
         // socialId 로 유저 조회
@@ -72,7 +74,7 @@ public class DiaryService {
                 .build();
     }
 
-
+    @Counted("diary.api.count")
     public void writeDiary(String socialId, ReqSaveDiaryDto reqSaveDiaryDto) {
         // socialId 로 유저 조회
         Member member = findMember(socialId);
@@ -88,7 +90,7 @@ public class DiaryService {
         // 일기 저장
         diaryRepository.save(diary);
     }
-
+    @Counted("diary.api.count")
     @Transactional(readOnly = true)
     public RespGetDiaryDto getDiary(String socialId, ReqGetDiaryDto reqGetDiaryDto) {
         // socialId 로 유저 조회
@@ -101,6 +103,7 @@ public class DiaryService {
         return RespGetDiaryDto.createRespGetDiaryDto(selectDiary);
     }
 
+    @Counted("diary.api.count")
     public void updateDiary(String socialId, ReqEditDiaryDto reqEditDiary) {
         // socialId 로 유저 조회
         Member member = findMember(socialId);
@@ -116,6 +119,7 @@ public class DiaryService {
         updateDiary.updateDiary(reqEditDiary, findEmotions);
     }
 
+    @Counted("diary.api.count")
     public void deleteDiary(String socialId, ReqDeleteDiaryDto reqDeleteDiaryDto) {
         // socialId 로 유저 조회
         Member member = findMember(socialId);
@@ -127,6 +131,7 @@ public class DiaryService {
         diaryRepository.delete(deleteDiary);
     }
 
+    @Counted("diary.api.count")
     @Transactional(readOnly = true)
     public RespGetEmotionDto getEmotion() {
         // 감정어 조회

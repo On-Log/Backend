@@ -18,6 +18,7 @@ import com.nanal.backend.domain.diary.repository.DiaryRepository;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.retrospect.repository.RetrospectKeywordRepository;
 import com.nanal.backend.domain.retrospect.repository.RetrospectRepository;
+import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +50,7 @@ public class RetrospectService {
     private final ExtraQuestionRepository extraQuestionRepository;
     private final EmotionRepository emotionRepository;
 
+    @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespGetInfoDto getInfo(String socialId, ReqGetInfoDto reqGetInfoDto) {
         // socialId 로 유저 조회
@@ -77,7 +79,7 @@ public class RetrospectService {
         return respGetInfoDto;
     }
 
-
+    @Counted("retrospect.api.count")
     public void saveRetrospect(String socialId, ReqSaveRetroDto reqSaveRetroDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
@@ -98,7 +100,7 @@ public class RetrospectService {
         changeDiaryEditStatus(member, prevRetroDate, currentTime);
     }
 
-
+    @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespGetRetroDto getRetro(String socialId, ReqGetRetroDto reqGetRetroDto) {
         // socialId 로 유저 조회
@@ -112,7 +114,7 @@ public class RetrospectService {
         return respGetRetroDto;
     }
 
-
+    @Counted("retrospect.api.count")
     public void editRetrospect(String socialId, ReqEditRetroDto reqEditRetroDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
@@ -131,7 +133,7 @@ public class RetrospectService {
         // 내용 수정
         retrospectContents.get(reqEditRetroDto.getIndex()).changeAnswer(reqEditRetroDto.getAnswer());
     }
-
+    @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespGetKeywordAndEmotionDto getKeywordAndEmotion(String socialId){
         // socialId 로 유저 조회
@@ -153,7 +155,7 @@ public class RetrospectService {
 
         return respGetKeywordAndEmotionDto;
     }
-
+    @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespGetQuestionAndHelpDto getQuestionAndHelp(ReqGetGoalDto reqGetGoalDto) {
         long goalIndex = getGoalIndex(reqGetGoalDto.getGoal());
@@ -164,6 +166,7 @@ public class RetrospectService {
 
         return respGetQuestionAndHelpDto;
     }
+    @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespGetExtraQuestionAndHelpDto getExtraQuestionAndHelp(String socialId, ReqGetGoalDto reqGetGoalDto){
         long goalIndex = getGoalIndex(reqGetGoalDto.getGoal());
@@ -178,6 +181,7 @@ public class RetrospectService {
 
         return respGetExtraQuestionAndHelpDto;
     }
+    @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespCheckFirstRetrospect checkFirstRetrospect(String socialId) {
         // socialId 로 유저 조회
@@ -205,6 +209,7 @@ public class RetrospectService {
 
     }
 
+    @Counted("retrospect.api.count")
     public void deleteRetro(String socialId, ReqDeleteRetroDto reqDeleteRetroDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);

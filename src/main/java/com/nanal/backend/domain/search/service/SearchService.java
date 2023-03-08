@@ -1,14 +1,11 @@
 package com.nanal.backend.domain.search.service;
 
-import com.nanal.backend.domain.auth.entity.Member;
-import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import com.nanal.backend.domain.search.dto.ReqSearchDto;
 import com.nanal.backend.domain.search.dto.RespSearchDto;
 import com.nanal.backend.domain.search.repository.SearchDiaryRepository;
 import com.nanal.backend.domain.search.repository.SearchRetrospectRepository;
-import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -35,7 +35,7 @@ import java.util.*;
 import static com.nanal.backend.domain.retrospect.dto.resp.RespGetInfoDto.makeRespGetInfoDto;
 import static java.lang.Math.abs;
 
-@Timed("retrospect.api")
+//@Timed("retrospect.api")
 @EnableScheduling
 @RequiredArgsConstructor
 @Transactional
@@ -50,6 +50,7 @@ public class RetrospectService {
     private final ExtraQuestionRepository extraQuestionRepository;
     private final EmotionRepository emotionRepository;
 
+    @Timed(value = "retrospect.api", extraTags = {"name", "회고 탭 조회"})
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespGetInfoDto getInfo(String socialId, ReqGetInfoDto reqGetInfoDto) {
@@ -79,6 +80,7 @@ public class RetrospectService {
         return respGetInfoDto;
     }
 
+    @Timed(value = "retrospect.api", extraTags = {"name", "회고 저장"})
     @Counted("retrospect.api.count")
     public void saveRetrospect(String socialId, ReqSaveRetroDto reqSaveRetroDto) {
         // socialId 로 유저 조회
@@ -100,6 +102,7 @@ public class RetrospectService {
         changeDiaryEditStatus(member, prevRetroDate, currentTime);
     }
 
+    @Timed(value = "retrospect.api", extraTags = {"name", "회고 조회"})
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespGetRetroDto getRetro(String socialId, ReqGetRetroDto reqGetRetroDto) {
@@ -114,6 +117,7 @@ public class RetrospectService {
         return respGetRetroDto;
     }
 
+    @Timed(value = "retrospect.api", extraTags = {"name", "회고 수정"})
     @Counted("retrospect.api.count")
     public void editRetrospect(String socialId, ReqEditRetroDto reqEditRetroDto) {
         // socialId 로 유저 조회
@@ -133,6 +137,7 @@ public class RetrospectService {
         // 내용 수정
         retrospectContents.get(reqEditRetroDto.getIndex()).changeAnswer(reqEditRetroDto.getAnswer());
     }
+    @Timed(value = "retrospect.api", extraTags = {"name", "일주일 일기 데이터"})
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespGetKeywordAndEmotionDto getKeywordAndEmotion(String socialId){
@@ -155,6 +160,8 @@ public class RetrospectService {
 
         return respGetKeywordAndEmotionDto;
     }
+
+    @Timed(value = "retrospect.api", extraTags = {"name", "질문 + 도움말 조회"})
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespGetQuestionAndHelpDto getQuestionAndHelp(ReqGetGoalDto reqGetGoalDto) {
@@ -166,6 +173,8 @@ public class RetrospectService {
 
         return respGetQuestionAndHelpDto;
     }
+
+    @Timed(value = "retrospect.api", extraTags = {"name", "추가 질문 + 도움말 조회"})
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespGetExtraQuestionAndHelpDto getExtraQuestionAndHelp(String socialId, ReqGetGoalDto reqGetGoalDto){
@@ -181,6 +190,8 @@ public class RetrospectService {
 
         return respGetExtraQuestionAndHelpDto;
     }
+
+    @Timed(value = "retrospect.api", extraTags = {"name", "회고일 변경 후 첫 회고 여부"})
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespCheckFirstRetrospect checkFirstRetrospect(String socialId) {
@@ -208,7 +219,7 @@ public class RetrospectService {
             return RespCheckFirstRetrospect.notFirstRetrospectAfterChange(checkfirstRetrospect, writtenDiary, diarycount);
 
     }
-
+    @Timed(value = "retrospect.api", extraTags = {"name", "회고 삭제"})
     @Counted("retrospect.api.count")
     public void deleteRetro(String socialId, ReqDeleteRetroDto reqDeleteRetroDto) {
         // socialId 로 유저 조회

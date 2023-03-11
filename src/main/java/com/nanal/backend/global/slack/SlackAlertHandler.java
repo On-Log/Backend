@@ -19,7 +19,10 @@ public class SlackAlertHandler {
     @Value(value = "${slack.token}")
     private String token;
     @Value(value = "${slack.channel.monitor}")
-    private String channel;
+    private String monitorChannel;
+
+    @Value(value = "${slack.channel.info}")
+    private String infoChannel;
 
     @TransactionalEventListener(
             phase = TransactionPhase.AFTER_COMMIT,
@@ -32,7 +35,7 @@ public class SlackAlertHandler {
                             "User Email : " + registerEvent.getEmail();
 
             Slack slack = Slack.getInstance();
-            slack.methods(token).chatPostMessage(req -> req.channel(channel).text(message));
+            slack.methods(token).chatPostMessage(req -> req.channel(infoChannel).text(message));
         } catch (SlackApiException | IOException e) {
             log.error(e.getMessage());
         }
@@ -48,7 +51,7 @@ public class SlackAlertHandler {
                     "Message : " + schedulingEvent.getMessage();
 
             Slack slack = Slack.getInstance();
-            slack.methods(token).chatPostMessage(req -> req.channel(channel).text(message));
+            slack.methods(token).chatPostMessage(req -> req.channel(monitorChannel).text(message));
 
         } catch (SlackApiException | IOException e) {
             log.error(e.getMessage());

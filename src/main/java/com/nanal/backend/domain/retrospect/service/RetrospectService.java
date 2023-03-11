@@ -155,6 +155,7 @@ public class RetrospectService {
 
         return respGetKeywordAndEmotionDto;
     }
+
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespGetQuestionAndHelpDto getQuestionAndHelp(ReqGetGoalDto reqGetGoalDto) {
@@ -166,6 +167,7 @@ public class RetrospectService {
 
         return respGetQuestionAndHelpDto;
     }
+
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespGetExtraQuestionAndHelpDto getExtraQuestionAndHelp(String socialId, ReqGetGoalDto reqGetGoalDto){
@@ -181,6 +183,7 @@ public class RetrospectService {
 
         return respGetExtraQuestionAndHelpDto;
     }
+    
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespCheckFirstRetrospect checkFirstRetrospect(String socialId) {
@@ -208,7 +211,6 @@ public class RetrospectService {
             return RespCheckFirstRetrospect.notFirstRetrospectAfterChange(checkfirstRetrospect, writtenDiary, diarycount);
 
     }
-
     @Counted("retrospect.api.count")
     public void deleteRetro(String socialId, ReqDeleteRetroDto reqDeleteRetroDto) {
         // socialId 로 유저 조회

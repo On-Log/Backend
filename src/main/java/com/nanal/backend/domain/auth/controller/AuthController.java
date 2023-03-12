@@ -84,7 +84,16 @@ public class AuthController {
      */
     @PostMapping(value = "/auth/kakao")
     public CommonResponse<?> kakaoAuth(@RequestBody ReqAuthDto reqAuthDto, HttpServletRequest request) {
-
+        String clientIp = request.getHeader("X-Real-IP");
+        System.out.println("X-Real-IP" + clientIp);
+        if (clientIp == null) {
+            clientIp = request.getHeader("X-Forwarded-For");
+            System.out.println("X-Forwarded-For" + clientIp);
+        }
+        if (clientIp == null) {
+            clientIp = request.getRemoteAddr();
+            System.out.println("get remote addr" + clientIp);
+        }
         // 최초 로그인 - 회원가입 후 토큰 발행.
         // 기존 유저 - 토큰 발행.
         LoginInfo loginInfo = authService.commonAuth(reqAuthDto.getAccessToken(), request.getRequestURI());

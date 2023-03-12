@@ -31,8 +31,6 @@ public class AspectConfig {
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();
 
-        log.info("[{}] {} - START", email, methodName);
-
         stopWatch.start();
         Object result = joinPoint.proceed();
         stopWatch.stop();
@@ -56,8 +54,6 @@ public class AspectConfig {
         StopWatch stopWatch = new StopWatch();
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();
-
-        log.info("[{}] {} - START", email, methodName);
 
         stopWatch.start();
         Object result = joinPoint.proceed();
@@ -84,8 +80,6 @@ public class AspectConfig {
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();
 
-        log.info("[{}] {} - START", email, methodName);
-
         stopWatch.start();
         Object result = joinPoint.proceed();
         stopWatch.stop();
@@ -110,8 +104,6 @@ public class AspectConfig {
         StopWatch stopWatch = new StopWatch();
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();
-
-        log.info("[{}] {} - START", email, methodName);
 
         stopWatch.start();
         Object result = joinPoint.proceed();

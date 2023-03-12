@@ -29,7 +29,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        log.info("[Request URL] {}", request.getRequestURL());
         // "/auth/**" url 로 요청시, 해당 필터 스킵.
         for(String path : ignoredPaths){
             RequestMatcher ignoredPath = new AntPathRequestMatcher(path);
@@ -54,7 +53,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
         }else{
             // 여기서 예외를 발생시켜야 JwtExceptionFilter 로 떨어짐.
-            log.info("예외 발생 url = {}", request.getRequestURL());
             throw TokenInvalidException.EXCEPTION;
         }
 

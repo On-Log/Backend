@@ -27,13 +27,27 @@ public class ExceptionFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            //JwtFilter 를 호출하는데, 이 필터에서 TokenInvalidException 이 떨어진다.
+            // JwtFilter 를 호출하는데, 이 필터에서 TokenInvalidException 이 떨어진다.
             filterChain.doFilter(request, response);
         } catch (TokenInvalidException e) {
-            log.error("[" + e.getClass().getSimpleName() + "] " + e.getErrorCode().getMessage());
+            log.info("[{}] [{}] {}",
+                    e.getClass().getSimpleName(),
+                    extractClientIP(request),
+                    e.getErrorCode().getMessage());
 
             setErrorResponse(response, ErrorCode.INVALID_TOKEN);
         }
+    }
+
+    private String extractClientIP(HttpServletRequest request) {
+        String clientIp = request.getHeader("X-Real-IP");
+        if (clientIp == null) {
+            clientIp = request.getHeader("X-Forwarded-For");
+        }
+        if (clientIp == null) {
+            clientIp = request.getRemoteAddr();
+        }
+        return clientIp;
     }
 
     private void setErrorResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException {

@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +29,7 @@ public class CommonExceptionHandler {
         response.setStatus(ErrorCode.INVALID_INPUT_VALUE.getCode());
 
         e.getBindingResult().getAllErrors().stream()
-                .forEach(o -> log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),o.getClass().getSimpleName(), o.getDefaultMessage()));
+                .forEach(o -> log.info("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),o.getClass().getSimpleName(), o.getDefaultMessage()));
 
         List<String> errorMessages = e.getBindingResult().getAllErrors().stream()
                 .map(objectError -> objectError.getDefaultMessage())
@@ -42,7 +43,7 @@ public class CommonExceptionHandler {
         response.setStatus(ErrorCode.INVALID_INPUT_VALUE.getCode());
 
         e.getFieldErrors().stream()
-                .forEach(o -> log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(), o.getClass().getSimpleName(), o.getDefaultMessage()));
+                .forEach(o -> log.info("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(), o.getClass().getSimpleName(), o.getDefaultMessage()));
 
         List<String> errorMessages = e.getFieldErrors().stream()
                 .map(objectError -> objectError.getDefaultMessage())
@@ -57,7 +58,7 @@ public class CommonExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public CommonResponse<?> badRequestErrorHandler(HttpServletResponse response, HttpMessageNotReadableException e) {
         response.setStatus(ErrorCode.BAD_REQUEST.getCode());
-        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
+        log.info("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getMessage());
         return new CommonResponse<>(ErrorCode.BAD_REQUEST);
     }
 
@@ -68,15 +69,29 @@ public class CommonExceptionHandler {
     @ExceptionHandler(NanalException.class)
     public CommonResponse<?> nanalExceptionHandler(HttpServletResponse response, NanalException e) {
         response.setStatus(e.getErrorCode().getCode());
-        log.error("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getErrorCode().getMessage());
+        log.info("[{}][{}] {}", AuthenticationUtil.getCurrentUserEmail(),e.getClass().getSimpleName(), e.getErrorCode().getMessage());
         return new CommonResponse<>(e.getErrorCode());
     }
 
     @ExceptionHandler(NanalAuthException.class)
-    public CommonResponse<?> nanalExceptionHandler(HttpServletResponse response, NanalAuthException e) {
+    public CommonResponse<?> nanalExceptionHandler(HttpServletRequest request, HttpServletResponse response, NanalAuthException e) {
         response.setStatus(e.getErrorCode().getCode());
-        log.error("[{}] {}", e.getClass().getSimpleName(), e.getErrorCode().getMessage());
+        log.info("[{}] [{}] {}",
+                e.getClass().getSimpleName(),
+                extractClientIP(request),
+                e.getErrorCode().getMessage());
         return new CommonResponse<>(e.getErrorCode());
+    }
+
+    private String extractClientIP(HttpServletRequest request) {
+        String clientIp = request.getHeader("X-Real-IP");
+        if (clientIp == null) {
+            clientIp = request.getHeader("X-Forwarded-For");
+        }
+        if (clientIp == null) {
+            clientIp = request.getRemoteAddr();
+        }
+        return clientIp;
     }
 
     /**

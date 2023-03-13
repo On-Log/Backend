@@ -20,7 +20,7 @@ public interface DiaryRepository extends JpaRepository<Diary, Long>, DiaryCustom
 //    Optional<Diary> findDiaryByMemberAndWriteDate(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
 
     @Query(value = "SELECT * FROM diary d WHERE d.member_id = :memberId AND (DATE(write_date) BETWEEN :firstDate AND :lastDate) AND d.edit_status = :editStatus", nativeQuery = true)
-    List<Diary> findListByMemberAndBetweenWriteDate(Long memberId, LocalDate firstDate, LocalDate lastDate, Boolean editStatus);
+    List<Diary> findDiaryListByMemberAndBetweenWriteDate(Long memberId, LocalDate firstDate, LocalDate lastDate, Boolean editStatus);
 
     @Modifying
     @Query(value = "UPDATE Diary d SET d.editStatus = false WHERE d.editStatus = :editStatus AND (d.writeDate BETWEEN :startDate AND :endDate)")

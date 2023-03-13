@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface DiaryCustomRepository {
 
-    List<LocalDateTime> getExistDiaryDateList(Long memberId, LocalDateTime fromDate, LocalDateTime toDate);
+    List<LocalDateTime> findExistDiaryDateList(Long memberId, LocalDateTime fromDate, LocalDateTime toDate);
 
     void checkTodayDiaryAlreadyExist(Long memberId, LocalDateTime today);
 
@@ -18,6 +18,4 @@ public interface DiaryCustomRepository {
     List<Diary> findDiaryListByMemberAndWriteDate(Long memberId, LocalDateTime fromDate, LocalDateTime toDate);
 
     Optional<Diary> findDiaryByMemberAndWriteDate(Long memberId, LocalDateTime fromDate, LocalDateTime toDate);
-
-    List<Diary> findListByMemberAndBetweenWriteDate(Long memberId, LocalDate firstDate, LocalDate lastDate, Boolean editStatus);
 }

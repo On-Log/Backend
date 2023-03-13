@@ -8,6 +8,7 @@ import com.nanal.backend.domain.diary.exception.DiaryNotFoundException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,7 +26,7 @@ public class DiaryCustomRepositoryImpl implements DiaryCustomRepository{
     QMember member = QMember.member;
 
     @Override
-    public List<LocalDateTime> getExistDiaryDateList(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {
+    public List<LocalDateTime> findExistDiaryDateList(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {
         // 선택한 날에 작성한 일기리스트 조회
         List<Diary> writeDates = findDiaryListByMemberAndWriteDate(memberId, fromDate, toDate);
 
@@ -65,12 +66,6 @@ public class DiaryCustomRepositoryImpl implements DiaryCustomRepository{
                 .where(isEqualMember(memberId)
                         .and(betweenDate(fromDate, toDate)))
                 .stream().findAny();
-    }
-
-    @Override
-    public List<Diary> findListByMemberAndBetweenWriteDate(Long memberId, LocalDate firstDate, LocalDate lastDate, Boolean editStatus) {
-
-        return null;
     }
 
     private BooleanBuilder isEqualMember(Long memberId) {

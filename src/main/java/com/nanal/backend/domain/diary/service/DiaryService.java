@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 @Timed("diary.api")
 @Slf4j
 @RequiredArgsConstructor
@@ -46,32 +46,9 @@ public class DiaryService {
         // socialId 로 유저 조회
         Member member = memberRepository.findMember(socialId);
 
-        // 요청된 기간내 유저의 기록이 존재하는 날 조회
-        List<LocalDateTime> existDiaryDate = diaryRepository.getExistDiaryDateList(
-                member.getMemberId(),
-                reqGetCalendarDto.getFromDate(),
-                reqGetCalendarDto.getToDate());
+        RespGetCalendarDto calendar = getRespGetCalendarDto(reqGetCalendarDto, member);
 
-        // 회고 요일과 현재 날짜로 일기 작성 가능주 구하기
-        LocalDateTime now = LocalDateTime.now();
-        DiaryWritableWeek diaryWritableWeek = DiaryWritableWeek.create(member.getRetrospectDay(), now);
-
-        List<RetrospectInfoDto> retrospectInfoList = getRetrospectList(member.getMemberId(),
-                reqGetCalendarDto.getFromDate(),
-                reqGetCalendarDto.getToDate());
-
-        // 회고 작성 여부
-        Boolean existRetrospect = existDiaryDate(member.getMemberId(), diaryWritableWeek.getRetroDate());
-
-        return RespGetCalendarDto.builder()
-                .nickname(member.getNickname())
-                .isRetrospectDay(member.isRetrospectDay(now))
-                .existRetrospect(existRetrospect)
-                .existDiaryDate(existDiaryDate)
-                .nextDayOfPrevRetroDate(diaryWritableWeek.getNextDayOfPrevRetroDate())
-                .retroDate(diaryWritableWeek.getRetroDate())
-                .retrospectInfoList(retrospectInfoList)
-                .build();
+        return calendar;
     }
 
     @Counted("diary.api.count")
@@ -144,6 +121,37 @@ public class DiaryService {
 
     //===편의 메서드===//
 
+    private RespGetCalendarDto getRespGetCalendarDto(ReqGetCalendarDto reqGetCalendarDto, Member member) {
+        // 요청된 기간내 유저의 기록이 존재하는 날 조회
+        List<LocalDateTime> existDiaryDate = diaryRepository.findExistDiaryDateList(
+                member.getMemberId(),
+                reqGetCalendarDto.getFromDate(),
+                reqGetCalendarDto.getToDate());
+
+        // 회고 요일과 현재 날짜로 일기 작성 가능주 구하기
+        LocalDateTime now = LocalDateTime.now();
+        DiaryWritableWeek diaryWritableWeek = DiaryWritableWeek.create(member.getRetrospectDay(), now);
+
+        List<RetrospectInfoDto> retrospectInfoList = retrospectRepository.findRetrospectList(member.getMemberId(),
+                reqGetCalendarDto.getFromDate(),
+                reqGetCalendarDto.getToDate());
+
+        // 회고 작성 여부
+        Boolean existRetrospect = retrospectRepository.existDiaryDate(
+                member.getMemberId(),
+                diaryWritableWeek.getRetroDate());
+
+        return RespGetCalendarDto.builder()
+                .nickname(member.getNickname())
+                .isRetrospectDay(member.isRetrospectDay(now))
+                .existRetrospect(existRetrospect)
+                .existDiaryDate(existDiaryDate)
+                .nextDayOfPrevRetroDate(diaryWritableWeek.getNextDayOfPrevRetroDate())
+                .retroDate(diaryWritableWeek.getRetroDate())
+                .retrospectInfoList(retrospectInfoList)
+                .build();
+    }
+
 //    private Diary findDiary(Long memberId, LocalDateTime date) {
 //        LocalDate tempDate = date.toLocalDate();
 //        LocalDateTime startDate = tempDate.atStartOfDay();
@@ -159,16 +167,16 @@ public class DiaryService {
 //    }
 
 
-    private Boolean existDiaryDate(Long memberId, LocalDateTime date) {
-        LocalDate tempDate = date.toLocalDate();
-        LocalDateTime startDate = tempDate.atStartOfDay();
-        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);
-
-        Optional<Retrospect> findRetrospect = retrospectRepository.findByMemberAndWriteDate(memberId, startDate, endDate);
-
-        if(findRetrospect.isPresent()) return true;
-        else return false;
-    }
+//    private Boolean existDiaryDate(Long memberId, LocalDateTime date) {
+//        LocalDate tempDate = date.toLocalDate();
+//        LocalDateTime startDate = tempDate.atStartOfDay();
+//        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);
+//
+//        Optional<Retrospect> findRetrospect = retrospectRepository.findByMemberAndWriteDate(memberId, startDate, endDate);
+//
+//        if(findRetrospect.isPresent()) return true;
+//        else return false;
+//    }
 
 //    private List<LocalDateTime> getExistDiaryDateList(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {
 //        LocalDateTime startDate = fromDate.toLocalDate().atStartOfDay();
@@ -183,18 +191,18 @@ public class DiaryService {
 //                .collect(Collectors.toList());
 //    }
 
-    private List<RetrospectInfoDto> getRetrospectList(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {
-        LocalDateTime startDate = fromDate.toLocalDate().atStartOfDay();
-        LocalDateTime endDate = toDate.toLocalDate().atTime(LocalTime.MAX).withNano(0);
-
-        // 선택한 날에 작성된 회고 조회
-        List<Retrospect> retrospectList = retrospectRepository.findRetrospectListByMemberAndWriteDate(memberId, startDate, endDate);
-
-        // 회고 List 생성
-        return retrospectList.stream()
-                .map(RetrospectInfoDto::new)
-                .collect(Collectors.toList());
-    }
+//    private List<RetrospectInfoDto> findRetrospectList(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {
+//        LocalDateTime startDate = fromDate.toLocalDate().atStartOfDay();
+//        LocalDateTime endDate = toDate.toLocalDate().atTime(LocalTime.MAX).withNano(0);
+//
+//        // 선택한 날에 작성된 회고 조회
+//        List<Retrospect> retrospectList = retrospectRepository.findRetrospectListByMemberAndWriteDate(memberId, startDate, endDate);
+//
+//        // 회고 List 생성
+//        return retrospectList.stream()
+//                .map(RetrospectInfoDto::new)
+//                .collect(Collectors.toList());
+//    }
 
 //    private RespGetEmotionDto getRespGetEmotionDto(List<Emotion> emotions) {
 //        List<String> emotionWords = emotions.stream()
@@ -212,7 +220,7 @@ public class DiaryService {
         // 일기 작성 가능주간인지 체크
         checkWritableWeek(member, reqSaveDiaryDto.getDate());
         // 해당 날짜에 작성한 회고 존재하는지 체크
-        checkRetrospectAlreadyExist(member.getMemberId(), reqSaveDiaryDto.getDate());
+        retrospectRepository.checkRetrospectAlreadyExist(member.getMemberId(), reqSaveDiaryDto.getDate());
         // 해당 날짜에 작성한 일기 존재하는지 체크
         diaryRepository.checkTodayDiaryAlreadyExist(member.getMemberId(), reqSaveDiaryDto.getDate());
     }
@@ -224,17 +232,17 @@ public class DiaryService {
         if(!(date.isEqual(nextDayOfPrevRetroDate) || date.isAfter(nextDayOfPrevRetroDate))) throw NotInDiaryWritableDateException.EXCEPTION;
     }
 
-    private void checkRetrospectAlreadyExist(Long memberId, LocalDateTime date) {
-        LocalDate tempDate = date.toLocalDate();
-        LocalDateTime startDate = tempDate.atStartOfDay();
-        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);
+//    private void checkRetrospectAlreadyExist(Long memberId, LocalDateTime date) {
+//        LocalDate tempDate = date.toLocalDate();
+//        LocalDateTime startDate = tempDate.atStartOfDay();
+//        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);
+//
+//        Optional<Retrospect> findRetrospect = retrospectRepository.findRetrospectByMemberAndWriteDate(memberId, startDate, endDate);
+//
+//        if(findRetrospect.isPresent()) throw RetrospectAlreadyWrittenException.EXCEPTION;
+//    }
 
-        Optional<Retrospect> findRetrospect = retrospectRepository.findByMemberAndWriteDate(memberId, startDate, endDate);
-
-        if(findRetrospect.isPresent()) throw RetrospectAlreadyWrittenException.EXCEPTION;
-    }
-
-    //    private void checkTodayDiaryAlreadyExist(Long memberId, LocalDateTime date) {
+//     private void checkTodayDiaryAlreadyExist(Long memberId, LocalDateTime date) {
 //        LocalDate tempDate = date.toLocalDate();
 //        LocalDateTime startDate = tempDate.atStartOfDay();
 //        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);

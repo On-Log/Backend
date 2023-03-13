@@ -14,7 +14,7 @@ import com.nanal.backend.domain.retrospect.exception.*;
 import com.nanal.backend.domain.retrospect.repository.ExtraQuestionRepository;
 import com.nanal.backend.domain.retrospect.repository.QuestionRepository;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
-import com.nanal.backend.domain.diary.repository.DiaryRepository;
+import com.nanal.backend.domain.diary.repository.diary.DiaryRepository;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.retrospect.repository.RetrospectKeywordRepository;
 import com.nanal.backend.domain.retrospect.repository.retrospect.RetrospectRepository;

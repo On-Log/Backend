@@ -1,4 +1,4 @@
-package com.nanal.backend.domain.diary.repository;
+package com.nanal.backend.domain.diary.repository.diary;
 
 import com.nanal.backend.domain.diary.entity.Diary;
 

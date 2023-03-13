@@ -10,9 +10,8 @@ import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.diary.entity.Emotion;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.diary.exception.*;
-import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import com.nanal.backend.domain.retrospect.repository.retrospect.RetrospectRepository;
-import com.nanal.backend.domain.diary.repository.DiaryRepository;
+import com.nanal.backend.domain.diary.repository.diary.DiaryRepository;
 import com.nanal.backend.domain.diary.repository.EmotionRepository;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import io.micrometer.core.annotation.Counted;
@@ -22,11 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 @Timed("diary.api")
 @Slf4j
@@ -89,7 +85,6 @@ public class DiaryService {
         Diary updateDiary = diaryRepository.findDiary(member.getMemberId(), reqEditDiary.getDate());
 
         // 일기 수정 가능 여부 체크
-//        checkUpdatable(updateDiary);
         updateDiary.checkUpdatable();
 
         // 일기 수정
@@ -151,69 +146,6 @@ public class DiaryService {
                 .build();
     }
 
-//    private Diary findDiary(Long memberId, LocalDateTime date) {
-//        LocalDate tempDate = date.toLocalDate();
-//        LocalDateTime startDate = tempDate.atStartOfDay();
-//        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);
-//
-//        // 선택한 날에 작성한 일기 조회
-//        return diaryRepository.findDiaryByMemberAndWriteDate(memberId, startDate, endDate)
-//                .orElseThrow(() -> DiaryNotFoundException.EXCEPTION);
-//    }
-
-//    private static void checkUpdatable(Diary updateDiary) {
-//        if(!updateDiary.getEditStatus()) throw DiaryChangeUnavailable.EXCEPTION;
-//    }
-
-
-//    private Boolean existDiaryDate(Long memberId, LocalDateTime date) {
-//        LocalDate tempDate = date.toLocalDate();
-//        LocalDateTime startDate = tempDate.atStartOfDay();
-//        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);
-//
-//        Optional<Retrospect> findRetrospect = retrospectRepository.findByMemberAndWriteDate(memberId, startDate, endDate);
-//
-//        if(findRetrospect.isPresent()) return true;
-//        else return false;
-//    }
-
-//    private List<LocalDateTime> getExistDiaryDateList(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {
-//        LocalDateTime startDate = fromDate.toLocalDate().atStartOfDay();
-//        LocalDateTime endDate = toDate.toLocalDate().atTime(LocalTime.MAX).withNano(0);
-//
-//        // 선택한 날에 작성한 일기리스트 조회
-//        List<Diary> writeDates = diaryRepository.findDiaryListByMemberAndWriteDate(memberId, startDate, endDate);
-//
-//        // 일기리스트의 작성날짜 List 생성
-//        return writeDates.stream()
-//                .map(Diary::getWriteDate)
-//                .collect(Collectors.toList());
-//    }
-
-//    private List<RetrospectInfoDto> findRetrospectList(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {
-//        LocalDateTime startDate = fromDate.toLocalDate().atStartOfDay();
-//        LocalDateTime endDate = toDate.toLocalDate().atTime(LocalTime.MAX).withNano(0);
-//
-//        // 선택한 날에 작성된 회고 조회
-//        List<Retrospect> retrospectList = retrospectRepository.findRetrospectListByMemberAndWriteDate(memberId, startDate, endDate);
-//
-//        // 회고 List 생성
-//        return retrospectList.stream()
-//                .map(RetrospectInfoDto::new)
-//                .collect(Collectors.toList());
-//    }
-
-//    private RespGetEmotionDto getRespGetEmotionDto(List<Emotion> emotions) {
-//        List<String> emotionWords = emotions.stream()
-//                .map(Emotion::getEmotion)
-//                .collect(Collectors.toList());
-//
-//        return new RespGetEmotionDto(emotionWords);
-//    }
-
-//    private Member findMember(String socialId) {
-//        return memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
-//    }
 
     private void checkDiaryWritable(Member member, ReqDiaryDto reqSaveDiaryDto) {
         // 일기 작성 가능주간인지 체크
@@ -230,24 +162,4 @@ public class DiaryService {
         // validation 을 통해 현재보다 미래의 날짜가 들어오지 않는 것을 보장
         if(!(date.isEqual(nextDayOfPrevRetroDate) || date.isAfter(nextDayOfPrevRetroDate))) throw NotInDiaryWritableDateException.EXCEPTION;
     }
-
-//    private void checkRetrospectAlreadyExist(Long memberId, LocalDateTime date) {
-//        LocalDate tempDate = date.toLocalDate();
-//        LocalDateTime startDate = tempDate.atStartOfDay();
-//        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);
-//
-//        Optional<Retrospect> findRetrospect = retrospectRepository.findRetrospectByMemberAndWriteDate(memberId, startDate, endDate);
-//
-//        if(findRetrospect.isPresent()) throw RetrospectAlreadyWrittenException.EXCEPTION;
-//    }
-
-//     private void checkTodayDiaryAlreadyExist(Long memberId, LocalDateTime date) {
-//        LocalDate tempDate = date.toLocalDate();
-//        LocalDateTime startDate = tempDate.atStartOfDay();
-//        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);
-//
-//        List<Diary> findDiaryList = diaryRepository.findDiaryListByMemberAndWriteDate(memberId, startDate, endDate);
-//
-//        if (findDiaryList.size() != 0) throw DiaryAlreadyExistException.EXCEPTION;
-//    }
 }

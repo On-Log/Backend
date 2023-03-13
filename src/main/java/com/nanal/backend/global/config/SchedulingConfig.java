@@ -2,7 +2,7 @@ package com.nanal.backend.global.config;
 
 import com.nanal.backend.domain.diary.repository.DiaryRepository;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
-import com.nanal.backend.domain.retrospect.repository.RetrospectRepository;
+import com.nanal.backend.domain.retrospect.repository.retrospect.RetrospectRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

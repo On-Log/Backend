@@ -20,7 +20,6 @@ public class RetrospectCustomRepositoryImpl implements RetrospectCustomRepositor
 
     private final JPAQueryFactory queryFactory;
 
-    QMember member = QMember.member;
     QRetrospect retrospect = QRetrospect.retrospect;
 
     @Override
@@ -66,7 +65,7 @@ public class RetrospectCustomRepositoryImpl implements RetrospectCustomRepositor
     }
 
     private BooleanBuilder isEqualMember(Long memberId) {
-        if(memberId != null) return new BooleanBuilder(member.memberId.eq(memberId));
+        if(memberId != null) return new BooleanBuilder(retrospect.member.memberId.eq(memberId));
         else return new BooleanBuilder();
     }
 

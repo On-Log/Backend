@@ -8,9 +8,7 @@ import com.nanal.backend.domain.diary.exception.DiaryNotFoundException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.Query;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -23,7 +21,6 @@ public class DiaryCustomRepositoryImpl implements DiaryCustomRepository{
     private final JPAQueryFactory queryFactory;
 
     QDiary diary = QDiary.diary;
-    QMember member = QMember.member;
 
     @Override
     public List<LocalDateTime> findExistDiaryDateList(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {
@@ -69,7 +66,7 @@ public class DiaryCustomRepositoryImpl implements DiaryCustomRepository{
     }
 
     private BooleanBuilder isEqualMember(Long memberId) {
-        if(memberId != null) return new BooleanBuilder(member.memberId.eq(memberId));
+        if(memberId != null) return new BooleanBuilder(diary.member.memberId.eq(memberId));
         else return new BooleanBuilder();
     }
 

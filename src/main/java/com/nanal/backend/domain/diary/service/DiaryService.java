@@ -59,9 +59,8 @@ public class DiaryService {
         // 일기 작성 가능성 검증
         checkDiaryWritable(member, reqSaveDiaryDto);
 
+        // 일기 생성
         List<Emotion> findEmotions = emotionRepository.findEmotionsIn(reqSaveDiaryDto.getEmotions());
-
-        // 일기 Entity 생성
         Diary diary = Diary.createDiary(member, reqSaveDiaryDto, findEmotions);
 
         // 일기 저장

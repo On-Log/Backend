@@ -1,10 +1,10 @@
-package com.nanal.backend.domain.diary.repository;
+package com.nanal.backend.domain.diary.repository.diary;
 
-import com.nanal.backend.domain.auth.entity.QMember;
 import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.diary.entity.QDiary;
 import com.nanal.backend.domain.diary.exception.DiaryAlreadyExistException;
 import com.nanal.backend.domain.diary.exception.DiaryNotFoundException;
+import com.nanal.backend.domain.diary.repository.diary.DiaryCustomRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class DiaryCustomRepositoryImpl implements DiaryCustomRepository{
+public class DiaryCustomRepositoryImpl implements DiaryCustomRepository {
 
     private final JPAQueryFactory queryFactory;
 

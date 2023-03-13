@@ -11,16 +11,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface DiaryRepository extends JpaRepository<Diary, Long> {
+public interface DiaryRepository extends JpaRepository<Diary, Long>, DiaryCustomRepository {
 
-    @Query(value = "SELECT d FROM Diary d WHERE d.member.memberId = :memberId AND (d.writeDate BETWEEN :startDate AND :endDate)")
-    List<Diary> findDiaryListByMemberAndWriteDate(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
+//    @Query(value = "SELECT d FROM Diary d WHERE d.member.memberId = :memberId AND (d.writeDate BETWEEN :startDate AND :endDate)")
+//    List<Diary> findDiaryListByMemberAndWriteDate(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
 
-    @Query(value = "SELECT d FROM Diary d WHERE d.member.memberId = :memberId AND (d.writeDate BETWEEN :startDate AND :endDate)")
-    Optional<Diary> findDiaryByMemberAndWriteDate(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
+//    @Query(value = "SELECT d FROM Diary d WHERE d.member.memberId = :memberId AND (d.writeDate BETWEEN :startDate AND :endDate)")
+//    Optional<Diary> findDiaryByMemberAndWriteDate(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
 
     @Query(value = "SELECT * FROM diary d WHERE d.member_id = :memberId AND (DATE(write_date) BETWEEN :firstDate AND :lastDate) AND d.edit_status = :editStatus", nativeQuery = true)
-    List<Diary> findListByMemberAndBetweenWriteDate(Long memberId, LocalDate firstDate, LocalDate lastDate, Boolean editStatus);
+    List<Diary> findDiaryListByMemberAndBetweenWriteDate(Long memberId, LocalDate firstDate, LocalDate lastDate, Boolean editStatus);
 
     @Modifying
     @Query(value = "UPDATE Diary d SET d.editStatus = false WHERE d.editStatus = :editStatus AND (d.writeDate BETWEEN :startDate AND :endDate)")

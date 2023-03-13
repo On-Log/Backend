@@ -3,6 +3,7 @@ package com.nanal.backend.domain.diary.entity;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.diary.dto.req.ReqDiaryDto;
 import com.nanal.backend.domain.diary.dto.req.ReqSaveDiaryDto;
+import com.nanal.backend.domain.diary.exception.DiaryChangeUnavailable;
 import com.nanal.backend.global.config.BaseTime;
 import lombok.*;
 
@@ -79,5 +80,10 @@ public class Diary extends BaseTime {
                 .map(keywordDto -> Keyword.createKeyword(this, keywordDto, findEmotions))
                 .collect(Collectors.toList());
         this.keywords.addAll(keywordList);
+    }
+
+    //==비즈니스 메서드==//
+    public void checkUpdatable() {
+        if(!editStatus) throw DiaryChangeUnavailable.EXCEPTION;
     }
 }

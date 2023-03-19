@@ -49,8 +49,9 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
 
     // JWT
-    implementation 'io.jsonwebtoken:jjwt:0.9.1'
-    implementation 'javax.xml.bind:jaxb-api'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
     // RestDocs
     asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
@@ -60,8 +61,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
-    // WebClient 사용
+    // WebClient
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // Feign
+    implementation 'io.github.openfeign:feign-httpclient:12.1'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.4'
 
     // Querydsl
     implementation 'com.querydsl:querydsl-jpa:5.0.0'

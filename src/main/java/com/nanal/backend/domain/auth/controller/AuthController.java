@@ -1,6 +1,7 @@
 package com.nanal.backend.domain.auth.controller;
 
 import com.nanal.backend.domain.auth.dto.LoginInfo;
+import com.nanal.backend.domain.auth.dto.req.ReqAppleAuthDto;
 import com.nanal.backend.domain.auth.dto.req.ReqAuthDto;
 import com.nanal.backend.domain.auth.dto.req.ReqEmailConfirmDto;
 import com.nanal.backend.domain.auth.dto.req.ReqRegisterDto;
@@ -69,8 +70,10 @@ public class AuthController {
     @PostMapping(value = "/auth/naver")
     public CommonResponse<?> naverAuth(@RequestBody ReqAuthDto reqAuthDto, HttpServletRequest request) {
 
-        // 최초 로그인 - 회원가입 후 토큰 발행.
-        // 기존 유저 - 토큰 발행.
+        /**
+         * 최초 로그인 - 회원가입 후 토큰 발행.
+         * 기존 유저 - 토큰 발행.
+         */
         LoginInfo loginInfo = authService.commonAuth(reqAuthDto.getAccessToken(), request.getRequestURI());
 
         if(loginInfo.getOnBoarding())
@@ -85,8 +88,10 @@ public class AuthController {
     @PostMapping(value = "/auth/kakao")
     public CommonResponse<?> kakaoAuth(@RequestBody ReqAuthDto reqAuthDto, HttpServletRequest request) {
 
-        // 최초 로그인 - 회원가입 후 토큰 발행.
-        // 기존 유저 - 토큰 발행.
+        /**
+         * 최초 로그인 - 회원가입 후 토큰 발행.
+         * 기존 유저 - 토큰 발행.
+         */
         LoginInfo loginInfo = authService.commonAuth(reqAuthDto.getAccessToken(), request.getRequestURI());
 
         if(loginInfo.getOnBoarding())
@@ -101,8 +106,10 @@ public class AuthController {
     @PostMapping(value = "/auth/google")
     public CommonResponse<?> googleAuth(@RequestBody ReqAuthDto reqAuthDto, HttpServletRequest request) {
 
-        // 최초 로그인 - 회원가입 후 토큰 발행.
-        // 기존 유저 - 토큰 발행.
+        /**
+         * 최초 로그인 - 회원가입 후 토큰 발행.
+         * 기존 유저 - 토큰 발행.
+         */
         LoginInfo loginInfo = authService.commonAuth(reqAuthDto.getAccessToken(), request.getRequestURI());
 
         if(loginInfo.getOnBoarding())
@@ -111,6 +118,20 @@ public class AuthController {
             return new CommonResponse<>(loginInfo);
     }
 
+    @PostMapping(value = "/auth/apple")
+    public CommonResponse<?> appleAuth(@RequestBody ReqAppleAuthDto reqAppleAuthDto, HttpServletRequest request) {
+
+        /**
+         * 최초 로그인 - 회원가입 후 토큰 발행.
+         * 기존 유저 - 토큰 발행.
+         */
+        LoginInfo loginInfo = authService.appleAuth(reqAppleAuthDto.getIdentityToken(), request.getRequestURI());
+
+        if(loginInfo.getOnBoarding())
+            return new CommonResponse<>(ErrorCode.SUCCESS_BUT, loginInfo);
+        else
+            return new CommonResponse<>(loginInfo);
+    }
 
     /**
      * Token 재발급

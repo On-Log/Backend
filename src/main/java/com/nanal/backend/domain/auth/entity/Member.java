@@ -118,6 +118,23 @@ public class Member extends BaseTime {
                 .build();
     }
 
+    public static Member createAppleMember(String socialId, String email) {
+        return Member.builder()
+                .socialId(MemberProvider.APPLE + "@" + socialId)
+                .provider(MemberProvider.APPLE)
+                .name("나나리")
+                .email(email)
+                .password("undef")
+                // 당일로 회고일 설정
+                .retrospectDay(LocalDate.now().getDayOfWeek())
+                .prevRetrospectDate(LocalDateTime.now().minusDays(30))
+                .nickname("나나리")
+                .ageRange("undef")
+                .gender("undef")
+                .role(Member.Role.ONBOARDER)
+                .build();
+    }
+
     //==수정 메서드==//
     public void updateNickname(String nickname) { this.nickname = nickname; }
 

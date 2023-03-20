@@ -56,17 +56,23 @@ public class SearchDiaryRepository {
         return containWordInContent(word).or(containWordInKeyword(word));
     }
 
-    private BooleanBuilder startDate(LocalDateTime startDate) {
-        if(startDate != null) return new BooleanBuilder(diary.writeDate.goe(LocalDateTime.of(startDate.toLocalDate(), LocalTime.MIN)));
+    private BooleanBuilder fromDate(LocalDateTime fromDate) {
+        if(fromDate != null) {
+            fromDate = fromDate.toLocalDate().atStartOfDay();
+            return new BooleanBuilder(diary.writeDate.goe(fromDate));
+        }
         else return new BooleanBuilder();
     }
 
-    private BooleanBuilder endDate(LocalDateTime endDate) {
-        if(endDate != null) return new BooleanBuilder(diary.writeDate.loe(LocalDateTime.of(endDate.toLocalDate(), LocalTime.MAX)));
+    private BooleanBuilder toDate(LocalDateTime toDate) {
+        if(toDate != null) {
+            toDate = toDate.toLocalDate().atTime(LocalTime.MAX).withNano(0);
+            return new BooleanBuilder(diary.writeDate.loe(toDate));
+        }
         else return new BooleanBuilder();
     }
 
-    private BooleanBuilder betweenDate(LocalDateTime startDate, LocalDateTime endDate) {
-        return startDate(startDate).and(endDate(endDate));
+    private BooleanBuilder betweenDate(LocalDateTime fromDate, LocalDateTime toDate) {
+        return fromDate(fromDate).and(toDate(toDate));
     }
 }

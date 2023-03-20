@@ -53,10 +53,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
         }else{
             // 여기서 예외를 발생시켜야 JwtExceptionFilter 로 떨어짐.
-            log.info("예외 발생 url = {}", request.getRequestURL());
             throw TokenInvalidException.EXCEPTION;
         }
 
         chain.doFilter(request, response);
+    }
+
+    private String extractClientIP(HttpServletRequest request) {
+        String clientIp = request.getHeader("X-Real-IP");
+        if (clientIp == null) {
+            clientIp = request.getHeader("X-Forwarded-For");
+        }
+        if (clientIp == null) {
+            clientIp = request.getRemoteAddr();
+        }
+        return clientIp;
     }
 }

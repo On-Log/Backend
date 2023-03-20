@@ -14,14 +14,13 @@ import com.nanal.backend.domain.retrospect.exception.*;
 import com.nanal.backend.domain.retrospect.repository.ExtraQuestionRepository;
 import com.nanal.backend.domain.retrospect.repository.QuestionRepository;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
-import com.nanal.backend.domain.diary.repository.DiaryRepository;
+import com.nanal.backend.domain.diary.repository.diary.DiaryRepository;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.retrospect.repository.RetrospectKeywordRepository;
-import com.nanal.backend.domain.retrospect.repository.RetrospectRepository;
+import com.nanal.backend.domain.retrospect.repository.retrospect.RetrospectRepository;
 import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -271,14 +270,14 @@ public class RetrospectService {
     }
 
     private void changeDiaryEditStatus (Member member, LocalDateTime prevRetroDate, LocalDateTime currentTime) {
-        List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate(),true);
+        List<Diary> diaries = diaryRepository.findDiaryListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate(),true);
         for(Diary t : diaries) {
             t.changeEditStatus(false);
         }
     }
 
     private void changeDiaryEditStatusToTrue (Member member, LocalDateTime prevRetroDate, LocalDateTime currentTime) {
-        List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate(),false);
+        List<Diary> diaries = diaryRepository.findDiaryListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate(),false);
         for(Diary t : diaries) {
             t.changeEditStatus(true);
         }
@@ -378,7 +377,7 @@ public class RetrospectService {
 
     //일주일 일기 데이터 가져오기
     private List<Diary> getWeekDiaries (Long memberId, LocalDateTime prevRetroDate, LocalDateTime currentDate) {
-        List<Diary> diaries = diaryRepository.findListByMemberAndBetweenWriteDate(
+        List<Diary> diaries = diaryRepository.findDiaryListByMemberAndBetweenWriteDate(
                 memberId,
                 prevRetroDate.toLocalDate().minusDays(6),
                 currentDate.toLocalDate(),

@@ -1,6 +1,5 @@
-package com.nanal.backend.domain.retrospect.repository;
+package com.nanal.backend.domain.retrospect.repository.retrospect;
 
-import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,13 +10,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface RetrospectRepository extends JpaRepository<Retrospect, Long> {
+public interface RetrospectRepository extends JpaRepository<Retrospect, Long>, RetrospectCustomRepository {
 
     @Query(value = "SELECT * FROM retrospect re WHERE re.member_id = :memberId AND re.write_date LIKE :likeFormat ORDER BY re.write_date asc", nativeQuery = true)
     List<Retrospect> findListByMemberAndWriteDate(Long memberId, String likeFormat);
 
-//    @Query(value = "SELECT * FROM retrosepct re WHERE re.member_id = :memberId AND d.write_date LIKE :likeFormat", nativeQuery = true)
-//    Diary findDiaryByMemberAndWriteDate(Long memberId, String likeFormat);
     @Modifying
     @Query(value = "UPDATE retrospect re SET re.edit_status = false WHERE re.member_id IN (:member_ids)", nativeQuery = true)
     void updateEditStatusByMember(@Param("member_ids") List<Long> member_ids);
@@ -25,11 +22,6 @@ public interface RetrospectRepository extends JpaRepository<Retrospect, Long> {
     @Query(value = "SELECT * FROM retrospect re WHERE re.member_id = :memberId", nativeQuery = true)
     List<Retrospect> findListByMember(Long memberId);
 
-    @Query(value = "SELECT r FROM Retrospect r WHERE r.member.memberId = :memberId AND (r.writeDate BETWEEN :startDate AND :endDate)")
-    Optional<Retrospect> findByMemberAndWriteDate(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
-
-    @Query(value = "SELECT r FROM Retrospect r WHERE r.member.memberId = :memberId AND (r.writeDate BETWEEN :startDate AND :endDate)")
-    List<Retrospect> findDiaryListByMemberAndWriteDate(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
 }
 
 

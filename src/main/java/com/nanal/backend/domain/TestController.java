@@ -7,35 +7,27 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class TestController {
     private final RedisTemplate<String, String> redisTemplate;
 
-    @GetMapping("/main")
-    public String main() {
-        log.info("hi");
-        return "index.html";
-    }
-
-    @ResponseBody
     @GetMapping("/auth")
     public String auth() {
         log.info("hi auth user");
         return "auth success";
     }
 
-    @ResponseBody
     @GetMapping("/deploy")
     public String deploy() {
         log.info("hi deploy");
         return "deploy success";
     }
 
-    @ResponseBody
-    @GetMapping("/redis/test")
+    @GetMapping("/redis")
     public String store() {
 
         // given
@@ -45,5 +37,12 @@ public class TestController {
         valueOperations.set(key, "hello");
 
         return "ok";
+    }
+
+    @GetMapping("/test/log")
+    public void logTest() {
+        log.info("info");
+        log.warn("warn");
+        log.error("error");
     }
 }

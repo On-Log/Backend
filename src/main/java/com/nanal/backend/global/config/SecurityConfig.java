@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
-                .authorizeRequests().antMatchers("/main", "/auth/**", "/docs/**", "/favicon.ico", "/actuator/**", "/health").permitAll()
+                .authorizeRequests().antMatchers("/main", "/auth/**", "/docs/**", "/favicon.ico", "/actuator/**", "/health", "/test/**").permitAll()
                 .antMatchers("/onBoarding").hasRole("ONBOARDER")
                 .anyRequest().hasRole("USER");
 

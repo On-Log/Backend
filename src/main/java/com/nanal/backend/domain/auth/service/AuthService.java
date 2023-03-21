@@ -150,7 +150,7 @@ public class AuthService {
         else return clientNaver.getUserData(accessToken);
     }
 
-    private Member auth(Member member, String providerInfo) {
+    private synchronized Member auth(Member member, String providerInfo) {
         Optional<Member> findMember = memberRepository.findByEmail(member.getEmail());
         if(isNewMember(findMember))
             return joinMembership(member);

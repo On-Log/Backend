@@ -24,7 +24,7 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final MemberRepository memberRepository;
-    private final String[] ignoredPaths = {"/main", "/login/**", "/auth/**", "/docs/**", "/favicon.ico", "/actuator/**", "/health"};
+    private final String[] ignoredPaths = {"/main", "/login/**", "/auth/**", "/docs/**", "/favicon.ico", "/actuator/**", "/health", "/test/**"};
     private final TokenUtil tokenService;
 
     @Override

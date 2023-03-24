@@ -19,6 +19,6 @@ public class InterceptorConfig implements WebMvcConfigurer {
         registry.addInterceptor(throttlingInterceptor)
                 .order(1)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/auth/**", "/docs/**", "/favicon.ico", "/error", "/health", "/test/**");
+                .excludePathPatterns("/auth/**", "/docs/**", "/favicon.ico", "/error", "/health", "/test/**", "/actuator/**");
     }
 }

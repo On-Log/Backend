@@ -106,6 +106,7 @@ public class AuthService {
         return new LoginInfo(authenticatedMember.getNickname(), token, authenticatedMember.getRole().equals(Member.Role.ONBOARDER));
     }
 
+    @Counted("auth.api.count")
     public LoginInfo appleAuth(String identityToken, String providerInfo) {
         // 토큰 서명 검증
         Jws<Claims> oidcTokenJws = sigVerificationAndGetJws(identityToken);

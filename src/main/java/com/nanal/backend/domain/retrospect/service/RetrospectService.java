@@ -248,7 +248,7 @@ public class RetrospectService {
         //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능) 1. 요청 들어온 요일이 유저 회고요일과 같은지 체크
         checkWriteTime(member, currentDate);
         // 해당 날짜에 작성한 회고 존재하는지 체크
-        checkRetrospectAlreadyExist(member);
+        checkRetrospectAlreadyExist(member, currentDate);
     }
 
     private void checkRetrospectCount(Member member, LocalDateTime dateTime) {
@@ -264,8 +264,8 @@ public class RetrospectService {
             throw RetrospectTimeDoneException.EXCEPTION;
 
         //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능) 2. 요청 들어온 날짜와 회고 날짜가 차이가 1일인지 체크
-        LocalDateTime prevRetroDate = dateTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
-        if(abs(ChronoUnit.DAYS.between(prevRetroDate.toLocalDate(),  LocalDate.now())) != 0)
+        LocalDate prevRetroDate = LocalDate.now().with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
+        if(abs(ChronoUnit.DAYS.between(prevRetroDate, dateTime.toLocalDate())) != 0)
             throw RetrospectTimeDoneException.EXCEPTION;
     }
 
@@ -344,8 +344,7 @@ public class RetrospectService {
 
 
     //회고 저장시 예외처리
-    private void checkRetrospectAlreadyExist( Member member) {
-        LocalDateTime currentDate = LocalDateTime.now();
+    private void checkRetrospectAlreadyExist( Member member, LocalDateTime currentDate) {
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonthDay = currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
         // 선택한 yyyy-MM-dd 에 작성한 회고 조회

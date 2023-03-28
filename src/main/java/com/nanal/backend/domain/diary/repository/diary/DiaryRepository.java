@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface DiaryRepository extends JpaRepository<Diary, Long>, DiaryCustomRepository {
 
-    @Query(value = "SELECT * FROM diary d WHERE d.member_id = :memberId AND (DATE(write_date) BETWEEN :firstDate AND :lastDate) AND d.edit_status = :editStatus", nativeQuery = true)
+    @Query(value = "SELECT * FROM diary d WHERE d.member_id = :memberId AND (DATE(write_date) BETWEEN :firstDate AND :lastDate) AND d.edit_status = :editStatus ORDER BY d.write_date asc", nativeQuery = true)
     List<Diary> findDiaryListByMemberAndBetweenWriteDate(Long memberId, LocalDate firstDate, LocalDate lastDate, Boolean editStatus);
 
     @Modifying

@@ -15,30 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     private final RedisTemplate<String, String> redisTemplate;
 
-    @GetMapping("/auth")
-    public String auth() {
-        log.info("hi auth user");
-        return "auth success";
-    }
-
-    @GetMapping("/deploy")
-    public String deploy() {
-        log.info("hi deploy");
-        return "deploy success";
-    }
-
-    @GetMapping("/redis")
-    public String store() {
-
-        // given
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        String key = "why";
-
-        valueOperations.set(key, "hello");
-
-        return "ok";
-    }
-
     @GetMapping("/test/log")
     public void logTest() {
         log.info("info");

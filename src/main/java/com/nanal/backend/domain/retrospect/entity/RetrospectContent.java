@@ -32,11 +32,6 @@ public class RetrospectContent extends BaseTime {
     private String answer;
 
     //==수정 메서드==//
-    public void changeRetrospect(Retrospect retrospect) {
-        this.retrospect = retrospect;
-    }
-
-    public void changeQuestion(String question){ this.question = question; }
 
     public void changeAnswer(String answer){ this.answer = answer; }
 

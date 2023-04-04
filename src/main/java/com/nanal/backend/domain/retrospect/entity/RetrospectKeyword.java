@@ -33,15 +33,6 @@ public class RetrospectKeyword extends BaseTime {
     private String classify;
 
     //==수정 메서드==//
-    public void changeRetrospect(Retrospect retrospect) {
-        this.retrospect = retrospect;
-    }
-
-    public void changeKeyWord(String keyword) {
-        this.keyword = keyword;
-    }
-
-    public void changeClassify(String classify){ this.classify = classify; }
 
     //==연관관계 메서드==//
 

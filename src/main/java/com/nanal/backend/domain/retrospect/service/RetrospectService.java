@@ -30,8 +30,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
-
-import static com.nanal.backend.domain.retrospect.dto.resp.RespGetInfoDto.makeRespGetInfoDto;
+import java.util.stream.Collectors;
 import static java.lang.Math.abs;
 
 @Timed("retrospect.api")
@@ -55,29 +54,10 @@ public class RetrospectService {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
-        LocalDateTime currentDate = LocalDateTime.now();
-        LocalDateTime selectDate = reqGetInfoDto.getSelectDate();
+        RespGetInfoDto info = getRespGetInfoDto(reqGetInfoDto, member);
 
-        // 선택한 월에 있는 회고 기록 ( 어떤 회고 목적을 선택했는가 )
-        List<Retrospect> getRetrospects = getExistRetrospect(member.getMemberId(), selectDate);
-        List<String> existRetrospect = getgoal(getRetrospects);
-
-        //회고 개수가 5개인지 5개 아니면 true, 이상이면 false
-        boolean isRetroNumberNotFive = countRetro(member, reqGetInfoDto.getSelectDate());
-
-        // 회고 요일까지 남은 날짜
-        LocalDateTime postRetroDate = DiaryWritableWeek.getRetroDate(member.getRetrospectDay(), currentDate);
-        Period period = Period.between(currentDate.toLocalDate(), postRetroDate.toLocalDate());
-        int betweenDate = getbetweenDate(member, currentDate, period);
-
-        // 회고 주제별로 분류 후 주차별로 분류
-        List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = getKeyword(member, selectDate);
-
-        RespGetInfoDto respGetInfoDto = makeRespGetInfoDto(member.getNickname(),existRetrospect, betweenDate, isRetroNumberNotFive, respGetClassifiedKeywordDtos);
-
-        return respGetInfoDto;
+        return info;
     }
-
     @Counted("retrospect.api.count")
     public void saveRetrospect(String socialId, ReqSaveRetroDto reqSaveRetroDto) {
         // socialId 로 유저 조회
@@ -223,7 +203,33 @@ public class RetrospectService {
     }
 
     //===편의 메서드===//
+    private RespGetInfoDto getRespGetInfoDto (ReqGetInfoDto reqGetInfoDto, Member member) {
+        LocalDateTime currentDate = LocalDateTime.now();
+        LocalDateTime selectDate = reqGetInfoDto.getSelectDate();
 
+        // 선택한 월에 있는 회고 기록 ( 어떤 회고 목적을 선택했는가 )
+        List<Retrospect> getRetrospects = getExistRetrospect(member.getMemberId(), selectDate);
+        List<String> existRetrospect = getgoal(getRetrospects);
+
+        //회고 개수가 5개인지 5개 아니면 true, 이상이면 false
+        boolean isRetroNumberNotFive = countRetro(member, reqGetInfoDto.getSelectDate());
+
+        // 회고 요일까지 남은 날짜
+        LocalDateTime postRetroDate = DiaryWritableWeek.getRetroDate(member.getRetrospectDay(), currentDate);
+        Period period = Period.between(currentDate.toLocalDate(), postRetroDate.toLocalDate());
+        int betweenDate = getbetweenDate(member, currentDate, period);
+
+        // 회고 주제별로 분류 후 주차별로 분류
+        List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = getKeyword(member, selectDate);
+
+        return RespGetInfoDto.builder()
+                .nickname(member.getNickname())
+                .existRetrospect(existRetrospect)
+                .betweenDate(betweenDate)
+                .countRetrospect(isRetroNumberNotFive)
+                .keywordList(respGetClassifiedKeywordDtos)
+                .build();
+    }
     //회고 목적 리스트 반환
     private List<String> getgoal(List<Retrospect> retrospects) {
         List<String> existRetrospect = new ArrayList<>();
@@ -504,24 +510,6 @@ public class RetrospectService {
 
 
     private List<RespGetClassifiedKeywordDto> getKeyword(Member member, LocalDateTime selectTime) {
-        // 전체 분할한 키워드 리스트들
-        // 분류1 : [
-        //   1차 : [
-        //   ]
-        //   2차 : [
-        //   ]
-        //   3차 : [
-        //   ]
-        //]
-
-        //회고별 분류
-        //   1차 : [
-        //   ]
-        //   2차 : [
-        //   ]
-        //   3차 : [
-        //   ]
-
         // 질의할 sql 의 Like 절에 해당하게끔 변환
         String yearMonth = selectTime.format(DateTimeFormatter.ofPattern("yyyy-MM")) + "%";
 
@@ -530,34 +518,26 @@ public class RetrospectService {
                 member.getMemberId(),
                 yearMonth);
 
-
         //회고의 분류 리스트 생성
         List<String> keyWordClass = new ArrayList<>();
         keyWordClass.add("그때 그대로 의미있었던 행복한 기억");
         keyWordClass.add("나를 힘들게 했지만 도움이 된 기억");
         keyWordClass.add("돌아보니, 다른 의미로 다가온 기억");
 
-        List<ClassifyDto> classifyDtos = new ArrayList<>();
-        List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = new ArrayList<>();
-        RespGetClassifiedKeywordDto respGetClassifiedKeywordDto = new RespGetClassifiedKeywordDto();
-        for (int i = 0; i < keyWordClass.size(); i++) {
-            classifyDtos = new ArrayList<>();
-            for (Retrospect t : writeRetrospect) {
-                //한 회고에 대한 키워드 리스트
-                List<RetrospectKeyword> classifiedKeyword = retrospectKeywordRepository.findListByRetroAndClassify(t.getRetrospectId(), keyWordClass.get(i));
-                ClassifyDto classifyDto = new ClassifyDto();
-                //t차 회고의 i 번째 분류 과정 시작 가장 첫 시작은 첫번째 회고의 첫번째 분류
-                classifyDto = ClassifyDto.makeClassifyDto(classifiedKeyword);
-                classifyDtos.add(classifyDto);
-            }
-            for(int j = 0; j < (5-writeRetrospect.size()); j++){
-                ClassifyDto classifyDto = new ClassifyDto();
-                classifyDtos.add(classifyDto);
-            }
-            // i 번째 분류 과정 완
-            respGetClassifiedKeywordDto = RespGetClassifiedKeywordDto.makeRespGetExistRetrospectKeyword(classifyDtos, keyWordClass.get(i));
-            respGetClassifiedKeywordDtos.add(respGetClassifiedKeywordDto);
-        }
+        List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = keyWordClass.stream()
+                .map(classify -> {
+                    List<ClassifyDto> classifyDtos = writeRetrospect.stream()
+                            .map(t -> {
+                                List<RetrospectKeyword> classifiedKeyword = retrospectKeywordRepository.findListByRetroAndClassify(t.getRetrospectId(), classify);
+                                return ClassifyDto.makeClassifyDto(classifiedKeyword);
+                            })
+                            .collect(Collectors.toList());
+                    for (int j = writeRetrospect.size(); j < 5; j++) {
+                        classifyDtos.add(new ClassifyDto());
+                    }
+                    return RespGetClassifiedKeywordDto.makeRespGetExistRetrospectKeyword(classifyDtos, classify);
+                })
+                .collect(Collectors.toList());
         return respGetClassifiedKeywordDtos;
     }
 

@@ -84,11 +84,13 @@ public class RetrospectService {
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         //조회할 회고 찾기
-        Retrospect selectRetrospect = getRetrospect(member.getMemberId(), reqGetRetroDto.getSelectDate(), reqGetRetroDto.getWeek());
+        Retrospect selectRetrospect = retrospectRepository.getRetrospect(member.getMemberId(), reqGetRetroDto.getFromDate(),
+                reqGetRetroDto.getToDate(), reqGetRetroDto.getWeek());
 
         // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
         return RespGetRetroDto.createRespGetRetroDto(selectRetrospect);
     }
+
     @Counted("retrospect.api.count")
     public void editRetrospect(String socialId, ReqEditRetroDto reqEditRetroDto) {
         // socialId 로 유저 조회
@@ -276,13 +278,11 @@ public class RetrospectService {
         //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능) 1. 요청 들어온 요일이 유저 회고요일과 같은지 체크
         checkWriteTime(member, currentDate);
         //회고 존재하는지 체크
-        checkRetrospectNotExist(member.getMemberId(), currentDate, week);
+//        checkRetrospectNotExist(member.getMemberId(), currentDate, week);
     }
-    private void checkRetrospectNotExist(Long memberId, LocalDateTime currentDate, Integer week) {
-        // 선택한 yyyy-MM 에 작성한 회고리스트 조회
-        List<Retrospect> getRetrospects = getExistRetrospect(memberId, currentDate);
+    private void checkRetrospectNotExist(List<Retrospect> retrospects, Integer week) {
         // 선택한 yyyy-MM 에 작성한 회고 중, 수정하고자 하는 회고가 존재하지 않을 경우
-        if(getRetrospects.size() < week) throw RetrospectNotFoundException.EXCEPTION;
+        if(retrospects.size() < week) throw RetrospectNotFoundException.EXCEPTION;
     }
     //회고 존재 여부 API 사용
     public boolean checkRetrospect(String socialId) {

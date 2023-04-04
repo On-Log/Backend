@@ -6,6 +6,7 @@ import com.nanal.backend.domain.diary.exception.RetrospectAlreadyWrittenExceptio
 import com.nanal.backend.domain.retrospect.entity.QRetrospect;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import com.nanal.backend.domain.retrospect.exception.RetrospectAllDoneException;
+import com.nanal.backend.domain.retrospect.exception.RetrospectNotFoundException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +56,20 @@ public class RetrospectCustomRepositoryImpl implements RetrospectCustomRepositor
         if(retrospects.size() >= 5) throw RetrospectAllDoneException.EXCEPTION;
     }
 
+    @Override
+    public void checkRetrospectNotExist(Long memberId, LocalDateTime fromDate, LocalDateTime toDate, Integer week) {
+        List<Retrospect> retrospects = findRetrospectListByMemberAndWriteDate(memberId, fromDate, toDate);
+
+        if(retrospects.size() < week) throw RetrospectNotFoundException.EXCEPTION;
+    }
+
+    @Override
+    public Retrospect getRetrospect(Long memberId, LocalDateTime fromDate, LocalDateTime toDate, Integer week) {
+        List<Retrospect> retrospects = findRetrospectListByMemberAndWriteDate(memberId, fromDate, toDate);
+
+        if(retrospects.size() <= week) throw RetrospectNotFoundException.EXCEPTION;
+        else return retrospects.get(week);
+    }
 
     @Override
     public List<String> getRetrospectGoal(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {

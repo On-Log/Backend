@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,23 +26,19 @@ public class RespGetRetroDto {
 
     private List<RetrospectKeywordDto> keywords;
 
-    public static RespGetRetroDto makeRespGetRetroDto(Retrospect selectRetrospect) {
-        List<RetrospectKeywordDto> keywords = new ArrayList<>();
-        for (RetrospectKeyword retrospectKeyword : selectRetrospect.getRetrospectKeywords()) {
-            RetrospectKeywordDto retrospectKeywordDto = RetrospectKeywordDto.makeRetrospectKeywordDto(retrospectKeyword);
-            keywords.add(retrospectKeywordDto);
-        }
+    public static RespGetRetroDto createRespGetRetroDto(Retrospect selectRetrospect) {
+        List<RetrospectKeywordDto> retrospectKeywordList = selectRetrospect.getRetrospectKeywords().stream()
+                .map(retrospectKeyword -> new RetrospectKeywordDto(retrospectKeyword))
+                .collect(Collectors.toList());
 
-        List<RetrospectContentDto> contents = new ArrayList<>();
-        for (RetrospectContent retrospectContent : selectRetrospect.getRetrospectContents()) {
-            RetrospectContentDto retrospectContentDto = RetrospectContentDto.makeRetrospectContentDto(retrospectContent);
-            contents.add(retrospectContentDto);
-        }
+        List<RetrospectContentDto> retrospectContentList = selectRetrospect.getRetrospectContents().stream()
+                .map(retrospectContent -> new RetrospectContentDto(retrospectContent))
+                .collect(Collectors.toList());
 
         RespGetRetroDto respGetRetroDto = RespGetRetroDto.builder()
                 .writeDate(selectRetrospect.getWriteDate())
-                .contents(contents)
-                .keywords(keywords)
+                .contents(retrospectContentList)
+                .keywords(retrospectKeywordList)
                 .build();
         return respGetRetroDto;
     }

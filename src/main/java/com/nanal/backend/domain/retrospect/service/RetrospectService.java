@@ -86,8 +86,7 @@ public class RetrospectService {
         Retrospect selectRetrospect = getRetrospect(member.getMemberId(), reqGetRetroDto.getSelectDate(), reqGetRetroDto.getWeek());
 
         // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
-        RespGetRetroDto respGetRetroDto = RespGetRetroDto.makeRespGetRetroDto(selectRetrospect);
-        return respGetRetroDto;
+        return RespGetRetroDto.createRespGetRetroDto(selectRetrospect);
     }
 
     @Counted("retrospect.api.count")

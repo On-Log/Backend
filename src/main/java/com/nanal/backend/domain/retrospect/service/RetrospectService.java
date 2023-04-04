@@ -227,7 +227,6 @@ public class RetrospectService {
             betweenDate = 7;
         return betweenDate;
     }
-
     //회고 작성 예외처리 메서드 묶음
     private void checkRetrospectWritable(Member member, LocalDateTime currentDate) {
         //작성한 회고가 5개 넘어가는지 여부
@@ -237,10 +236,6 @@ public class RetrospectService {
         checkWriteTime(member, currentDate);
         // 해당 날짜에 작성한 회고 존재하는지 체크
         retrospectRepository.checkRetrospectAlreadyExist(member.getMemberId(), currentDate);
-    }
-    private void checkRetrospectCount(Member member, LocalDateTime dateTime) {
-        if (countRetro(member, dateTime) == false)
-            throw RetrospectAllDoneException.EXCEPTION;
     }
     //회고 작성 예외처리
     private void checkWriteTime(Member member, LocalDateTime dateTime) {
@@ -268,10 +263,6 @@ public class RetrospectService {
             t.changeEditStatus(true);
         }
     }
-    private void checkRetrospectNotExist(List<Retrospect> retrospects, Integer week) {
-        // 선택한 yyyy-MM 에 작성한 회고 중, 수정하고자 하는 회고가 존재하지 않을 경우
-        if(retrospects.size() < week) throw RetrospectNotFoundException.EXCEPTION;
-    }
     //회고 존재 여부 API 사용
     public boolean checkRetrospect(String socialId) {
         //서버 현재 시간
@@ -290,15 +281,6 @@ public class RetrospectService {
         // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
         Retrospect retrospect = getRetrospects.get(week);
         return retrospect;
-    }
-    //회고 저장시 예외처리
-    private void checkRetrospectAlreadyExist( Member member, LocalDateTime currentDate) {
-        // 질의할 sql 의 Like 절에 해당하게끔 변환
-        String yearMonthDay = currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
-        // 선택한 yyyy-MM-dd 에 작성한 회고 조회
-        List<Retrospect> existRetrospect = retrospectRepository.findListByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
-
-        if(existRetrospect.size() != 0) throw RetrospectAlreadyExistException.EXCEPTION;
     }
     //회고 메인탭 회고 체크 편의 메서드
     private boolean checkExistRetro(Member member, LocalDateTime currentDate) {
@@ -328,18 +310,6 @@ public class RetrospectService {
         );
 
         return diaries;
-    }
-    //회고 개수 count
-    private boolean countRetro(Member member, LocalDateTime dateTime) {
-        int count = 0;
-        List<Retrospect> getRetrospects = getExistRetrospect(member.getMemberId(), dateTime);
-        for (Retrospect t : getRetrospects) {
-            count++;
-        }
-        if (count >= 5)
-            return false;
-        else
-            return true;
     }
     //유저가 작성한 회고 리스트 반환 메서드
     private List<String> getContents(Long memberId) {

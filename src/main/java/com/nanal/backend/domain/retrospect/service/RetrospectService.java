@@ -63,20 +63,17 @@ public class RetrospectService {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
-        LocalDateTime currentTime = reqSaveRetroDto.getCurrentDate();
-        LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
-
         //회고 작성 가능성 검증
         checkRetrospectWritable(member, reqSaveRetroDto.getCurrentDate());
 
         // 회고 Entity 생성
-        Retrospect retrospect = createRetrospect(member, reqSaveRetroDto.getGoal(), reqSaveRetroDto.getCurrentDate(), reqSaveRetroDto.getKeywords(), reqSaveRetroDto.getContents());
+        Retrospect retrospect = Retrospect.createRetrospect(member, reqSaveRetroDto);
 
         // 회고 저장
         retrospectRepository.save(retrospect);
 
         //회고 저장 후 일주일 일기 리스트 editstatus 변경
-        changeDiaryEditStatus(member, prevRetroDate, currentTime);
+        changeDiaryEditStatus(member, reqSaveRetroDto);
     }
 
     @Counted("retrospect.api.count")
@@ -275,7 +272,9 @@ public class RetrospectService {
             throw RetrospectTimeDoneException.EXCEPTION;
     }
 
-    private void changeDiaryEditStatus (Member member, LocalDateTime prevRetroDate, LocalDateTime currentTime) {
+    private void changeDiaryEditStatus (Member member, ReqSaveRetroDto reqSaveRetroDto) {
+        LocalDateTime currentTime = reqSaveRetroDto.getCurrentDate();
+        LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
         List<Diary> diaries = diaryRepository.findDiaryListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate(),true);
         for(Diary t : diaries) {
             t.changeEditStatus(false);
@@ -287,28 +286,6 @@ public class RetrospectService {
         for(Diary t : diaries) {
             t.changeEditStatus(true);
         }
-    }
-
-
-    private Retrospect createRetrospect(Member member, String goal, LocalDateTime date, List<RetrospectKeywordDto> keywordDtos, List<RetrospectContentDto> contentDtos) {
-        // Retrospect 생성에 필요한 keyword, content 리스트 생성
-        List<RetrospectKeyword> keywords = new ArrayList<>();
-        List<RetrospectContent> contents = new ArrayList<>();
-
-        for (RetrospectKeywordDto retrospectKeywordDto : keywordDtos) {
-            RetrospectKeyword retrospectKeyword = RetrospectKeyword.makeRetrospectKeyword(retrospectKeywordDto.getKeyword(), retrospectKeywordDto.getClassify());
-            keywords.add(retrospectKeyword);
-        }
-
-        for (RetrospectContentDto retrospectContentDto : contentDtos) {
-            RetrospectContent retrospectContent = RetrospectContent.makeRetrospectContent(retrospectContentDto.getQuestion(), retrospectContentDto.getAnswer());
-            contents.add(retrospectContent);
-        }
-
-        // keyword 리스트와 content리스트 이용하여 Retrospect 생성
-        Retrospect retrospect = Retrospect.makeRetrospect(member, keywords,contents, goal, date);
-
-        return retrospect;
     }
 
     private void checkRetrospectEditable(Member member, LocalDateTime currentDate, Integer week) {

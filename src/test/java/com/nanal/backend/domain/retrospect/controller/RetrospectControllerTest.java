@@ -41,8 +41,8 @@ public class RetrospectControllerTest extends CommonControllerTest {
     @Test
     public void 회고_탭() throws Exception {
         //given
-        String currentDate = "2023-01-22T00:00:00";
-        String selectDate = "2023-01-13T00:00:00";
+        String fromDate = "2023-04-01T00:00:00";
+        String toDate = "2023-04-30T00:00:00";
         List<ClassifyKeywordDto> firstweek1= new ArrayList<>(Arrays.asList(
                 new ClassifyKeywordDto("앱출시")
         ));
@@ -96,7 +96,8 @@ public class RetrospectControllerTest extends CommonControllerTest {
                 get("/retrospect")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("selectDate", selectDate)
+                        .param("fromDate", fromDate)
+                        .param("toDate", toDate)
         );
 
         //then
@@ -108,7 +109,8 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         headerWithName("Token").description("접근 토큰")
                                 ),
                                 requestParameters(
-                                        parameterWithName("selectDate").description("선택 날짜")
+                                        parameterWithName("fromDate").description("처음 날짜"),
+                                        parameterWithName("toDate").description("마지막 날짜")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),

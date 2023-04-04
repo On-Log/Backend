@@ -77,7 +77,6 @@ public class RetrospectService {
         //회고 저장 후 일주일 일기 리스트 editstatus 변경
         changeDiaryEditStatus(member, reqSaveRetroDto);
     }
-
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespGetRetroDto getRetro(String socialId, ReqGetRetroDto reqGetRetroDto) {
@@ -90,7 +89,6 @@ public class RetrospectService {
         // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
         return RespGetRetroDto.createRespGetRetroDto(selectRetrospect);
     }
-
     @Counted("retrospect.api.count")
     public void editRetrospect(String socialId, ReqEditRetroDto reqEditRetroDto) {
         // socialId 로 유저 조회
@@ -136,7 +134,6 @@ public class RetrospectService {
 
         return RespGetKeywordAndEmotionDto.createRespGetKeywordAndEmotionDto(isInTime, currentDate, diaries, countEmotions);
     }
-
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespGetQuestionAndHelpDto getQuestionAndHelp(ReqGetGoalDto reqGetGoalDto) {
@@ -201,22 +198,20 @@ public class RetrospectService {
     //===편의 메서드===//
     private RespGetInfoDto getRespGetInfoDto (ReqGetInfoDto reqGetInfoDto, Member member) {
         LocalDateTime currentDate = LocalDateTime.now();
-        LocalDateTime selectDate = reqGetInfoDto.getSelectDate();
 
         // 선택한 월에 있는 회고 기록 ( 어떤 회고 목적을 선택했는가 )
-        List<Retrospect> getRetrospects = getExistRetrospect(member.getMemberId(), selectDate);
-        List<String> existRetrospect = getgoal(getRetrospects);
+        List<String> existRetrospect = retrospectRepository.getRetrospectGoal(member.getMemberId(), reqGetInfoDto.getFromDate(), reqGetInfoDto.getToDate());
+
 
         //회고 개수가 5개인지 5개 아니면 true, 이상이면 false
-        boolean isRetroNumberNotFive = countRetro(member, reqGetInfoDto.getSelectDate());
-
+        boolean isRetroNumberNotFive = retrospectRepository.checkRetroNotOverFive(member.getMemberId(), reqGetInfoDto.getFromDate(), reqGetInfoDto.getToDate());
         // 회고 요일까지 남은 날짜
         LocalDateTime postRetroDate = DiaryWritableWeek.getRetroDate(member.getRetrospectDay(), currentDate);
         Period period = Period.between(currentDate.toLocalDate(), postRetroDate.toLocalDate());
         int betweenDate = getbetweenDate(member, currentDate, period);
 
         // 회고 주제별로 분류 후 주차별로 분류
-        List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = getKeyword(member, selectDate);
+        List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = getKeyword(member, reqGetInfoDto.getFromDate(), reqGetInfoDto.getToDate());
 
         return RespGetInfoDto.builder()
                 .nickname(member.getNickname())
@@ -226,15 +221,6 @@ public class RetrospectService {
                 .keywordList(respGetClassifiedKeywordDtos)
                 .build();
     }
-    //회고 목적 리스트 반환
-    private List<String> getgoal(List<Retrospect> retrospects) {
-        List<String> existRetrospect = new ArrayList<>();
-        for (Retrospect t : retrospects) {
-            existRetrospect.add(t.getGoal());
-        }
-        return  existRetrospect;
-    }
-
     //다음 회고까지 남은 날 반환
     private Integer getbetweenDate(Member member, LocalDateTime currentDate, Period period) {
         int betweenDate = period.getDays();
@@ -323,8 +309,6 @@ public class RetrospectService {
         Retrospect retrospect = getRetrospects.get(week);
         return retrospect;
     }
-
-
     //회고 저장시 예외처리
     private void checkRetrospectAlreadyExist( Member member, LocalDateTime currentDate) {
         // 질의할 sql 의 Like 절에 해당하게끔 변환
@@ -334,8 +318,6 @@ public class RetrospectService {
 
         if(existRetrospect.size() != 0) throw RetrospectAlreadyExistException.EXCEPTION;
     }
-
-
     //회고 메인탭 회고 체크 편의 메서드
     private boolean checkExistRetro(Member member, LocalDateTime currentDate) {
         String yearMonthDay = currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
@@ -347,7 +329,6 @@ public class RetrospectService {
         else
             return false;
     }
-
     //자정 전에 호출 여부 체크 메서드
     private boolean checkIsInTime(LocalDateTime prevRetroDate, LocalDateTime currentDate) {
         if(abs(ChronoUnit.DAYS.between(prevRetroDate.toLocalDate(), currentDate)) != 0)
@@ -355,7 +336,6 @@ public class RetrospectService {
         else
             return true;
     }
-
     //일주일 일기 데이터 가져오기
     private List<Diary> getWeekDiaries (Long memberId, LocalDateTime prevRetroDate, LocalDateTime currentDate) {
         List<Diary> diaries = diaryRepository.findDiaryListByMemberAndBetweenWriteDate(
@@ -367,8 +347,6 @@ public class RetrospectService {
 
         return diaries;
     }
-
-
     //회고 개수 count
     private boolean countRetro(Member member, LocalDateTime dateTime) {
         int count = 0;
@@ -434,7 +412,6 @@ public class RetrospectService {
         else
             return false;
     }
-
     //회고일에 작성한 일기 있는지 파악 메서드
     private boolean checkWrittenDiary (Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
         Optional<Diary> findDiary = diaryRepository.findDiaryByMemberAndWriteDate(memberId, startDate, endDate);
@@ -454,21 +431,14 @@ public class RetrospectService {
 
         return retrospects;
     }
-
     private Integer countDiary(Long memberId, LocalDateTime prevRetroDate, LocalDateTime currentDate) {
         List<Diary> diaries = getWeekDiaries(memberId, prevRetroDate, currentDate);
         return diaries.size();
     }
-
-
-    private List<RespGetClassifiedKeywordDto> getKeyword(Member member, LocalDateTime selectTime) {
-        // 질의할 sql 의 Like 절에 해당하게끔 변환
-        String yearMonth = selectTime.format(DateTimeFormatter.ofPattern("yyyy-MM")) + "%";
-
-        // 선택한 yyyy-MM 에 작성한 회고 리스트 조회
-        List<Retrospect> writeRetrospect = retrospectRepository.findListByMemberAndWriteDate(
+    private List<RespGetClassifiedKeywordDto> getKeyword(Member member, LocalDateTime fromDate, LocalDateTime toDate) {
+        List<Retrospect> writeRetrospect = retrospectRepository.findRetrospectListByMemberAndWriteDate(
                 member.getMemberId(),
-                yearMonth);
+                fromDate, toDate);
 
         //회고의 분류 리스트 생성
         List<String> keyWordClass = new ArrayList<>();
@@ -528,7 +498,6 @@ public class RetrospectService {
             return 4;
         else throw GoalNotFoundException.EXCEPTION;
     }
-
     private void delete(Member member, Retrospect retrospect) {
         //서버 현재 시간
         LocalDateTime currentTime = LocalDateTime.now();

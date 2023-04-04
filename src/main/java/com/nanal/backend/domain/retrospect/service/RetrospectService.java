@@ -99,16 +99,13 @@ public class RetrospectService {
         LocalDateTime currentDate = LocalDateTime.now();
 
         //회고 수정 가능성 검증
-        checkRetrospectEditable(member, currentDate, reqEditRetroDto.getWeek());
+        checkWriteTime(member, currentDate);
 
         //조회할 회고 찾기
-        Retrospect selectRetrospect = getRetrospect(member.getMemberId(), currentDate, reqEditRetroDto.getWeek());
+        Retrospect selectRetrospect = retrospectRepository.getRetrospect(member.getMemberId(), currentDate.toLocalDate().atStartOfDay().withDayOfMonth(1),
+                currentDate.toLocalDate().atStartOfDay().withDayOfMonth(LocalDate.now().lengthOfMonth()), reqEditRetroDto.getWeek());
 
-        // 회고에서 어떤 질문에 대한 답을 수정했는지
-        List<RetrospectContent> retrospectContents = selectRetrospect.getRetrospectContents();
-
-        // 내용 수정
-        retrospectContents.get(reqEditRetroDto.getIndex()).changeAnswer(reqEditRetroDto.getAnswer());
+        selectRetrospect.changeAnswer(reqEditRetroDto);
     }
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
@@ -270,15 +267,6 @@ public class RetrospectService {
         for(Diary t : diaries) {
             t.changeEditStatus(true);
         }
-    }
-
-    private void checkRetrospectEditable(Member member, LocalDateTime currentDate, Integer week) {
-        //작성한 회고가 5개 넘어가는지 여부
-        checkRetrospectCount(member, currentDate);
-        //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능) 1. 요청 들어온 요일이 유저 회고요일과 같은지 체크
-        checkWriteTime(member, currentDate);
-        //회고 존재하는지 체크
-//        checkRetrospectNotExist(member.getMemberId(), currentDate, week);
     }
     private void checkRetrospectNotExist(List<Retrospect> retrospects, Integer week) {
         // 선택한 yyyy-MM 에 작성한 회고 중, 수정하고자 하는 회고가 존재하지 않을 경우

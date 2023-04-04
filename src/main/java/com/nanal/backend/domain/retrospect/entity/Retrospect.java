@@ -1,6 +1,7 @@
 package com.nanal.backend.domain.retrospect.entity;
 
 import com.nanal.backend.domain.auth.entity.Member;
+import com.nanal.backend.domain.retrospect.dto.req.ReqEditRetroDto;
 import com.nanal.backend.domain.retrospect.dto.req.ReqSaveRetroDto;
 import com.nanal.backend.global.config.BaseTime;
 import lombok.AllArgsConstructor;
@@ -45,6 +46,9 @@ public class Retrospect extends BaseTime {
     private Member member;
 
     //==수정 메서드==//
+    public void changeAnswer(ReqEditRetroDto reqEditRetroDto) {
+        retrospectContents.get(reqEditRetroDto.getIndex()).changeAnswer(reqEditRetroDto.getAnswer());
+    }
     //==설정 메서드==//
     //==연관관계 메서드==//
     public void setMember(Member member) {

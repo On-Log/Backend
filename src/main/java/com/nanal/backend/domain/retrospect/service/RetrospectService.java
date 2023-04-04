@@ -111,6 +111,7 @@ public class RetrospectService {
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespGetKeywordAndEmotionDto getKeywordAndEmotion(String socialId){
+
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
@@ -121,14 +122,17 @@ public class RetrospectService {
         boolean isInTime = checkIsInTime(prevRetroDate, currentDate);
 
         //일주일 일기 리스트 조회
-        List<Diary> diaries = getWeekDiaries(member.getMemberId(), prevRetroDate, currentDate);
+        List<Diary> diaries = diaryRepository.findDiaryListByMemberAndBetweenWriteDate(
+                member.getMemberId(),
+                prevRetroDate.toLocalDate().minusDays(6),
+                currentDate.toLocalDate(),
+                true
+        );
 
         //감정어 필터링 이후 count
         List<CountEmotion> countEmotions = getEmotionCount(diaries);
 
-        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.makeRespGetKeywordAndEmotionDto(isInTime, currentDate, diaries, countEmotions);
-
-        return respGetKeywordAndEmotionDto;
+        return RespGetKeywordAndEmotionDto.createRespGetKeywordAndEmotionDto(isInTime, currentDate, diaries, countEmotions);
     }
 
     @Counted("retrospect.api.count")
@@ -138,10 +142,9 @@ public class RetrospectService {
         // 회고 질문 + 도움말 조회
         List<Question> retrospectQuestions = questionRepository.findListByGoal(goalIndex);
 
-        RespGetQuestionAndHelpDto respGetQuestionAndHelpDto = RespGetQuestionAndHelpDto.makeRespGetQuestionAndHelpDto(retrospectQuestions);
-
-        return respGetQuestionAndHelpDto;
+        return RespGetQuestionAndHelpDto.createRespGetQuestionAndHelpDto(retrospectQuestions);
     }
+
 
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
@@ -516,37 +519,31 @@ public class RetrospectService {
                 .collect(Collectors.toList());
         return respGetClassifiedKeywordDtos;
     }
-
     private List<CountEmotion> getEmotionCount(List<Diary> diaries) {
-        List<CountEmotion> countEmotions = new ArrayList<>();
-        List<String> emotions = new ArrayList<>();
-        for( Diary d : diaries ) {
-            d.getKeywords();
-            for(Keyword k : d.getKeywords()) {
-                k.getKeywordEmotions();
-                for(KeywordEmotion ke : k.getKeywordEmotions()) {
-                    emotions.add(ke.getEmotion().getEmotion());
-                }
-            }
-        }
+        List<String> emotions = diaries.stream()
+                .flatMap(d -> d.getKeywords().stream())
+                .flatMap(k -> k.getKeywordEmotions().stream())
+                .map(ke -> ke.getEmotion().getEmotion())
+                .collect(Collectors.toList());
+
         List<Emotion> findEmotions = emotionRepository.findAll();
-        for( Emotion e : findEmotions ) {
-            int frequency = 0;
-            int count = Collections.frequency(emotions, e.getEmotion());
-            if (count == 0)
-                frequency = 0;
-            else if (count >= 1 && count <= 5)
-                frequency = 1;
-            else if (count >= 6 && count <= 10)
-                frequency = 2;
-            else
-                frequency = 3;
-            CountEmotion countEmotion = CountEmotion.makeCountEmotion(e.getEmotion(), frequency);
-            countEmotions.add(countEmotion);
-        }
+        List<CountEmotion> countEmotions = findEmotions.stream()
+                .map(e -> {
+                    int count = Collections.frequency(emotions, e.getEmotion());
+                    int frequency;
+                    if (count == 0)
+                        frequency = 0;
+                    else if (count >= 1 && count <= 5)
+                        frequency = 1;
+                    else if (count >= 6 && count <= 10)
+                        frequency = 2;
+                    else
+                        frequency = 3;
+                    return CountEmotion.makeCountEmotion(e.getEmotion(), frequency);
+                })
+                .collect(Collectors.toList());
         return countEmotions;
     }
-
     private long getGoalIndex(String goal) {
         if (goal.equals("자아탐색"))
             return 1;

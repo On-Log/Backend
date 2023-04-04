@@ -5,10 +5,14 @@ import com.nanal.backend.domain.diary.dto.resp.RetrospectInfoDto;
 import com.nanal.backend.domain.diary.exception.RetrospectAlreadyWrittenException;
 import com.nanal.backend.domain.retrospect.entity.QRetrospect;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
+import com.nanal.backend.domain.retrospect.exception.RetrospectAllDoneException;
+import com.nanal.backend.domain.retrospect.exception.RetrospectNotFoundException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -38,6 +42,36 @@ public class RetrospectCustomRepositoryImpl implements RetrospectCustomRepositor
     }
 
     @Override
+    public Boolean checkRetroNotOverFive(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {
+        List<Retrospect> retrospects = findRetrospectListByMemberAndWriteDate(memberId, fromDate, toDate);
+
+        if(retrospects.size() >= 5) return false;
+        else return true;
+    }
+
+    @Override
+    public void checkRetroCount(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {
+        List<Retrospect> retrospects = findRetrospectListByMemberAndWriteDate(memberId, fromDate, toDate);
+
+        if(retrospects.size() >= 5) throw RetrospectAllDoneException.EXCEPTION;
+    }
+    @Override
+    public Retrospect getRetrospect(Long memberId, LocalDateTime fromDate, LocalDateTime toDate, Integer week) {
+        List<Retrospect> retrospects = findRetrospectListByMemberAndWriteDate(memberId, fromDate, toDate);
+
+        if(retrospects.size() <= week) throw RetrospectNotFoundException.EXCEPTION;
+        else return retrospects.get(week);
+    }
+
+    @Override
+    public List<String> getRetrospectGoal(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {
+        List<Retrospect> goals = findRetrospectListByMemberAndWriteDate(memberId, fromDate, toDate);
+        return goals.stream()
+                .map(Retrospect::getGoal)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<RetrospectInfoDto> findRetrospectList(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {
         List<Retrospect> retrospectList = findRetrospectListByMemberAndWriteDate(memberId, fromDate, toDate);
 
@@ -61,6 +95,7 @@ public class RetrospectCustomRepositoryImpl implements RetrospectCustomRepositor
                 .selectFrom(retrospect)
                 .where(isEqualMember(memberId)
                         .and(betweenDate(fromDate, toDate)))
+                .orderBy(retrospect.writeDate.asc())
                 .fetch();
     }
 

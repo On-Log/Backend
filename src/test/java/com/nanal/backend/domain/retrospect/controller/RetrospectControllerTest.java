@@ -41,8 +41,8 @@ public class RetrospectControllerTest extends CommonControllerTest {
     @Test
     public void 회고_탭() throws Exception {
         //given
-        String currentDate = "2023-01-22T00:00:00";
-        String selectDate = "2023-01-13T00:00:00";
+        String fromDate = "2023-04-01T00:00:00";
+        String toDate = "2023-04-30T00:00:00";
         List<ClassifyKeywordDto> firstweek1= new ArrayList<>(Arrays.asList(
                 new ClassifyKeywordDto("앱출시")
         ));
@@ -96,7 +96,8 @@ public class RetrospectControllerTest extends CommonControllerTest {
                 get("/retrospect")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("selectDate", selectDate)
+                        .param("fromDate", fromDate)
+                        .param("toDate", toDate)
         );
 
         //then
@@ -108,7 +109,8 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         headerWithName("Token").description("접근 토큰")
                                 ),
                                 requestParameters(
-                                        parameterWithName("selectDate").description("선택 날짜")
+                                        parameterWithName("fromDate").description("처음 날짜"),
+                                        parameterWithName("toDate").description("마지막 날짜")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),
@@ -173,7 +175,8 @@ public class RetrospectControllerTest extends CommonControllerTest {
     @Test
     public void 회고_조회() throws Exception {
         //given
-        String selectDate = "2023-01-24T00:00:00";
+        String fromDate = "2023-04-01T00:00:00";
+        String toDate = "2023-01-30T00:00:00";
         int week = 0;
         List<RetrospectContentDto> retrospectContentDtos = new ArrayList<>(Arrays.asList(new RetrospectContentDto("이번주 나의 모습은 어땠나요?", "답변1"),
                 new RetrospectContentDto("다른 내 모습도 들려줄래요? 이번주에 찾은 의외의 내 모습이 있다면요?", "답변2"), new RetrospectContentDto("다음주에도 유지하고 싶은 나의 모습이 있을까요? 혹은 새롭게 찾고 싶은 나의 모습이 있다면 무엇인가요?", "답변3")));
@@ -188,7 +191,8 @@ public class RetrospectControllerTest extends CommonControllerTest {
                 get("/retrospect/view")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("selectDate", selectDate)
+                        .param("fromDate", fromDate)
+                        .param("toDate", toDate)
                         .param("week", String.valueOf(week))
         );
 
@@ -201,7 +205,8 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         headerWithName("Token").description("접근 토큰")
                                 ),
                                 requestParameters(
-                                        parameterWithName("selectDate").description("선택 날짜"),
+                                        parameterWithName("fromDate").description("처음 날짜"),
+                                        parameterWithName("toDate").description("마지막 날짜"),
                                         parameterWithName("week").description("회고 주차 (index로 되어있어서 1주 차는 0, 2주 차는 1 이런 식으로 보내야 함)")
                                 ),
                                 responseFields(
@@ -549,10 +554,11 @@ public class RetrospectControllerTest extends CommonControllerTest {
     @Test
     public void 회고_삭제() throws Exception {
         //given
-        String selectDate = "2023-01-15T00:00:00";
+        String fromDate = "2023-04-01T00:00:00";
+        String toDate = "2023-04-30T00:00:00";
         int week = 0;
 
-        ReqDeleteRetroDto input = new ReqDeleteRetroDto(LocalDateTime.parse(selectDate), week);
+        ReqDeleteRetroDto input = new ReqDeleteRetroDto(LocalDateTime.parse(fromDate), LocalDateTime.parse(toDate), week);
         String body = objectMapper.writeValueAsString(input);
 
         willDoNothing().given(retrospectService).deleteRetro(any(), any());
@@ -574,7 +580,8 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         headerWithName("Token").description("접근 토큰")
                                 ),
                                 requestFields(
-                                        fieldWithPath("selectDate").description("선택 날짜"),
+                                        fieldWithPath("fromDate").description("처음 날짜"),
+                                        fieldWithPath("toDate").description("마지막 날짜"),
                                         fieldWithPath("week").description("회고 주차 (index로 되어있어서 1주 차는 0, 2주 차는 1 이런 식으로 보내야 함)")
                                 ),
                                 responseFields(

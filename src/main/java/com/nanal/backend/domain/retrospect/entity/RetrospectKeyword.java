@@ -1,6 +1,7 @@
 package com.nanal.backend.domain.retrospect.entity;
 
 
+import com.nanal.backend.domain.retrospect.dto.resp.RetrospectKeywordDto;
 import com.nanal.backend.global.config.BaseTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,10 +46,13 @@ public class RetrospectKeyword extends BaseTime {
     //==연관관계 메서드==//
 
     //==생성 메서드==//
-    public static RetrospectKeyword makeRetrospectKeyword(String keyword, String classify) {
-        RetrospectKeyword retrospectKeyword = new RetrospectKeyword();
-        retrospectKeyword.changeKeyWord(keyword);
-        retrospectKeyword.changeClassify(classify);
+    public static RetrospectKeyword makeRetrospectKeyword(Retrospect retrospect, RetrospectKeywordDto retrospectKeywordDto) {
+        RetrospectKeyword retrospectKeyword = RetrospectKeyword.builder()
+                .retrospect(retrospect)
+                .keyword(retrospectKeywordDto.getKeyword())
+                .classify(retrospectKeywordDto.getClassify())
+                .build();
+
         return retrospectKeyword;
     }
 }

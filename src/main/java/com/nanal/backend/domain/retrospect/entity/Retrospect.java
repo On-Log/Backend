@@ -1,6 +1,7 @@
 package com.nanal.backend.domain.retrospect.entity;
 
 import com.nanal.backend.domain.auth.entity.Member;
+import com.nanal.backend.domain.retrospect.dto.req.ReqSaveRetroDto;
 import com.nanal.backend.global.config.BaseTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +13,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
@@ -32,59 +34,45 @@ public class Retrospect extends BaseTime {
 
     @Column(length = 30, nullable = false)
     private String goal;
-    @OneToMany(mappedBy = "retrospect", cascade = CascadeType.ALL)
-    private List<RetrospectKeyword> retrospectKeywords = new ArrayList<>();
+    @OneToMany(mappedBy = "retrospect", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<RetrospectKeyword> retrospectKeywords = new ArrayList<>();
 
-    @OneToMany(mappedBy = "retrospect", cascade = CascadeType.ALL)
-    private List<RetrospectContent> retrospectContents = new ArrayList<>();
+    @OneToMany(mappedBy = "retrospect", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<RetrospectContent> retrospectContents = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
     //==수정 메서드==//
-    public void changeEditStatus(Boolean editStatus) { this.editStatus = editStatus; }
-
     //==설정 메서드==//
-    public void changeGoalAndWriteDateAndEditStatus(String goal, LocalDateTime writeDate, Boolean editStatus) {
-        this.goal = goal;
-        this.writeDate = writeDate;
-        this.editStatus = editStatus;
-    }
     //==연관관계 메서드==//
     public void setMember(Member member) {
         this.member = member;
         member.getRetrospects().add(this);
     }
 
-    public void addKeyword(RetrospectKeyword retrospectKeyword) {
-        retrospectKeywords.add(retrospectKeyword);
-        retrospectKeyword.changeRetrospect(this);
-    }
-
-    public void addContent(RetrospectContent retrospectContent) {
-        retrospectContents.add(retrospectContent);
-        retrospectContent.changeRetrospect(this);
-    }
-
     //==생성 메서드==//
-    public static Retrospect makeRetrospect(Member member, List<RetrospectKeyword> retrospectKeywords, List<RetrospectContent> retrospectContents, String goal, LocalDateTime writeDate) {
+    public static Retrospect createRetrospect(Member member, ReqSaveRetroDto reqSaveRetroDto) {
+        Retrospect retrospect = Retrospect.builder()
+                .writeDate(reqSaveRetroDto.getCurrentDate())
+                .editStatus(true)
+                .goal(reqSaveRetroDto.getGoal())
+                .build();
 
-        Retrospect retrospect = new Retrospect();
 
-        // 연관 관계 생성
+        List<RetrospectKeyword> retrospectKeywordList = reqSaveRetroDto.getKeywords().stream()
+                .map(retrospectKeywordDto -> RetrospectKeyword.makeRetrospectKeyword(retrospect, retrospectKeywordDto))
+                .collect(Collectors.toList());
+        retrospect.getRetrospectKeywords().addAll(retrospectKeywordList);
+
+        List<RetrospectContent> retrospectContentList = reqSaveRetroDto.getContents().stream()
+                .map(retrospectContentDto -> RetrospectContent.makeRetrospectContent(retrospect, retrospectContentDto))
+                .collect(Collectors.toList());
+        retrospect.getRetrospectContents().addAll(retrospectContentList);
+
         retrospect.setMember(member);
-        for (RetrospectKeyword retrospectKeyword : retrospectKeywords) {
-            retrospect.addKeyword(retrospectKeyword);
-        }
-        for (RetrospectContent retrospectContent : retrospectContents) {
-            retrospect.addContent(retrospectContent);
-        }
-
-        // 속성 설정
-        retrospect.changeGoalAndWriteDateAndEditStatus(goal, writeDate, true);
 
         return retrospect;
     }
-
 }

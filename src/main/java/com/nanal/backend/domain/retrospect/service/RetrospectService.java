@@ -31,6 +31,8 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import static java.lang.Math.abs;
 
 @Timed("retrospect.api")
@@ -144,8 +146,6 @@ public class RetrospectService {
 
         return RespGetQuestionAndHelpDto.createRespGetQuestionAndHelpDto(retrospectQuestions);
     }
-
-
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespGetExtraQuestionAndHelpDto getExtraQuestionAndHelp(String socialId, ReqGetGoalDto reqGetGoalDto){
@@ -157,11 +157,8 @@ public class RetrospectService {
 
         List<ExtraQuestion> selected = getSelectedQuestion(goalIndex, contents);
 
-        RespGetExtraQuestionAndHelpDto respGetExtraQuestionAndHelpDto = RespGetExtraQuestionAndHelpDto.makeRespGetQuestionAndHelpDto(selected);
-
-        return respGetExtraQuestionAndHelpDto;
+        return RespGetExtraQuestionAndHelpDto.createRespGetQuestionAndHelpDto(selected);
     }
-    
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespCheckFirstRetrospect checkFirstRetrospect(String socialId) {
@@ -384,76 +381,52 @@ public class RetrospectService {
         else
             return true;
     }
-
     //유저가 작성한 회고 리스트 반환 메서드
     private List<String> getContents(Long memberId) {
         List<Retrospect> getRetrospects = retrospectRepository.findListByMember(memberId);
-        List<String> contents = new ArrayList<>();
-        for (Retrospect retrospect : getRetrospects) {
-            List<RetrospectContent> content = new ArrayList<>();
-            content = retrospect.getRetrospectContents();
-            for(RetrospectContent r : content) {
-                contents.add(r.getQuestion());
-            }
-        }
+        List<String> contents = getRetrospects.stream()
+                .flatMap(retrospect -> retrospect.getRetrospectContents().stream())
+                .map(RetrospectContent::getQuestion)
+                .collect(Collectors.toList());
         return contents;
     }
     private List<ExtraQuestion> getSelectedQuestion (Long goalIndex, List<String> contents) {
         // 회고 추가 질문 + 도움말 조회
         List<ExtraQuestion> extraRetrospectQuestions = extraQuestionRepository.findListByGoal(goalIndex);
         //작성한 질문 인덱스 담는 리스트
-        ArrayList<Integer> windex = new ArrayList<>();
-        //아직 모든 질문에 대한 답을 안했을 때
-        for (int i = 0; i < extraRetrospectQuestions.size(); i++) {
-            if (contents.contains(extraRetrospectQuestions.get(i).getContent()) == true) {
-                windex.add(i);
-            }
-            if(windex.size() == extraRetrospectQuestions.size()){
-                windex = new ArrayList<>();
-            }
-        }
+        List<Integer> windex = IntStream.range(0, extraRetrospectQuestions.size())
+                .filter(i -> contents.contains(extraRetrospectQuestions.get(i).getContent()))
+                .boxed()
+                .collect(Collectors.toList());
+
         List<ExtraQuestion> selected = new ArrayList<>();
-        //중복없는 랜덤 숫자
-        int a[] = new int[2];
         Random r = new Random();
 
-        //데이터 개수 홀수일 때
+        int[] a;
         if(extraRetrospectQuestions.size() % 2 != 0 && windex.size() == extraRetrospectQuestions.size() - 1){
-            int lastIndex = 0;
-            for(int i = 0; i < extraRetrospectQuestions.size(); i++){
-                if(windex.contains(i) == false){
-                    lastIndex = i;
-                    break;
+            int lastIndex = IntStream.range(0, extraRetrospectQuestions.size())
+                    .filter(i -> !windex.contains(i))
+                    .findFirst()
+                    .orElse(-1);
+            a = new int[]{lastIndex, r.nextInt(extraRetrospectQuestions.size())};
+        } else {
+            Set<Integer> indexSet = new HashSet<>();
+            while (indexSet.size() < 2) {
+                int index = r.nextInt(extraRetrospectQuestions.size());
+                if (!windex.contains(index)) {
+                    indexSet.add(index);
                 }
             }
-            a[0] = lastIndex;
-            while(true){
-                a[1] = r.nextInt(extraRetrospectQuestions.size());
-                if(a[0] != a[1])
-                    break;
-            }
-        }
-        else {
-            for (int i = 0; i < 2; i++) {
-                a[i] = r.nextInt(extraRetrospectQuestions.size());
-                if (windex.contains(a[i]) == true) {
-                    i--;
-                    continue;
-                }
-                for (int j = 0; j < i; j++) {
-                    if (a[i] == a[j])
-                        i--;
-                }
-            }
+            a = indexSet.stream()
+                    .mapToInt(Integer::intValue)
+                    .toArray();
         }
 
-        for (int i = 0; i < 2; i++){
-            selected.add(extraRetrospectQuestions.get(a[i]));
+        for (int i : a){
+            selected.add(extraRetrospectQuestions.get(i));
         }
-
         return selected;
     }
-
     // 첫번째 회고인지 파악 메서드
     private boolean checkFirst (LocalDateTime postRetroDate, LocalDateTime currentDate) {
         if(abs(ChronoUnit.DAYS.between(postRetroDate.toLocalDate(),  currentDate)) == 0)

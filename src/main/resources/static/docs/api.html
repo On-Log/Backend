@@ -4502,11 +4502,12 @@ Content-Length: 198
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /retrospect HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Token: ACCESS_TOKEN
-Content-Length: 59
+Content-Length: 94
 Host: localhost:8080
 
 {
-  "selectDate" : "2023-01-15T00:00:00",
+  "fromDate" : "2023-04-01T00:00:00",
+  "toDate" : "2023-04-30T00:00:00",
   "week" : 0
 }</code></pre>
 </div>
@@ -4550,9 +4551,14 @@ Host: localhost:8080
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>selectDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fromDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">선택 날짜</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">처음 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>toDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">마지막 날짜</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>week</code></p></td>

@@ -188,8 +188,7 @@ public class RetrospectService {
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         // 삭제할 회고 가져오기
-        Retrospect deleteRetro = getRetrospect(member.getMemberId(), reqDeleteRetroDto.getSelectDate(), reqDeleteRetroDto.getWeek());
-
+        Retrospect deleteRetro = retrospectRepository.getRetrospect(member.getMemberId(), reqDeleteRetroDto.getFromDate(), reqDeleteRetroDto.getToDate(), reqDeleteRetroDto.getWeek());
         // 기존 회고 삭제
         delete(member, deleteRetro);
     }

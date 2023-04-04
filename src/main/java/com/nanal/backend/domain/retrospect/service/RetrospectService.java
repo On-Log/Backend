@@ -232,18 +232,17 @@ public class RetrospectService {
     //회고 작성 예외처리 메서드 묶음
     private void checkRetrospectWritable(Member member, LocalDateTime currentDate) {
         //작성한 회고가 5개 넘어가는지 여부
-        checkRetrospectCount(member, currentDate);
+        retrospectRepository.checkRetroCount(member.getMemberId(), currentDate.toLocalDate().atStartOfDay().withDayOfMonth(1),
+                currentDate.toLocalDate().atStartOfDay().withDayOfMonth(currentDate.toLocalDate().lengthOfMonth()));
         //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능) 1. 요청 들어온 요일이 유저 회고요일과 같은지 체크
         checkWriteTime(member, currentDate);
         // 해당 날짜에 작성한 회고 존재하는지 체크
-        checkRetrospectAlreadyExist(member, currentDate);
+        retrospectRepository.checkRetrospectAlreadyExist(member.getMemberId(), currentDate);
     }
-
     private void checkRetrospectCount(Member member, LocalDateTime dateTime) {
         if (countRetro(member, dateTime) == false)
             throw RetrospectAllDoneException.EXCEPTION;
     }
-
     //회고 작성 예외처리
     private void checkWriteTime(Member member, LocalDateTime dateTime) {
         //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능) 1. 요청 들어온 요일이 유저 회고요일과 같은지 체크
@@ -256,7 +255,6 @@ public class RetrospectService {
         if(abs(ChronoUnit.DAYS.between(prevRetroDate, dateTime.toLocalDate())) != 0)
             throw RetrospectTimeDoneException.EXCEPTION;
     }
-
     private void changeDiaryEditStatus (Member member, ReqSaveRetroDto reqSaveRetroDto) {
         LocalDateTime currentTime = reqSaveRetroDto.getCurrentDate();
         LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
@@ -265,7 +263,6 @@ public class RetrospectService {
             t.changeEditStatus(false);
         }
     }
-
     private void changeDiaryEditStatusToTrue (Member member, LocalDateTime prevRetroDate, LocalDateTime currentTime) {
         List<Diary> diaries = diaryRepository.findDiaryListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate(),false);
         for(Diary t : diaries) {
@@ -281,14 +278,12 @@ public class RetrospectService {
         //회고 존재하는지 체크
         checkRetrospectNotExist(member.getMemberId(), currentDate, week);
     }
-
     private void checkRetrospectNotExist(Long memberId, LocalDateTime currentDate, Integer week) {
         // 선택한 yyyy-MM 에 작성한 회고리스트 조회
         List<Retrospect> getRetrospects = getExistRetrospect(memberId, currentDate);
         // 선택한 yyyy-MM 에 작성한 회고 중, 수정하고자 하는 회고가 존재하지 않을 경우
         if(getRetrospects.size() < week) throw RetrospectNotFoundException.EXCEPTION;
     }
-
     //회고 존재 여부 API 사용
     public boolean checkRetrospect(String socialId) {
         //서버 현재 시간
@@ -297,7 +292,6 @@ public class RetrospectService {
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
         return checkExistRetro(member, currentDate);
     }
-
     //삭제할 회고 가져오기
     private Retrospect getRetrospect(Long memberId, LocalDateTime selectDate, Integer week) {
         // 선택한 yyyy-MM 에 작성한 회고리스트 조회

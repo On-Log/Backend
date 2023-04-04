@@ -5,6 +5,7 @@ import com.nanal.backend.domain.diary.dto.resp.RetrospectInfoDto;
 import com.nanal.backend.domain.diary.exception.RetrospectAlreadyWrittenException;
 import com.nanal.backend.domain.retrospect.entity.QRetrospect;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
+import com.nanal.backend.domain.retrospect.exception.RetrospectAllDoneException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -43,9 +44,17 @@ public class RetrospectCustomRepositoryImpl implements RetrospectCustomRepositor
     public Boolean checkRetroNotOverFive(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {
         List<Retrospect> retrospects = findRetrospectListByMemberAndWriteDate(memberId, fromDate, toDate);
 
-        if(retrospects.size() > 5) return false;
+        if(retrospects.size() >= 5) return false;
         else return true;
     }
+
+    @Override
+    public void checkRetroCount(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {
+        List<Retrospect> retrospects = findRetrospectListByMemberAndWriteDate(memberId, fromDate, toDate);
+
+        if(retrospects.size() >= 5) throw RetrospectAllDoneException.EXCEPTION;
+    }
+
 
     @Override
     public List<String> getRetrospectGoal(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {

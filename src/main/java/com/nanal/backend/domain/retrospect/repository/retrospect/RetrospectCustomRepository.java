@@ -15,6 +15,8 @@ public interface RetrospectCustomRepository {
 
     Boolean checkRetroNotOverFive(Long memberId, LocalDateTime fromDate, LocalDateTime toDate);
 
+    void checkRetroCount(Long memberId, LocalDateTime fromDate, LocalDateTime toDate);
+
     List<String> getRetrospectGoal(Long memberId, LocalDateTime fromDate, LocalDateTime toDate);
 
     List<RetrospectInfoDto> findRetrospectList(Long memberId, LocalDateTime fromDate, LocalDateTime toDate);

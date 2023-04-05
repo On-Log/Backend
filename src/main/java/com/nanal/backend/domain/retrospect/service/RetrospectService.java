@@ -164,14 +164,13 @@ public class RetrospectService {
         LocalDateTime currentDate = LocalDateTime.now();
         LocalDateTime prevRetroDate = currentDate.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
         LocalDateTime postRetroDate = DiaryWritableWeek.getRetroDate(member.getRetrospectDay(), member.getPrevRetrospectDate());
-        LocalDate tempDate = currentDate.toLocalDate();
-        LocalDateTime startDate = tempDate.atStartOfDay();
-        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);
+        LocalDateTime startDate = currentDate.toLocalDate().atStartOfDay();
+        LocalDateTime endDate = currentDate.toLocalDate().atTime(LocalTime.MAX).withNano(0);
 
         //회고일 변경 후 첫 회고 판별. 첫 회고가 맞다면 true 반환, 아니면 false 반환
         boolean checkfirstRetrospect = checkFirst(postRetroDate, currentDate);
         //회고일에 작성한 일기가 있는지. 있다면 true, 없다면 false
-        boolean writtenDiary = checkWrittenDiary(member.getMemberId(), startDate, endDate);
+        boolean writtenDiary = diaryRepository.checkWrittenDiary(member.getMemberId(), startDate, endDate);
 
         //일주일 일기 리스트 count
         int diarycount = countDiary(member.getMemberId(), prevRetroDate, currentDate);
@@ -344,14 +343,6 @@ public class RetrospectService {
     // 첫번째 회고인지 파악 메서드
     private boolean checkFirst (LocalDateTime postRetroDate, LocalDateTime currentDate) {
         if(abs(ChronoUnit.DAYS.between(postRetroDate.toLocalDate(),  currentDate)) == 0)
-            return true;
-        else
-            return false;
-    }
-    //회고일에 작성한 일기 있는지 파악 메서드
-    private boolean checkWrittenDiary (Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
-        Optional<Diary> findDiary = diaryRepository.findDiaryByMemberAndWriteDate(memberId, startDate, endDate);
-        if(findDiary.isEmpty() == false)
             return true;
         else
             return false;

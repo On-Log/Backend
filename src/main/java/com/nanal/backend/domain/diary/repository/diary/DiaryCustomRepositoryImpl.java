@@ -8,6 +8,7 @@ import com.nanal.backend.domain.diary.repository.diary.DiaryCustomRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.asm.Advice;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -22,6 +23,12 @@ public class DiaryCustomRepositoryImpl implements DiaryCustomRepository {
 
     QDiary diary = QDiary.diary;
 
+    @Override
+    public boolean checkWrittenDiary(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {
+        Optional<Diary> findDiary = findDiaryByMemberAndWriteDate(memberId, fromDate, toDate);
+        if(findDiary.isEmpty() == false) return true;
+        else return false;
+    }
     @Override
     public List<LocalDateTime> findExistDiaryDateList(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {
         // 선택한 날에 작성한 일기리스트 조회

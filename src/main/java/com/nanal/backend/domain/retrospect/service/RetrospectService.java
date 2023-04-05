@@ -196,18 +196,14 @@ public class RetrospectService {
     //===편의 메서드===//
     private RespGetInfoDto getRespGetInfoDto (ReqGetInfoDto reqGetInfoDto, Member member) {
         LocalDateTime currentDate = LocalDateTime.now();
-
         // 선택한 월에 있는 회고 기록 ( 어떤 회고 목적을 선택했는가 )
         List<String> existRetrospect = retrospectRepository.getRetrospectGoal(member.getMemberId(), reqGetInfoDto.getFromDate(), reqGetInfoDto.getToDate());
-
-
         //회고 개수가 5개인지 5개 아니면 true, 이상이면 false
         boolean isRetroNumberNotFive = retrospectRepository.checkRetroNotOverFive(member.getMemberId(), reqGetInfoDto.getFromDate(), reqGetInfoDto.getToDate());
         // 회고 요일까지 남은 날짜
         LocalDateTime postRetroDate = DiaryWritableWeek.getRetroDate(member.getRetrospectDay(), currentDate);
         Period period = Period.between(currentDate.toLocalDate(), postRetroDate.toLocalDate());
         int betweenDate = getbetweenDate(member, currentDate, period);
-
         // 회고 주제별로 분류 후 주차별로 분류
         List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = getKeyword(member, reqGetInfoDto.getFromDate(), reqGetInfoDto.getToDate());
 
@@ -269,17 +265,6 @@ public class RetrospectService {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
         return checkExistRetro(member, currentDate);
-    }
-    //삭제할 회고 가져오기
-    private Retrospect getRetrospect(Long memberId, LocalDateTime selectDate, Integer week) {
-        // 선택한 yyyy-MM 에 작성한 회고리스트 조회
-        List<Retrospect> getRetrospects = getExistRetrospect(memberId, selectDate);
-        // 선택한 yyyy-MM 에 작성한 회고 중, 조회하고자 하는 회고가 존재하지 않을 경우
-        if(getRetrospects.size() < week) throw RetrospectNotFoundException.EXCEPTION;
-
-        // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
-        Retrospect retrospect = getRetrospects.get(week);
-        return retrospect;
     }
     //회고 메인탭 회고 체크 편의 메서드
     private boolean checkExistRetro(Member member, LocalDateTime currentDate) {
@@ -370,17 +355,6 @@ public class RetrospectService {
             return true;
         else
             return false;
-    }
-    private List<Retrospect> getExistRetrospect(Long memberId, LocalDateTime selectTime) {
-        // 질의할 sql 의 Like 절에 해당하게끔 변환
-        String yearMonth = selectTime.format(DateTimeFormatter.ofPattern("yyyy-MM")) + "%";
-
-        // 선택한 yyyy-MM 에 작성한 회고 리스트 조회
-        List<Retrospect> retrospects = retrospectRepository.findListByMemberAndWriteDate(
-                memberId,
-                yearMonth);
-
-        return retrospects;
     }
     private Integer countDiary(Long memberId, LocalDateTime prevRetroDate, LocalDateTime currentDate) {
         List<Diary> diaries = getWeekDiaries(memberId, prevRetroDate, currentDate);

@@ -210,13 +210,7 @@ public class RetrospectService {
         // 회고 주제별로 분류 후 주차별로 분류
         List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = getKeyword(member, reqGetInfoDto.getFromDate(), reqGetInfoDto.getToDate());
 
-        return RespGetInfoDto.builder()
-                .nickname(member.getNickname())
-                .existRetrospect(existRetrospect)
-                .betweenDate(betweenDate)
-                .countRetrospect(isRetroNumberNotFive)
-                .keywordList(respGetClassifiedKeywordDtos)
-                .build();
+        return RespGetInfoDto.createRespGetInfoDto(member.getNickname(),existRetrospect, betweenDate, isRetroNumberNotFive, respGetClassifiedKeywordDtos);
     }
     //다음 회고까지 남은 날 반환
     private Integer getbetweenDate(Member member, LocalDateTime currentDate, Period period) {
@@ -300,7 +294,6 @@ public class RetrospectService {
 
         return selectedQuestions;
     }
-    // 첫번째 회고인지 파악 메서드
     private List<RespGetClassifiedKeywordDto> getKeyword(Member member, LocalDateTime fromDate, LocalDateTime toDate) {
         List<String> keyWordClass = List.of(
                 "그때 그대로 의미있었던 행복한 기억",

@@ -247,15 +247,11 @@ public class RetrospectService {
         LocalDateTime currentTime = reqSaveRetroDto.getCurrentDate();
         LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
         List<Diary> diaries = diaryRepository.findDiaryListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate(),true);
-        for(Diary t : diaries) {
-            t.changeEditStatus(false);
-        }
+        diaries.stream().forEach(d -> d.changeEditStatus(false));
     }
     private void changeDiaryEditStatusToTrue (Member member, LocalDateTime prevRetroDate, LocalDateTime currentTime) {
         List<Diary> diaries = diaryRepository.findDiaryListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate(),false);
-        for(Diary t : diaries) {
-            t.changeEditStatus(true);
-        }
+        diaries.stream().forEach(d -> d.changeEditStatus(true));
     }
     //회고 존재 여부 API 사용
     public boolean checkRetrospect(String socialId) {

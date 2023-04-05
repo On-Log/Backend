@@ -227,7 +227,6 @@ public class RetrospectService {
         retrospectRepository.checkRetroCount(member.getMemberId(), currentDate.toLocalDate().atStartOfDay().withDayOfMonth(1),
                 currentDate.toLocalDate().atStartOfDay().withDayOfMonth(currentDate.toLocalDate().lengthOfMonth()));
         //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능) 1. 요청 들어온 요일이 유저 회고요일과 같은지 체크
-        checkWriteTime(member, currentDate);
         // 해당 날짜에 작성한 회고 존재하는지 체크
         retrospectRepository.checkRetrospectAlreadyExist(member.getMemberId(), currentDate);
     }
@@ -300,41 +299,29 @@ public class RetrospectService {
         return contents;
     }
     private List<ExtraQuestion> getSelectedQuestion (Long goalIndex, List<String> contents) {
-        // 회고 추가 질문 + 도움말 조회
         List<ExtraQuestion> extraRetrospectQuestions = extraQuestionRepository.findListByGoal(goalIndex);
-        //작성한 질문 인덱스 담는 리스트
-        List<Integer> windex = IntStream.range(0, extraRetrospectQuestions.size())
-                .filter(i -> contents.contains(extraRetrospectQuestions.get(i).getContent()))
-                .boxed()
+        List<ExtraQuestion> unselectedQuestions = extraRetrospectQuestions.stream()
+                .filter(question -> !contents.contains(question.getContent()))
                 .collect(Collectors.toList());
 
-        List<ExtraQuestion> selected = new ArrayList<>();
-        Random r = new Random();
+        if (unselectedQuestions.size() == 0) {
+            unselectedQuestions.addAll(extraRetrospectQuestions);
+        }
 
-        int[] a;
-        if(extraRetrospectQuestions.size() % 2 != 0 && windex.size() == extraRetrospectQuestions.size() - 1){
-            int lastIndex = IntStream.range(0, extraRetrospectQuestions.size())
-                    .filter(i -> !windex.contains(i))
-                    .findFirst()
-                    .orElse(-1);
-            a = new int[]{lastIndex, r.nextInt(extraRetrospectQuestions.size())};
-        } else {
-            Set<Integer> indexSet = new HashSet<>();
-            while (indexSet.size() < 2) {
-                int index = r.nextInt(extraRetrospectQuestions.size());
-                if (!windex.contains(index)) {
-                    indexSet.add(index);
-                }
+        List<Integer> indexes = new ArrayList<>();
+        while (indexes.size() < 2 && unselectedQuestions.size() > 0) {
+            int randomIndex = new Random().nextInt(unselectedQuestions.size());
+            int realIndex = extraRetrospectQuestions.indexOf(unselectedQuestions.get(randomIndex));
+            if (!indexes.contains(realIndex)) {
+                indexes.add(realIndex);
             }
-            a = indexSet.stream()
-                    .mapToInt(Integer::intValue)
-                    .toArray();
         }
 
-        for (int i : a){
-            selected.add(extraRetrospectQuestions.get(i));
-        }
-        return selected;
+        List<ExtraQuestion> selectedQuestions = indexes.stream()
+                .map(extraRetrospectQuestions::get)
+                .collect(Collectors.toList());
+
+        return selectedQuestions;
     }
     // 첫번째 회고인지 파악 메서드
     private boolean checkFirst (LocalDateTime postRetroDate, LocalDateTime currentDate) {

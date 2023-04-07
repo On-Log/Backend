@@ -1,4 +1,4 @@
-﻿# 26th_T8_Nanal Backend
+﻿# Nanal Backend
 
 ### 프레임워크 선정 이유
 
@@ -12,14 +12,15 @@
 |Spring Data JPA |  간단한 설정을 통해 필수 로직들을 쿼리 작성 없이 사용 가능하기에, 개발 생산성 증가|
 |Redis|key, value 형태로 데이터 저장 및 해당 데이터의 유효기간 설정을 통한 토큰 관리 용이|
 
-## 아키텍처
-![아키텍쳐_수정](https://user-images.githubusercontent.com/80163835/203724292-4cdd016e-6cd4-4c68-9a43-78ea6361fc14.jpeg)
+## System Architecture
+![시스템아키텍처 drawio (3)](https://user-images.githubusercontent.com/78543382/230613220-8840ac69-055b-491d-bbc8-7ef63e23c9b6.png)
 
-## 주요 기능 명세서
-![image (3)](https://user-images.githubusercontent.com/80163835/203799735-822e454a-d280-44c5-81eb-1f273621e2e5.png)
+
+## CI/CD PROCESS
+![CI_CD 아키텍처 drawio (3)](https://user-images.githubusercontent.com/78543382/230612784-be6875ec-61f5-4633-bae8-0f05cafb210d.png)
 
 ## ERD
-![Kusitms_NN (1)](https://user-images.githubusercontent.com/80163835/203786076-3bff9e6e-57da-456b-b8ff-4c15c93a6063.png)
+![화면 캡처 2023-04-07 220401](https://user-images.githubusercontent.com/78543382/230613585-e3d47be2-fefa-4d65-b1a9-3e7987dbfcef.png)
 
 ## 커밋 컨벤션
 

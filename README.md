@@ -17,7 +17,7 @@
 
 
 ## CI/CD PROCESS
-![CI_CD 아키텍처 drawio (3)](https://user-images.githubusercontent.com/78543382/230612784-be6875ec-61f5-4633-bae8-0f05cafb210d.png)
+![CI_CD 아키텍처 drawio (4)](https://user-images.githubusercontent.com/78543382/231061184-caca43e3-3685-4438-a141-4bf40b0d53a8.png)
 
 ## ERD
 ![화면 캡처 2023-04-07 220401](https://user-images.githubusercontent.com/78543382/230613585-e3d47be2-fefa-4d65-b1a9-3e7987dbfcef.png)

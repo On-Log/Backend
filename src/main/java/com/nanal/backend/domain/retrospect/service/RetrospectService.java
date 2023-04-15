@@ -30,8 +30,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-import static com.nanal.backend.domain.retrospect.dto.resp.RespGetInfoDto.makeRespGetInfoDto;
 import static java.lang.Math.abs;
 
 @Timed("retrospect.api")
@@ -55,50 +56,27 @@ public class RetrospectService {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
-        LocalDateTime currentDate = LocalDateTime.now();
-        LocalDateTime selectDate = reqGetInfoDto.getSelectDate();
+        RespGetInfoDto info = getRespGetInfoDto(reqGetInfoDto, member);
 
-        // 선택한 월에 있는 회고 기록 ( 어떤 회고 목적을 선택했는가 )
-        List<Retrospect> getRetrospects = getExistRetrospect(member.getMemberId(), selectDate);
-        List<String> existRetrospect = getgoal(getRetrospects);
-
-        //회고 개수가 5개인지 5개 아니면 true, 이상이면 false
-        boolean isRetroNumberNotFive = countRetro(member, reqGetInfoDto.getSelectDate());
-
-        // 회고 요일까지 남은 날짜
-        LocalDateTime postRetroDate = DiaryWritableWeek.getRetroDate(member.getRetrospectDay(), currentDate);
-        Period period = Period.between(currentDate.toLocalDate(), postRetroDate.toLocalDate());
-        int betweenDate = getbetweenDate(member, currentDate, period);
-
-        // 회고 주제별로 분류 후 주차별로 분류
-        List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = getKeyword(member, selectDate);
-
-        RespGetInfoDto respGetInfoDto = makeRespGetInfoDto(member.getNickname(),existRetrospect, betweenDate, isRetroNumberNotFive, respGetClassifiedKeywordDtos);
-
-        return respGetInfoDto;
+        return info;
     }
-
     @Counted("retrospect.api.count")
     public void saveRetrospect(String socialId, ReqSaveRetroDto reqSaveRetroDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
-        LocalDateTime currentTime = reqSaveRetroDto.getCurrentDate();
-        LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
-
         //회고 작성 가능성 검증
         checkRetrospectWritable(member, reqSaveRetroDto.getCurrentDate());
 
         // 회고 Entity 생성
-        Retrospect retrospect = createRetrospect(member, reqSaveRetroDto.getGoal(), reqSaveRetroDto.getCurrentDate(), reqSaveRetroDto.getKeywords(), reqSaveRetroDto.getContents());
+        Retrospect retrospect = Retrospect.createRetrospect(member, reqSaveRetroDto);
 
         // 회고 저장
         retrospectRepository.save(retrospect);
 
         //회고 저장 후 일주일 일기 리스트 editstatus 변경
-        changeDiaryEditStatus(member, prevRetroDate, currentTime);
+        changeDiaryEditStatus(member, reqSaveRetroDto);
     }
-
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespGetRetroDto getRetro(String socialId, ReqGetRetroDto reqGetRetroDto) {
@@ -106,11 +84,11 @@ public class RetrospectService {
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         //조회할 회고 찾기
-        Retrospect selectRetrospect = getRetrospect(member.getMemberId(), reqGetRetroDto.getSelectDate(), reqGetRetroDto.getWeek());
+        Retrospect selectRetrospect = retrospectRepository.getRetrospect(member.getMemberId(), reqGetRetroDto.getFromDate(),
+                reqGetRetroDto.getToDate(), reqGetRetroDto.getWeek());
 
         // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
-        RespGetRetroDto respGetRetroDto = RespGetRetroDto.makeRespGetRetroDto(selectRetrospect);
-        return respGetRetroDto;
+        return RespGetRetroDto.createRespGetRetroDto(selectRetrospect);
     }
 
     @Counted("retrospect.api.count")
@@ -121,20 +99,18 @@ public class RetrospectService {
         LocalDateTime currentDate = LocalDateTime.now();
 
         //회고 수정 가능성 검증
-        checkRetrospectEditable(member, currentDate, reqEditRetroDto.getWeek());
+        checkWriteTime(member, currentDate);
 
         //조회할 회고 찾기
-        Retrospect selectRetrospect = getRetrospect(member.getMemberId(), currentDate, reqEditRetroDto.getWeek());
+        Retrospect selectRetrospect = retrospectRepository.getRetrospect(member.getMemberId(), currentDate.toLocalDate().atStartOfDay().withDayOfMonth(1),
+                currentDate.toLocalDate().atStartOfDay().withDayOfMonth(LocalDate.now().lengthOfMonth()), reqEditRetroDto.getWeek());
 
-        // 회고에서 어떤 질문에 대한 답을 수정했는지
-        List<RetrospectContent> retrospectContents = selectRetrospect.getRetrospectContents();
-
-        // 내용 수정
-        retrospectContents.get(reqEditRetroDto.getIndex()).changeAnswer(reqEditRetroDto.getAnswer());
+        selectRetrospect.changeAnswer(reqEditRetroDto);
     }
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespGetKeywordAndEmotionDto getKeywordAndEmotion(String socialId){
+
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
@@ -142,19 +118,21 @@ public class RetrospectService {
         LocalDateTime prevRetroDate = currentDate.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
 
         //자정 안에 호출했는지 체크. 자정 안이라면 true, 아니면 false
-        boolean isInTime = checkIsInTime(prevRetroDate, currentDate);
+        boolean isInTime = checkByTime(prevRetroDate, currentDate);
 
         //일주일 일기 리스트 조회
-        List<Diary> diaries = getWeekDiaries(member.getMemberId(), prevRetroDate, currentDate);
+        List<Diary> diaries = diaryRepository.findDiaryListByMemberAndBetweenWriteDate(
+                member.getMemberId(),
+                prevRetroDate.toLocalDate().minusDays(6),
+                currentDate.toLocalDate(),
+                true
+        );
 
         //감정어 필터링 이후 count
         List<CountEmotion> countEmotions = getEmotionCount(diaries);
 
-        RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.makeRespGetKeywordAndEmotionDto(isInTime, currentDate, diaries, countEmotions);
-
-        return respGetKeywordAndEmotionDto;
+        return RespGetKeywordAndEmotionDto.createRespGetKeywordAndEmotionDto(isInTime, currentDate, diaries, countEmotions);
     }
-
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespGetQuestionAndHelpDto getQuestionAndHelp(ReqGetGoalDto reqGetGoalDto) {
@@ -162,11 +140,8 @@ public class RetrospectService {
         // 회고 질문 + 도움말 조회
         List<Question> retrospectQuestions = questionRepository.findListByGoal(goalIndex);
 
-        RespGetQuestionAndHelpDto respGetQuestionAndHelpDto = RespGetQuestionAndHelpDto.makeRespGetQuestionAndHelpDto(retrospectQuestions);
-
-        return respGetQuestionAndHelpDto;
+        return RespGetQuestionAndHelpDto.createRespGetQuestionAndHelpDto(retrospectQuestions);
     }
-
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespGetExtraQuestionAndHelpDto getExtraQuestionAndHelp(String socialId, ReqGetGoalDto reqGetGoalDto){
@@ -178,11 +153,8 @@ public class RetrospectService {
 
         List<ExtraQuestion> selected = getSelectedQuestion(goalIndex, contents);
 
-        RespGetExtraQuestionAndHelpDto respGetExtraQuestionAndHelpDto = RespGetExtraQuestionAndHelpDto.makeRespGetQuestionAndHelpDto(selected);
-
-        return respGetExtraQuestionAndHelpDto;
+        return RespGetExtraQuestionAndHelpDto.createRespGetQuestionAndHelpDto(selected);
     }
-    
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
     public RespCheckFirstRetrospect checkFirstRetrospect(String socialId) {
@@ -192,17 +164,21 @@ public class RetrospectService {
         LocalDateTime currentDate = LocalDateTime.now();
         LocalDateTime prevRetroDate = currentDate.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
         LocalDateTime postRetroDate = DiaryWritableWeek.getRetroDate(member.getRetrospectDay(), member.getPrevRetrospectDate());
-        LocalDate tempDate = currentDate.toLocalDate();
-        LocalDateTime startDate = tempDate.atStartOfDay();
-        LocalDateTime endDate = tempDate.atTime(LocalTime.MAX).withNano(0);
+        LocalDateTime startDate = currentDate.toLocalDate().atStartOfDay();
+        LocalDateTime endDate = currentDate.toLocalDate().atTime(LocalTime.MAX).withNano(0);
 
         //회고일 변경 후 첫 회고 판별. 첫 회고가 맞다면 true 반환, 아니면 false 반환
-        boolean checkfirstRetrospect = checkFirst(postRetroDate, currentDate);
+        boolean checkfirstRetrospect = checkByTime(postRetroDate, currentDate);
         //회고일에 작성한 일기가 있는지. 있다면 true, 없다면 false
-        boolean writtenDiary = checkWrittenDiary(member.getMemberId(), startDate, endDate);
+        boolean writtenDiary = diaryRepository.checkWrittenDiary(member.getMemberId(), startDate, endDate);
 
         //일주일 일기 리스트 count
-        int diarycount = countDiary(member.getMemberId(), prevRetroDate, currentDate);
+        int diarycount = diaryRepository.findDiaryListByMemberAndBetweenWriteDate(
+                member.getMemberId(),
+                prevRetroDate.toLocalDate().minusDays(6),
+                currentDate.toLocalDate(),
+                true
+        ).size();
 
         if (checkfirstRetrospect == true)
             return RespCheckFirstRetrospect.firstRetrospectAfterChange(checkfirstRetrospect, writtenDiary, diarycount);
@@ -214,113 +190,59 @@ public class RetrospectService {
     public void deleteRetro(String socialId, ReqDeleteRetroDto reqDeleteRetroDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
-
         // 삭제할 회고 가져오기
-        Retrospect deleteRetro = getRetrospect(member.getMemberId(), reqDeleteRetroDto.getSelectDate(), reqDeleteRetroDto.getWeek());
-
+        Retrospect deleteRetro = retrospectRepository.getRetrospect(member.getMemberId(), reqDeleteRetroDto.getFromDate(), reqDeleteRetroDto.getToDate(), reqDeleteRetroDto.getWeek());
         // 기존 회고 삭제
         delete(member, deleteRetro);
     }
 
     //===편의 메서드===//
+    private RespGetInfoDto getRespGetInfoDto (ReqGetInfoDto reqGetInfoDto, Member member) {
+        LocalDateTime currentDate = LocalDateTime.now();
+        // 선택한 월에 있는 회고 기록 ( 어떤 회고 목적을 선택했는가 )
+        List<String> existRetrospect = retrospectRepository.getRetrospectGoal(member.getMemberId(), reqGetInfoDto.getFromDate(), reqGetInfoDto.getToDate());
+        //회고 개수가 5개인지 5개 아니면 true, 이상이면 false
+        boolean isRetroNumberNotFive = retrospectRepository.checkRetroNotOverFive(member.getMemberId(), reqGetInfoDto.getFromDate(), reqGetInfoDto.getToDate());
+        // 회고 요일까지 남은 날짜
+        LocalDateTime postRetroDate = DiaryWritableWeek.getRetroDate(member.getRetrospectDay(), currentDate);
+        Period period = Period.between(currentDate.toLocalDate(), postRetroDate.toLocalDate());
+        int betweenDate = getbetweenDate(member, currentDate, period);
+        // 회고 주제별로 분류 후 주차별로 분류
+        List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = getKeyword(member, reqGetInfoDto.getFromDate(), reqGetInfoDto.getToDate());
 
-    //회고 목적 리스트 반환
-    private List<String> getgoal(List<Retrospect> retrospects) {
-        List<String> existRetrospect = new ArrayList<>();
-        for (Retrospect t : retrospects) {
-            existRetrospect.add(t.getGoal());
-        }
-        return  existRetrospect;
+        return RespGetInfoDto.createRespGetInfoDto(member.getNickname(),existRetrospect, betweenDate, isRetroNumberNotFive, respGetClassifiedKeywordDtos);
     }
-
     //다음 회고까지 남은 날 반환
     private Integer getbetweenDate(Member member, LocalDateTime currentDate, Period period) {
-        int betweenDate = period.getDays();
-        if (checkExistRetro(member, currentDate) == true)
-            betweenDate = 7;
-        return betweenDate;
+        return checkExistRetro(member, currentDate) ? 7 : period.getDays();
     }
-
     //회고 작성 예외처리 메서드 묶음
     private void checkRetrospectWritable(Member member, LocalDateTime currentDate) {
         //작성한 회고가 5개 넘어가는지 여부
-        checkRetrospectCount(member, currentDate);
+        retrospectRepository.checkRetroCount(member.getMemberId(), currentDate.toLocalDate().atStartOfDay().withDayOfMonth(1),
+                currentDate.toLocalDate().atStartOfDay().withDayOfMonth(currentDate.toLocalDate().lengthOfMonth()));
         //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능) 1. 요청 들어온 요일이 유저 회고요일과 같은지 체크
         checkWriteTime(member, currentDate);
         // 해당 날짜에 작성한 회고 존재하는지 체크
-        checkRetrospectAlreadyExist(member, currentDate);
+        retrospectRepository.checkRetrospectAlreadyExist(member.getMemberId(), currentDate);
     }
-
-    private void checkRetrospectCount(Member member, LocalDateTime dateTime) {
-        if (countRetro(member, dateTime) == false)
-            throw RetrospectAllDoneException.EXCEPTION;
-    }
-
     //회고 작성 예외처리
     private void checkWriteTime(Member member, LocalDateTime dateTime) {
-        //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능) 1. 요청 들어온 요일이 유저 회고요일과 같은지 체크
-        DayOfWeek prevDay = dateTime.getDayOfWeek();
-        if(prevDay != member.getRetrospectDay())
-            throw RetrospectTimeDoneException.EXCEPTION;
-
-        //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능) 2. 요청 들어온 날짜와 회고 날짜가 차이가 1일인지 체크
+        // 요일과 날짜가 모두 일치하는지 체크
         LocalDate prevRetroDate = LocalDate.now().with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
-        if(abs(ChronoUnit.DAYS.between(prevRetroDate, dateTime.toLocalDate())) != 0)
+        if (!prevRetroDate.equals(dateTime.toLocalDate()))
             throw RetrospectTimeDoneException.EXCEPTION;
     }
 
-    private void changeDiaryEditStatus (Member member, LocalDateTime prevRetroDate, LocalDateTime currentTime) {
-        List<Diary> diaries = diaryRepository.findDiaryListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate(),true);
-        for(Diary t : diaries) {
-            t.changeEditStatus(false);
-        }
+    private void changeDiaryEditStatus (Member member, ReqSaveRetroDto reqSaveRetroDto) {
+         LocalDateTime prevRetroDate = reqSaveRetroDto.getCurrentDate().with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
+        diaryRepository.findDiaryListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), reqSaveRetroDto.getCurrentDate().toLocalDate(), true)
+                .forEach(diary -> diary.changeEditStatus(false));
     }
-
     private void changeDiaryEditStatusToTrue (Member member, LocalDateTime prevRetroDate, LocalDateTime currentTime) {
-        List<Diary> diaries = diaryRepository.findDiaryListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate(),false);
-        for(Diary t : diaries) {
-            t.changeEditStatus(true);
-        }
+        diaryRepository.findDiaryListByMemberAndBetweenWriteDate(member.getMemberId(), prevRetroDate.toLocalDate().minusDays(6), currentTime.toLocalDate(), false)
+                .forEach(d -> d.changeEditStatus(true));
     }
-
-
-    private Retrospect createRetrospect(Member member, String goal, LocalDateTime date, List<RetrospectKeywordDto> keywordDtos, List<RetrospectContentDto> contentDtos) {
-        // Retrospect 생성에 필요한 keyword, content 리스트 생성
-        List<RetrospectKeyword> keywords = new ArrayList<>();
-        List<RetrospectContent> contents = new ArrayList<>();
-
-        for (RetrospectKeywordDto retrospectKeywordDto : keywordDtos) {
-            RetrospectKeyword retrospectKeyword = RetrospectKeyword.makeRetrospectKeyword(retrospectKeywordDto.getKeyword(), retrospectKeywordDto.getClassify());
-            keywords.add(retrospectKeyword);
-        }
-
-        for (RetrospectContentDto retrospectContentDto : contentDtos) {
-            RetrospectContent retrospectContent = RetrospectContent.makeRetrospectContent(retrospectContentDto.getQuestion(), retrospectContentDto.getAnswer());
-            contents.add(retrospectContent);
-        }
-
-        // keyword 리스트와 content리스트 이용하여 Retrospect 생성
-        Retrospect retrospect = Retrospect.makeRetrospect(member, keywords,contents, goal, date);
-
-        return retrospect;
-    }
-
-    private void checkRetrospectEditable(Member member, LocalDateTime currentDate, Integer week) {
-        //작성한 회고가 5개 넘어가는지 여부
-        checkRetrospectCount(member, currentDate);
-        //회고 작성한 시간 체크 (회고 작성은 회고일 당일 11:59 까지만 가능) 1. 요청 들어온 요일이 유저 회고요일과 같은지 체크
-        checkWriteTime(member, currentDate);
-        //회고 존재하는지 체크
-        checkRetrospectNotExist(member.getMemberId(), currentDate, week);
-    }
-
-    private void checkRetrospectNotExist(Long memberId, LocalDateTime currentDate, Integer week) {
-        // 선택한 yyyy-MM 에 작성한 회고리스트 조회
-        List<Retrospect> getRetrospects = getExistRetrospect(memberId, currentDate);
-        // 선택한 yyyy-MM 에 작성한 회고 중, 수정하고자 하는 회고가 존재하지 않을 경우
-        if(getRetrospects.size() < week) throw RetrospectNotFoundException.EXCEPTION;
-    }
-
     //회고 존재 여부 API 사용
     public boolean checkRetrospect(String socialId) {
         //서버 현재 시간
@@ -329,268 +251,97 @@ public class RetrospectService {
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
         return checkExistRetro(member, currentDate);
     }
-
-    //삭제할 회고 가져오기
-    private Retrospect getRetrospect(Long memberId, LocalDateTime selectDate, Integer week) {
-        // 선택한 yyyy-MM 에 작성한 회고리스트 조회
-        List<Retrospect> getRetrospects = getExistRetrospect(memberId, selectDate);
-        // 선택한 yyyy-MM 에 작성한 회고 중, 조회하고자 하는 회고가 존재하지 않을 경우
-        if(getRetrospects.size() < week) throw RetrospectNotFoundException.EXCEPTION;
-
-        // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
-        Retrospect retrospect = getRetrospects.get(week);
-        return retrospect;
-    }
-
-
-    //회고 저장시 예외처리
-    private void checkRetrospectAlreadyExist( Member member, LocalDateTime currentDate) {
-        // 질의할 sql 의 Like 절에 해당하게끔 변환
-        String yearMonthDay = currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
-        // 선택한 yyyy-MM-dd 에 작성한 회고 조회
-        List<Retrospect> existRetrospect = retrospectRepository.findListByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
-
-        if(existRetrospect.size() != 0) throw RetrospectAlreadyExistException.EXCEPTION;
-    }
-
-
     //회고 메인탭 회고 체크 편의 메서드
     private boolean checkExistRetro(Member member, LocalDateTime currentDate) {
         String yearMonthDay = currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "%";
-        // 선택한 yyyy-MM-dd 에 작성한 회고 조회
-        List<Retrospect> existRetrospect = retrospectRepository.findListByMemberAndWriteDate(member.getMemberId(), yearMonthDay);
-        //회고가 이미 존재하면 true 리턴
-        if(existRetrospect.size() != 0)
-            return true;
-        else
-            return false;
+        return retrospectRepository.findListByMemberAndWriteDate(member.getMemberId(), yearMonthDay).size() != 0;
     }
-
-    //자정 전에 호출 여부 체크 메서드
-    private boolean checkIsInTime(LocalDateTime prevRetroDate, LocalDateTime currentDate) {
-        if(abs(ChronoUnit.DAYS.between(prevRetroDate.toLocalDate(), currentDate)) != 0)
-            return false;
-        else
-            return true;
+    //자정 전에 호출 여부 체크, 첫번째 회고인지 파악 하는 통합 메서드
+    private boolean checkByTime(LocalDateTime Date, LocalDateTime currentDate) {
+        return abs(ChronoUnit.DAYS.between(Date.toLocalDate(), currentDate)) == 0;
     }
-
-    //일주일 일기 데이터 가져오기
-    private List<Diary> getWeekDiaries (Long memberId, LocalDateTime prevRetroDate, LocalDateTime currentDate) {
-        List<Diary> diaries = diaryRepository.findDiaryListByMemberAndBetweenWriteDate(
-                memberId,
-                prevRetroDate.toLocalDate().minusDays(6),
-                currentDate.toLocalDate(),
-                true
-        );
-
-        return diaries;
-    }
-
-
-    //회고 개수 count
-    private boolean countRetro(Member member, LocalDateTime dateTime) {
-        int count = 0;
-        List<Retrospect> getRetrospects = getExistRetrospect(member.getMemberId(), dateTime);
-        for (Retrospect t : getRetrospects) {
-            count++;
-        }
-        if (count >= 5)
-            return false;
-        else
-            return true;
-    }
-
     //유저가 작성한 회고 리스트 반환 메서드
     private List<String> getContents(Long memberId) {
         List<Retrospect> getRetrospects = retrospectRepository.findListByMember(memberId);
-        List<String> contents = new ArrayList<>();
-        for (Retrospect retrospect : getRetrospects) {
-            List<RetrospectContent> content = new ArrayList<>();
-            content = retrospect.getRetrospectContents();
-            for(RetrospectContent r : content) {
-                contents.add(r.getQuestion());
-            }
-        }
+        List<String> contents = getRetrospects.stream()
+                .flatMap(retrospect -> retrospect.getRetrospectContents().stream())
+                .map(RetrospectContent::getQuestion)
+                .collect(Collectors.toList());
         return contents;
     }
     private List<ExtraQuestion> getSelectedQuestion (Long goalIndex, List<String> contents) {
-        // 회고 추가 질문 + 도움말 조회
         List<ExtraQuestion> extraRetrospectQuestions = extraQuestionRepository.findListByGoal(goalIndex);
-        //작성한 질문 인덱스 담는 리스트
-        ArrayList<Integer> windex = new ArrayList<>();
-        //아직 모든 질문에 대한 답을 안했을 때
-        for (int i = 0; i < extraRetrospectQuestions.size(); i++) {
-            if (contents.contains(extraRetrospectQuestions.get(i).getContent()) == true) {
-                windex.add(i);
-            }
-            if(windex.size() == extraRetrospectQuestions.size()){
-                windex = new ArrayList<>();
-            }
-        }
-        List<ExtraQuestion> selected = new ArrayList<>();
-        //중복없는 랜덤 숫자
-        int a[] = new int[2];
-        Random r = new Random();
+        List<ExtraQuestion> unselectedQuestions = extraRetrospectQuestions.stream()
+                .filter(question -> !contents.contains(question.getContent()))
+                .collect(Collectors.toList());
 
-        //데이터 개수 홀수일 때
-        if(extraRetrospectQuestions.size() % 2 != 0 && windex.size() == extraRetrospectQuestions.size() - 1){
-            int lastIndex = 0;
-            for(int i = 0; i < extraRetrospectQuestions.size(); i++){
-                if(windex.contains(i) == false){
-                    lastIndex = i;
-                    break;
-                }
-            }
-            a[0] = lastIndex;
-            while(true){
-                a[1] = r.nextInt(extraRetrospectQuestions.size());
-                if(a[0] != a[1])
-                    break;
-            }
+        if (unselectedQuestions.size() == 0) {
+            unselectedQuestions.addAll(extraRetrospectQuestions);
         }
-        else {
-            for (int i = 0; i < 2; i++) {
-                a[i] = r.nextInt(extraRetrospectQuestions.size());
-                if (windex.contains(a[i]) == true) {
-                    i--;
-                    continue;
-                }
-                for (int j = 0; j < i; j++) {
-                    if (a[i] == a[j])
-                        i--;
-                }
+
+        List<Integer> indexes = new ArrayList<>();
+        while (indexes.size() < 2 && unselectedQuestions.size() > 0) {
+            int randomIndex = new Random().nextInt(unselectedQuestions.size());
+            int realIndex = extraRetrospectQuestions.indexOf(unselectedQuestions.get(randomIndex));
+            if (!indexes.contains(realIndex)) {
+                indexes.add(realIndex);
             }
         }
 
-        for (int i = 0; i < 2; i++){
-            selected.add(extraRetrospectQuestions.get(a[i]));
-        }
+        List<ExtraQuestion> selectedQuestions = indexes.stream()
+                .map(extraRetrospectQuestions::get)
+                .collect(Collectors.toList());
 
-        return selected;
+        return selectedQuestions;
     }
+    private List<RespGetClassifiedKeywordDto> getKeyword(Member member, LocalDateTime fromDate, LocalDateTime toDate) {
+        List<String> keyWordClass = List.of(
+                "그때 그대로 의미있었던 행복한 기억",
+                "나를 힘들게 했지만 도움이 된 기억",
+                "돌아보니, 다른 의미로 다가온 기억"
+        );
 
-    // 첫번째 회고인지 파악 메서드
-    private boolean checkFirst (LocalDateTime postRetroDate, LocalDateTime currentDate) {
-        if(abs(ChronoUnit.DAYS.between(postRetroDate.toLocalDate(),  currentDate)) == 0)
-            return true;
-        else
-            return false;
+        return keyWordClass.stream()
+                .map(classify -> {
+                    List<ClassifyDto> classifyDtos = retrospectRepository.findRetrospectListByMemberAndWriteDate(
+                                    member.getMemberId(),
+                                    fromDate, toDate
+                            ).stream()
+                            .map(t -> ClassifyDto.makeClassifyDto(
+                                    retrospectKeywordRepository.findListByRetroAndClassify(
+                                            t.getRetrospectId(), classify
+                                    )
+                            ))
+                            .collect(Collectors.toList());
+
+                    classifyDtos.addAll(Collections.nCopies(5 - classifyDtos.size(), new ClassifyDto()));
+                    return RespGetClassifiedKeywordDto.makeRespGetExistRetrospectKeyword(classifyDtos, classify);
+                })
+                .collect(Collectors.toList());
     }
-
-    //회고일에 작성한 일기 있는지 파악 메서드
-    private boolean checkWrittenDiary (Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
-        Optional<Diary> findDiary = diaryRepository.findDiaryByMemberAndWriteDate(memberId, startDate, endDate);
-        if(findDiary.isEmpty() == false)
-            return true;
-        else
-            return false;
-    }
-    private List<Retrospect> getExistRetrospect(Long memberId, LocalDateTime selectTime) {
-        // 질의할 sql 의 Like 절에 해당하게끔 변환
-        String yearMonth = selectTime.format(DateTimeFormatter.ofPattern("yyyy-MM")) + "%";
-
-        // 선택한 yyyy-MM 에 작성한 회고 리스트 조회
-        List<Retrospect> retrospects = retrospectRepository.findListByMemberAndWriteDate(
-                memberId,
-                yearMonth);
-
-        return retrospects;
-    }
-
-    private Integer countDiary(Long memberId, LocalDateTime prevRetroDate, LocalDateTime currentDate) {
-        List<Diary> diaries = getWeekDiaries(memberId, prevRetroDate, currentDate);
-        return diaries.size();
-    }
-
-
-    private List<RespGetClassifiedKeywordDto> getKeyword(Member member, LocalDateTime selectTime) {
-        // 전체 분할한 키워드 리스트들
-        // 분류1 : [
-        //   1차 : [
-        //   ]
-        //   2차 : [
-        //   ]
-        //   3차 : [
-        //   ]
-        //]
-
-        //회고별 분류
-        //   1차 : [
-        //   ]
-        //   2차 : [
-        //   ]
-        //   3차 : [
-        //   ]
-
-        // 질의할 sql 의 Like 절에 해당하게끔 변환
-        String yearMonth = selectTime.format(DateTimeFormatter.ofPattern("yyyy-MM")) + "%";
-
-        // 선택한 yyyy-MM 에 작성한 회고 리스트 조회
-        List<Retrospect> writeRetrospect = retrospectRepository.findListByMemberAndWriteDate(
-                member.getMemberId(),
-                yearMonth);
-
-
-        //회고의 분류 리스트 생성
-        List<String> keyWordClass = new ArrayList<>();
-        keyWordClass.add("그때 그대로 의미있었던 행복한 기억");
-        keyWordClass.add("나를 힘들게 했지만 도움이 된 기억");
-        keyWordClass.add("돌아보니, 다른 의미로 다가온 기억");
-
-        List<ClassifyDto> classifyDtos = new ArrayList<>();
-        List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = new ArrayList<>();
-        RespGetClassifiedKeywordDto respGetClassifiedKeywordDto = new RespGetClassifiedKeywordDto();
-        for (int i = 0; i < keyWordClass.size(); i++) {
-            classifyDtos = new ArrayList<>();
-            for (Retrospect t : writeRetrospect) {
-                //한 회고에 대한 키워드 리스트
-                List<RetrospectKeyword> classifiedKeyword = retrospectKeywordRepository.findListByRetroAndClassify(t.getRetrospectId(), keyWordClass.get(i));
-                ClassifyDto classifyDto = new ClassifyDto();
-                //t차 회고의 i 번째 분류 과정 시작 가장 첫 시작은 첫번째 회고의 첫번째 분류
-                classifyDto = ClassifyDto.makeClassifyDto(classifiedKeyword);
-                classifyDtos.add(classifyDto);
-            }
-            for(int j = 0; j < (5-writeRetrospect.size()); j++){
-                ClassifyDto classifyDto = new ClassifyDto();
-                classifyDtos.add(classifyDto);
-            }
-            // i 번째 분류 과정 완
-            respGetClassifiedKeywordDto = RespGetClassifiedKeywordDto.makeRespGetExistRetrospectKeyword(classifyDtos, keyWordClass.get(i));
-            respGetClassifiedKeywordDtos.add(respGetClassifiedKeywordDto);
-        }
-        return respGetClassifiedKeywordDtos;
-    }
-
     private List<CountEmotion> getEmotionCount(List<Diary> diaries) {
-        List<CountEmotion> countEmotions = new ArrayList<>();
-        List<String> emotions = new ArrayList<>();
-        for( Diary d : diaries ) {
-            d.getKeywords();
-            for(Keyword k : d.getKeywords()) {
-                k.getKeywordEmotions();
-                for(KeywordEmotion ke : k.getKeywordEmotions()) {
-                    emotions.add(ke.getEmotion().getEmotion());
-                }
-            }
-        }
         List<Emotion> findEmotions = emotionRepository.findAll();
-        for( Emotion e : findEmotions ) {
+
+        return findEmotions.stream().map(e -> {
+            int count = diaries.stream()
+                    .flatMap(d -> d.getKeywords().stream())
+                    .flatMap(k -> k.getKeywordEmotions().stream())
+                    .map(ke -> ke.getEmotion().getEmotion())
+                    .filter(emotion -> emotion.equals(e.getEmotion()))
+                    .collect(Collectors.toList())
+                    .size();
+
             int frequency = 0;
-            int count = Collections.frequency(emotions, e.getEmotion());
-            if (count == 0)
-                frequency = 0;
-            else if (count >= 1 && count <= 5)
+            if (count >= 1 && count <= 5)
                 frequency = 1;
             else if (count >= 6 && count <= 10)
                 frequency = 2;
-            else
+            else if (count > 10)
                 frequency = 3;
-            CountEmotion countEmotion = CountEmotion.makeCountEmotion(e.getEmotion(), frequency);
-            countEmotions.add(countEmotion);
-        }
-        return countEmotions;
-    }
 
+            return CountEmotion.makeCountEmotion(e.getEmotion(), frequency);
+        }).collect(Collectors.toList());
+    }
     private long getGoalIndex(String goal) {
         if (goal.equals("자아탐색"))
             return 1;
@@ -602,19 +353,15 @@ public class RetrospectService {
             return 4;
         else throw GoalNotFoundException.EXCEPTION;
     }
-
     private void delete(Member member, Retrospect retrospect) {
-        //서버 현재 시간
-        LocalDateTime currentTime = LocalDateTime.now();
-        LocalDate currentDate = currentTime.toLocalDate();
-        //회고 당일날에 회고 삭제
-        if(retrospect.getWriteDate().toLocalDate().compareTo(currentDate) == 0) {
+        LocalDate currentDate = LocalDate.now();
+        LocalDate retrospectDate = retrospect.getWriteDate().toLocalDate();
+        if (retrospectDate.isEqual(currentDate)) {
             retrospectRepository.delete(retrospect);
-            LocalDateTime prevRetroDate = currentTime.with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
-            changeDiaryEditStatusToTrue(member, prevRetroDate, currentTime);
+            LocalDateTime prevRetroDate = LocalDateTime.now().with(TemporalAdjusters.previousOrSame(member.getRetrospectDay()));
+            changeDiaryEditStatusToTrue(member, prevRetroDate, LocalDateTime.now());
+        } else {
+            retrospectRepository.delete(retrospect);
         }
-        else
-            retrospectRepository.delete(retrospect);
     }
-
 }

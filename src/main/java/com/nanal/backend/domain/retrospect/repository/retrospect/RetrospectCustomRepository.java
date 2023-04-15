@@ -13,6 +13,14 @@ public interface RetrospectCustomRepository {
 
     Boolean existDiaryDate(Long memberId, LocalDateTime date);
 
+    Boolean checkRetroNotOverFive(Long memberId, LocalDateTime fromDate, LocalDateTime toDate);
+
+    void checkRetroCount(Long memberId, LocalDateTime fromDate, LocalDateTime toDate);
+
+    Retrospect getRetrospect(Long memberId, LocalDateTime fromDate, LocalDateTime toDate, Integer week);
+
+    List<String> getRetrospectGoal(Long memberId, LocalDateTime fromDate, LocalDateTime toDate);
+
     List<RetrospectInfoDto> findRetrospectList(Long memberId, LocalDateTime fromDate, LocalDateTime toDate);
 
     Optional<Retrospect> findRetrospectByMemberAndWriteDate(Long memberId, LocalDateTime startDate, LocalDateTime endDate);

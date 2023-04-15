@@ -9,6 +9,8 @@ import java.util.Optional;
 
 public interface DiaryCustomRepository {
 
+    boolean checkWrittenDiary(Long memberId, LocalDateTime fromDate, LocalDateTime toDate);
+
     List<LocalDateTime> findExistDiaryDateList(Long memberId, LocalDateTime fromDate, LocalDateTime toDate);
 
     void checkTodayDiaryAlreadyExist(Long memberId, LocalDateTime today);

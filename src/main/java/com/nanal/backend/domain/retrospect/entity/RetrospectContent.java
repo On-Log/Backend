@@ -1,5 +1,6 @@
 package com.nanal.backend.domain.retrospect.entity;
 
+import com.nanal.backend.domain.retrospect.dto.resp.RetrospectContentDto;
 import com.nanal.backend.global.config.BaseTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,21 +32,18 @@ public class RetrospectContent extends BaseTime {
     private String answer;
 
     //==수정 메서드==//
-    public void changeRetrospect(Retrospect retrospect) {
-        this.retrospect = retrospect;
-    }
-
-    public void changeQuestion(String question){ this.question = question; }
 
     public void changeAnswer(String answer){ this.answer = answer; }
 
     //==연관관계 메서드==//
 
     //==생성 메서드==//
-    public static RetrospectContent makeRetrospectContent(String question, String answer) {
-        RetrospectContent retrospectContent = new RetrospectContent();
-        retrospectContent.changeQuestion(question);
-        retrospectContent.changeAnswer(answer);
+    public static RetrospectContent makeRetrospectContent(Retrospect retrospect, RetrospectContentDto retrospectContentDto) {
+        RetrospectContent retrospectContent = RetrospectContent.builder()
+                .retrospect(retrospect)
+                .question(retrospectContentDto.getQuestion())
+                .answer(retrospectContentDto.getAnswer())
+                .build();
         return retrospectContent;
     }
 

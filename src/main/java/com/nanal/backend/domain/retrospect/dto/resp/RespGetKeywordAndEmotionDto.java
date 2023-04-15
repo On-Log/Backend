@@ -12,6 +12,8 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -29,13 +31,11 @@ public class RespGetKeywordAndEmotionDto {
     @NotBlank(message = "list는 비어있을 수 없습니다.")
     List<CountEmotion> countEmotions;
 
-    public static RespGetKeywordAndEmotionDto makeRespGetKeywordAndEmotionDto(boolean isInTime, LocalDateTime currentTime, List<Diary> diaries, List<CountEmotion> countEmotions){
-        List<KeywordWriteDateDto> keywordList = new ArrayList<>();
-        for(Diary d : diaries) {
-            KeywordWriteDateDto keywordWriteDateDto = KeywordWriteDateDto.makeKeywordWriteDateDto(d);
+    public static RespGetKeywordAndEmotionDto createRespGetKeywordAndEmotionDto(boolean isInTime, LocalDateTime currentTime, List<Diary> diaries, List<CountEmotion> countEmotions){
+        List<KeywordWriteDateDto> keywordList = diaries.stream()
+                .map(KeywordWriteDateDto::makeKeywordWriteDateDto)
+                .collect(Collectors.toList());
 
-            keywordList.add(keywordWriteDateDto);
-        }
         RespGetKeywordAndEmotionDto respGetKeywordAndEmotionDto = RespGetKeywordAndEmotionDto.builder()
                 .isInTime(isInTime)
                 .currentTime(currentTime)

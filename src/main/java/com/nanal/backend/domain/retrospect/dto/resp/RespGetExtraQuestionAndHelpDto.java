@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,13 +17,11 @@ import java.util.List;
 public class RespGetExtraQuestionAndHelpDto {
     private List<ExtraQuestionsDto> questionAndHelp;
 
-    public static RespGetExtraQuestionAndHelpDto makeRespGetQuestionAndHelpDto(List<ExtraQuestion> questions){
-        List<ExtraQuestionsDto> questionAndHelp = new ArrayList<>();
-        for(ExtraQuestion q : questions){
-            ExtraQuestionsDto extraQuestionsDto = ExtraQuestionsDto.makeExtraQuestionsDto(q);
+    public static RespGetExtraQuestionAndHelpDto createRespGetQuestionAndHelpDto(List<ExtraQuestion> questions){
+        List<ExtraQuestionsDto> questionAndHelp = questions.stream()
+                .map(ExtraQuestionsDto::makeExtraQuestionsDto)
+                .collect(Collectors.toList());
 
-            questionAndHelp.add(extraQuestionsDto);
-        }
         RespGetExtraQuestionAndHelpDto respGetExtraQuestionAndHelpDto = RespGetExtraQuestionAndHelpDto.builder()
                 .questionAndHelp(questionAndHelp)
                 .build();

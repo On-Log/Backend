@@ -36,7 +36,7 @@ public class RespGetInfoDto {
     //키워드 분류하고, 주차별로 나누기
     List<RespGetClassifiedKeywordDto> keywordList;
 
-    public static RespGetInfoDto makeRespGetInfoDto(String nickname, List<String> existRetrospect, int betweenDate, boolean countRetrospect, List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos){
+    public static RespGetInfoDto createRespGetInfoDto(String nickname, List<String> existRetrospect, int betweenDate, boolean countRetrospect, List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos){
         RespGetInfoDto respGetInfoDto = RespGetInfoDto.builder()
                 .nickname(nickname)
                 .existRetrospect(existRetrospect)

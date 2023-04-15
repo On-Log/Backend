@@ -10,10 +10,13 @@ import java.time.LocalDateTime;
 @Data
 public class ReqGetRetroDto {
 
-    //선택한 월
-    @NotNull(message = "selectDate 는 비어있을 수 없습니다.")
+    @NotNull(message = "fromDate 값이 올바르지 않습니다.")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime selectDate;
+    private LocalDateTime fromDate;
+
+    @NotNull(message = "toDate 값이 올바르지 않습니다.")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime toDate;
 
     @NotNull(message = "week 은 비어있을 수 없습니다.")
     private Integer week;

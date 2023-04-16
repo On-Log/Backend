@@ -29,7 +29,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        log.info("[Request Url] {}", request.getRequestURL());
         // filter skip
         for(String path : ignoredPaths){
             RequestMatcher ignoredPath = new AntPathRequestMatcher(path);

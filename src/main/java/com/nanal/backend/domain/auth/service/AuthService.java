@@ -78,7 +78,6 @@ public class AuthService {
 
         // 토큰 생성
         Token token = tokenUtil.generateToken(loginMember);
-        log.info("{}", token);
 
         // Redis에 Refresh Token 저장
         tokenUtil.storeRefreshToken(loginMember.getSocialId(), token);
@@ -98,8 +97,6 @@ public class AuthService {
 
         // 토큰 생성
         Token token = tokenUtil.generateToken(authenticatedMember);
-        // todo: 테스트를 위한 로깅
-        log.info("Token : {}", token.getToken());
         // Redis에 Refresh Token 저장
         tokenUtil.storeRefreshToken(authenticatedMember.getSocialId(), token);
 
@@ -122,8 +119,6 @@ public class AuthService {
 
         // 토큰 생성
         Token token = tokenUtil.generateToken(authenticatedMember);
-        // todo: 테스트를 위한 로깅
-        log.info("Token : {}", token.getToken());
         // Redis에 Refresh Token 저장
         tokenUtil.storeRefreshToken(authenticatedMember.getSocialId(), token);
 

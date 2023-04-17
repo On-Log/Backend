@@ -16,7 +16,6 @@ public class AesConverter implements AttributeConverter<String, String> {
     @Override
     public String convertToDatabaseColumn(String attribute) {
         try {
-            System.out.println(attribute);
             return aesUtil.encrypt(attribute);
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to encrypt attribute", e);

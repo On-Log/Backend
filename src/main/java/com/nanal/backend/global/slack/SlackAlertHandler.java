@@ -47,8 +47,10 @@ public class SlackAlertHandler {
     )
     public void publishSchedulingEvent(SchedulingConfig.SchedulingEvent schedulingEvent){
         try{
-            String message = "[Scheduling Info] \n" +
-                    "Message : " + schedulingEvent.getMessage();
+//            String message = "[Scheduling Info] \n" +
+//                    "Message : " + schedulingEvent.getMessage();
+
+            String message = schedulingEvent.getMessage();
 
             Slack slack = Slack.getInstance();
             slack.methods(token).chatPostMessage(req -> req.channel(monitorChannel).text(message));

@@ -29,7 +29,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        log.info("[Request Url] {}", request.getRequestURL());
+        // todo: 테스트용 로깅
+        if(!request.getRequestURI().matches("/health")) log.info("[Request URL] " + request.getRequestURL());
         // filter skip
         for(String path : ignoredPaths){
             RequestMatcher ignoredPath = new AntPathRequestMatcher(path);

@@ -21,7 +21,7 @@ public interface DiaryLogRepository extends JpaRepository<DiaryLog, Long> {
 
     @Query(value = "SELECT COUNT(DISTINCT dl.userEmail) " +
             "FROM DiaryLog dl " +
-            "WHERE dl.createdAt >= :from AND dl.createdAt < :to AND dl.serviceName = 'writeDairy'")
+            "WHERE dl.createdAt >= :from AND dl.createdAt < :to AND dl.serviceName = 'writeDiary'")
     Integer diaryDAU(LocalDateTime from, LocalDateTime to);
 
     @Query(value = "SELECT COUNT(DISTINCT dl.userEmail) " +

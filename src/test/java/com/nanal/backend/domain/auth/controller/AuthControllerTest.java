@@ -405,6 +405,7 @@ class AuthControllerTest extends CommonControllerTest {
         Token output = Token.builder()
                 .token("SERVER_ACCESS_TOKEN")
                 .refreshToken("SERVER_REFRESH_TOKEN")
+                .onBoardingCompleted(true)
                 .build();
 
         given(authService.reissue(any())).willReturn(output);
@@ -428,7 +429,8 @@ class AuthControllerTest extends CommonControllerTest {
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
                                         fieldWithPath("result.token").description("서버 접근용 Token"),
-                                        fieldWithPath("result.refreshToken").description("서버 접근용 Refresh Token")
+                                        fieldWithPath("result.refreshToken").description("서버 접근용 Refresh Token"),
+                                        fieldWithPath("result.onBoardingCompleted").description("온보딩 여부 확인")
                                 )
                         )
                 );

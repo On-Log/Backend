@@ -15,4 +15,7 @@ public class Token {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String refreshToken;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean onBoardingCompleted;
 }

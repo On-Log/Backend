@@ -65,7 +65,8 @@ public class TokenUtil {
                         .setIssuedAt(now)
                         .setExpiration(new Date(now.getTime() + refreshPeriod))
                         .signWith(SignatureAlgorithm.HS256, secretKey)
-                        .compact());
+                        .compact(),
+                member.getRole().equals(Member.Role.USER));
     }
 
     public boolean verifyToken(String token) {

@@ -1245,7 +1245,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 199
+Content-Length: 234
 
 {
   "isSuccess" : true,
@@ -1253,7 +1253,8 @@ Content-Length: 199
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "token" : "SERVER_ACCESS_TOKEN",
-    "refreshToken" : "SERVER_REFRESH_TOKEN"
+    "refreshToken" : "SERVER_REFRESH_TOKEN",
+    "onBoardingCompleted" : true
   }
 }</code></pre>
 </div>
@@ -1299,6 +1300,11 @@ Content-Length: 199
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.refreshToken</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">서버 접근용 Refresh Token</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.onBoardingCompleted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">온보딩 여부 확인</p></td>
 </tr>
 </tbody>
 </table>

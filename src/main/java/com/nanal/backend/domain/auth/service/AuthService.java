@@ -100,7 +100,7 @@ public class AuthService {
         // Redis에 Refresh Token 저장
         tokenUtil.storeRefreshToken(authenticatedMember.getSocialId(), token);
 
-        return new LoginInfo(authenticatedMember.getNickname(), token, authenticatedMember.getRole().equals(Member.Role.ONBOARDER));
+        return new LoginInfo(authenticatedMember.getNickname(), token, authenticatedMember.getRole().equals(Member.Role.USER));
     }
 
     @Counted("auth.api.count")
@@ -122,7 +122,7 @@ public class AuthService {
         // Redis에 Refresh Token 저장
         tokenUtil.storeRefreshToken(authenticatedMember.getSocialId(), token);
 
-        return new LoginInfo(authenticatedMember.getNickname(), token, authenticatedMember.getRole().equals(Member.Role.ONBOARDER));
+        return new LoginInfo(authenticatedMember.getNickname(), token, authenticatedMember.getRole().equals(Member.Role.USER));
     }
 
     @Counted("auth.api.count")

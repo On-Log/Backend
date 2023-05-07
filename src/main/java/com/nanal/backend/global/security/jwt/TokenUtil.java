@@ -100,8 +100,8 @@ public class TokenUtil {
             log.info("Refresh token reissue");
             storeRefreshToken(socialId, newToken);
         }
-        // refreshToken 의 유효기간이 3일 이상 남았을 경우 (refreshToken NULL 값으로 설정함으로써 전송하지 않음)
-        else newToken.setRefreshToken(null);
+        // refreshToken 의 유효기간이 3일 이상 남았을 경우 (refreshToken 그대로 넣어서 응답)
+        else newToken.setRefreshToken(token);
 
         return newToken;
     }

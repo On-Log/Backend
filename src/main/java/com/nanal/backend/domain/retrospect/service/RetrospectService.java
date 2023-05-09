@@ -321,6 +321,10 @@ public class RetrospectService {
     }
     private List<CountEmotion> getEmotionCount(List<Diary> diaries) {
         List<Emotion> findEmotions = emotionRepository.findAll();
+        int totalCount = diaries.stream()
+                .flatMap(d -> d.getKeywords().stream())
+                .map(k -> k.getKeywordEmotions().size())
+                .reduce(0, Integer::sum);
 
         return findEmotions.stream().map(e -> {
             int count = diaries.stream()
@@ -331,13 +335,17 @@ public class RetrospectService {
                     .collect(Collectors.toList())
                     .size();
 
+            double ratio = totalCount == 0 ? 0 : ((double) count) / totalCount;
+            System.out.println(ratio);
+
             int frequency = 0;
-            if (count >= 1 && count <= 5)
+            if (ratio <= 0.3 && ratio > 0) {
                 frequency = 1;
-            else if (count >= 6 && count <= 10)
+            } else if (ratio <= 0.7 && ratio > 0.3) {
                 frequency = 2;
-            else if (count > 10)
+            } else if (ratio > 0.7){
                 frequency = 3;
+            }
 
             return CountEmotion.makeCountEmotion(e.getEmotion(), frequency);
         }).collect(Collectors.toList());

@@ -76,10 +76,7 @@ public class AuthController {
          */
         LoginInfo loginInfo = authService.commonAuth(reqAuthDto.getAccessToken(), request.getRequestURI());
 
-        if(loginInfo.getOnBoarding())
-            return new CommonResponse<>(ErrorCode.SUCCESS_BUT, loginInfo);
-        else
-            return new CommonResponse<>(loginInfo);
+        return new CommonResponse<>(loginInfo);
     }
 
     /**
@@ -94,10 +91,7 @@ public class AuthController {
          */
         LoginInfo loginInfo = authService.commonAuth(reqAuthDto.getAccessToken(), request.getRequestURI());
 
-        if(loginInfo.getOnBoarding())
-            return new CommonResponse<>(ErrorCode.SUCCESS_BUT, loginInfo);
-        else
-            return new CommonResponse<>(loginInfo);
+        return new CommonResponse<>(loginInfo);
     }
 
     /**
@@ -112,10 +106,7 @@ public class AuthController {
          */
         LoginInfo loginInfo = authService.commonAuth(reqAuthDto.getAccessToken(), request.getRequestURI());
 
-        if(loginInfo.getOnBoarding())
-            return new CommonResponse<>(ErrorCode.SUCCESS_BUT, loginInfo);
-        else
-            return new CommonResponse<>(loginInfo);
+        return new CommonResponse<>(loginInfo);
     }
 
     @PostMapping(value = "/auth/apple")
@@ -127,10 +118,7 @@ public class AuthController {
          */
         LoginInfo loginInfo = authService.appleAuth(reqAppleAuthDto.getIdentityToken(), request.getRequestURI());
 
-        if(loginInfo.getOnBoarding())
-            return new CommonResponse<>(ErrorCode.SUCCESS_BUT, loginInfo);
-        else
-            return new CommonResponse<>(loginInfo);
+        return new CommonResponse<>(loginInfo);
     }
 
     /**

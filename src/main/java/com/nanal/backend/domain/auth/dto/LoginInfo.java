@@ -21,8 +21,7 @@ public class LoginInfo {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String refreshToken;
 
-    @JsonIgnore
-    private Boolean onBoarding;
+    private Boolean onBoardingCompleted;
 
     public LoginInfo(String nickname, Token token) {
         this.nickname = nickname;
@@ -30,10 +29,10 @@ public class LoginInfo {
         this.refreshToken = token.getRefreshToken();
     }
 
-    public LoginInfo(String nickname, Token token, Boolean onBoarding) {
+    public LoginInfo(String nickname, Token token, Boolean onBoardingCompleted) {
         this.nickname = nickname;
         this.token = token.getToken();
         this.refreshToken = token.getRefreshToken();
-        this.onBoarding = onBoarding;
+        this.onBoardingCompleted = onBoardingCompleted;
     }
 }

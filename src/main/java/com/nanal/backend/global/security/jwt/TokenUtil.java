@@ -65,7 +65,8 @@ public class TokenUtil {
                         .setIssuedAt(now)
                         .setExpiration(new Date(now.getTime() + refreshPeriod))
                         .signWith(SignatureAlgorithm.HS256, secretKey)
-                        .compact());
+                        .compact(),
+                member.getRole().equals(Member.Role.USER));
     }
 
     public boolean verifyToken(String token) {
@@ -95,10 +96,12 @@ public class TokenUtil {
         Date expireDate = getExpiration(token);
         Date currentDate = new Date();
         // refreshToken 기간이 얼마남지 않았을 경우 (3일 미만)
-        log.info("remain time = {} < {}", expireDate.getTime() - currentDate.getTime(), reissuePeriod);
-        if (expireDate.getTime() - currentDate.getTime() < reissuePeriod) storeRefreshToken(socialId, newToken);
-        // refreshToken 의 유효기간이 3일 이상 남았을 경우 (refreshToken NULL 값으로 설정함으로써 전송하지 않음)
-        else newToken.setRefreshToken(null);
+        if (expireDate.getTime() - currentDate.getTime() < reissuePeriod) {
+            log.info("Refresh token reissue");
+            storeRefreshToken(socialId, newToken);
+        }
+        // refreshToken 의 유효기간이 3일 이상 남았을 경우 (refreshToken 그대로 넣어서 응답)
+        else newToken.setRefreshToken(token);
 
         return newToken;
     }

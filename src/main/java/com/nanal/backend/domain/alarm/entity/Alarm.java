@@ -25,13 +25,13 @@ public class Alarm extends BaseTime {
     private Boolean diaryActive;
 
     @Column(length = 5, nullable = false)
-    private String diary;
+    private String diaryTime;
 
     @Column(nullable = false)
     private Boolean retrospectActive;
 
     @Column(length = 5, nullable = false)
-    private String retrospect;
+    private String retrospectTime;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -40,20 +40,20 @@ public class Alarm extends BaseTime {
     public static Alarm createAlarm(Member member) {
         return Alarm.builder()
                 .diaryActive(true)
-                .diary("20:00")
+                .diaryTime("20:00")
                 .retrospectActive(true)
-                .retrospect("20:00")
+                .retrospectTime("20:00")
                 .member(member)
                 .build();
     }
 
     public void updateDiaryAlarm(ReqUpdateDiaryAlarm reqUpdateDiaryAlarm) {
-        this.diaryActive = reqUpdateDiaryAlarm.getDiaryActive();
-        this.diary = reqUpdateDiaryAlarm.getDiary();
+        this.diaryActive = reqUpdateDiaryAlarm.getDiaryAlarmActive();
+        this.diaryTime = reqUpdateDiaryAlarm.getDiaryAlarmTime();
     }
 
     public void updateRetrospectAlarm(ReqUpdateRetrospectAlarm reqUpdateRetrospectAlarm) {
-        this.retrospectActive = reqUpdateRetrospectAlarm.getRetrospectActive();
-        this.retrospect = reqUpdateRetrospectAlarm.getRetrospect();
+        this.retrospectActive = reqUpdateRetrospectAlarm.getRetrospectAlarmActive();
+        this.retrospectTime = reqUpdateRetrospectAlarm.getRetrospectAlarmTime();
     }
 }

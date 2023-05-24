@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class ReqUpdateRetrospectAlarm {
 
-    private Boolean retrospectActive;
+    private Boolean retrospectAlarmActive;
 
-    private String retrospect;
+    private String retrospectAlarmTime;
 }

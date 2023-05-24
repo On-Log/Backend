@@ -16,14 +16,16 @@ import javax.transaction.Transactional;
 @Service
 public class AlarmService {
 
-    private final AlarmRepository alarmRepository;
     private final MemberRepository memberRepository;
 
     public void updateDiaryAlarm(String socialId, ReqUpdateDiaryAlarm reqUpdateDiaryAlarm) {
         // socialId 로 유저 조회
         Member member = memberRepository.findMember(socialId);
 
-        Alarm alarm = alarmRepository.findByMember(member).orElseThrow();
+        Alarm alarm = member.getAlarm();
+
+        System.out.println(reqUpdateDiaryAlarm.getDiaryAlarmActive());
+        System.out.println(reqUpdateDiaryAlarm.getDiaryAlarmTime());
 
         alarm.updateDiaryAlarm(reqUpdateDiaryAlarm);
     }
@@ -32,7 +34,7 @@ public class AlarmService {
         // socialId 로 유저 조회
         Member member = memberRepository.findMember(socialId);
 
-        Alarm alarm = alarmRepository.findByMember(member).orElseThrow();
+        Alarm alarm = member.getAlarm();
 
         alarm.updateRetrospectAlarm(reqUpdateRetrospectAlarm);
     }

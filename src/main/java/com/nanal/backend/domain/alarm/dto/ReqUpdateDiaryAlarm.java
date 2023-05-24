@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class ReqUpdateDiaryAlarm {
 
-    private Boolean diaryActive;
+    private Boolean diaryAlarmActive;
 
-    private String diary;
+    private String diaryAlarmTime;
 }

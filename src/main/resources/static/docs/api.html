@@ -1422,7 +1422,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 226
+Content-Length: 366
 
 {
   "isSuccess" : true,
@@ -1431,7 +1431,11 @@ Content-Length: 226
   "result" : {
     "nickname" : "사용자 닉네임",
     "email" : "유저 이메일",
-    "retrospectDay" : "THURSDAY"
+    "retrospectDay" : "THURSDAY",
+    "diaryAlarmActive" : true,
+    "diaryAlarmTime" : "20:00",
+    "retrospectAlarmActive" : true,
+    "retrospectAlarmTime" : "20:00"
   }
 }</code></pre>
 </div>
@@ -1482,6 +1486,26 @@ Content-Length: 226
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectDay</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">유저의 회고일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryAlarmActive</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일기 알림 활성화 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryAlarmTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일기 알림 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectAlarmActive</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고 알림 활성화 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectAlarmTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고 알림 시간</p></td>
 </tr>
 </tbody>
 </table>

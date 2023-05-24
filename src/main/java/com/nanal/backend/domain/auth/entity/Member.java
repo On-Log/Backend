@@ -169,7 +169,7 @@ public class Member extends BaseTime {
     }
 
     //==수정 메서드==//
-    private void setAlarm(Alarm alarm) { this.alarm = alarm; }
+    public void setAlarm(Alarm alarm) { this.alarm = alarm; }
 
     public void updateNickname(String nickname) { this.nickname = nickname; }
 

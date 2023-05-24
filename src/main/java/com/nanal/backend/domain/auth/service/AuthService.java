@@ -1,5 +1,6 @@
 package com.nanal.backend.domain.auth.service;
 
+import com.nanal.backend.domain.alarm.entity.Alarm;
 import com.nanal.backend.domain.auth.dto.LoginInfo;
 import com.nanal.backend.domain.auth.dto.req.ReqRegisterDto;
 import com.nanal.backend.domain.auth.enumerate.MemberProvider;
@@ -172,6 +173,10 @@ public class AuthService {
         Member loginMember = member.get();
         if(!providerInfo.contains((loginMember.getProvider().name().toLowerCase())))
             throw AccountAlreadyExistException.EXCEPTION;
+
+        if(loginMember.getAlarm() == null) {
+            loginMember.setAlarm(Alarm.createAlarm(loginMember));
+        }
         return loginMember;
     }
 

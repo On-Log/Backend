@@ -38,6 +38,7 @@ public class Member extends BaseTime {
     private String socialId;
 
     // RFC 표준상 최대 320자.
+    @Convert(converter = AesConverter.class)
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -48,10 +49,12 @@ public class Member extends BaseTime {
     @Column(nullable = false)
     private MemberProvider provider;
 
-    @Column(nullable = false, length = 7)
+    @Convert(converter = AesConverter.class)
+    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, length = 7)
+    @Convert(converter = AesConverter.class)
+    @Column(nullable = false)
     private String nickname;
 
     @Column(nullable = false, length = 10)

@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 public class Token {
     private String token;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String refreshToken;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean onBoardingCompleted;
 }

@@ -783,7 +783,7 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 237
+Content-Length: 272
 
 {
   "isSuccess" : true,
@@ -792,7 +792,8 @@ Content-Length: 237
   "result" : {
     "nickname" : "유저 닉네임",
     "token" : "SERVER_ACCESS_TOKEN",
-    "refreshToken" : "SERVER_REFRESH_TOKEN"
+    "refreshToken" : "SERVER_REFRESH_TOKEN",
+    "onBoardingCompleted" : true
   }
 }</code></pre>
 </div>
@@ -843,6 +844,11 @@ Content-Length: 237
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.refreshToken</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">서버 접근용 Refresh Token</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.onBoardingCompleted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">온보딩 여부 확인</p></td>
 </tr>
 </tbody>
 </table>
@@ -896,7 +902,7 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 237
+Content-Length: 272
 
 {
   "isSuccess" : true,
@@ -905,7 +911,8 @@ Content-Length: 237
   "result" : {
     "nickname" : "유저 닉네임",
     "token" : "SERVER_ACCESS_TOKEN",
-    "refreshToken" : "SERVER_REFRESH_TOKEN"
+    "refreshToken" : "SERVER_REFRESH_TOKEN",
+    "onBoardingCompleted" : true
   }
 }</code></pre>
 </div>
@@ -956,6 +963,11 @@ Content-Length: 237
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.refreshToken</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">서버 접근용 Refresh Token</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.onBoardingCompleted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">온보딩 여부 확인</p></td>
 </tr>
 </tbody>
 </table>
@@ -1009,7 +1021,7 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 237
+Content-Length: 272
 
 {
   "isSuccess" : true,
@@ -1018,7 +1030,8 @@ Content-Length: 237
   "result" : {
     "nickname" : "유저 닉네임",
     "token" : "SERVER_ACCESS_TOKEN",
-    "refreshToken" : "SERVER_REFRESH_TOKEN"
+    "refreshToken" : "SERVER_REFRESH_TOKEN",
+    "onBoardingCompleted" : true
   }
 }</code></pre>
 </div>
@@ -1069,6 +1082,11 @@ Content-Length: 237
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.refreshToken</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">서버 접근용 Refresh Token</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.onBoardingCompleted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">온보딩 여부 확인</p></td>
 </tr>
 </tbody>
 </table>
@@ -1122,7 +1140,7 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 237
+Content-Length: 272
 
 {
   "isSuccess" : true,
@@ -1131,7 +1149,8 @@ Content-Length: 237
   "result" : {
     "nickname" : "유저 닉네임",
     "token" : "SERVER_ACCESS_TOKEN",
-    "refreshToken" : "SERVER_REFRESH_TOKEN"
+    "refreshToken" : "SERVER_REFRESH_TOKEN",
+    "onBoardingCompleted" : true
   }
 }</code></pre>
 </div>
@@ -1183,6 +1202,11 @@ Content-Length: 237
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">서버 접근용 Refresh Token</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.onBoardingCompleted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">온보딩 여부 확인</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1227,7 +1251,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 199
+Content-Length: 234
 
 {
   "isSuccess" : true,
@@ -1235,7 +1259,8 @@ Content-Length: 199
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "token" : "SERVER_ACCESS_TOKEN",
-    "refreshToken" : "SERVER_REFRESH_TOKEN"
+    "refreshToken" : "SERVER_REFRESH_TOKEN",
+    "onBoardingCompleted" : true
   }
 }</code></pre>
 </div>
@@ -1281,6 +1306,11 @@ Content-Length: 199
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.refreshToken</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">서버 접근용 Refresh Token</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.onBoardingCompleted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">온보딩 여부 확인</p></td>
 </tr>
 </tbody>
 </table>
@@ -5094,7 +5124,7 @@ Content-Length: 1678
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-05-24 23:14:17 +0900
+Last updated 2023-05-09 15:03:35 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

@@ -25,7 +25,7 @@ public class Keyword extends BaseTime {
     @Column(name = "keyword_id")
     private Long keywordId;
 
-    @Column(nullable = false, length = 5)
+    @Column(nullable = false, length = 7)
     private String word;
 
     @ManyToOne(fetch = FetchType.LAZY)

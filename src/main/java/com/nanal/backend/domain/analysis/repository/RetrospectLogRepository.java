@@ -1,8 +1,6 @@
 package com.nanal.backend.domain.analysis.repository;
 
 import com.nanal.backend.domain.analysis.dto.resp.WeekDayDao;
-import com.nanal.backend.domain.analysis.entity.DiaryLog;
-import com.nanal.backend.domain.analysis.entity.MypageLog;
 import com.nanal.backend.domain.analysis.entity.RetrospectLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,6 +20,11 @@ public interface RetrospectLogRepository extends JpaRepository<RetrospectLog, Lo
             "WHERE rl.serviceName = :serviceName AND rl.createdAt >= :first AND rl.createdAt < :last " +
             "GROUP BY DAYOFWEEK(rl.createdAt)")
     List<WeekDayDao> weekDayRetrospectQuery(String serviceName, LocalDateTime first, LocalDateTime last);
+
+    @Query(value = "SELECT COUNT(DISTINCT rl.userEmail) " +
+            "FROM RetrospectLog rl " +
+            "WHERE rl.createdAt >= :from AND rl.createdAt < :to AND rl.serviceName = 'saveRetrospect'")
+    Integer retrospectDAU(LocalDateTime from, LocalDateTime to);
 
     /*
     한달기준 요일별

@@ -26,7 +26,7 @@ public class Diary extends BaseTime {
     @Column(name = "diary_id")
     private Long diaryId;
 
-    @Column(length = 500, nullable = false)
+    @Column(length = 600, nullable = false)
     private String content;
 
     private LocalDateTime writeDate;

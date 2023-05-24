@@ -17,7 +17,7 @@ public class RetrospectKeywordDto {
     String classify;
 
     @NotBlank(message = "keyword 는 비어있을 수 없습니다.")
-    @Size(min = 1, max = 5, message="keyword 는 최소 1개, 최대 5개의 문자만 입력 가능합니다.")
+    @Size(min = 1, max = 7, message="keyword 는 최소 1개, 최대 7개의 문자만 입력 가능합니다.")
     String keyword;
 
     public RetrospectKeywordDto(RetrospectKeyword retrospectKeyword) {

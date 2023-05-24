@@ -24,9 +24,6 @@ public class AlarmService {
 
         Alarm alarm = member.getAlarm();
 
-        System.out.println(reqUpdateDiaryAlarm.getDiaryAlarmActive());
-        System.out.println(reqUpdateDiaryAlarm.getDiaryAlarmTime());
-
         alarm.updateDiaryAlarm(reqUpdateDiaryAlarm);
     }
 

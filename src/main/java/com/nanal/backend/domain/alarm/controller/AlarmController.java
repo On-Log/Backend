@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RequiredArgsConstructor
 @RestController
 public class AlarmController {
@@ -21,7 +23,7 @@ public class AlarmController {
     @PutMapping("/alarm/diary")
     public CommonResponse<?> updateDiaryAlarm(
             @AuthenticationPrincipal User user,
-            @RequestBody ReqUpdateDiaryAlarm reqUpdateDiaryAlarm) {
+            @RequestBody @Valid ReqUpdateDiaryAlarm reqUpdateDiaryAlarm) {
 
         alarmService.updateDiaryAlarm(user.getSocialId(), reqUpdateDiaryAlarm);
 
@@ -31,7 +33,7 @@ public class AlarmController {
     @PutMapping("/alarm/retrospect")
     public CommonResponse<?> updateRetrospectAlarm(
             @AuthenticationPrincipal User user,
-            @RequestBody ReqUpdateRetrospectAlarm reqUpdateRetrospectAlarm) {
+            @RequestBody @Valid ReqUpdateRetrospectAlarm reqUpdateRetrospectAlarm) {
 
         alarmService.updateRetrospectAlarm(user.getSocialId(), reqUpdateRetrospectAlarm);
 

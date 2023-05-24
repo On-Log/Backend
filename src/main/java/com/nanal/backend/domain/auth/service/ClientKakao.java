@@ -1,5 +1,7 @@
 package com.nanal.backend.domain.auth.service;
 
+import com.nanal.backend.domain.alarm.entity.Alarm;
+import com.nanal.backend.domain.alarm.repository.AlarmRepository;
 import com.nanal.backend.domain.auth.dto.KakaoAccessTokenResponseDto;
 import com.nanal.backend.domain.auth.dto.KakaoUserResponseDto;
 import com.nanal.backend.domain.auth.entity.Member;
@@ -41,21 +43,7 @@ public class ClientKakao{
 
         kakaoUserResponseDto.adaptResponse();
 
-        // 닉네임 길이체크해야함
-        return Member.builder()
-                .socialId(MemberProvider.KAKAO + "@" + kakaoUserResponseDto.getId())
-                .provider(MemberProvider.KAKAO)
-                .name(kakaoUserResponseDto.getProperties().getNickname())
-                .email(kakaoUserResponseDto.getKakaoAccount().getEmail())
-                .password("undef")
-                // 당일로 회고일 설정
-                .retrospectDay(LocalDate.now().getDayOfWeek())
-                .prevRetrospectDate(LocalDateTime.now().minusDays(30))
-                .nickname(kakaoUserResponseDto.getProperties().getNickname())
-                .gender(kakaoUserResponseDto.getKakaoAccount().getGender())
-                .ageRange(kakaoUserResponseDto.getKakaoAccount().getAgeRange())
-                .role(Member.Role.ONBOARDER)
-                .build();
+        return Member.createKakaoMember(kakaoUserResponseDto);
     }
 
     public void verifyAccessToken(String accessToken) {

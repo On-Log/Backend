@@ -1,0 +1,12 @@
+[[Alarm-API]]
+== Alarm API
+
+[[Alarm-일기-알림-변경]]
+=== Alarm 일기 알림 변경
+operation::alarm-controller-test/일기_알림_변경[snippets='http-request,request-fields,http-response,response-fields']
+
+---
+
+[[Alarm-회고-알림-변경]]
+=== Alarm 회고 알림 변경
+operation::alarm-controller-test/회고_알림_변경[snippets='http-request,request-fields,http-response,response-fields']

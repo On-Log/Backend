@@ -1,5 +1,7 @@
 package com.nanal.backend.domain.auth.entity;
 
+import com.nanal.backend.domain.alarm.entity.Alarm;
+import com.nanal.backend.domain.auth.dto.KakaoUserResponseDto;
 import com.nanal.backend.domain.auth.dto.req.ReqRegisterDto;
 import com.nanal.backend.domain.auth.enumerate.MemberProvider;
 import com.nanal.backend.domain.diary.entity.Diary;
@@ -72,6 +74,9 @@ public class Member extends BaseTime {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Alarm alarm;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Diary> diaries = new ArrayList<>();
 
@@ -121,8 +126,29 @@ public class Member extends BaseTime {
                 .build();
     }
 
+    public static Member createKakaoMember(KakaoUserResponseDto kakaoUserResponseDto) {
+        Member newMember = Member.builder()
+                .socialId(MemberProvider.KAKAO + "@" + kakaoUserResponseDto.getId())
+                .provider(MemberProvider.KAKAO)
+                .name(kakaoUserResponseDto.getProperties().getNickname())
+                .email(kakaoUserResponseDto.getKakaoAccount().getEmail())
+                .password("undef")
+                // 당일로 회고일 설정
+                .retrospectDay(LocalDate.now().getDayOfWeek())
+                .prevRetrospectDate(LocalDateTime.now().minusDays(30))
+                .nickname(kakaoUserResponseDto.getProperties().getNickname())
+                .gender(kakaoUserResponseDto.getKakaoAccount().getGender())
+                .ageRange(kakaoUserResponseDto.getKakaoAccount().getAgeRange())
+                .role(Member.Role.ONBOARDER)
+                .build();
+
+        newMember.setAlarm(Alarm.createAlarm(newMember));
+
+        return newMember;
+    }
+
     public static Member createAppleMember(String socialId, String email) {
-        return Member.builder()
+        Member newMember = Member.builder()
                 .socialId(MemberProvider.APPLE + "@" + socialId)
                 .provider(MemberProvider.APPLE)
                 .name("나나리")
@@ -134,11 +160,17 @@ public class Member extends BaseTime {
                 .nickname("나나리")
                 .ageRange("undef")
                 .gender("undef")
-                .role(Member.Role.ONBOARDER)
+                .role(Role.ONBOARDER)
                 .build();
+
+        newMember.setAlarm(Alarm.createAlarm(newMember));
+
+        return newMember;
     }
 
     //==수정 메서드==//
+    private void setAlarm(Alarm alarm) { this.alarm = alarm; }
+
     public void updateNickname(String nickname) { this.nickname = nickname; }
 
     public void updateRetrospectDay(DayOfWeek retrospectDay) {

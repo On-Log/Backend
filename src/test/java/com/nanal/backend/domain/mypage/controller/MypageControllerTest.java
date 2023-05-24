@@ -38,7 +38,7 @@ public class MypageControllerTest extends CommonControllerTest {
     @Test
     public void 마이페이지_탭() throws Exception {
         //given
-        RespGetUserDto respGetUserDto = new RespGetUserDto("사용자 닉네임", "유저 이메일", LocalDate.of(2023, 1, 12).getDayOfWeek());
+        RespGetUserDto respGetUserDto = new RespGetUserDto("사용자 닉네임", "유저 이메일", LocalDate.of(2023, 1, 12).getDayOfWeek(), true, "20:00", true, "20:00");
         given(mypageService.getUser(any())).willReturn(respGetUserDto);
 
         //when
@@ -61,7 +61,11 @@ public class MypageControllerTest extends CommonControllerTest {
                                         fieldWithPath("message").description("결과 메시지"),
                                         fieldWithPath("result.nickname").description("유저 닉네임"),
                                         fieldWithPath("result.email").description("유저 이메일"),
-                                        fieldWithPath("result.retrospectDay").description("유저의 회고일")
+                                        fieldWithPath("result.retrospectDay").description("유저의 회고일"),
+                                        fieldWithPath("result.diaryAlarmActive").description("일기 알림 활성화 여부"),
+                                        fieldWithPath("result.diaryAlarmTime").description("일기 알림 시간"),
+                                        fieldWithPath("result.retrospectAlarmActive").description("회고 알림 활성화 여부"),
+                                        fieldWithPath("result.retrospectAlarmTime").description("회고 알림 시간")
                                 )
                         )
                 );

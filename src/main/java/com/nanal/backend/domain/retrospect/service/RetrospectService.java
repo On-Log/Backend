@@ -336,7 +336,7 @@ public class RetrospectService {
                 frequency = 1;
             else if (count >= 4 && count <= 7)
                 frequency = 2;
-            else if (count > 8)
+            else if (count > 7)
                 frequency = 3;
 
             return CountEmotion.makeCountEmotion(e.getEmotion(), frequency);

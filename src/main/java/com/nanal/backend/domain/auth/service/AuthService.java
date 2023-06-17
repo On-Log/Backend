@@ -12,6 +12,8 @@ import com.nanal.backend.domain.auth.feign.resp.Keys.PubKey;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.global.exception.customexception.TokenInvalidException;
+import com.nanal.backend.global.lock.DistributedLock;
+import com.nanal.backend.global.lock.LockName;
 import com.nanal.backend.global.security.AuthenticationUtil;
 import com.nanal.backend.global.security.jwt.Token;
 import com.nanal.backend.global.security.jwt.TokenUtil;
@@ -55,7 +57,8 @@ public class AuthService {
     private String apple_aud;
 
     @Counted("auth.api.count")
-    public LoginInfo commonAuth(String accessToken, String providerInfo) {
+    @DistributedLock
+    public LoginInfo commonAuth(String accessToken, @LockName String providerInfo) {
         // 플랫폼에서 사용자 정보 조회
         Member member = getUserDataFromPlatform(accessToken, providerInfo);
 

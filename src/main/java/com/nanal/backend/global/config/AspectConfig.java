@@ -10,6 +10,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
@@ -54,6 +55,12 @@ public class AspectConfig {
 
     @Around("execution(* com..diary..*Service.*(..))")
     public Object diaryLogging(ProceedingJoinPoint joinPoint) throws Throwable {
+        Object[] args = joinPoint.getArgs();
+        for (int i = 0; i < args.length; i++) {
+            System.out.println(args[i]);
+        }
+        System.out.println("" + this);
+
         StopWatch stopWatch = new StopWatch();
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();
@@ -73,6 +80,15 @@ public class AspectConfig {
 
         diaryLogRepository.save(diaryLog);
 
+        return result;
+    }
+
+    @Around("execution(* com..diary..*Service.*(..))")
+    public Object test(ProceedingJoinPoint joinPoint) throws Throwable {
+
+        System.out.println("여기는 테스트@@@@@@@@@@@@@@@@@@@@@@@ : " + this);
+        Object result = joinPoint.proceed();
+        System.out.println("여기는 테스트!!!!!!!!!!!!!!!!!!!!!!!!");
         return result;
     }
 
@@ -128,6 +144,7 @@ public class AspectConfig {
 
     @AfterReturning("execution(* com..AuthService.commonAuth(..))")
     public void authLogging(JoinPoint joinPoint) {
+
         String email = AuthenticationUtil.getCurrentUserEmail();
         String methodName = joinPoint.getSignature().getName();
 

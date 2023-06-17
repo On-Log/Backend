@@ -12,6 +12,8 @@ import com.nanal.backend.domain.auth.feign.resp.Keys.PubKey;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.global.exception.customexception.TokenInvalidException;
+import com.nanal.backend.global.lock.DistributedLock;
+import com.nanal.backend.global.lock.LockName;
 import com.nanal.backend.global.security.AuthenticationUtil;
 import com.nanal.backend.global.security.jwt.Token;
 import com.nanal.backend.global.security.jwt.TokenUtil;
@@ -40,16 +42,15 @@ import static org.springframework.security.oauth2.jwt.JoseHeaderNames.KID;
 @Timed("auth.api")
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
 @Service
 public class AuthService {
-    private final MemberRepository memberRepository;
+
     private final TokenUtil tokenUtil;
     private final ClientNaver clientNaver;
     private final ClientKakao clientKakao;
     private final ClientGoogle clientGoogle;
-    private final ApplicationEventPublisher publisher;
     private final AppleFeignClient appleFeignClient;
+    private final InternalAuthService internalAuthService;
 
     @Value("${app-id.apple}")
     private String apple_aud;
@@ -60,7 +61,7 @@ public class AuthService {
         Member member = getUserDataFromPlatform(accessToken, providerInfo);
 
         // 회원가입(가입 정보 없는 유저일 때만) 및 로그인
-        Member authenticatedMember = auth(member, providerInfo);
+        Member authenticatedMember = internalAuthService.auth(member, providerInfo);
 
         AuthenticationUtil.makeAuthentication(authenticatedMember);
 
@@ -82,7 +83,7 @@ public class AuthService {
         Member member = Member.createAppleMember(socialId, email);
 
         // 회원가입(가입 정보 없는 유저일 때만) 및 로그인
-        Member authenticatedMember = auth(member, providerInfo);
+        Member authenticatedMember = internalAuthService.auth(member, providerInfo);
 
         AuthenticationUtil.makeAuthentication(authenticatedMember);
 
@@ -113,39 +114,6 @@ public class AuthService {
         if(providerInfo.contains("google")) return clientGoogle.getUserData(accessToken);
         else if(providerInfo.contains("kakao")) return clientKakao.getUserData(accessToken);
         else return clientNaver.getUserData(accessToken);
-    }
-
-    private synchronized Member auth(Member member, String providerInfo) {
-        Optional<Member> findMember = memberRepository.findByEmail(member.getEmail());
-        if(isNewMember(findMember))
-            return joinMembership(member);
-        else
-            return login(findMember, providerInfo);
-    }
-
-    private Member joinMembership(Member member) {
-        Member newMember = register(member);
-        publisher.publishEvent(new RegisterEvent(newMember.getNickname(), newMember.getEmail()));
-        return newMember;
-    }
-
-    private static boolean isNewMember(Optional<Member> findMember) {
-        return findMember.isEmpty();
-    }
-
-    private Member register(Member member) {
-        return memberRepository.save(member);
-    }
-
-    private Member login(Optional<Member> member, String providerInfo) {
-        Member loginMember = member.get();
-        if(!providerInfo.contains((loginMember.getProvider().name().toLowerCase())))
-            throw AccountAlreadyExistException.EXCEPTION;
-
-        if(loginMember.getAlarm() == null) {
-            loginMember.setAlarm(Alarm.createAlarm(loginMember));
-        }
-        return loginMember;
     }
 
     private Jws<Claims> sigVerificationAndGetJws(String unverifiedToken) {

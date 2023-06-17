@@ -12,6 +12,7 @@ Dockerfile-dev
 *.yml
 prometheus.yml
 grafana_data
+logs
 
 ### STS ###
 .apt_generated

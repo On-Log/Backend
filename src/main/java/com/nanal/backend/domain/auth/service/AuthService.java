@@ -42,7 +42,6 @@ import static org.springframework.security.oauth2.jwt.JoseHeaderNames.KID;
 @Timed("auth.api")
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
 @Service
 public class AuthService {
 
@@ -51,7 +50,6 @@ public class AuthService {
     private final ClientKakao clientKakao;
     private final ClientGoogle clientGoogle;
     private final AppleFeignClient appleFeignClient;
-
     private final InternalAuthService internalAuthService;
 
     @Value("${app-id.apple}")

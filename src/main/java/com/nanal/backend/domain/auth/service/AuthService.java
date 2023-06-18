@@ -61,7 +61,7 @@ public class AuthService {
         Member member = getUserDataFromPlatform(accessToken, providerInfo);
 
         // 회원가입(가입 정보 없는 유저일 때만) 및 로그인
-        Member authenticatedMember = internalAuthService.auth(member, providerInfo);
+        Member authenticatedMember = internalAuthService.auth(member, member.getEmail(), providerInfo);
 
         AuthenticationUtil.makeAuthentication(authenticatedMember);
 
@@ -83,7 +83,7 @@ public class AuthService {
         Member member = Member.createAppleMember(socialId, email);
 
         // 회원가입(가입 정보 없는 유저일 때만) 및 로그인
-        Member authenticatedMember = internalAuthService.auth(member, providerInfo);
+        Member authenticatedMember = internalAuthService.auth(member, member.getEmail(), providerInfo);
 
         AuthenticationUtil.makeAuthentication(authenticatedMember);
 

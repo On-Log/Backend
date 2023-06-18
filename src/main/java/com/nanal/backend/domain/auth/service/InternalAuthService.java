@@ -23,8 +23,8 @@ public class InternalAuthService {
 
     @Transactional
     @DistributedLock
-    public Member auth(Member member, @LockName String providerInfo) {
-        Optional<Member> findMember = memberRepository.findByEmail(member.getEmail());
+    public Member auth(Member member, @LockName String email, String providerInfo) {
+        Optional<Member> findMember = memberRepository.findByEmail(email);
         if(isNewMember(findMember))
             return joinMembership(member);
         else

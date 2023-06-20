@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,15 +46,34 @@ public class RetrospectInfo {
             this.retrospectId = retrospect.getRetrospectId();
             this.writeDate = retrospect.getWriteDate();
 
+            // 검색 포함하는 질문들 중 가장 앞 질문
             RetrospectContent retrospectContent = retrospect.getRetrospectContents().stream()
                     .filter(content -> content.getAnswer().contains(searchWord))
                     .findFirst().get();
             Long questionOrder = retrospectContent.getRetrospectContentId();
             StringBuilder question = new StringBuilder();
             question.append(questionOrder).append(". ").append(retrospectContent.getQuestion());
-            this.question = question.toString();
-            this.answer = retrospectContent.getAnswer();
 
+            this.question = question.toString();
+            this.answer = parseAnswer(retrospectContent.getAnswer(), searchWord);
+        }
+
+        public static String parseAnswer(String content, String searchWord) {
+            String[] words = content.split("\\s+");
+            int targetIndex = -1;
+
+            for (int i = 0; i < words.length; i++) {
+                if (words[i].contains(searchWord)) {
+                    targetIndex = i;
+                    break;
+                }
+            }
+
+            if (targetIndex >= 3) {
+                return String.join(" ", Arrays.asList(words).subList(targetIndex - 3, targetIndex + 1));
+            } else {
+                return content;
+            }
         }
     }
 }

@@ -26,7 +26,7 @@ public class RespSearchDto {
                          List<Retrospect> retrospectList,
                          Integer nextDiaryCount,
                          Integer nextRetrospectCount) {
-        this.diaryInfo = new DiaryInfo(diaryList, nextDiaryCount);
+        this.diaryInfo = new DiaryInfo(diaryList, nextDiaryCount, searchWord);
         this.retrospectInfo = new RetrospectInfo(retrospectList, nextRetrospectCount, searchWord);
     }
 }

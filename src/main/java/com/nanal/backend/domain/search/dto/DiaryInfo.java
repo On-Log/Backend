@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,12 +22,12 @@ public class DiaryInfo {
     private Integer nextDiaryCount;
     private List<DiaryDto> diaryDtoList;
 
-    public DiaryInfo(List<Diary> diaryList, Integer nextDiaryCount) {
+    public DiaryInfo(List<Diary> diaryList, Integer nextDiaryCount, String searchWord) {
         if(nextDiaryCount > 0) this.existMore = true;
         this.nextDiaryCount = nextDiaryCount;
 
         this.diaryDtoList = diaryList.stream()
-                .map(DiaryDto::new)
+                .map(diary -> new DiaryDto(diary, searchWord))
                 .collect(Collectors.toList());
     }
 
@@ -41,21 +42,32 @@ public class DiaryInfo {
         private Boolean editStatus;
         private List<KeywordDto> keywords;
 
-        public DiaryDto(Diary diary) {
+        public DiaryDto(Diary diary, String searchWord) {
             this.diaryId = diary.getDiaryId();
             this.writeDate = diary.getWriteDate();
-
-            String content = diary.getContent();
-            int index = content.indexOf(content);
-            if (index != -1) {
-                content = "..." + content.substring(index);
-            }
-
-            this.content = content;
+            this.content = parseContent(diary.getContent(), searchWord);
             this.editStatus = diary.getEditStatus();
             this.keywords = diary.getKeywords().stream()
                     .map(KeywordDto::new)
                     .collect(Collectors.toList());
+        }
+
+        public static String parseContent(String content, String searchWord) {
+            String[] words = content.split("\\s+");
+            int targetIndex = -1;
+
+            for (int i = 0; i < words.length; i++) {
+                if (words[i].contains(searchWord)) {
+                    targetIndex = i;
+                    break;
+                }
+            }
+
+            if (targetIndex >= 3) {
+                return String.join(" ", Arrays.asList(words).subList(targetIndex - 3, targetIndex + 1));
+            } else {
+                return content;
+            }
         }
     }
 }

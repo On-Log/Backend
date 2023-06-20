@@ -39,16 +39,14 @@ public class DiaryInfo {
         private Long diaryId;
         private LocalDateTime writeDate;
         private String content;
-        private Boolean editStatus;
-        private List<KeywordDto> keywords;
+        private List<String> keywords;
 
         public DiaryDto(Diary diary, String searchWord) {
             this.diaryId = diary.getDiaryId();
             this.writeDate = diary.getWriteDate();
             this.content = parseContent(diary.getContent(), searchWord);
-            this.editStatus = diary.getEditStatus();
             this.keywords = diary.getKeywords().stream()
-                    .map(KeywordDto::new)
+                    .map(keyword -> keyword.getWord())
                     .collect(Collectors.toList());
         }
 

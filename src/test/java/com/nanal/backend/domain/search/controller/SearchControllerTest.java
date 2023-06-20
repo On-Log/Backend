@@ -49,21 +49,12 @@ class SearchControllerTest extends CommonControllerTest {
                 .limit(10)
                 .build();
 
-        List<KeywordEmotionDto> keywordEmotionDtoList = new ArrayList<>(Arrays.asList(
-                new KeywordEmotionDto("아쉬움"),
-                new KeywordEmotionDto("복잡"),
-                new KeywordEmotionDto("기대")
-        ));
-        List<KeywordDto> keywordDtoList = new ArrayList<>(Arrays.asList(
-                new KeywordDto("키워드1", keywordEmotionDtoList),
-                new KeywordDto("키워드2", keywordEmotionDtoList),
-                new KeywordDto("키워드3", keywordEmotionDtoList)
-        ));
+        List<String> keywordDtoList = new ArrayList<>(Arrays.asList("키워드1", "키워드2", "키워드3"));
+
         DiaryDto diaryDto = DiaryDto.builder()
                 .diaryId(5L)
                 .writeDate(LocalDateTime.parse("2022-11-15T00:00:00"))
                 .content("일기 내용")
-                .editStatus(true)
                 .keywords(keywordDtoList)
                 .build();
 
@@ -125,9 +116,7 @@ class SearchControllerTest extends CommonControllerTest {
                                         fieldWithPath("result.diaryInfo.diaryDtoList[].diaryId").description("일기 ID"),
                                         fieldWithPath("result.diaryInfo.diaryDtoList[].writeDate").description("작성 날짜"),
                                         fieldWithPath("result.diaryInfo.diaryDtoList[].content").description("일기 내용"),
-                                        fieldWithPath("result.diaryInfo.diaryDtoList[].editStatus").description("수정 가능 여부"),
-                                        fieldWithPath("result.diaryInfo.diaryDtoList[].keywords[].keyword").description("키워드"),
-                                        fieldWithPath("result.diaryInfo.diaryDtoList[].keywords[].keywordEmotions[].emotion").description("감정어"),
+                                        fieldWithPath("result.diaryInfo.diaryDtoList[].keywords[]").description("키워드"),
 
                                         fieldWithPath("result.retrospectInfo.existMore").description("남은 회고 존재 여부"),
                                         fieldWithPath("result.retrospectInfo.nextRetrospectCount").description("다음번 요청 가능 회고수"),

@@ -520,7 +520,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1434
+Content-Length: 732
 
 {
   "isSuccess" : true,
@@ -534,35 +534,7 @@ Content-Length: 1434
         "diaryId" : 5,
         "writeDate" : "2022-11-15T00:00:00",
         "content" : "일기 내용",
-        "editStatus" : true,
-        "keywords" : [ {
-          "keyword" : "키워드1",
-          "keywordEmotions" : [ {
-            "emotion" : "아쉬움"
-          }, {
-            "emotion" : "복잡"
-          }, {
-            "emotion" : "기대"
-          } ]
-        }, {
-          "keyword" : "키워드2",
-          "keywordEmotions" : [ {
-            "emotion" : "아쉬움"
-          }, {
-            "emotion" : "복잡"
-          }, {
-            "emotion" : "기대"
-          } ]
-        }, {
-          "keyword" : "키워드3",
-          "keywordEmotions" : [ {
-            "emotion" : "아쉬움"
-          }, {
-            "emotion" : "복잡"
-          }, {
-            "emotion" : "기대"
-          } ]
-        } ]
+        "keywords" : [ "키워드1", "키워드2", "키워드3" ]
       } ]
     },
     "retrospectInfo" : {
@@ -637,19 +609,9 @@ Content-Length: 1434
 <td class="tableblock halign-left valign-top"><p class="tableblock">일기 내용</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryInfo.diaryDtoList[].editStatus</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">수정 가능 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryInfo.diaryDtoList[].keywords[].keyword</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryInfo.diaryDtoList[].keywords[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">키워드</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryInfo.diaryDtoList[].keywords[].keywordEmotions[].emotion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">감정어</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectInfo.existMore</code></p></td>

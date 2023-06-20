@@ -1,7 +1,7 @@
 package com.nanal.backend.domain.search.controller;
 
-import com.nanal.backend.domain.search.dto.ReqSearchDto;
-import com.nanal.backend.domain.search.dto.RespSearchDto;
+import com.nanal.backend.domain.search.dto.req.ReqSearchDto;
+import com.nanal.backend.domain.search.dto.resp.RespSearchDto;
 import com.nanal.backend.domain.search.service.SearchService;
 import com.nanal.backend.global.exception.customexception.BindingResultException;
 import com.nanal.backend.global.response.CommonResponse;

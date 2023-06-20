@@ -520,69 +520,33 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1678
+Content-Length: 732
 
 {
   "isSuccess" : true,
   "code" : 200,
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "diaryDtoList" : [ {
-      "writeDate" : "2022-11-15T00:00:00",
-      "content" : "검색단어",
-      "editStatus" : true,
-      "keywords" : [ {
-        "keyword" : "검색단어",
-        "keywordEmotions" : [ {
-          "emotion" : "아쉬움"
-        }, {
-          "emotion" : "복잡"
-        }, {
-          "emotion" : "기대"
-        } ]
-      }, {
-        "keyword" : "검색단어",
-        "keywordEmotions" : [ {
-          "emotion" : "아쉬움"
-        }, {
-          "emotion" : "복잡"
-        }, {
-          "emotion" : "기대"
-        } ]
-      }, {
-        "keyword" : "검색단어",
-        "keywordEmotions" : [ {
-          "emotion" : "아쉬움"
-        }, {
-          "emotion" : "복잡"
-        }, {
-          "emotion" : "기대"
-        } ]
+    "diaryInfo" : {
+      "existMore" : false,
+      "nextDiaryCount" : 0,
+      "diaryDtoList" : [ {
+        "diaryId" : 5,
+        "writeDate" : "2022-11-15T00:00:00",
+        "content" : "일기 내용",
+        "keywords" : [ "키워드1", "키워드2", "키워드3" ]
       } ]
-    } ],
-    "retrospectDtoList" : [ {
-      "writeDate" : "2022-11-10T00:00:00",
-      "contents" : [ {
-        "question" : "답변1",
-        "answer" : "검색단어"
-      }, {
-        "question" : "답변2",
-        "answer" : "검색단어"
-      }, {
-        "question" : "답변3",
-        "answer" : "검색단어"
-      } ],
-      "keywords" : [ {
-        "classify" : "그때 그대로 의미있었던 행복한 기억",
-        "keyword" : "키워드1"
-      }, {
-        "classify" : "나를 힘들게 했지만 도움이 된 기억",
-        "keyword" : "키워드2"
-      }, {
-        "classify" : "돌아보니, 다른 의미로 다가온 기억",
-        "keyword" : "키워드3"
+    },
+    "retrospectInfo" : {
+      "existMore" : false,
+      "nextRetrospectCount" : 0,
+      "retrospectDtoList" : [ {
+        "retrospectId" : 10,
+        "writeDate" : "2022-11-10T00:00:00",
+        "question" : "이번주 나의 모습은 어땠나요?",
+        "answer" : "좋았어요"
       } ]
-    } ]
+    }
   }
 }</code></pre>
 </div>
@@ -620,54 +584,64 @@ Content-Length: 1678
 <td class="tableblock halign-left valign-top"><p class="tableblock">결과 메시지</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryDtoList[].writeDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryInfo.existMore</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">남은 일기 존재 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryInfo.nextDiaryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">다음번 요청 가능 일기수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryInfo.diaryDtoList[].diaryId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일기 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryInfo.diaryDtoList[].writeDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">작성 날짜</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryDtoList[].content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryInfo.diaryDtoList[].content</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">일기 내용</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryDtoList[].editStatus</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">수정 가능 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryDtoList[].keywords[].keyword</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryInfo.diaryDtoList[].keywords[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">키워드</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryDtoList[].keywords[].keywordEmotions[].emotion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">감정어</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectInfo.existMore</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">남은 회고 존재 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectDtoList[].writeDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectInfo.nextRetrospectCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">다음번 요청 가능 회고수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectInfo.retrospectDtoList[].retrospectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectInfo.retrospectDtoList[].writeDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">작성 날짜</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectDtoList[].contents[].question</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectInfo.retrospectDtoList[].question</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회고 목적별 질문</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectDtoList[].contents[].answer</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectInfo.retrospectDtoList[].answer</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">질문에 대한 답변</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectDtoList[].keywords[].classify</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">회고 과정에서 키워드 분류 기준(감정 분리수거 기능)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectDtoList[].keywords[].keyword</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">분류된 키워드</p></td>
 </tr>
 </tbody>
 </table>

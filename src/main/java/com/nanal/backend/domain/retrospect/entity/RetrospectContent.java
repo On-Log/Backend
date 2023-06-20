@@ -20,7 +20,6 @@ public class RetrospectContent extends BaseTime {
     @Column(name = "retrospect_content_id")
     private Long retrospectContentId;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "retrospect_id")
     private Retrospect retrospect;

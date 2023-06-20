@@ -27,7 +27,6 @@ public class DistributedLockAspect {
     @Around("@annotation(com.nanal.backend.global.lock.DistributedLock)")
     public Object handleLettuceDistributedLock(ProceedingJoinPoint joinPoint) throws Throwable {
         String lockName = getLockName(joinPoint);
-        System.out.println(lockName);
 
         // try 문 안으로 들어가면 예외 발생시키는 스레드가 임의로 락 해제 시킴
         if(!lock(lockName)) throw new InternalServerErrorException("lettuce 락 획득 실패");

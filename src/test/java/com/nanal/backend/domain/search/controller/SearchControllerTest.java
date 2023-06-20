@@ -3,10 +3,10 @@ package com.nanal.backend.domain.search.controller;
 import com.nanal.backend.config.CommonControllerTest;
 import com.nanal.backend.domain.diary.dto.req.KeywordDto;
 import com.nanal.backend.domain.diary.dto.req.KeywordEmotionDto;
-import com.nanal.backend.domain.retrospect.dto.resp.RetrospectContentDto;
-import com.nanal.backend.domain.retrospect.dto.resp.RetrospectKeywordDto;
-import com.nanal.backend.domain.search.dto.ReqSearchDto;
-import com.nanal.backend.domain.search.dto.RespSearchDto;
+import com.nanal.backend.domain.search.dto.DiaryInfo;
+import com.nanal.backend.domain.search.dto.req.ReqSearchDto;
+import com.nanal.backend.domain.search.dto.resp.RespSearchDto;
+import com.nanal.backend.domain.search.dto.RetrospectInfo;
 import com.nanal.backend.domain.search.service.SearchService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.nanal.backend.domain.search.dto.RespSearchDto.*;
+import static com.nanal.backend.domain.search.dto.DiaryInfo.*;
+import static com.nanal.backend.domain.search.dto.RetrospectInfo.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -36,8 +37,6 @@ class SearchControllerTest extends CommonControllerTest {
 
     @MockBean
     private SearchService searchService;
-
-
 
     @Test
     public void 검색() throws Exception {
@@ -56,36 +55,37 @@ class SearchControllerTest extends CommonControllerTest {
                 new KeywordEmotionDto("기대")
         ));
         List<KeywordDto> keywordDtoList = new ArrayList<>(Arrays.asList(
-                new KeywordDto("검색단어", keywordEmotionDtoList),
-                new KeywordDto("검색단어", keywordEmotionDtoList),
-                new KeywordDto("검색단어", keywordEmotionDtoList)
+                new KeywordDto("키워드1", keywordEmotionDtoList),
+                new KeywordDto("키워드2", keywordEmotionDtoList),
+                new KeywordDto("키워드3", keywordEmotionDtoList)
         ));
         DiaryDto diaryDto = DiaryDto.builder()
+                .diaryId(5L)
                 .writeDate(LocalDateTime.parse("2022-11-15T00:00:00"))
-                .content("검색단어")
+                .content("일기 내용")
                 .editStatus(true)
                 .keywords(keywordDtoList)
                 .build();
 
-        List<RetrospectContentDto> retrospectContentDtoList = new ArrayList<>(Arrays.asList(
-                new RetrospectContentDto("답변1", "검색단어"),
-                new RetrospectContentDto("답변2", "검색단어"),
-                new RetrospectContentDto("답변3", "검색단어")
-        ));
-        List<RetrospectKeywordDto> retrospectKeywordDtoList = new ArrayList<>(Arrays.asList(
-                new RetrospectKeywordDto("그때 그대로 의미있었던 행복한 기억", "키워드1"),
-                new RetrospectKeywordDto("나를 힘들게 했지만 도움이 된 기억", "키워드2"),
-                new RetrospectKeywordDto("돌아보니, 다른 의미로 다가온 기억", "키워드3")
-        ));
         RetrospectDto retrospectDto = RetrospectDto.builder()
+                .retrospectId(10L)
                 .writeDate(LocalDateTime.parse("2022-11-10T00:00:00"))
-                .contents(retrospectContentDtoList)
-                .keywords(retrospectKeywordDtoList)
+                .question("이번주 나의 모습은 어땠나요?")
+                .answer("좋았어요")
                 .build();
 
-        RespSearchDto output = new RespSearchDto();
-        output.setDiaryDtoList(new ArrayList<>(Arrays.asList(diaryDto)));
-        output.setRetrospectDtoList(new ArrayList<>(Arrays.asList(retrospectDto)));
+        DiaryInfo diaryInfo = new DiaryInfo();
+        diaryInfo.setDiaryDtoList(new ArrayList<>(Arrays.asList(diaryDto)));
+        diaryInfo.setNextDiaryCount(0);
+
+        RetrospectInfo retrospectInfo = new RetrospectInfo();
+        retrospectInfo.setRetrospectDtoList(new ArrayList<>(Arrays.asList(retrospectDto)));
+        retrospectInfo.setNextRetrospectCount(0);
+
+        RespSearchDto output = RespSearchDto.builder()
+                .diaryInfo(diaryInfo)
+                .retrospectInfo(retrospectInfo)
+                .build();
 
         given(searchService.search(any())).willReturn(output);
 
@@ -120,21 +120,26 @@ class SearchControllerTest extends CommonControllerTest {
                                         fieldWithPath("isSuccess").description("성공 여부"),
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
-                                        fieldWithPath("result.diaryDtoList[].writeDate").description("작성 날짜"),
-                                        fieldWithPath("result.diaryDtoList[].content").description("일기 내용"),
-                                        fieldWithPath("result.diaryDtoList[].editStatus").description("수정 가능 여부"),
-                                        fieldWithPath("result.diaryDtoList[].keywords[].keyword").description("키워드"),
-                                        fieldWithPath("result.diaryDtoList[].keywords[].keywordEmotions[].emotion").description("감정어"),
+                                        fieldWithPath("result.diaryInfo.existMore").description("남은 일기 존재 여부"),
+                                        fieldWithPath("result.diaryInfo.nextDiaryCount").description("다음번 요청 가능 일기수"),
+                                        fieldWithPath("result.diaryInfo.diaryDtoList[].diaryId").description("일기 ID"),
+                                        fieldWithPath("result.diaryInfo.diaryDtoList[].writeDate").description("작성 날짜"),
+                                        fieldWithPath("result.diaryInfo.diaryDtoList[].content").description("일기 내용"),
+                                        fieldWithPath("result.diaryInfo.diaryDtoList[].editStatus").description("수정 가능 여부"),
+                                        fieldWithPath("result.diaryInfo.diaryDtoList[].keywords[].keyword").description("키워드"),
+                                        fieldWithPath("result.diaryInfo.diaryDtoList[].keywords[].keywordEmotions[].emotion").description("감정어"),
 
-                                        fieldWithPath("result.retrospectDtoList[].writeDate").description("작성 날짜"),
-                                        fieldWithPath("result.retrospectDtoList[].contents[].question").description("회고 목적별 질문"),
-                                        fieldWithPath("result.retrospectDtoList[].contents[].answer").description("질문에 대한 답변"),
-                                        fieldWithPath("result.retrospectDtoList[].keywords[].classify").description("회고 과정에서 키워드 분류 기준(감정 분리수거 기능)"),
-                                        fieldWithPath("result.retrospectDtoList[].keywords[].keyword").description("분류된 키워드")
+                                        fieldWithPath("result.retrospectInfo.existMore").description("남은 회고 존재 여부"),
+                                        fieldWithPath("result.retrospectInfo.nextRetrospectCount").description("다음번 요청 가능 회고수"),
+                                        fieldWithPath("result.retrospectInfo.retrospectDtoList[].retrospectId").description("회고 ID"),
+                                        fieldWithPath("result.retrospectInfo.retrospectDtoList[].writeDate").description("작성 날짜"),
+                                        fieldWithPath("result.retrospectInfo.retrospectDtoList[].question").description("회고 목적별 질문"),
+                                        fieldWithPath("result.retrospectInfo.retrospectDtoList[].answer").description("질문에 대한 답변")
                                 )
                         )
                 );
 
 
     }
+
 }

@@ -74,6 +74,8 @@ public class Member extends BaseTime {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
+    private String goods;
+
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Alarm alarm;
 
@@ -122,7 +124,7 @@ public class Member extends BaseTime {
                 .prevRetrospectDate(LocalDateTime.now().minusDays(30))
                 .gender(reqRegisterDto.getGender())
                 .ageRange(reqRegisterDto.getAgeRange())
-                .role(Member.Role.USER)
+                .role(Role.USER)
                 .build();
     }
 
@@ -139,7 +141,7 @@ public class Member extends BaseTime {
                 .nickname(kakaoUserResponseDto.getProperties().getNickname())
                 .gender(kakaoUserResponseDto.getKakaoAccount().getGender())
                 .ageRange(kakaoUserResponseDto.getKakaoAccount().getAgeRange())
-                .role(Member.Role.ONBOARDER)
+                .role(Role.ONBOARDER)
                 .build();
 
         newMember.setAlarm(Alarm.createAlarm(newMember));
@@ -186,6 +188,10 @@ public class Member extends BaseTime {
     public void setRetrospectDay(DayOfWeek retrospectDay) {
         this.retrospectDay = retrospectDay;
         this.role = Role.USER;
+    }
+
+    public void setGoods(String goods) {
+        this.goods = goods;
     }
 
     //==비즈니스 메서드==//

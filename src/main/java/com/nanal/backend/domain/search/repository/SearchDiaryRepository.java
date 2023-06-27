@@ -24,7 +24,7 @@ public class SearchDiaryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<Diary> searchDiary(ReqSearchDto reqSearchDto) {
+    public List<Diary> searchDiary(ReqSearchDto reqSearchDto, Long memberId) {
 
         return queryFactory
                 .selectDistinct(diary)
@@ -32,7 +32,8 @@ public class SearchDiaryRepository {
                 .join(diary.keywords, keyword)
                 .where(
                         betweenDate(reqSearchDto.getStartDate(), reqSearchDto.getEndDate())
-                                .and(containWord(reqSearchDto.getSearchWord()))
+                                .and(containWord(reqSearchDto.getSearchWord())
+                                        .and(isEqualMember(memberId)))
                 )
                 .orderBy(diary.writeDate.desc())
                 .offset(reqSearchDto.getOffset())
@@ -40,20 +41,26 @@ public class SearchDiaryRepository {
                 .fetch();
     }
 
-    public Integer countLeftDiary(ReqSearchDto reqSearchDto) {
+    public Integer countLeftDiary(ReqSearchDto reqSearchDto, Long memberId) {
         return queryFactory
                 .selectDistinct(diary.diaryId)
                 .from(diary)
                 .join(diary.keywords, keyword)
                 .where(
                         betweenDate(reqSearchDto.getStartDate(), reqSearchDto.getEndDate())
-                                .and(containWord(reqSearchDto.getSearchWord()))
+                                .and(containWord(reqSearchDto.getSearchWord())
+                                        .and(isEqualMember(memberId)))
                 )
                 .orderBy(diary.writeDate.desc())
                 .offset(reqSearchDto.getOffset() + reqSearchDto.getLimit())
                 .limit(reqSearchDto.getLimit())
                 .fetch()
                 .size();
+    }
+
+    private BooleanBuilder isEqualMember(Long memberId) {
+        if(memberId != null) return new BooleanBuilder(diary.member.memberId.eq(memberId));
+        else return new BooleanBuilder();
     }
 
     private BooleanBuilder containWordInContent(String word) {

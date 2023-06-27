@@ -81,7 +81,7 @@ class SearchControllerTest extends CommonControllerTest {
                 .retrospectInfo(retrospectInfo)
                 .build();
 
-        given(searchService.search(any())).willReturn(output);
+        given(searchService.search(any(), any())).willReturn(output);
 
         //when
         ResultActions actions = mockMvc.perform(

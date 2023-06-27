@@ -72,7 +72,7 @@ public class RetrospectInfo {
             }
 
             if (targetIndex > 3) {
-                return "... " + String.join(" ", Arrays.asList(words).subList(targetIndex - 3, targetIndex + 1));
+                return "... " + String.join(" ", Arrays.asList(words).subList(targetIndex - 3, words.length));
             } else {
                 return content;
             }

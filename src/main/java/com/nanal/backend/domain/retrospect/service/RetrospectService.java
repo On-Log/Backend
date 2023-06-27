@@ -111,7 +111,6 @@ public class RetrospectService {
         selectRetrospect.changeAnswer(reqEditRetroDto);
     }
     @Counted("retrospect.api.count")
-    @Transactional(readOnly = true)
     public RespGetKeywordAndEmotionDto getKeywordAndEmotion(String socialId){
 
         // socialId 로 유저 조회

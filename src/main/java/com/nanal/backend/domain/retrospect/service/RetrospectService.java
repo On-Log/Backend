@@ -326,7 +326,7 @@ public class RetrospectService {
         Set<Integer> set = new HashSet<>();
         List<Emotion> emotions = emotionRepository.findAll();
         List<CountEmotion> result = new ArrayList<>();
-        Map<Emotion, Integer> emotionCountMap = new HashMap<>();
+        Map<Emotion, Integer> emotionCountMap = new LinkedHashMap<>(); // 순서를 보장하는 LinkedHashMap 사용
 
         for (Emotion e : emotions) {
             int count = diaries.stream()
@@ -337,17 +337,15 @@ public class RetrospectService {
                     .sum();
 
             set.add(count);
-            emotionCountMap.put(e, count);
+            emotionCountMap.put(e, count); // 감정어 순서대로 저장
         }
-
         set.remove(0);
 
         if (set.size() == 1) {
             Integer value = set.iterator().next();
 
-            for (Map.Entry<Emotion, Integer> entry : emotionCountMap.entrySet()) {
-                Emotion emotion = entry.getKey();
-                Integer count = entry.getValue();
+            for (Emotion emotion : emotions) {
+                Integer count = emotionCountMap.get(emotion);
                 int frequency = count.equals(value) ? FREQUENCY_HIGH : 0;
 
                 CountEmotion countEmotion = CountEmotion.makeCountEmotion(emotion.getEmotion(), frequency);
@@ -358,9 +356,8 @@ public class RetrospectService {
             Collections.sort(sortedList, Collections.reverseOrder());
 
             for (Integer value : sortedList) {
-                for (Map.Entry<Emotion, Integer> entry : emotionCountMap.entrySet()) {
-                    Emotion emotion = entry.getKey();
-                    Integer count = entry.getValue();
+                for (Emotion emotion : emotions) {
+                    Integer count = emotionCountMap.get(emotion);
                     int frequency = 0;
 
                     if (count.equals(value)) {
@@ -378,9 +375,8 @@ public class RetrospectService {
             Collections.sort(sortedList, Collections.reverseOrder());
 
             for (Integer value : sortedList) {
-                for (Map.Entry<Emotion, Integer> entry : emotionCountMap.entrySet()) {
-                    Emotion emotion = entry.getKey();
-                    Integer count = entry.getValue();
+                for (Emotion emotion : emotions) {
+                    Integer count = emotionCountMap.get(emotion);
                     int frequency = 0;
 
                     if (count.equals(value)) {
@@ -415,9 +411,8 @@ public class RetrospectService {
                     frequency = FREQUENCY_LOW;
                 }
 
-                for (Map.Entry<Emotion, Integer> entry : emotionCountMap.entrySet()) {
-                    Emotion emotion = entry.getKey();
-                    Integer count = entry.getValue();
+                for (Emotion emotion : emotions) {
+                    Integer count = emotionCountMap.get(emotion);
 
                     if (count.equals(value)) {
                         CountEmotion countEmotion = CountEmotion.makeCountEmotion(emotion.getEmotion(), frequency);

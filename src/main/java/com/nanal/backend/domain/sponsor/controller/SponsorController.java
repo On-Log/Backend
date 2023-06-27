@@ -30,7 +30,7 @@ public class SponsorController {
                                             @RequestBody @Valid ReqCheckSponsorDto reqCheckSponsorDto) {
 
         // 요청 날짜 기반으로 회고 기록
-        sponsorService.checkSponsor(user.getSocialId(), reqCheckSponsorDto);
+        sponsorService.checkSponsor(user.getSocialId(), reqCheckSponsorDto.getCode());
 
         return new CommonResponse<>(ErrorCode.SUCCESS);
     }

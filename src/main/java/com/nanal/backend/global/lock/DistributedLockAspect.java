@@ -13,6 +13,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
@@ -58,12 +59,15 @@ public class DistributedLockAspect {
     }
 
     private String getLockName(ProceedingJoinPoint joinPoint) {
-        Annotation[][] annotations = ((MethodSignature) joinPoint.getSignature()).getMethod().getParameterAnnotations();
+        Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
+        Annotation[][] annotations = method.getParameterAnnotations();
         Object[] args = joinPoint.getArgs();
         for (int i = 0; i < args.length; i++) {
             for (Annotation annotation : annotations[i]) {
                 if (annotation instanceof LockName) {
-                    return args[i].toString();
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(method.getName()).append(" : ").append(args[i].toString());
+                    return sb.toString();
                 }
             }
         }

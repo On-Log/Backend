@@ -114,6 +114,7 @@ class SearchControllerTest extends CommonControllerTest {
                                         fieldWithPath("result.diaryInfo.existMore").description("남은 일기 존재 여부"),
                                         fieldWithPath("result.diaryInfo.nextDiaryCount").description("다음번 요청 가능 일기수"),
                                         fieldWithPath("result.diaryInfo.diaryDtoList[].diaryId").description("일기 ID"),
+                                        fieldWithPath("result.diaryInfo.diaryDtoList[].type").description("데이터 종류"),
                                         fieldWithPath("result.diaryInfo.diaryDtoList[].writeDate").description("작성 날짜"),
                                         fieldWithPath("result.diaryInfo.diaryDtoList[].content").description("일기 내용"),
                                         fieldWithPath("result.diaryInfo.diaryDtoList[].keywords[]").description("키워드"),
@@ -121,6 +122,7 @@ class SearchControllerTest extends CommonControllerTest {
                                         fieldWithPath("result.retrospectInfo.existMore").description("남은 회고 존재 여부"),
                                         fieldWithPath("result.retrospectInfo.nextRetrospectCount").description("다음번 요청 가능 회고수"),
                                         fieldWithPath("result.retrospectInfo.retrospectDtoList[].retrospectId").description("회고 ID"),
+                                        fieldWithPath("result.retrospectInfo.retrospectDtoList[].type").description("데이터 종류"),
                                         fieldWithPath("result.retrospectInfo.retrospectDtoList[].writeDate").description("작성 날짜"),
                                         fieldWithPath("result.retrospectInfo.retrospectDtoList[].question").description("회고 목적별 질문"),
                                         fieldWithPath("result.retrospectInfo.retrospectDtoList[].answer").description("질문에 대한 답변")

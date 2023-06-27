@@ -13,7 +13,6 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository{
 
     QMember member = QMember.member;
 
-
     @Override
     public Member findMember(String socialId) {
         return queryFactory

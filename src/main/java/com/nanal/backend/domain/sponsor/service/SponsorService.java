@@ -38,6 +38,4 @@ public class SponsorService {
             throw CodeAlreadyUsedException.EXCEPTION;
         }
     }
-
-
 }

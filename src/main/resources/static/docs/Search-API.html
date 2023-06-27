@@ -520,7 +520,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 732
+Content-Length: 780
 
 {
   "isSuccess" : true,
@@ -532,6 +532,7 @@ Content-Length: 732
       "nextDiaryCount" : 0,
       "diaryDtoList" : [ {
         "diaryId" : 5,
+        "type" : null,
         "writeDate" : "2022-11-15T00:00:00",
         "content" : "일기 내용",
         "keywords" : [ "키워드1", "키워드2", "키워드3" ]
@@ -542,6 +543,7 @@ Content-Length: 732
       "nextRetrospectCount" : 0,
       "retrospectDtoList" : [ {
         "retrospectId" : 10,
+        "type" : null,
         "writeDate" : "2022-11-10T00:00:00",
         "question" : "이번주 나의 모습은 어땠나요?",
         "answer" : "좋았어요"
@@ -599,6 +601,11 @@ Content-Length: 732
 <td class="tableblock halign-left valign-top"><p class="tableblock">일기 ID</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryInfo.diaryDtoList[].type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">데이터 종류</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryInfo.diaryDtoList[].writeDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">작성 날짜</p></td>
@@ -629,6 +636,11 @@ Content-Length: 732
 <td class="tableblock halign-left valign-top"><p class="tableblock">회고 ID</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectInfo.retrospectDtoList[].type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">데이터 종류</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectInfo.retrospectDtoList[].writeDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">작성 날짜</p></td>
@@ -653,7 +665,7 @@ Content-Length: 732
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-04-18 10:42:19 +0900
+Last updated 2023-02-04 15:27:10 +0900
 </div>
 </div>
 </body>

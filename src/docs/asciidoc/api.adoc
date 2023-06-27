@@ -22,3 +22,5 @@ include::Retrospect-API.adoc[]
 
 include::Search-API.adoc[]
 
+include::Sponsor-API.adoc[]
+

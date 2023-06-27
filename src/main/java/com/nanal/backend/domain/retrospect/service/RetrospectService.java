@@ -49,6 +49,9 @@ public class RetrospectService {
     private final QuestionRepository questionRepository;
     private final ExtraQuestionRepository extraQuestionRepository;
     private final EmotionRepository emotionRepository;
+    private static final int FREQUENCY_HIGH = 3;
+    private static final int FREQUENCY_MEDIUM = 2;
+    private static final int FREQUENCY_LOW = 1;
 
     @Counted("retrospect.api.count")
     @Transactional(readOnly = true)
@@ -320,27 +323,111 @@ public class RetrospectService {
                 .collect(Collectors.toList());
     }
     private List<CountEmotion> getEmotionCount(List<Diary> diaries) {
-        List<Emotion> findEmotions = emotionRepository.findAll();
+        Set<Integer> set = new HashSet<>();
+        List<Emotion> emotions = emotionRepository.findAll();
+        List<CountEmotion> result = new ArrayList<>();
+        Map<Emotion, Integer> emotionCountMap = new HashMap<>();
 
-        return findEmotions.stream().map(e -> {
+        for (Emotion e : emotions) {
             int count = diaries.stream()
-                    .flatMap(d -> d.getKeywords().stream())
-                    .flatMap(k -> k.getKeywordEmotions().stream())
-                    .map(ke -> ke.getEmotion().getEmotion())
-                    .filter(emotion -> emotion.equals(e.getEmotion()))
-                    .collect(Collectors.toList())
-                    .size();
+                    .flatMap(diary -> diary.getKeywords().stream())
+                    .flatMap(keyword -> keyword.getKeywordEmotions().stream())
+                    .filter(ke -> ke.getEmotion().getEmotion().equals(e.getEmotion()))
+                    .mapToInt(ke -> 1)
+                    .sum();
 
-            int frequency = 0;
-            if (count >= 1 && count <= 3)
-                frequency = 1;
-            else if (count >= 4 && count <= 7)
-                frequency = 2;
-            else if (count > 7)
-                frequency = 3;
+            set.add(count);
+            emotionCountMap.put(e, count);
+        }
 
-            return CountEmotion.makeCountEmotion(e.getEmotion(), frequency);
-        }).collect(Collectors.toList());
+        set.remove(0);
+
+        if (set.size() == 1) {
+            Integer value = set.iterator().next();
+
+            for (Map.Entry<Emotion, Integer> entry : emotionCountMap.entrySet()) {
+                Emotion emotion = entry.getKey();
+                Integer count = entry.getValue();
+                int frequency = count.equals(value) ? FREQUENCY_HIGH : 0;
+
+                CountEmotion countEmotion = CountEmotion.makeCountEmotion(emotion.getEmotion(), frequency);
+                result.add(countEmotion);
+            }
+        } else if (set.size() == 2) {
+            List<Integer> sortedList = new ArrayList<>(set);
+            Collections.sort(sortedList, Collections.reverseOrder());
+
+            for (Integer value : sortedList) {
+                for (Map.Entry<Emotion, Integer> entry : emotionCountMap.entrySet()) {
+                    Emotion emotion = entry.getKey();
+                    Integer count = entry.getValue();
+                    int frequency = 0;
+
+                    if (count.equals(value)) {
+                        frequency = FREQUENCY_HIGH;
+                    } else if (count.equals(sortedList.get(1))) {
+                        frequency = FREQUENCY_MEDIUM;
+                    }
+
+                    CountEmotion countEmotion = CountEmotion.makeCountEmotion(emotion.getEmotion(), frequency);
+                    result.add(countEmotion);
+                }
+            }
+        } else if (set.size() == 3) {
+            List<Integer> sortedList = new ArrayList<>(set);
+            Collections.sort(sortedList, Collections.reverseOrder());
+
+            for (Integer value : sortedList) {
+                for (Map.Entry<Emotion, Integer> entry : emotionCountMap.entrySet()) {
+                    Emotion emotion = entry.getKey();
+                    Integer count = entry.getValue();
+                    int frequency = 0;
+
+                    if (count.equals(value)) {
+                        frequency = FREQUENCY_HIGH;
+                    } else if (count.equals(sortedList.get(1))) {
+                        frequency = FREQUENCY_MEDIUM;
+                    } else if (count.equals(sortedList.get(2))) {
+                        frequency = FREQUENCY_LOW;
+                    }
+
+                    CountEmotion countEmotion = CountEmotion.makeCountEmotion(emotion.getEmotion(), frequency);
+                    result.add(countEmotion);
+                }
+            }
+        } else {
+            List<Integer> sortedList = new ArrayList<>(set);
+            Collections.sort(sortedList, Collections.reverseOrder());
+
+            int size = sortedList.size();
+            int fifteenPercentIndex = (int) (size * 0.15);
+            int fortyPercentIndex = (int) (size * 0.55);
+
+            for (int i = 0; i < sortedList.size(); i++) {
+                int value = sortedList.get(i);
+                int frequency = 0;
+
+                if (i <= fifteenPercentIndex) {
+                    frequency = FREQUENCY_HIGH;
+                } else if (i <= fortyPercentIndex) {
+                    frequency = FREQUENCY_MEDIUM;
+                } else {
+                    frequency = FREQUENCY_LOW;
+                }
+
+                for (Map.Entry<Emotion, Integer> entry : emotionCountMap.entrySet()) {
+                    Emotion emotion = entry.getKey();
+                    Integer count = entry.getValue();
+
+                    if (count.equals(value)) {
+                        CountEmotion countEmotion = CountEmotion.makeCountEmotion(emotion.getEmotion(), frequency);
+                        result.add(countEmotion);
+                    }
+                }
+            }
+        }
+
+        return result;
     }
     private long getGoalIndex(String goal) {
         if (goal.equals("자아탐색"))

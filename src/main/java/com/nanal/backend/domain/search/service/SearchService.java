@@ -1,5 +1,7 @@
 package com.nanal.backend.domain.search.service;
 
+import com.nanal.backend.domain.auth.entity.Member;
+import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
 import com.nanal.backend.domain.search.dto.req.ReqSearchDto;
@@ -19,18 +21,20 @@ import java.util.List;
 @Service
 public class SearchService {
 
+    private final MemberRepository memberRepository;
     private final SearchDiaryRepository searchDiaryRepository;
     private final SearchRetrospectRepository searchRetrospectRepository;
 
-    public RespSearchDto search(ReqSearchDto reqSearchDto) {
+    public RespSearchDto search(String socialId, ReqSearchDto reqSearchDto) {
+        Member member = memberRepository.findMember(socialId);
 
         // 일기 검색
-        List<Diary> diaryList = searchDiaryRepository.searchDiary(reqSearchDto);
-        Integer nextDiaryCount = searchDiaryRepository.countLeftDiary(reqSearchDto);
+        List<Diary> diaryList = searchDiaryRepository.searchDiary(reqSearchDto, member.getMemberId());
+        Integer nextDiaryCount = searchDiaryRepository.countLeftDiary(reqSearchDto, member.getMemberId());
 
         // 회고 검색
-        List<Retrospect> retrospectList = searchRetrospectRepository.searchRetrospect(reqSearchDto);
-        Integer nextRetrospectCount = searchRetrospectRepository.countLeftRetrospect(reqSearchDto);
+        List<Retrospect> retrospectList = searchRetrospectRepository.searchRetrospect(reqSearchDto, member.getMemberId());
+        Integer nextRetrospectCount = searchRetrospectRepository.countLeftRetrospect(reqSearchDto, member.getMemberId());
 
         return new RespSearchDto(reqSearchDto.getSearchWord(), diaryList, retrospectList, nextDiaryCount, nextRetrospectCount);
     }

@@ -520,7 +520,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 780
+Content-Length: 791
 
 {
   "isSuccess" : true,
@@ -532,7 +532,7 @@ Content-Length: 780
       "nextDiaryCount" : 0,
       "diaryDtoList" : [ {
         "diaryId" : 5,
-        "type" : null,
+        "type" : "DIARY",
         "writeDate" : "2022-11-15T00:00:00",
         "content" : "일기 내용",
         "keywords" : [ "키워드1", "키워드2", "키워드3" ]
@@ -543,7 +543,7 @@ Content-Length: 780
       "nextRetrospectCount" : 0,
       "retrospectDtoList" : [ {
         "retrospectId" : 10,
-        "type" : null,
+        "type" : "RETROSPECT",
         "writeDate" : "2022-11-10T00:00:00",
         "question" : "이번주 나의 모습은 어땠나요?",
         "answer" : "좋았어요"
@@ -602,7 +602,7 @@ Content-Length: 780
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryInfo.diaryDtoList[].type</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">데이터 종류</p></td>
 </tr>
 <tr>
@@ -637,7 +637,7 @@ Content-Length: 780
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectInfo.retrospectDtoList[].type</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">데이터 종류</p></td>
 </tr>
 <tr>

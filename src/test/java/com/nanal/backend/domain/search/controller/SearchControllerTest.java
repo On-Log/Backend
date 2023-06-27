@@ -4,6 +4,7 @@ import com.nanal.backend.config.CommonControllerTest;
 import com.nanal.backend.domain.diary.dto.req.KeywordDto;
 import com.nanal.backend.domain.diary.dto.req.KeywordEmotionDto;
 import com.nanal.backend.domain.search.dto.DiaryInfo;
+import com.nanal.backend.domain.search.dto.Type;
 import com.nanal.backend.domain.search.dto.req.ReqSearchDto;
 import com.nanal.backend.domain.search.dto.resp.RespSearchDto;
 import com.nanal.backend.domain.search.dto.RetrospectInfo;
@@ -53,6 +54,7 @@ class SearchControllerTest extends CommonControllerTest {
 
         DiaryDto diaryDto = DiaryDto.builder()
                 .diaryId(5L)
+                .type(Type.DIARY.toString())
                 .writeDate(LocalDateTime.parse("2022-11-15T00:00:00"))
                 .content("일기 내용")
                 .keywords(keywordDtoList)
@@ -60,6 +62,7 @@ class SearchControllerTest extends CommonControllerTest {
 
         RetrospectDto retrospectDto = RetrospectDto.builder()
                 .retrospectId(10L)
+                .type(Type.RETROSPECT.toString())
                 .writeDate(LocalDateTime.parse("2022-11-10T00:00:00"))
                 .question("이번주 나의 모습은 어땠나요?")
                 .answer("좋았어요")
@@ -129,8 +132,5 @@ class SearchControllerTest extends CommonControllerTest {
                                 )
                         )
                 );
-
-
     }
-
 }

@@ -8,6 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface OnBoardingLogRepository extends JpaRepository<OnBoardingLog, Long> {
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     OnBoardingLog save(OnBoardingLog onBoardingLog);
 }

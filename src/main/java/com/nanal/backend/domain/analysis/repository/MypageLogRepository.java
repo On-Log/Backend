@@ -8,6 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface MypageLogRepository extends JpaRepository<MypageLog, Long> {
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     MypageLog save(MypageLog mypageLog);
 }

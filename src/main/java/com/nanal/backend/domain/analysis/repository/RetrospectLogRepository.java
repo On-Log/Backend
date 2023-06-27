@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface RetrospectLogRepository extends JpaRepository<RetrospectLog, Long> {
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     RetrospectLog save(RetrospectLog retrospectLog);
 
     @Query(value = "SELECT new com.nanal.backend.domain.analysis.dto.resp.WeekDto(DAYOFWEEK(rl.createdAt), COUNT(rl.retrospectLogId)) " +

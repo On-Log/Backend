@@ -1,0 +1,6 @@
+[[Sponsor-API]]
+== Sponsor API
+
+[[Sponsor-후원자]]
+=== Sponsor 후원자 인증
+operation::sponsor-controller-test/후원자_인증[snippets='http-request,request-headers,request-fields,http-response,response-fields']

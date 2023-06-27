@@ -8,6 +8,8 @@ import com.nanal.backend.domain.sponsor.exception.CodeAlreadyUsedException;
 import com.nanal.backend.domain.sponsor.exception.CodeNotExistException;
 import com.nanal.backend.domain.sponsor.repository.SponsorRepository;
 import com.nanal.backend.global.exception.customexception.MemberAuthException;
+import com.nanal.backend.global.lock.DistributedLock;
+import com.nanal.backend.global.lock.LockName;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +23,10 @@ public class SponsorService {
     private final SponsorRepository sponsorRepository;
 
     @Transactional
-    public void checkSponsor(String socialId, ReqCheckSponsorDto reqCheckSponsorDto) {
+    @DistributedLock
+    public void checkSponsor(String socialId, @LockName String code) {
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
-        Sponsor sponsor = sponsorRepository.findByCode(reqCheckSponsorDto.getCode()).orElseThrow(() -> CodeNotExistException.EXCEPTION);
+        Sponsor sponsor = sponsorRepository.findByCode(code).orElseThrow(() -> CodeNotExistException.EXCEPTION);
         checkCodeAlreadyUsed(sponsor);
         confirmSponsor(member, sponsor);
     }

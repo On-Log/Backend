@@ -38,12 +38,14 @@ public class RetrospectInfo {
     @Data
     static public class RetrospectDto{
         private Long retrospectId;
+        private String type;
         private LocalDateTime writeDate;
         private String question;
         private String answer;
 
         public RetrospectDto(Retrospect retrospect, String searchWord) {
             this.retrospectId = retrospect.getRetrospectId();
+            this.type = Type.RETROSPECT.toString();
             this.writeDate = retrospect.getWriteDate();
 
             // 검색 포함하는 질문들 중 가장 앞 질문

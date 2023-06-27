@@ -37,12 +37,14 @@ public class DiaryInfo {
     @Data
     static public class DiaryDto{
         private Long diaryId;
+        private String type;
         private LocalDateTime writeDate;
         private String content;
         private List<String> keywords;
 
         public DiaryDto(Diary diary, String searchWord) {
             this.diaryId = diary.getDiaryId();
+            this.type = Type.DIARY.toString();
             this.writeDate = diary.getWriteDate();
             this.content = parseContent(diary.getContent(), searchWord);
             this.keywords = diary.getKeywords().stream()

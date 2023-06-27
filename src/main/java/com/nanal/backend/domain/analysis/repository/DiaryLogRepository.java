@@ -29,6 +29,6 @@ public interface DiaryLogRepository extends JpaRepository<DiaryLog, Long> {
             "WHERE dl.createdAt >= :from AND dl.createdAt < :to AND dl.serviceName = 'getCalendar'")
     Integer loginDAU(LocalDateTime from, LocalDateTime to);
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     DiaryLog save(DiaryLog diaryLog);
 }

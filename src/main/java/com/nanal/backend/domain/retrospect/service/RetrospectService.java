@@ -391,7 +391,7 @@ public class RetrospectService {
                     result.add(countEmotion);
                 }
             }
-        } else {
+        }else {
             List<Integer> sortedList = new ArrayList<>(set);
             Collections.sort(sortedList, Collections.reverseOrder());
 
@@ -401,27 +401,26 @@ public class RetrospectService {
 
             for (int i = 0; i < sortedList.size(); i++) {
                 int value = sortedList.get(i);
-                int frequency = 0;
-
-                if (i <= fifteenPercentIndex) {
-                    frequency = FREQUENCY_HIGH;
-                } else if (i <= fortyPercentIndex) {
-                    frequency = FREQUENCY_MEDIUM;
-                } else {
-                    frequency = FREQUENCY_LOW;
-                }
 
                 for (Emotion emotion : emotions) {
                     Integer count = emotionCountMap.get(emotion);
+                    int frequency = 0;
 
-                    if (count.equals(value)) {
+                    if (count != null && count.equals(value)) {
+                        if (i <= fifteenPercentIndex) {
+                            frequency = FREQUENCY_HIGH;
+                        } else if (i <= fortyPercentIndex) {
+                            frequency = FREQUENCY_MEDIUM;
+                        } else {
+                            frequency = FREQUENCY_LOW;
+                        }
+
                         CountEmotion countEmotion = CountEmotion.makeCountEmotion(emotion.getEmotion(), frequency);
                         result.add(countEmotion);
                     }
                 }
             }
         }
-
         return result;
     }
     private long getGoalIndex(String goal) {

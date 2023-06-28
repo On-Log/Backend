@@ -338,8 +338,10 @@ public class RetrospectService {
             set.add(count);
             emotionCountMap.put(e, count); // 감정어 순서대로 저장
         }
+        System.out.println("시작");
+        System.out.println(set.size());
         set.remove(0);
-
+        System.out.println(set.size());
         if (set.size() == 1) {
             Integer value = set.iterator().next();
 
@@ -353,13 +355,11 @@ public class RetrospectService {
         } else if (set.size() == 2) {
             List<Integer> sortedList = new ArrayList<>(set);
             Collections.sort(sortedList, Collections.reverseOrder());
-
-            for (Integer value : sortedList) {
                 for (Emotion emotion : emotions) {
                     Integer count = emotionCountMap.get(emotion);
                     int frequency = 0;
 
-                    if (count.equals(value)) {
+                    if (count.equals(sortedList.get(0))) {
                         frequency = FREQUENCY_HIGH;
                     } else if (count.equals(sortedList.get(1))) {
                         frequency = FREQUENCY_MEDIUM;
@@ -368,17 +368,14 @@ public class RetrospectService {
                     CountEmotion countEmotion = CountEmotion.makeCountEmotion(emotion.getEmotion(), frequency);
                     result.add(countEmotion);
                 }
-            }
         } else if (set.size() == 3) {
             List<Integer> sortedList = new ArrayList<>(set);
             Collections.sort(sortedList, Collections.reverseOrder());
-
-            for (Integer value : sortedList) {
                 for (Emotion emotion : emotions) {
                     Integer count = emotionCountMap.get(emotion);
                     int frequency = 0;
 
-                    if (count.equals(value)) {
+                    if (count.equals(sortedList.get(0))) {
                         frequency = FREQUENCY_HIGH;
                     } else if (count.equals(sortedList.get(1))) {
                         frequency = FREQUENCY_MEDIUM;
@@ -389,8 +386,7 @@ public class RetrospectService {
                     CountEmotion countEmotion = CountEmotion.makeCountEmotion(emotion.getEmotion(), frequency);
                     result.add(countEmotion);
                 }
-            }
-        } else {
+        }else {
             List<Integer> sortedList = new ArrayList<>(set);
             Collections.sort(sortedList, Collections.reverseOrder());
 
@@ -398,26 +394,25 @@ public class RetrospectService {
             int fifteenPercentIndex = (int) (size * 0.15);
             int fortyPercentIndex = (int) (size * 0.55);
 
-            for (int i = 0; i < sortedList.size(); i++) {
-                int value = sortedList.get(i);
+            for (Emotion emotion : emotions) {
+                Integer count = emotionCountMap.get(emotion);
+                int frequency = 0;
 
-                for (Emotion emotion : emotions) {
-                    Integer count = emotionCountMap.get(emotion);
-                    int frequency = 0;
-
-                    if (count != null && count.equals(value)) {
-                        if (i <= fifteenPercentIndex) {
-                            frequency = FREQUENCY_HIGH;
-                        } else if (i <= fortyPercentIndex) {
-                            frequency = FREQUENCY_MEDIUM;
-                        } else {
-                            frequency = FREQUENCY_LOW;
-                        }
-
-                        CountEmotion countEmotion = CountEmotion.makeCountEmotion(emotion.getEmotion(), frequency);
-                        result.add(countEmotion);
-                    }
+                if (count == null) {
+                    continue;
                 }
+
+                int index = sortedList.indexOf(count);
+                if (index <= fifteenPercentIndex) {
+                    frequency = FREQUENCY_HIGH;
+                } else if (index <= fortyPercentIndex) {
+                    frequency = FREQUENCY_MEDIUM;
+                } else {
+                    frequency = FREQUENCY_LOW;
+                }
+
+                CountEmotion countEmotion = CountEmotion.makeCountEmotion(emotion.getEmotion(), frequency);
+                result.add(countEmotion);
             }
         }
 

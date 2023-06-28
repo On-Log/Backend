@@ -338,10 +338,7 @@ public class RetrospectService {
             set.add(count);
             emotionCountMap.put(e, count); // 감정어 순서대로 저장
         }
-        System.out.println("시작");
-        System.out.println(set.size());
         set.remove(0);
-        System.out.println(set.size());
         if (set.size() == 1) {
             Integer value = set.iterator().next();
 
@@ -403,7 +400,9 @@ public class RetrospectService {
                 }
 
                 int index = sortedList.indexOf(count);
-                if (index <= fifteenPercentIndex) {
+                if (count == 0) {
+                    frequency = 0;
+                } else if (index <= fifteenPercentIndex) {
                     frequency = FREQUENCY_HIGH;
                 } else if (index <= fortyPercentIndex) {
                     frequency = FREQUENCY_MEDIUM;

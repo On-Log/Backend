@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 @Builder
 @AllArgsConstructor
@@ -52,7 +54,12 @@ public class RetrospectInfo {
             RetrospectContent retrospectContent = retrospect.getRetrospectContents().stream()
                     .filter(content -> content.getAnswer().contains(searchWord))
                     .findFirst().get();
-            Long questionOrder = retrospectContent.getRetrospectContentId();
+
+            int questionOrder = IntStream.range(0, retrospect.getRetrospectContents().size())
+                    .filter(i -> retrospect.getRetrospectContents().get(i).equals(retrospectContent))
+                    .findFirst()
+                    .getAsInt() + 1;
+
             StringBuilder question = new StringBuilder();
             question.append(questionOrder).append(". ").append(retrospectContent.getQuestion());
 

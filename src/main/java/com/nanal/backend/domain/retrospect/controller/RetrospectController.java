@@ -75,6 +75,24 @@ public class RetrospectController {
     }
 
     /**
+     * 회고 조회 (검색)
+     * [GET] /retrospect/search
+     * 작성자 : 장세은
+     * 수정일 :
+     */
+    @GetMapping("/retrospect/search")
+    public CommonResponse<RespGetRetroDto> getRetrospectBySearch(@Valid ReqSearchRetroDto reqSearchRetroDto,
+                                                         BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
+
+        // 요청 날짜 기반으로 회고 조회
+        RespGetRetroDto respGetRetroDto = retrospectService.getRetroBySearch(reqSearchRetroDto);
+
+        return new CommonResponse<>(respGetRetroDto);
+    }
+
+    /**
      * 회고 수정
      * [PUT] /retrospect
      * 작성자 : 장세은

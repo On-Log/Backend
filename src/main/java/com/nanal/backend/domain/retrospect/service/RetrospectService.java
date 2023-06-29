@@ -94,6 +94,16 @@ public class RetrospectService {
         return RespGetRetroDto.createRespGetRetroDto(selectRetrospect);
     }
 
+    // 기존 회고 조회를 이 API와 통합할 예정
+    @Counted("retrospect.api.count")
+    public RespGetRetroDto getRetroBySearch(ReqSearchRetroDto reqSearchRetroDto) {
+        //조회할 회고 찾기
+        Retrospect selectRetrospect = retrospectRepository.findById(reqSearchRetroDto.getRetrospectId()).orElseThrow(() -> RetrospectNotFoundException.EXCEPTION);
+
+        // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
+        return RespGetRetroDto.createRespGetRetroDto(selectRetrospect);
+    }
+
     @Counted("retrospect.api.count")
     public void editRetrospect(String socialId, ReqEditRetroDto reqEditRetroDto) {
         // socialId 로 유저 조회

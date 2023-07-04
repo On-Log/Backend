@@ -96,12 +96,13 @@ public class RetrospectService {
 
     // 기존 회고 조회를 이 API와 통합할 예정
     @Counted("retrospect.api.count")
-    public RespGetRetroDto getRetroBySearch(ReqSearchRetroDto reqSearchRetroDto) {
+    public RespGetSearchRetroDto getRetroBySearch(ReqSearchRetroDto reqSearchRetroDto) {
         //조회할 회고 찾기
         Retrospect selectRetrospect = retrospectRepository.findById(reqSearchRetroDto.getRetrospectId()).orElseThrow(() -> RetrospectNotFoundException.EXCEPTION);
-
+        // 몇 주차인지 계산
+        Integer week = countWeek(selectRetrospect.getWriteDate());
         // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
-        return RespGetRetroDto.createRespGetRetroDto(selectRetrospect);
+        return RespGetSearchRetroDto.createRespGetSearchRetroDto(selectRetrospect, week);
     }
 
     @Counted("retrospect.api.count")
@@ -223,6 +224,12 @@ public class RetrospectService {
         List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = getKeyword(member, reqGetInfoDto.getFromDate(), reqGetInfoDto.getToDate());
 
         return RespGetInfoDto.createRespGetInfoDto(member.getNickname(),existRetrospect, betweenDate, isRetroNumberNotFive, respGetClassifiedKeywordDtos);
+    }
+    // 회고 주차 반환
+    private Integer countWeek(LocalDateTime writeDate) {
+        LocalDateTime startOfMonth = writeDate.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+        int week = retrospectRepository.getWeekSequence(writeDate,startOfMonth);
+        return week;
     }
     //다음 회고까지 남은 날 반환
     private Integer getbetweenDate(Member member, LocalDateTime currentDate, Period period) {

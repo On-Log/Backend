@@ -4,8 +4,6 @@ import com.nanal.backend.domain.diary.domain.DiaryWritableWeek;
 import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.diary.entity.Emotion;
-import com.nanal.backend.domain.diary.entity.Keyword;
-import com.nanal.backend.domain.diary.entity.KeywordEmotion;
 import com.nanal.backend.domain.diary.repository.EmotionRepository;
 import com.nanal.backend.domain.retrospect.dto.req.*;
 import com.nanal.backend.domain.retrospect.dto.resp.*;
@@ -31,7 +29,6 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static java.lang.Math.abs;
 
@@ -69,7 +66,7 @@ public class RetrospectService {
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         //회고 작성 가능성 검증
-        checkRetrospectWritable(member, reqSaveRetroDto.getCurrentDate());
+        checkRetrospectWritable(member, reqSaveRetroDto.getCurrentDate(), reqSaveRetroDto.getContents());
 
         // 회고 Entity 생성
         Retrospect retrospect = Retrospect.createRetrospect(member, reqSaveRetroDto);
@@ -236,7 +233,7 @@ public class RetrospectService {
         return checkExistRetro(member, currentDate) ? 7 : period.getDays();
     }
     //회고 작성 예외처리 메서드 묶음
-    private void checkRetrospectWritable(Member member, LocalDateTime currentDate) {
+    private void checkRetrospectWritable(Member member, LocalDateTime currentDate, List<RetrospectContentDto> contents) {
         //작성한 회고가 5개 넘어가는지 여부
         retrospectRepository.checkRetroCount(member.getMemberId(), currentDate.toLocalDate().atStartOfDay().withDayOfMonth(1),
                 currentDate.toLocalDate().atStartOfDay().withDayOfMonth(currentDate.toLocalDate().lengthOfMonth()));
@@ -244,6 +241,9 @@ public class RetrospectService {
         checkWriteTime(member, currentDate);
         // 해당 날짜에 작성한 회고 존재하는지 체크
         retrospectRepository.checkRetrospectAlreadyExist(member.getMemberId(), currentDate);
+        // 회고 답변 개수가 3개 이상, 5개 이하인지 체크
+        if(contents.size() < 3 || contents.size() > 5)
+            throw WrongContentSizeException.EXCEPTION;
     }
     //회고 작성 예외처리
     private void checkWriteTime(Member member, LocalDateTime dateTime) {

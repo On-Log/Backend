@@ -61,6 +61,7 @@ public enum ErrorCode {
     RETROSPECT_ALL_DONE(false,492,"이번 달에 작성할 수 있는 모든 회고를 작성했습니다."),
     RETROSPECT_TIME_DONE(false,493,"회고 작성 및 수정은 회고일 당일 11시 59분까지만 가능합니다"),
     GOAL_NOT_FOUND(false,494,"해당 회고 목적은 존재하지 않습니다."),
+    WRONG_CONTENT_SIZE(false,495,"잘못된 회고 답변 개수입니다"),
     // Sponsor
     CODE_NOT_FOUND(false,600,"작성하신 코드는 존재하지 않습니다."),
     CODE_ALREADY_USED(false,601,"작성하신 코드는 이미 사용되었습니다.");

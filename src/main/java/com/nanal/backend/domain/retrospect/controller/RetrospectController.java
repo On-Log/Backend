@@ -81,15 +81,15 @@ public class RetrospectController {
      * 수정일 :
      */
     @GetMapping("/retrospect/search")
-    public CommonResponse<RespGetRetroDto> getRetrospectBySearch(@Valid ReqSearchRetroDto reqSearchRetroDto,
-                                                         BindingResult bindingResult) {
+    public CommonResponse<RespGetSearchRetroDto> getRetrospectBySearch(@Valid ReqSearchRetroDto reqSearchRetroDto,
+                                                                       BindingResult bindingResult) {
 
         if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
 
         // 요청 날짜 기반으로 회고 조회
-        RespGetRetroDto respGetRetroDto = retrospectService.getRetroBySearch(reqSearchRetroDto);
+        RespGetSearchRetroDto respGetSearchRetroDto = retrospectService.getRetroBySearch(reqSearchRetroDto);
 
-        return new CommonResponse<>(respGetRetroDto);
+        return new CommonResponse<>(respGetSearchRetroDto);
     }
 
     /**

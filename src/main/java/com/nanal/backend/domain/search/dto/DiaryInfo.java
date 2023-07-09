@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Data
 public class DiaryInfo {
-
     private Boolean existMore = false;
     private Integer nextDiaryCount;
     private List<DiaryDto> diaryDtoList;

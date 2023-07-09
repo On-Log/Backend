@@ -511,7 +511,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#Search-API">Search API</a>
 <ul class="sectlevel2">
-<li><a href="#Search-검색">Search 검색</a></li>
+<li><a href="#Search-검색">Search 일기 검색</a></li>
+<li><a href="#_search_회고_검색">Search 회고 검색</a></li>
 </ul>
 </li>
 <li><a href="#Sponsor-API">Sponsor API</a>
@@ -4894,12 +4895,12 @@ Content-Length: 94
 <h2 id="Search-API"><a class="link" href="#Search-API">Search API</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="Search-검색"><a class="link" href="#Search-검색">Search 검색</a></h3>
+<h3 id="Search-검색"><a class="link" href="#Search-검색">Search 일기 검색</a></h3>
 <div class="sect3">
 <h4 id="Search-검색_http_request"><a class="link" href="#Search-검색_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /search?searchWord=%EA%B2%80%EC%83%89%EB%8B%A8%EC%96%B4&amp;startDate=2022-11-01T00%3A00&amp;endDate=2022-11-30T00%3A00&amp;offset=0&amp;limit=10 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /search/diary?searchWord=%EA%B2%80%EC%83%89%EB%8B%A8%EC%96%B4&amp;startDate=2022-11-01T00%3A00&amp;endDate=2022-11-30T00%3A00&amp;offset=0&amp;limit=10 HTTP/1.1
 Content-Type: application/x-www-form-urlencoded;charset=UTF-8
 Token: ACCESS_TOKEN
 Host: localhost:8080</code></pre>
@@ -4970,7 +4971,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 791
+Content-Length: 442
 
 {
   "isSuccess" : true,
@@ -4986,17 +4987,6 @@ Content-Length: 791
         "writeDate" : "2022-11-15T00:00:00",
         "content" : "일기 내용",
         "keywords" : [ "키워드1", "키워드2", "키워드3" ]
-      } ]
-    },
-    "retrospectInfo" : {
-      "existMore" : false,
-      "nextRetrospectCount" : 0,
-      "retrospectDtoList" : [ {
-        "retrospectId" : 10,
-        "type" : "RETROSPECT",
-        "writeDate" : "2022-11-10T00:00:00",
-        "question" : "이번주 나의 모습은 어땠나요?",
-        "answer" : "좋았어요"
       } ]
     }
   }
@@ -5069,6 +5059,141 @@ Content-Length: 791
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.diaryInfo.diaryDtoList[].keywords[]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">키워드</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_search_회고_검색"><a class="link" href="#_search_회고_검색">Search 회고 검색</a></h3>
+<div class="sect3">
+<h4 id="_search_회고_검색_http_request"><a class="link" href="#_search_회고_검색_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /search/retrospect?searchWord=%EA%B2%80%EC%83%89%EB%8B%A8%EC%96%B4&amp;startDate=2022-11-01T00%3A00&amp;endDate=2022-11-30T00%3A00&amp;offset=0&amp;limit=10 HTTP/1.1
+Content-Type: application/x-www-form-urlencoded;charset=UTF-8
+Token: ACCESS_TOKEN
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_search_회고_검색_request_headers"><a class="link" href="#_search_회고_검색_request_headers">Request headers</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Token</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">접근 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_search_회고_검색_request_parameters"><a class="link" href="#_search_회고_검색_request_parameters">Request parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>searchWord</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">검색할 단어</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">처음 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>endDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">마지막 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>offset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">몇 번째부터 가져올지(zero based)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>limit</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">몇 개씩 가져올지</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_search_회고_검색_http_response"><a class="link" href="#_search_회고_검색_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Content-Length: 464
+
+{
+  "isSuccess" : true,
+  "code" : 200,
+  "message" : "요청에 성공하였습니다.",
+  "result" : {
+    "retrospectInfo" : {
+      "existMore" : false,
+      "nextRetrospectCount" : 0,
+      "retrospectDtoList" : [ {
+        "retrospectId" : 10,
+        "type" : "RETROSPECT",
+        "writeDate" : "2022-11-10T00:00:00",
+        "question" : "이번주 나의 모습은 어땠나요?",
+        "answer" : "좋았어요"
+      } ]
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_search_회고_검색_response_fields"><a class="link" href="#_search_회고_검색_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isSuccess</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성공 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상태 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결과 메시지</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectInfo.existMore</code></p></td>
@@ -5234,7 +5359,7 @@ Content-Length: 94
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-07-04 17:05:11 +0900
+Last updated 2023-06-28 01:54:15 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

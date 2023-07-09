@@ -1,8 +1,6 @@
 package com.nanal.backend.domain.search.dto.resp;
 
-import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
-import com.nanal.backend.domain.search.dto.DiaryInfo;
 import com.nanal.backend.domain.search.dto.RetrospectInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,18 +13,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RespSearchDto {
-
-    private DiaryInfo diaryInfo;
-
+public class RespSearchRetrospectDto {
     private RetrospectInfo retrospectInfo;
 
-    public RespSearchDto(String searchWord,
-                         List<Diary> diaryList,
-                         List<Retrospect> retrospectList,
-                         Integer nextDiaryCount,
-                         Integer nextRetrospectCount) {
-        this.diaryInfo = new DiaryInfo(diaryList, nextDiaryCount, searchWord);
+    public RespSearchRetrospectDto(String searchWord,
+                                   List<Retrospect> retrospectList,
+                                   Integer nextRetrospectCount) {
         this.retrospectInfo = new RetrospectInfo(retrospectList, nextRetrospectCount, searchWord);
     }
 }

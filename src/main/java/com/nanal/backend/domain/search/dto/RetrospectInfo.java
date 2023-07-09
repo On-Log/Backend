@@ -19,7 +19,6 @@ import java.util.stream.LongStream;
 @NoArgsConstructor
 @Data
 public class RetrospectInfo {
-
     private Boolean existMore = false;
     private Integer nextRetrospectCount;
     private List<RetrospectDto> retrospectDtoList;
@@ -32,7 +31,6 @@ public class RetrospectInfo {
                 .map(retrospect -> new RetrospectDto(retrospect, searchWord))
                 .collect(Collectors.toList());
     }
-
 
     @Builder
     @AllArgsConstructor

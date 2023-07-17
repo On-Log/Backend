@@ -203,8 +203,8 @@ public class Member extends BaseTime {
         return ChronoUnit.DAYS.between(prevRetrospectDate, now) >= 30 ? true : false;
     }
 
-    public Integer getServiceLife() {
-        return Period.between(this.createdAt.toLocalDate(), LocalDateTime.now().toLocalDate()).getDays() + 1;
+    public long getServiceLife() {
+        return ChronoUnit.DAYS.between(this.createdAt.toLocalDate(), LocalDateTime.now().toLocalDate()) + 1;
     }
 
     public Boolean isRetrospectDay(LocalDateTime now) {

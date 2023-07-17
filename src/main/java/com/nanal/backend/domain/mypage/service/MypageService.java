@@ -76,7 +76,7 @@ public class MypageService {
         // socialId 로 유저 조회
         Member member = findMember(socialId);
 
-        Integer serviceLife = member.getServiceLife();
+        long serviceLife = member.getServiceLife();
 
         return RespGetServiceLife.builder()
                 .serviceLife(serviceLife)

@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Data
 public class RespGetServiceLife {
 
-    private Integer serviceLife;
+    private long serviceLife;
 }

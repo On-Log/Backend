@@ -2,7 +2,9 @@ package com.nanal.backend.domain.excel.service;
 
 import com.nanal.backend.domain.analysis.entity.DiaryLog;
 import com.nanal.backend.domain.analysis.repository.DiaryLogRepository;
+import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.excel.dto.resp.DauDto;
+import com.nanal.backend.domain.excel.dto.resp.UserDto;
 import com.nanal.backend.domain.excel.dto.resp.WauDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +33,7 @@ import java.util.Map;
 public class ExcelService {
 
     private final DiaryLogRepository diaryLogRepository;
-
+    private final MemberRepository memberRepository;
     private static final LocalDateTime FROM_DATE = LocalDateTime.of(2023, 4, 17, 0, 0, 0);
     private static final LocalDateTime TO_DATE = LocalDate.now().atTime(LocalTime.MAX);
 
@@ -107,6 +109,41 @@ public class ExcelService {
         return outputStream.toByteArray();
     }
 
+    public byte[] getJoinByExcel() {
+        // 전체 기간 Join 가져오기
+        List<UserDto> userDtoList = memberRepository.memberDauQuery(FROM_DATE, TO_DATE);
+
+        // 엑셀 파일 생성 및 데이터 작성
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("JOIN");
+
+        Row headerRow = sheet.createRow(0);
+        headerRow.createCell(0).setCellValue("날짜");
+        headerRow.createCell(1).setCellValue("가입자 수");
+
+        // 날짜별로 데이터 작성
+        LocalDateTime currentDate = FROM_DATE;
+        int rowIndex = 1;
+        while (currentDate.isBefore(TO_DATE) || currentDate.isEqual(TO_DATE)) {
+            Row row = sheet.createRow(rowIndex);
+            UserDto userDto = findDataByCreateDate(currentDate, userDtoList);
+            row.createCell(0).setCellValue(currentDate.toLocalDate().toString());
+            row.createCell(1).setCellValue(userDto != null ? userDto.getUserCount() : 0);
+            currentDate = currentDate.plusDays(1);
+            rowIndex++;
+        }
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try {
+            workbook.write(outputStream);
+            workbook.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // 예외 처리 로직 추가
+        }
+
+        return outputStream.toByteArray();
+    }
+
 
 
 
@@ -142,6 +179,17 @@ public class ExcelService {
         LocalDate searchDate = date.toLocalDate();
         for (DauDto dto : dayDtoList) {
             if (dto.getAccessTime().toLocalDate().equals(searchDate)) {
+                return dto;
+            }
+        }
+        return null;
+    }
+
+    // 날짜에 해당하는 데이터를 찾는 메서드 (가입자)
+    private UserDto findDataByCreateDate(LocalDateTime date, List<UserDto> userDtoList) {
+        LocalDate searchDate = date.toLocalDate();
+        for (UserDto dto : userDtoList) {
+            if (dto.getCreateDate().toLocalDate().equals(searchDate)) {
                 return dto;
             }
         }

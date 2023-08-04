@@ -1,7 +1,9 @@
 package com.nanal.backend.domain.excel.service;
 
+import com.nanal.backend.domain.analysis.entity.DiaryLog;
 import com.nanal.backend.domain.analysis.repository.DiaryLogRepository;
 import com.nanal.backend.domain.excel.dto.resp.DauDto;
+import com.nanal.backend.domain.excel.dto.resp.WauDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
@@ -16,7 +18,11 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.WeekFields;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -64,8 +70,72 @@ public class ExcelService {
         return outputStream.toByteArray();
     }
 
+    public byte[] getWauByExcel() {
+        // 전체 기간 WAU 가져오기
+        List<WauDto> wauDtoList = getWauData(FROM_DATE, TO_DATE);
+
+        // 엑셀 파일 생성 및 데이터 작성
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("WAU");
+
+        Row headerRow = sheet.createRow(0);
+        headerRow.createCell(0).setCellValue("주차 시작일");
+        headerRow.createCell(1).setCellValue("주차");
+        headerRow.createCell(2).setCellValue("접속자 수");
+
+        // 날짜별로 데이터 작성
+        LocalDateTime currentDate = FROM_DATE;
+        int rowIndex = 1;
+        while (currentDate.isBefore(TO_DATE) || currentDate.isEqual(TO_DATE)) {
+            Row row = sheet.createRow(rowIndex);
+            WauDto dataForWeek = findDataByWeek(currentDate, wauDtoList);
+            row.createCell(0).setCellValue(currentDate.toLocalDate().toString());
+            row.createCell(1).setCellValue(rowIndex);
+            row.createCell(2).setCellValue(dataForWeek != null ? dataForWeek.getUserCount() : 0);
+            currentDate = currentDate.plusDays(7);
+            rowIndex++;
+        }
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try {
+            workbook.write(outputStream);
+            workbook.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // 예외 처리 로직 추가
+        }
+
+        return outputStream.toByteArray();
+    }
 
 
+
+
+    //편의 메서드
+    //WauDto 매핑
+    public List<WauDto> getWauData(LocalDateTime from, LocalDateTime to) {
+        List<DiaryLog> logs = diaryLogRepository.findLogsBetweenDates(from, to);
+
+        Map<Integer, WauDto> weekCounts = new HashMap<>();
+        for (DiaryLog log : logs) {
+            Integer weekNumber = log.getCreatedAt().get(WeekFields.ISO.weekOfYear());
+            Long count = weekCounts.getOrDefault(weekNumber, new WauDto(weekNumber, 0L, null)).getUserCount() + 1;
+            LocalDateTime weekStartDate = log.getCreatedAt().with(WeekFields.ISO.dayOfWeek(), 1);
+            weekCounts.put(weekNumber, new WauDto(weekNumber, count, weekStartDate));
+        }
+
+        return new ArrayList<>(weekCounts.values());
+    }
+
+    // 주차에 해당하는 데이터를 찾는 메서드
+    private WauDto findDataByWeek(LocalDateTime date, List<WauDto> weekDtoList) {
+        LocalDate searchDate = date.toLocalDate();
+        for (WauDto dto : weekDtoList) {
+            if (dto.getWeekStartDate().toLocalDate().equals(searchDate)) {
+                return dto;
+            }
+        }
+        return null;
+    }
 
     // 날짜에 해당하는 데이터를 찾는 메서드 (접속자)
     private DauDto findDataByAccessDate(LocalDateTime date, List<DauDto> dayDtoList) {

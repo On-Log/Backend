@@ -26,6 +26,9 @@ public interface DiaryLogRepository extends JpaRepository<DiaryLog, Long> {
             "GROUP BY dl.createdAt")
     List<DauDto> excelDauQuery(LocalDateTime from, LocalDateTime to);
 
+    @Query("SELECT dl FROM DiaryLog dl WHERE dl.createdAt >= :from AND dl.createdAt < :to AND dl.serviceName = 'getCalendar'")
+    List<DiaryLog> findLogsBetweenDates(LocalDateTime from, LocalDateTime to);
+
     @Query(value = "SELECT COUNT(DISTINCT dl.userEmail) " +
             "FROM DiaryLog dl " +
             "WHERE dl.createdAt >= :from AND dl.createdAt < :to AND dl.serviceName = 'writeDiary'")

@@ -93,6 +93,10 @@ dependencies {
     implementation 'com.bucket4j:bucket4j-jcache:8.1.1'
     implementation 'javax.cache:cache-api:1.1.1'
     implementation 'org.redisson:redisson:3.19.0'
+
+    // Apache POI
+    implementation 'org.apache.poi:poi:5.0.0'
+    implementation 'org.apache.poi:poi-ooxml:5.0.0'
 }
 
 tasks.named('test') {

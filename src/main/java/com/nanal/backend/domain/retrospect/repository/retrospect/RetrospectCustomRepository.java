@@ -17,7 +17,7 @@ public interface RetrospectCustomRepository {
 
     void checkRetroCount(Long memberId, LocalDateTime fromDate, LocalDateTime toDate);
 
-    Retrospect getRetrospect(Long memberId, LocalDateTime fromDate, LocalDateTime toDate, Integer week);
+    Retrospect getRetrospectByMemberAndRetrospectId(Long memberId, Long retrospectId);
 
     List<String> getRetrospectGoal(Long memberId, LocalDateTime fromDate, LocalDateTime toDate);
 

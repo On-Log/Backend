@@ -64,8 +64,6 @@ public class RetrospectController {
     @GetMapping("/retrospect/view")
     public CommonResponse<RespGetRetroDto> getRetrospect(@Valid ReqGetRetroDto reqGetRetroDto,
                                                          BindingResult bindingResult) {
-
-
         if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
 
         // 요청 날짜 기반으로 회고 조회
@@ -166,7 +164,9 @@ public class RetrospectController {
      */
     @DeleteMapping("/retrospect")
     public CommonResponse<?> deleteDiary(@AuthenticationPrincipal User user,
-                                         @Valid @RequestBody ReqDeleteRetroDto reqDeleteRetroDto) {
+                                         @Valid ReqDeleteRetroDto reqDeleteRetroDto, BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
 
         // 요청 날짜 기반으로 회고 삭제
         retrospectService.deleteRetro(user.getSocialId(), reqDeleteRetroDto);

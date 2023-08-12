@@ -99,7 +99,7 @@ public class RetrospectService {
         checkWriteTime(member, currentDate);
 
         //조회할 회고 찾기
-        Retrospect selectRetrospect = retrospectRepository.getRetrospectByMemberAndRetrospectId(member.getMemberId(), reqEditRetroDto.getRetrospectId());
+        Retrospect selectRetrospect = retrospectRepository.findRetrospectByMemberAndRetrospectId(member.getMemberId(), reqEditRetroDto.getRetrospectId());
 
         selectRetrospect.changeAnswer(reqEditRetroDto);
     }
@@ -186,7 +186,7 @@ public class RetrospectService {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
         // 삭제할 회고 가져오기
-        Retrospect deleteRetro = retrospectRepository.getRetrospectByMemberAndRetrospectId(member.getMemberId(), reqDeleteRetroDto.getRetrospectId());
+        Retrospect deleteRetro = retrospectRepository.findRetrospectByMemberAndRetrospectId(member.getMemberId(), reqDeleteRetroDto.getRetrospectId());
         // 기존 회고 삭제
         delete(member, deleteRetro);
     }

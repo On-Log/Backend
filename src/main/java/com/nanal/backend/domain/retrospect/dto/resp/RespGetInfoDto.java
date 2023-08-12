@@ -21,7 +21,7 @@ public class RespGetInfoDto {
     String nickname;
     //회고 목적
     @NotBlank(message = "list는 비어있을 수 없습니다.")
-    List<String> existRetrospect;
+    List<String> retrospectGoal;
 
     @NotBlank(message = "retrospectId는 비어있을 수 없습니다.")
     List<Long> retrospectId;
@@ -39,10 +39,10 @@ public class RespGetInfoDto {
     //키워드 분류하고, 주차별로 나누기
     List<RespGetClassifiedKeywordDto> keywordList;
 
-    public static RespGetInfoDto createRespGetInfoDto(String nickname, List<String> existRetrospect, List<Long> retrospectId, int betweenDate, boolean countRetrospect, List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos){
+    public static RespGetInfoDto createRespGetInfoDto(String nickname, List<String> retrospectGoal, List<Long> retrospectId, int betweenDate, boolean countRetrospect, List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos){
         RespGetInfoDto respGetInfoDto = RespGetInfoDto.builder()
                 .nickname(nickname)
-                .existRetrospect(existRetrospect)
+                .retrospectGoal(retrospectGoal)
                 .retrospectId(retrospectId)
                 .betweenDate(betweenDate)
                 .countRetrospect(countRetrospect)

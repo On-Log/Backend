@@ -209,8 +209,10 @@ public class RetrospectService {
     //===편의 메서드===//
     private RespGetInfoDto getRespGetInfoDto (ReqGetInfoDto reqGetInfoDto, Member member) {
         LocalDateTime currentDate = LocalDateTime.now();
-        // 선택한 월에 있는 회고 기록 ( 어떤 회고 목적을 선택했는가 )
-        List<String> existRetrospect = retrospectRepository.getRetrospectGoal(member.getMemberId(), reqGetInfoDto.getFromDate(), reqGetInfoDto.getToDate());
+        // 선택한 월에 있는 회고 기록 ( 어떤 회고 목적을 선택했는가, 회고 Id )
+        List<Retrospect> existRetrospect = retrospectRepository.findRetrospectListByMemberAndWriteDate(member.getMemberId(), reqGetInfoDto.getFromDate(), reqGetInfoDto.getToDate());
+        List<String> retrospectGoal = getRetrospectGoal(existRetrospect);
+        List<Long> retrospectId = getRetrospectId(existRetrospect);
         //회고 개수가 5개인지 5개 아니면 true, 이상이면 false
         boolean isRetroNumberNotFive = retrospectRepository.checkRetroNotOverFive(member.getMemberId(), reqGetInfoDto.getFromDate(), reqGetInfoDto.getToDate());
         // 회고 요일까지 남은 날짜
@@ -220,7 +222,7 @@ public class RetrospectService {
         // 회고 주제별로 분류 후 주차별로 분류
         List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = getKeyword(member, reqGetInfoDto.getFromDate(), reqGetInfoDto.getToDate());
 
-        return RespGetInfoDto.createRespGetInfoDto(member.getNickname(),existRetrospect, betweenDate, isRetroNumberNotFive, respGetClassifiedKeywordDtos);
+        return RespGetInfoDto.createRespGetInfoDto(member.getNickname(),retrospectGoal, retrospectId, betweenDate, isRetroNumberNotFive, respGetClassifiedKeywordDtos);
     }
     // 회고 주차 반환
     private Integer countWeek(LocalDateTime writeDate) {
@@ -455,5 +457,17 @@ public class RetrospectService {
         } else {
             retrospectRepository.delete(retrospect);
         }
+    }
+
+    private List<String> getRetrospectGoal(List<Retrospect> retrospects) {
+        return retrospects.stream()
+                .map(Retrospect::getGoal)
+                .collect(Collectors.toList());
+    }
+
+    private List<Long> getRetrospectId(List<Retrospect> retrospects) {
+        return retrospects.stream()
+                .map(Retrospect::getRetrospectId)
+                .collect(Collectors.toList());
     }
 }

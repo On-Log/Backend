@@ -77,29 +77,15 @@ public class RetrospectService {
         //회고 저장 후 일주일 일기 리스트 editstatus 변경
         changeDiaryEditStatus(member, reqSaveRetroDto);
     }
+
     @Counted("retrospect.api.count")
-    @Transactional(readOnly = true)
-    public RespGetRetroDto getRetro(String socialId, ReqGetRetroDto reqGetRetroDto) {
-        // socialId 로 유저 조회
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
-
-        //조회할 회고 찾기
-        Retrospect selectRetrospect = retrospectRepository.getRetrospect(member.getMemberId(), reqGetRetroDto.getFromDate(),
-                reqGetRetroDto.getToDate(), reqGetRetroDto.getWeek());
-
-        // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
-        return RespGetRetroDto.createRespGetRetroDto(selectRetrospect);
-    }
-
-    // 기존 회고 조회를 이 API와 통합할 예정
-    @Counted("retrospect.api.count")
-    public RespGetSearchRetroDto getRetroBySearch(ReqSearchRetroDto reqSearchRetroDto) {
+    public RespGetRetroDto getRetro(ReqGetRetroDto reqSearchRetroDto) {
         //조회할 회고 찾기
         Retrospect selectRetrospect = retrospectRepository.findById(reqSearchRetroDto.getRetrospectId()).orElseThrow(() -> RetrospectNotFoundException.EXCEPTION);
         // 몇 주차인지 계산
         Integer week = countWeek(selectRetrospect.getWriteDate());
         // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
-        return RespGetSearchRetroDto.createRespGetSearchRetroDto(selectRetrospect, week);
+        return RespGetRetroDto.createRespGetRetroDto(selectRetrospect, week);
     }
 
     @Counted("retrospect.api.count")

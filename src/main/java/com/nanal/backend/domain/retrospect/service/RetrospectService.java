@@ -51,7 +51,6 @@ public class RetrospectService {
     private static final int FREQUENCY_LOW = 1;
 
     @Counted("retrospect.api.count")
-    @Transactional(readOnly = true)
     public RespGetInfoDto getInfo(String socialId, ReqGetInfoDto reqGetInfoDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
@@ -65,7 +64,7 @@ public class RetrospectService {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
-        //회고 작성 가능성 검증
+//        //회고 작성 가능성 검증
         checkRetrospectWritable(member, reqSaveRetroDto.getCurrentDate(), reqSaveRetroDto.getContents());
 
         // 회고 Entity 생성

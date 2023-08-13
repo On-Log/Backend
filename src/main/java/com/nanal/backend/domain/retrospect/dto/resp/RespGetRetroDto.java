@@ -2,15 +2,12 @@ package com.nanal.backend.domain.retrospect.dto.resp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
-import com.nanal.backend.domain.retrospect.entity.RetrospectContent;
-import com.nanal.backend.domain.retrospect.entity.RetrospectKeyword;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +23,9 @@ public class RespGetRetroDto {
 
     private List<RetrospectKeywordDto> keywords;
 
-    public static RespGetRetroDto createRespGetRetroDto(Retrospect selectRetrospect) {
+    private Integer week;
+
+    public static RespGetRetroDto createRespGetRetroDto(Retrospect selectRetrospect, Integer week) {
         List<RetrospectKeywordDto> retrospectKeywordList = selectRetrospect.getRetrospectKeywords().stream()
                 .map(retrospectKeyword -> new RetrospectKeywordDto(retrospectKeyword))
                 .collect(Collectors.toList());
@@ -35,11 +34,12 @@ public class RespGetRetroDto {
                 .map(retrospectContent -> new RetrospectContentDto(retrospectContent))
                 .collect(Collectors.toList());
 
-        RespGetRetroDto respGetRetroDto = RespGetRetroDto.builder()
+        RespGetRetroDto respGetSearchRetroDto = RespGetRetroDto.builder()
                 .writeDate(selectRetrospect.getWriteDate())
                 .contents(retrospectContentList)
                 .keywords(retrospectKeywordList)
+                .week(week)
                 .build();
-        return respGetRetroDto;
+        return respGetSearchRetroDto;
     }
 }

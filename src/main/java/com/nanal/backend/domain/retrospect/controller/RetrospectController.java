@@ -62,32 +62,12 @@ public class RetrospectController {
      * 수정일 :
      */
     @GetMapping("/retrospect/view")
-    public CommonResponse<RespGetRetroDto> getRetrospect(@AuthenticationPrincipal User user,
-                                                         @Valid ReqGetRetroDto reqGetRetroDto,
+    public CommonResponse<RespGetRetroDto> getRetrospect(@Valid ReqGetRetroDto reqGetRetroDto,
                                                          BindingResult bindingResult) {
-
         if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
 
         // 요청 날짜 기반으로 회고 조회
-        RespGetRetroDto respGetRetroDto = retrospectService.getRetro(user.getSocialId(), reqGetRetroDto);
-
-        return new CommonResponse<>(respGetRetroDto);
-    }
-
-    /**
-     * 회고 조회 (검색)
-     * [GET] /retrospect/search
-     * 작성자 : 장세은
-     * 수정일 :
-     */
-    @GetMapping("/retrospect/search")
-    public CommonResponse<RespGetSearchRetroDto> getRetrospectBySearch(@Valid ReqSearchRetroDto reqSearchRetroDto,
-                                                                       BindingResult bindingResult) {
-
-        if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
-
-        // 요청 날짜 기반으로 회고 조회
-        RespGetSearchRetroDto respGetSearchRetroDto = retrospectService.getRetroBySearch(reqSearchRetroDto);
+        RespGetRetroDto respGetSearchRetroDto = retrospectService.getRetro(reqGetRetroDto);
 
         return new CommonResponse<>(respGetSearchRetroDto);
     }
@@ -184,7 +164,9 @@ public class RetrospectController {
      */
     @DeleteMapping("/retrospect")
     public CommonResponse<?> deleteDiary(@AuthenticationPrincipal User user,
-                                         @Valid @RequestBody ReqDeleteRetroDto reqDeleteRetroDto) {
+                                         @Valid ReqDeleteRetroDto reqDeleteRetroDto, BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) throw new BindingResultException(bindingResult.getFieldErrors());
 
         // 요청 날짜 기반으로 회고 삭제
         retrospectService.deleteRetro(user.getSocialId(), reqDeleteRetroDto);

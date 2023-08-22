@@ -1,21 +1,27 @@
 package com.nanal.backend.domain.retrospect.service;
 
+import com.nanal.backend.domain.auth.entity.Member;
+import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.diary.domain.DiaryWritableWeek;
 import com.nanal.backend.domain.diary.entity.Diary;
-import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.diary.entity.Emotion;
 import com.nanal.backend.domain.diary.repository.EmotionRepository;
+import com.nanal.backend.domain.diary.repository.diary.DiaryRepository;
 import com.nanal.backend.domain.retrospect.dto.req.*;
 import com.nanal.backend.domain.retrospect.dto.resp.*;
-import com.nanal.backend.domain.retrospect.entity.*;
-import com.nanal.backend.domain.retrospect.exception.*;
+import com.nanal.backend.domain.retrospect.entity.ExtraQuestion;
+import com.nanal.backend.domain.retrospect.entity.Question;
+import com.nanal.backend.domain.retrospect.entity.Retrospect;
+import com.nanal.backend.domain.retrospect.entity.RetrospectContent;
+import com.nanal.backend.domain.retrospect.exception.GoalNotFoundException;
+import com.nanal.backend.domain.retrospect.exception.RetrospectNotFoundException;
+import com.nanal.backend.domain.retrospect.exception.RetrospectTimeDoneException;
+import com.nanal.backend.domain.retrospect.exception.WrongContentSizeException;
 import com.nanal.backend.domain.retrospect.repository.ExtraQuestionRepository;
 import com.nanal.backend.domain.retrospect.repository.QuestionRepository;
-import com.nanal.backend.global.exception.customexception.MemberAuthException;
-import com.nanal.backend.domain.diary.repository.diary.DiaryRepository;
-import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.retrospect.repository.RetrospectKeywordRepository;
 import com.nanal.backend.domain.retrospect.repository.retrospect.RetrospectRepository;
+import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +29,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
@@ -64,7 +73,7 @@ public class RetrospectService {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
-//        //회고 작성 가능성 검증
+        //회고 작성 가능성 검증
         checkRetrospectWritable(member, reqSaveRetroDto.getCurrentDate(), reqSaveRetroDto.getContents());
 
         // 회고 Entity 생성
@@ -76,15 +85,28 @@ public class RetrospectService {
         //회고 저장 후 일주일 일기 리스트 editstatus 변경
         changeDiaryEditStatus(member, reqSaveRetroDto);
     }
-
     @Counted("retrospect.api.count")
-    public RespGetRetroDto getRetro(ReqGetRetroDto reqSearchRetroDto) {
+    public RespGetRetroDto getRetro(String socialId, ReqGetRetroDto reqGetRetroDto) {
+        // socialId 로 유저 조회
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
+
+        //조회할 회고 찾기
+        Retrospect selectRetrospect = retrospectRepository.getRetrospect(member.getMemberId(), reqGetRetroDto.getFromDate(),
+                reqGetRetroDto.getToDate(), reqGetRetroDto.getWeek());
+
+        // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
+        return RespGetRetroDto.createRespGetRetroDto(selectRetrospect);
+    }
+
+    // 기존 회고 조회를 이 API와 통합할 예정
+    @Counted("retrospect.api.count")
+    public RespGetSearchRetroDto getRetroBySearch(ReqSearchRetroDto reqSearchRetroDto) {
         //조회할 회고 찾기
         Retrospect selectRetrospect = retrospectRepository.findById(reqSearchRetroDto.getRetrospectId()).orElseThrow(() -> RetrospectNotFoundException.EXCEPTION);
         // 몇 주차인지 계산
         Integer week = countWeek(selectRetrospect.getWriteDate());
         // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
-        return RespGetRetroDto.createRespGetRetroDto(selectRetrospect, week);
+        return RespGetSearchRetroDto.createRespGetSearchRetroDto(selectRetrospect, week);
     }
 
     @Counted("retrospect.api.count")
@@ -98,9 +120,10 @@ public class RetrospectService {
         checkWriteTime(member, currentDate);
 
         //조회할 회고 찾기
-        Retrospect selectRetrospect = retrospectRepository.findRetrospectByMemberAndRetrospectId(member.getMemberId(), reqEditRetroDto.getRetrospectId());
+        Retrospect selectRetrospect = retrospectRepository.getRetrospect(member.getMemberId(), currentDate.toLocalDate().atStartOfDay().withDayOfMonth(1),
+                currentDate.toLocalDate().atStartOfDay().withDayOfMonth(LocalDate.now().lengthOfMonth()), reqEditRetroDto.getWeek());
 
-        selectRetrospect.changeAnswer(reqEditRetroDto);
+        selectRetrospect.changeAnswer(reqEditRetroDto.getIndex(), reqEditRetroDto.getAnswer());
     }
     @Counted("retrospect.api.count")
     public RespGetKeywordAndEmotionDto getKeywordAndEmotion(String socialId){
@@ -185,7 +208,7 @@ public class RetrospectService {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
         // 삭제할 회고 가져오기
-        Retrospect deleteRetro = retrospectRepository.findRetrospectByMemberAndRetrospectId(member.getMemberId(), reqDeleteRetroDto.getRetrospectId());
+        Retrospect deleteRetro = retrospectRepository.getRetrospect(member.getMemberId(), reqDeleteRetroDto.getFromDate(), reqDeleteRetroDto.getToDate(), reqDeleteRetroDto.getWeek());
         // 기존 회고 삭제
         delete(member, deleteRetro);
     }
@@ -193,10 +216,8 @@ public class RetrospectService {
     //===편의 메서드===//
     private RespGetInfoDto getRespGetInfoDto (ReqGetInfoDto reqGetInfoDto, Member member) {
         LocalDateTime currentDate = LocalDateTime.now();
-        // 선택한 월에 있는 회고 기록 ( 어떤 회고 목적을 선택했는가, 회고 Id )
-        List<Retrospect> existRetrospect = retrospectRepository.findRetrospectListByMemberAndWriteDate(member.getMemberId(), reqGetInfoDto.getFromDate(), reqGetInfoDto.getToDate());
-        List<String> retrospectGoal = getRetrospectGoal(existRetrospect);
-        List<Long> retrospectId = getRetrospectId(existRetrospect);
+        // 선택한 월에 있는 회고 기록 ( 어떤 회고 목적을 선택했는가 )
+        List<String> existRetrospect = retrospectRepository.getRetrospectGoal(member.getMemberId(), reqGetInfoDto.getFromDate(), reqGetInfoDto.getToDate());
         //회고 개수가 5개인지 5개 아니면 true, 이상이면 false
         boolean isRetroNumberNotFive = retrospectRepository.checkRetroNotOverFive(member.getMemberId(), reqGetInfoDto.getFromDate(), reqGetInfoDto.getToDate());
         // 회고 요일까지 남은 날짜
@@ -206,7 +227,7 @@ public class RetrospectService {
         // 회고 주제별로 분류 후 주차별로 분류
         List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos = getKeyword(member, reqGetInfoDto.getFromDate(), reqGetInfoDto.getToDate());
 
-        return RespGetInfoDto.createRespGetInfoDto(member.getNickname(),retrospectGoal, retrospectId, betweenDate, isRetroNumberNotFive, respGetClassifiedKeywordDtos);
+        return RespGetInfoDto.createRespGetInfoDto(member.getNickname(),existRetrospect, betweenDate, isRetroNumberNotFive, respGetClassifiedKeywordDtos);
     }
     // 회고 주차 반환
     private Integer countWeek(LocalDateTime writeDate) {
@@ -441,17 +462,5 @@ public class RetrospectService {
         } else {
             retrospectRepository.delete(retrospect);
         }
-    }
-
-    private List<String> getRetrospectGoal(List<Retrospect> retrospects) {
-        return retrospects.stream()
-                .map(Retrospect::getGoal)
-                .collect(Collectors.toList());
-    }
-
-    private List<Long> getRetrospectId(List<Retrospect> retrospects) {
-        return retrospects.stream()
-                .map(Retrospect::getRetrospectId)
-                .collect(Collectors.toList());
     }
 }

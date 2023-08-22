@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RespGetRetroDto {
+public class RespGetSearchRetroDto {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime writeDate;
 
@@ -23,7 +23,9 @@ public class RespGetRetroDto {
 
     private List<RetrospectKeywordDto> keywords;
 
-    public static RespGetRetroDto createRespGetRetroDto(Retrospect selectRetrospect) {
+    private Integer week;
+
+    public static RespGetSearchRetroDto createRespGetSearchRetroDto(Retrospect selectRetrospect, Integer week) {
         List<RetrospectKeywordDto> retrospectKeywordList = selectRetrospect.getRetrospectKeywords().stream()
                 .map(retrospectKeyword -> new RetrospectKeywordDto(retrospectKeyword))
                 .collect(Collectors.toList());
@@ -32,11 +34,12 @@ public class RespGetRetroDto {
                 .map(retrospectContent -> new RetrospectContentDto(retrospectContent))
                 .collect(Collectors.toList());
 
-        RespGetRetroDto respGetRetroDto = RespGetRetroDto.builder()
+        RespGetSearchRetroDto respGetSearchRetroDto = RespGetSearchRetroDto.builder()
                 .writeDate(selectRetrospect.getWriteDate())
                 .contents(retrospectContentList)
                 .keywords(retrospectKeywordList)
+                .week(week)
                 .build();
-        return respGetRetroDto;
+        return respGetSearchRetroDto;
     }
 }

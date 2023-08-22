@@ -2,12 +2,10 @@ package com.nanal.backend.domain.retrospect.controller;
 
 import com.nanal.backend.config.CommonControllerTest;
 import com.nanal.backend.domain.diary.dto.req.KeywordEmotionDto;
-import com.nanal.backend.domain.diary.dto.req.ReqDeleteDiaryDto;
-import com.nanal.backend.domain.retrospect.dto.resp.ExtraQuestionsDto;
-import com.nanal.backend.domain.retrospect.dto.resp.QuestionsDto;
-import com.nanal.backend.domain.retrospect.dto.resp.RetrospectContentDto;
-import com.nanal.backend.domain.retrospect.dto.resp.RetrospectKeywordDto;
-import com.nanal.backend.domain.retrospect.dto.req.*;
+import com.nanal.backend.domain.retrospect.dto.req.ClassifyKeywordDto;
+import com.nanal.backend.domain.retrospect.dto.req.ReqDeleteRetroDto;
+import com.nanal.backend.domain.retrospect.dto.req.ReqEditRetroDto;
+import com.nanal.backend.domain.retrospect.dto.req.ReqSaveRetroDto;
 import com.nanal.backend.domain.retrospect.dto.resp.*;
 import com.nanal.backend.domain.retrospect.service.RetrospectService;
 import org.junit.jupiter.api.Test;
@@ -88,7 +86,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
                 new RespGetClassifiedKeywordDto(classifyDtos3, "돌아보니, 다른 의미로 다가온 기억")
         ));
 
-        RespGetInfoDto respGetInfoDto = new RespGetInfoDto("사용자 닉네임", new ArrayList<>(Arrays.asList("자아탐색", "성취확인")), new ArrayList<>(Arrays.asList(1L,2L)), 6, true, respGetClassifiedKeywordDtos);
+        RespGetInfoDto respGetInfoDto = new RespGetInfoDto("사용자 닉네임", new ArrayList<>(Arrays.asList("자아탐색", "성취확인")), 6, true, respGetClassifiedKeywordDtos);
         given(retrospectService.getInfo(any(), any())).willReturn(respGetInfoDto);
 
         //when
@@ -117,8 +115,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("code").description("상태 코드"),
                                         fieldWithPath("message").description("결과 메시지"),
                                         fieldWithPath("result.nickname").description("사용자 닉네임"),
-                                        fieldWithPath("result.retrospectGoal").description("회고 목적"),
-                                        fieldWithPath("result.retrospectId").description("회고 ID"),
+                                        fieldWithPath("result.existRetrospect").description("회고 목적"),
                                         fieldWithPath("result.betweenDate").description("다음 회고까지 남은 날"),
                                         fieldWithPath("result.countRetrospect").description("회고 개수 체크. 5개 이상일 시, false 보내 줌"),
                                         fieldWithPath("result.keywordList[].val").description("키워드 분류 주제"),
@@ -176,20 +173,25 @@ public class RetrospectControllerTest extends CommonControllerTest {
     @Test
     public void 회고_조회() throws Exception {
         //given
+        String fromDate = "2023-04-01T00:00:00";
+        String toDate = "2023-01-30T00:00:00";
+        int week = 0;
         List<RetrospectContentDto> retrospectContentDtos = new ArrayList<>(Arrays.asList(new RetrospectContentDto("이번주 나의 모습은 어땠나요?", "답변1"),
                 new RetrospectContentDto("다른 내 모습도 들려줄래요? 이번주에 찾은 의외의 내 모습이 있다면요?", "답변2"), new RetrospectContentDto("다음주에도 유지하고 싶은 나의 모습이 있을까요? 혹은 새롭게 찾고 싶은 나의 모습이 있다면 무엇인가요?", "답변3")));
         List<RetrospectKeywordDto> retrospectKeywordDtos = new ArrayList<>(Arrays.asList(new RetrospectKeywordDto("그때 그대로 의미있었던 행복한 기억", "키워드1"),
                 new RetrospectKeywordDto("나를 힘들게 했지만 도움이 된 기억", "키워드2"),
                 new RetrospectKeywordDto("돌아보니, 다른 의미로 다가온 기억", "키워드3")));
-        RespGetRetroDto respGetRetroDto = new RespGetRetroDto(LocalDateTime.parse("2023-01-18T00:00:00"), retrospectContentDtos, retrospectKeywordDtos,1);
-        given(retrospectService.getRetro(any())).willReturn(respGetRetroDto);
+        RespGetRetroDto respGetRetroDto = new RespGetRetroDto(LocalDateTime.parse("2023-01-18T00:00:00"), retrospectContentDtos, retrospectKeywordDtos);
+        given(retrospectService.getRetro(any(), any())).willReturn(respGetRetroDto);
 
         //when
         ResultActions actions = mockMvc.perform(
                 get("/retrospect/view")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("retrospectId", String.valueOf(1L))
+                        .param("fromDate", fromDate)
+                        .param("toDate", toDate)
+                        .param("week", String.valueOf(week))
         );
 
         //then
@@ -201,7 +203,9 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         headerWithName("Token").description("접근 토큰")
                                 ),
                                 requestParameters(
-                                        parameterWithName("retrospectId").description("회고 ID")
+                                        parameterWithName("fromDate").description("처음 날짜"),
+                                        parameterWithName("toDate").description("마지막 날짜"),
+                                        parameterWithName("week").description("회고 주차 (index로 되어있어서 1주 차는 0, 2주 차는 1 이런 식으로 보내야 함)")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),
@@ -211,8 +215,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                         fieldWithPath("result.contents[].question").description("회고 목적별 질문"),
                                         fieldWithPath("result.contents[].answer").description("질문에 대한 답변"),
                                         fieldWithPath("result.keywords[].classify").description("회고 과정에서 키워드 분류 기준(감정 분리수거 기능)"),
-                                        fieldWithPath("result.keywords[].keyword").description("분류된 키워드"),
-                                        fieldWithPath("result.week").description("주차")
+                                        fieldWithPath("result.keywords[].keyword").description("분류된 키워드")
                                 )
                         )
                 );
@@ -221,7 +224,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
     @Test
     public void 회고_수정() throws Exception {
         //given
-        ReqEditRetroDto reqEditRetroDto = new ReqEditRetroDto("수정답변", 1L, 0);
+        ReqEditRetroDto reqEditRetroDto = new ReqEditRetroDto("수정답변", 0, 0);
         willDoNothing().given(retrospectService).editRetrospect(any(), any());
 
         //when
@@ -242,7 +245,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                 ),
                                 requestFields(
                                         fieldWithPath("answer").description("수정된 회고 질문에 대한 답변"),
-                                        fieldWithPath("retrospectId").description("회고 ID"),
+                                        fieldWithPath("week").description("회고 주차 (index로 되어있어서 1주 차는 0, 2주 차는 1 이런 식으로 보내야 함)"),
                                         fieldWithPath("index").description("수정할 회고 질문 (index로 되어있어서 첫번째 질문은 0, 두번째 질문은 1 이런 식으로 보내야 함)")
                                 ),
                                 responseFields(
@@ -549,6 +552,13 @@ public class RetrospectControllerTest extends CommonControllerTest {
     @Test
     public void 회고_삭제() throws Exception {
         //given
+        String fromDate = "2023-04-01T00:00:00";
+        String toDate = "2023-04-30T00:00:00";
+        int week = 0;
+
+        ReqDeleteRetroDto input = new ReqDeleteRetroDto(LocalDateTime.parse(fromDate), LocalDateTime.parse(toDate), week);
+        String body = objectMapper.writeValueAsString(input);
+
         willDoNothing().given(retrospectService).deleteRetro(any(), any());
 
         //when
@@ -556,7 +566,7 @@ public class RetrospectControllerTest extends CommonControllerTest {
                 delete("/retrospect")
                         .header("Token", "ACCESS_TOKEN")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("retrospectId", String.valueOf(1L))
+                        .content(body)
         );
 
         //then
@@ -567,8 +577,10 @@ public class RetrospectControllerTest extends CommonControllerTest {
                                 requestHeaders(
                                         headerWithName("Token").description("접근 토큰")
                                 ),
-                                requestParameters(
-                                        parameterWithName("retrospectId").description("회고 ID")
+                                requestFields(
+                                        fieldWithPath("fromDate").description("처음 날짜"),
+                                        fieldWithPath("toDate").description("마지막 날짜"),
+                                        fieldWithPath("week").description("회고 주차 (index로 되어있어서 1주 차는 0, 2주 차는 1 이런 식으로 보내야 함)")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").description("성공 여부"),

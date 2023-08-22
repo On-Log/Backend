@@ -14,6 +14,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Data
 public class ReqDeleteRetroDto {
-    @NotNull(message = "retrospectId은 비어있을 수 없습니다.")
-    private Long retrospectId;
+    @NotNull(message = "fromDate 값이 올바르지 않습니다.")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime fromDate;
+
+    @NotNull(message = "toDate 값이 올바르지 않습니다.")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime toDate;
+
+    @NotNull(message = "week 은 비어있을 수 없습니다.")
+    private Integer week;
 }

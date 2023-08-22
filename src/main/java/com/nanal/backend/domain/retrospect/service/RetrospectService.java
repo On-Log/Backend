@@ -100,7 +100,7 @@ public class RetrospectService {
         //조회할 회고 찾기
         Retrospect selectRetrospect = retrospectRepository.findRetrospectByMemberAndRetrospectId(member.getMemberId(), reqEditRetroDto.getRetrospectId());
 
-        selectRetrospect.changeAnswer(reqEditRetroDto);
+        selectRetrospect.changeAnswer(reqEditRetroDto.getIndex(), reqEditRetroDto.getAnswer());
     }
     @Counted("retrospect.api.count")
     public RespGetKeywordAndEmotionDto getKeywordAndEmotion(String socialId){

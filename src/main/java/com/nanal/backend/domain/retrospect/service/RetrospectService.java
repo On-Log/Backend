@@ -60,7 +60,6 @@ public class RetrospectService {
     private static final int FREQUENCY_LOW = 1;
 
     @Counted("retrospect.api.count")
-    @Transactional(readOnly = true)
     public RespGetInfoDto getInfo(String socialId, ReqGetInfoDto reqGetInfoDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
@@ -87,7 +86,6 @@ public class RetrospectService {
         changeDiaryEditStatus(member, reqSaveRetroDto);
     }
     @Counted("retrospect.api.count")
-    @Transactional(readOnly = true)
     public RespGetRetroDto getRetro(String socialId, ReqGetRetroDto reqGetRetroDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);

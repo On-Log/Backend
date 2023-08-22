@@ -508,7 +508,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1219
+Content-Length: 1188
 
 {
   "isSuccess" : true,
@@ -516,8 +516,7 @@ Content-Length: 1219
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "nickname" : "사용자 닉네임",
-    "retrospectGoal" : [ "자아탐색", "성취확인" ],
-    "retrospectId" : [ 1, 2 ],
+    "existRetrospect" : [ "자아탐색", "성취확인" ],
     "betweenDate" : 6,
     "countRetrospect" : true,
     "keywordList" : [ {
@@ -598,14 +597,9 @@ Content-Length: 1219
 <td class="tableblock halign-left valign-top"><p class="tableblock">사용자 닉네임</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectGoal</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.existRetrospect</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회고 목적</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">회고 ID</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.betweenDate</code></p></td>
@@ -799,7 +793,7 @@ Content-Length: 94
 <h4 id="Retrospect-회고-조회_http_request">HTTP request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /retrospect/view?retrospectId=1 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /retrospect/view?fromDate=2023-04-01T00%3A00%3A00&amp;toDate=2023-01-30T00%3A00%3A00&amp;week=0 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Token: ACCESS_TOKEN
 Host: localhost:8080</code></pre>
@@ -842,8 +836,16 @@ Host: localhost:8080</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>retrospectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">회고 ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fromDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">처음 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>toDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">마지막 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>week</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고 주차 (index로 되어있어서 1주 차는 0, 2주 차는 1 이런 식으로 보내야 함)</p></td>
 </tr>
 </tbody>
 </table>
@@ -854,7 +856,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1012
+Content-Length: 995
 
 {
   "isSuccess" : true,
@@ -881,8 +883,7 @@ Content-Length: 1012
     }, {
       "classify" : "돌아보니, 다른 의미로 다가온 기억",
       "keyword" : "키워드3"
-    } ],
-    "week" : 1
+    } ]
   }
 }</code></pre>
 </div>
@@ -944,11 +945,6 @@ Content-Length: 1012
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">분류된 키워드</p></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.week</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">주차</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -963,12 +959,12 @@ Content-Length: 1012
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /retrospect HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Token: ACCESS_TOKEN
-Content-Length: 72
+Content-Length: 64
 Host: localhost:8080
 
 {
   "answer" : "수정답변",
-  "retrospectId" : 1,
+  "week" : 0,
   "index" : 0
 }</code></pre>
 </div>
@@ -1017,9 +1013,9 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock">수정된 회고 질문에 대한 답변</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>retrospectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>week</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">회고 ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고 주차 (index로 되어있어서 1주 차는 0, 2주 차는 1 이런 식으로 보내야 함)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>index</code></p></td>
@@ -1895,10 +1891,17 @@ Content-Length: 198
 <h4 id="Retrospect-회고-삭제_http_request">HTTP request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /retrospect?retrospectId=1 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /retrospect HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Token: ACCESS_TOKEN
-Host: localhost:8080</code></pre>
+Content-Length: 94
+Host: localhost:8080
+
+{
+  "fromDate" : "2023-04-01T00:00:00",
+  "toDate" : "2023-04-30T00:00:00",
+  "week" : 0
+}</code></pre>
 </div>
 </div>
 </div>
@@ -1919,6 +1922,40 @@ Host: localhost:8080</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Token</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">접근 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="Retrospect-회고-삭제_request_fields">Request fields</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fromDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">처음 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>toDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">마지막 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>week</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회고 주차 (index로 되어있어서 1주 차는 0, 2주 차는 1 이런 식으로 보내야 함)</p></td>
 </tr>
 </tbody>
 </table>
@@ -1980,7 +2017,7 @@ Content-Length: 94
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-08-22 13:34:25 +0900
+Last updated 2023-07-23 20:17:33 +0900
 </div>
 </div>
 </body>

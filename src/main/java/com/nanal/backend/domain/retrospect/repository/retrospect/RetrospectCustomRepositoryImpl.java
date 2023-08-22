@@ -1,6 +1,5 @@
 package com.nanal.backend.domain.retrospect.repository.retrospect;
 
-import com.nanal.backend.domain.auth.entity.QMember;
 import com.nanal.backend.domain.diary.dto.resp.RetrospectInfoDto;
 import com.nanal.backend.domain.diary.exception.RetrospectAlreadyWrittenException;
 import com.nanal.backend.domain.retrospect.entity.QRetrospect;
@@ -10,9 +9,7 @@ import com.nanal.backend.domain.retrospect.exception.RetrospectNotFoundException
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -54,6 +51,21 @@ public class RetrospectCustomRepositoryImpl implements RetrospectCustomRepositor
         List<Retrospect> retrospects = findRetrospectListByMemberAndWriteDate(memberId, fromDate, toDate);
 
         if(retrospects.size() >= 5) throw RetrospectAllDoneException.EXCEPTION;
+    }
+    @Override
+    public Retrospect getRetrospect(Long memberId, LocalDateTime fromDate, LocalDateTime toDate, Integer week) {
+        List<Retrospect> retrospects = findRetrospectListByMemberAndWriteDate(memberId, fromDate, toDate);
+
+        if(retrospects.size() <= week) throw RetrospectNotFoundException.EXCEPTION;
+        else return retrospects.get(week);
+    }
+
+    @Override
+    public List<String> getRetrospectGoal(Long memberId, LocalDateTime fromDate, LocalDateTime toDate) {
+        List<Retrospect> goals = findRetrospectListByMemberAndWriteDate(memberId, fromDate, toDate);
+        return goals.stream()
+                .map(Retrospect::getGoal)
+                .collect(Collectors.toList());
     }
 
     @Override

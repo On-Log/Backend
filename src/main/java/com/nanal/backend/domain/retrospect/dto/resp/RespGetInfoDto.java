@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -21,10 +20,7 @@ public class RespGetInfoDto {
     String nickname;
     //회고 목적
     @NotBlank(message = "list는 비어있을 수 없습니다.")
-    List<String> retrospectGoal;
-
-    @NotBlank(message = "retrospectId는 비어있을 수 없습니다.")
-    List<Long> retrospectId;
+    List<String> existRetrospect;
 
     //다음 회고까지 남은 날짜
     @NotBlank(message = "다음 회고까지 남은 날짜는 비어있을 수 없습니다.")
@@ -39,11 +35,10 @@ public class RespGetInfoDto {
     //키워드 분류하고, 주차별로 나누기
     List<RespGetClassifiedKeywordDto> keywordList;
 
-    public static RespGetInfoDto createRespGetInfoDto(String nickname, List<String> retrospectGoal, List<Long> retrospectId, int betweenDate, boolean countRetrospect, List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos){
+    public static RespGetInfoDto createRespGetInfoDto(String nickname, List<String> existRetrospect, int betweenDate, boolean countRetrospect, List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos){
         RespGetInfoDto respGetInfoDto = RespGetInfoDto.builder()
                 .nickname(nickname)
-                .retrospectGoal(retrospectGoal)
-                .retrospectId(retrospectId)
+                .existRetrospect(existRetrospect)
                 .betweenDate(betweenDate)
                 .countRetrospect(countRetrospect)
                 .keywordList(respGetClassifiedKeywordDtos)

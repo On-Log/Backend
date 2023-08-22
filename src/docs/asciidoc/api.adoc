@@ -20,6 +20,8 @@ include::Diary-API.adoc[]
 
 include::Retrospect-API.adoc[]
 
+include::Retrospect-API-V2.adoc[]
+
 include::Search-API.adoc[]
 
 include::Sponsor-API.adoc[]

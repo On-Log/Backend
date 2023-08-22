@@ -1,0 +1,25 @@
+[[Retrospect-API-V2]]
+== Retrospect API V2
+
+[[Retrospect-회고-탭]]
+=== Retrospect 회고 탭
+operation::retrospect-controller-test-v2/회고_탭[snippets='http-request,request-headers,request-parameters,http-response,response-fields']
+
+---
+
+[[Retrospect-회고-조회]]
+=== Retrospect 회고 조회
+operation::retrospect-controller-test-v2/회고_조회[snippets='http-request,request-headers,request-parameters,http-response,response-fields']
+
+---
+
+[[Retrospect-회고-수정]]
+=== Retrospect 회고 수정
+operation::retrospect-controller-test-v2/회고_수정[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+
+---
+
+[[Retrospect-회고-삭제]]
+=== Retrospect 회고 삭제
+operation::retrospect-controller-test-v2/회고_삭제[snippets='http-request,request-headers,http-response,response-fields']
+

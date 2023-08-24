@@ -1,23 +1,27 @@
 package com.nanal.backend.domain.retrospect.service;
 
+import com.nanal.backend.domain.auth.entity.Member;
+import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.diary.domain.DiaryWritableWeek;
 import com.nanal.backend.domain.diary.entity.Diary;
-import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.diary.entity.Emotion;
-import com.nanal.backend.domain.diary.entity.Keyword;
-import com.nanal.backend.domain.diary.entity.KeywordEmotion;
 import com.nanal.backend.domain.diary.repository.EmotionRepository;
+import com.nanal.backend.domain.diary.repository.diary.DiaryRepository;
 import com.nanal.backend.domain.retrospect.dto.req.*;
 import com.nanal.backend.domain.retrospect.dto.resp.*;
-import com.nanal.backend.domain.retrospect.entity.*;
-import com.nanal.backend.domain.retrospect.exception.*;
+import com.nanal.backend.domain.retrospect.entity.ExtraQuestion;
+import com.nanal.backend.domain.retrospect.entity.Question;
+import com.nanal.backend.domain.retrospect.entity.Retrospect;
+import com.nanal.backend.domain.retrospect.entity.RetrospectContent;
+import com.nanal.backend.domain.retrospect.exception.GoalNotFoundException;
+import com.nanal.backend.domain.retrospect.exception.RetrospectNotFoundException;
+import com.nanal.backend.domain.retrospect.exception.RetrospectTimeDoneException;
+import com.nanal.backend.domain.retrospect.exception.WrongContentSizeException;
 import com.nanal.backend.domain.retrospect.repository.ExtraQuestionRepository;
 import com.nanal.backend.domain.retrospect.repository.QuestionRepository;
-import com.nanal.backend.global.exception.customexception.MemberAuthException;
-import com.nanal.backend.domain.diary.repository.diary.DiaryRepository;
-import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.retrospect.repository.RetrospectKeywordRepository;
 import com.nanal.backend.domain.retrospect.repository.retrospect.RetrospectRepository;
+import com.nanal.backend.global.exception.customexception.MemberAuthException;
 import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
@@ -25,13 +29,15 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static java.lang.Math.abs;
 
@@ -49,9 +55,11 @@ public class RetrospectService {
     private final QuestionRepository questionRepository;
     private final ExtraQuestionRepository extraQuestionRepository;
     private final EmotionRepository emotionRepository;
+    private static final int FREQUENCY_HIGH = 3;
+    private static final int FREQUENCY_MEDIUM = 2;
+    private static final int FREQUENCY_LOW = 1;
 
     @Counted("retrospect.api.count")
-    @Transactional(readOnly = true)
     public RespGetInfoDto getInfo(String socialId, ReqGetInfoDto reqGetInfoDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
@@ -66,7 +74,7 @@ public class RetrospectService {
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
 
         //회고 작성 가능성 검증
-        checkRetrospectWritable(member, reqSaveRetroDto.getCurrentDate());
+        checkRetrospectWritable(member, reqSaveRetroDto.getCurrentDate(), reqSaveRetroDto.getContents());
 
         // 회고 Entity 생성
         Retrospect retrospect = Retrospect.createRetrospect(member, reqSaveRetroDto);
@@ -78,7 +86,6 @@ public class RetrospectService {
         changeDiaryEditStatus(member, reqSaveRetroDto);
     }
     @Counted("retrospect.api.count")
-    @Transactional(readOnly = true)
     public RespGetRetroDto getRetro(String socialId, ReqGetRetroDto reqGetRetroDto) {
         // socialId 로 유저 조회
         Member member = memberRepository.findBySocialId(socialId).orElseThrow(() -> MemberAuthException.EXCEPTION);
@@ -89,6 +96,17 @@ public class RetrospectService {
 
         // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
         return RespGetRetroDto.createRespGetRetroDto(selectRetrospect);
+    }
+
+    // 기존 회고 조회를 이 API와 통합할 예정
+    @Counted("retrospect.api.count")
+    public RespGetSearchRetroDto getRetroBySearch(ReqSearchRetroDto reqSearchRetroDto) {
+        //조회할 회고 찾기
+        Retrospect selectRetrospect = retrospectRepository.findById(reqSearchRetroDto.getRetrospectId()).orElseThrow(() -> RetrospectNotFoundException.EXCEPTION);
+        // 몇 주차인지 계산
+        Integer week = countWeek(selectRetrospect.getWriteDate());
+        // 몇번째 회고인지 조회한 후, 회고 리스트로 반환값 생성
+        return RespGetSearchRetroDto.createRespGetSearchRetroDto(selectRetrospect, week);
     }
 
     @Counted("retrospect.api.count")
@@ -105,10 +123,9 @@ public class RetrospectService {
         Retrospect selectRetrospect = retrospectRepository.getRetrospect(member.getMemberId(), currentDate.toLocalDate().atStartOfDay().withDayOfMonth(1),
                 currentDate.toLocalDate().atStartOfDay().withDayOfMonth(LocalDate.now().lengthOfMonth()), reqEditRetroDto.getWeek());
 
-        selectRetrospect.changeAnswer(reqEditRetroDto);
+        selectRetrospect.changeAnswer(reqEditRetroDto.getIndex(), reqEditRetroDto.getAnswer());
     }
     @Counted("retrospect.api.count")
-    @Transactional(readOnly = true)
     public RespGetKeywordAndEmotionDto getKeywordAndEmotion(String socialId){
 
         // socialId 로 유저 조회
@@ -212,12 +229,18 @@ public class RetrospectService {
 
         return RespGetInfoDto.createRespGetInfoDto(member.getNickname(),existRetrospect, betweenDate, isRetroNumberNotFive, respGetClassifiedKeywordDtos);
     }
+    // 회고 주차 반환
+    private Integer countWeek(LocalDateTime writeDate) {
+        LocalDateTime startOfMonth = writeDate.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+        int week = retrospectRepository.getWeekSequence(writeDate,startOfMonth);
+        return week;
+    }
     //다음 회고까지 남은 날 반환
     private Integer getbetweenDate(Member member, LocalDateTime currentDate, Period period) {
         return checkExistRetro(member, currentDate) ? 7 : period.getDays();
     }
     //회고 작성 예외처리 메서드 묶음
-    private void checkRetrospectWritable(Member member, LocalDateTime currentDate) {
+    private void checkRetrospectWritable(Member member, LocalDateTime currentDate, List<RetrospectContentDto> contents) {
         //작성한 회고가 5개 넘어가는지 여부
         retrospectRepository.checkRetroCount(member.getMemberId(), currentDate.toLocalDate().atStartOfDay().withDayOfMonth(1),
                 currentDate.toLocalDate().atStartOfDay().withDayOfMonth(currentDate.toLocalDate().lengthOfMonth()));
@@ -225,6 +248,9 @@ public class RetrospectService {
         checkWriteTime(member, currentDate);
         // 해당 날짜에 작성한 회고 존재하는지 체크
         retrospectRepository.checkRetrospectAlreadyExist(member.getMemberId(), currentDate);
+        // 회고 답변 개수가 3개 이상, 5개 이하인지 체크
+        if(contents.size() < 3 || contents.size() > 5)
+            throw WrongContentSizeException.EXCEPTION;
     }
     //회고 작성 예외처리
     private void checkWriteTime(Member member, LocalDateTime dateTime) {
@@ -320,35 +346,100 @@ public class RetrospectService {
                 .collect(Collectors.toList());
     }
     private List<CountEmotion> getEmotionCount(List<Diary> diaries) {
-        List<Emotion> findEmotions = emotionRepository.findAll();
-        int totalCount = diaries.stream()
-                .flatMap(d -> d.getKeywords().stream())
-                .map(k -> k.getKeywordEmotions().size())
-                .reduce(0, Integer::sum);
+        Set<Integer> set = new HashSet<>();
+        List<Emotion> emotions = emotionRepository.findAll();
+        List<CountEmotion> result = new ArrayList<>();
+        Map<Emotion, Integer> emotionCountMap = new LinkedHashMap<>(); // 순서를 보장하는 LinkedHashMap 사용
 
-        return findEmotions.stream().map(e -> {
+        for (Emotion e : emotions) {
             int count = diaries.stream()
-                    .flatMap(d -> d.getKeywords().stream())
-                    .flatMap(k -> k.getKeywordEmotions().stream())
-                    .map(ke -> ke.getEmotion().getEmotion())
-                    .filter(emotion -> emotion.equals(e.getEmotion()))
-                    .collect(Collectors.toList())
-                    .size();
+                    .flatMap(diary -> diary.getKeywords().stream())
+                    .flatMap(keyword -> keyword.getKeywordEmotions().stream())
+                    .filter(ke -> ke.getEmotion().getEmotion().equals(e.getEmotion()))
+                    .mapToInt(ke -> 1)
+                    .sum();
 
-            double ratio = totalCount == 0 ? 0 : ((double) count) / totalCount;
-            System.out.println(ratio);
+            set.add(count);
+            emotionCountMap.put(e, count); // 감정어 순서대로 저장
+        }
+        set.remove(0);
+        if (set.size() == 1) {
+            Integer value = set.iterator().next();
 
-            int frequency = 0;
-            if (ratio <= 0.3 && ratio > 0) {
-                frequency = 1;
-            } else if (ratio <= 0.7 && ratio > 0.3) {
-                frequency = 2;
-            } else if (ratio > 0.7){
-                frequency = 3;
+            for (Emotion emotion : emotions) {
+                Integer count = emotionCountMap.get(emotion);
+                int frequency = count.equals(value) ? FREQUENCY_HIGH : 0;
+
+                CountEmotion countEmotion = CountEmotion.makeCountEmotion(emotion.getEmotion(), frequency);
+                result.add(countEmotion);
             }
+        } else if (set.size() == 2) {
+            List<Integer> sortedList = new ArrayList<>(set);
+            Collections.sort(sortedList, Collections.reverseOrder());
+                for (Emotion emotion : emotions) {
+                    Integer count = emotionCountMap.get(emotion);
+                    int frequency = 0;
 
-            return CountEmotion.makeCountEmotion(e.getEmotion(), frequency);
-        }).collect(Collectors.toList());
+                    if (count.equals(sortedList.get(0))) {
+                        frequency = FREQUENCY_HIGH;
+                    } else if (count.equals(sortedList.get(1))) {
+                        frequency = FREQUENCY_MEDIUM;
+                    }
+
+                    CountEmotion countEmotion = CountEmotion.makeCountEmotion(emotion.getEmotion(), frequency);
+                    result.add(countEmotion);
+                }
+        } else if (set.size() == 3) {
+            List<Integer> sortedList = new ArrayList<>(set);
+            Collections.sort(sortedList, Collections.reverseOrder());
+                for (Emotion emotion : emotions) {
+                    Integer count = emotionCountMap.get(emotion);
+                    int frequency = 0;
+
+                    if (count.equals(sortedList.get(0))) {
+                        frequency = FREQUENCY_HIGH;
+                    } else if (count.equals(sortedList.get(1))) {
+                        frequency = FREQUENCY_MEDIUM;
+                    } else if (count.equals(sortedList.get(2))) {
+                        frequency = FREQUENCY_LOW;
+                    }
+
+                    CountEmotion countEmotion = CountEmotion.makeCountEmotion(emotion.getEmotion(), frequency);
+                    result.add(countEmotion);
+                }
+        }else {
+            List<Integer> sortedList = new ArrayList<>(set);
+            Collections.sort(sortedList, Collections.reverseOrder());
+
+            int size = sortedList.size();
+            int fifteenPercentIndex = (int) (size * 0.15);
+            int fortyPercentIndex = (int) (size * 0.55);
+
+            for (Emotion emotion : emotions) {
+                Integer count = emotionCountMap.get(emotion);
+                int frequency = 0;
+
+                if (count == null) {
+                    continue;
+                }
+
+                int index = sortedList.indexOf(count);
+                if (count == 0) {
+                    frequency = 0;
+                } else if (index <= fifteenPercentIndex) {
+                    frequency = FREQUENCY_HIGH;
+                } else if (index <= fortyPercentIndex) {
+                    frequency = FREQUENCY_MEDIUM;
+                } else {
+                    frequency = FREQUENCY_LOW;
+                }
+
+                CountEmotion countEmotion = CountEmotion.makeCountEmotion(emotion.getEmotion(), frequency);
+                result.add(countEmotion);
+            }
+        }
+
+        return result;
     }
     private long getGoalIndex(String goal) {
         if (goal.equals("자아탐색"))

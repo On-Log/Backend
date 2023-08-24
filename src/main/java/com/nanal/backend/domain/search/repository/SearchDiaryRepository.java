@@ -3,7 +3,7 @@ package com.nanal.backend.domain.search.repository;
 import com.nanal.backend.domain.diary.entity.Diary;
 import com.nanal.backend.domain.diary.entity.QDiary;
 import com.nanal.backend.domain.diary.entity.QKeyword;
-import com.nanal.backend.domain.search.dto.ReqSearchDto;
+import com.nanal.backend.domain.search.dto.req.ReqSearchDto;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +19,12 @@ import static org.springframework.util.StringUtils.hasText;
 @Repository
 public class SearchDiaryRepository {
 
-    // qclass iv로 선언시 스레드 세이프한지 체크
     QDiary diary = QDiary.diary;
     QKeyword keyword = QKeyword.keyword;
 
     private final JPAQueryFactory queryFactory;
 
-    public List<Diary> searchDiary(ReqSearchDto reqSearchDto) {
+    public List<Diary> searchDiary(ReqSearchDto reqSearchDto, Long memberId) {
 
         return queryFactory
                 .selectDistinct(diary)
@@ -33,7 +32,8 @@ public class SearchDiaryRepository {
                 .join(diary.keywords, keyword)
                 .where(
                         betweenDate(reqSearchDto.getStartDate(), reqSearchDto.getEndDate())
-                                .and(containWord(reqSearchDto.getSearchWord()))
+                                .and(containWord(reqSearchDto.getSearchWord())
+                                        .and(isEqualMember(memberId)))
                 )
                 .orderBy(diary.writeDate.desc())
                 .offset(reqSearchDto.getOffset())
@@ -41,6 +41,27 @@ public class SearchDiaryRepository {
                 .fetch();
     }
 
+    public Integer countLeftDiary(ReqSearchDto reqSearchDto, Long memberId) {
+        return queryFactory
+                .selectDistinct(diary.diaryId)
+                .from(diary)
+                .join(diary.keywords, keyword)
+                .where(
+                        betweenDate(reqSearchDto.getStartDate(), reqSearchDto.getEndDate())
+                                .and(containWord(reqSearchDto.getSearchWord())
+                                        .and(isEqualMember(memberId)))
+                )
+                .orderBy(diary.writeDate.desc())
+                .offset(reqSearchDto.getOffset() + reqSearchDto.getLimit())
+                .limit(reqSearchDto.getLimit())
+                .fetch()
+                .size();
+    }
+
+    private BooleanBuilder isEqualMember(Long memberId) {
+        if(memberId != null) return new BooleanBuilder(diary.member.memberId.eq(memberId));
+        else return new BooleanBuilder();
+    }
 
     private BooleanBuilder containWordInContent(String word) {
         if(hasText(word)) return new BooleanBuilder(diary.content.contains(word));

@@ -21,7 +21,11 @@ public interface RetrospectRepository extends JpaRepository<Retrospect, Long>, R
 
     @Query(value = "SELECT * FROM retrospect re WHERE re.member_id = :memberId", nativeQuery = true)
     List<Retrospect> findListByMember(Long memberId);
+    @Query(value = "SELECT * FROM retrospect re WHERE re.member_id = :memberId And re.retrospect_id = :retrospectId", nativeQuery = true)
+    Retrospect findRetrospectByMemberAndRetrospectId(Long memberId, Long retrospectId);
 
+    @Query(value = "SELECT COUNT(*) + 1 FROM retrospect re WHERE re.write_date < :writeDate AND write_date > :startOfMonth", nativeQuery = true)
+    int getWeekSequence(LocalDateTime writeDate, LocalDateTime startOfMonth);
 }
 
 

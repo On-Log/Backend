@@ -1,0 +1,55 @@
+package com.nanal.backend.domain.retrospect.v2.dto.resp;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nanal.backend.domain.retrospect.dto.resp.RespGetClassifiedKeywordDto;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class RespGetInfoDto {
+    //유저 닉네임
+    @NotNull(message = "nickname 값은 비어있을 수 없습니다.")
+    String nickname;
+    //회고 목적
+    @NotBlank(message = "list는 비어있을 수 없습니다.")
+    List<String> retrospectGoal;
+
+    @NotBlank(message = "retrospectId는 비어있을 수 없습니다.")
+    List<Long> retrospectId;
+
+    //다음 회고까지 남은 날짜
+    @NotBlank(message = "다음 회고까지 남은 날짜는 비어있을 수 없습니다.")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    Integer betweenDate;
+
+
+    @NotNull(message = "boolean 값은 비어있을 수 없습니다.")
+    //회고 개수가 5개인지 아닌지 체크
+    Boolean countRetrospect;
+
+    //키워드 분류하고, 주차별로 나누기
+    List<RespGetClassifiedKeywordDto> keywordList;
+
+    public static RespGetInfoDto createRespGetInfoDto(String nickname, List<String> retrospectGoal, List<Long> retrospectId, int betweenDate, boolean countRetrospect, List<RespGetClassifiedKeywordDto> respGetClassifiedKeywordDtos){
+        RespGetInfoDto respGetInfoDto = RespGetInfoDto.builder()
+                .nickname(nickname)
+                .retrospectGoal(retrospectGoal)
+                .retrospectId(retrospectId)
+                .betweenDate(betweenDate)
+                .countRetrospect(countRetrospect)
+                .keywordList(respGetClassifiedKeywordDtos)
+                .build();
+
+        return respGetInfoDto;
+    }
+
+}

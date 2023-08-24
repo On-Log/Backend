@@ -46,8 +46,8 @@ public class Retrospect extends BaseTime {
     private Member member;
 
     //==수정 메서드==//
-    public void changeAnswer(ReqEditRetroDto reqEditRetroDto) {
-        retrospectContents.get(reqEditRetroDto.getIndex()).changeAnswer(reqEditRetroDto.getAnswer());
+    public void changeAnswer(int index, String answer) {
+        retrospectContents.get(index).changeAnswer(answer);
     }
     //==설정 메서드==//
     //==연관관계 메서드==//

@@ -1,6 +1,5 @@
 package com.nanal.backend.domain.retrospect.repository.retrospect;
 
-import com.nanal.backend.domain.auth.entity.QMember;
 import com.nanal.backend.domain.diary.dto.resp.RetrospectInfoDto;
 import com.nanal.backend.domain.diary.exception.RetrospectAlreadyWrittenException;
 import com.nanal.backend.domain.retrospect.entity.QRetrospect;
@@ -10,9 +9,7 @@ import com.nanal.backend.domain.retrospect.exception.RetrospectNotFoundException
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;

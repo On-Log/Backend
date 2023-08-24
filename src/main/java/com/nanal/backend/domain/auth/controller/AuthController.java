@@ -24,45 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 public class AuthController {
 
     private final AuthService authService;
-    private final EmailService emailService;
-
-    /**
-     * 일반 회원가입 기능
-     */
-    @PostMapping(value = "/auth/register")
-    public CommonResponse<?> generalRegister(@RequestBody ReqRegisterDto reqRegisterDto) {
-
-        authService.generalRegister(reqRegisterDto);
-
-        return new CommonResponse<>(ErrorCode.SUCCESS);
-    }
-
-    /**
-     * 이메일 인증
-     */
-    @PostMapping("/auth/emailConfirm")
-    public CommonResponse<?> emailConfirm(@RequestBody ReqEmailConfirmDto reqEmailConfirmDto) throws Exception {
-
-        RespEmailConfirmDto respEmailConfirmDto = emailService.sendSimpleMessage(reqEmailConfirmDto.getEmail());
-
-        return new CommonResponse<>(respEmailConfirmDto);
-    }
-
-    /**
-     * 일반 로그인 기능
-     */
-    @PostMapping(value = "/auth/login")
-    public CommonResponse<?> generalLogin(@RequestBody ReqRegisterDto reqRegisterDto) {
-
-        LoginInfo token = authService.generalLogin(reqRegisterDto);
-
-        return new CommonResponse<>(token);
-    }
-
-    /**
-     * 비밀번호 찾기
-     */
-
 
     /**
      * NAVER 소셜 로그인 기능

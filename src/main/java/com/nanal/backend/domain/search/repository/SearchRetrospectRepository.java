@@ -3,7 +3,7 @@ package com.nanal.backend.domain.search.repository;
 import com.nanal.backend.domain.retrospect.entity.QRetrospect;
 import com.nanal.backend.domain.retrospect.entity.QRetrospectContent;
 import com.nanal.backend.domain.retrospect.entity.Retrospect;
-import com.nanal.backend.domain.search.dto.ReqSearchDto;
+import com.nanal.backend.domain.search.dto.req.ReqSearchDto;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +21,11 @@ public class SearchRetrospectRepository {
 
     private final JPAQueryFactory queryFactory;
 
+
     QRetrospect retrospect = QRetrospect.retrospect;
     QRetrospectContent retrospectContent = QRetrospectContent.retrospectContent;
 
-    public List<Retrospect> searchRetrospect(ReqSearchDto reqSearchDto) {
+    public List<Retrospect> searchRetrospect(ReqSearchDto reqSearchDto, Long memberId) {
 
         return queryFactory
                 .selectDistinct(retrospect)
@@ -32,12 +33,37 @@ public class SearchRetrospectRepository {
                 .join(retrospect.retrospectContents, retrospectContent)
                 .where(
                         betweenDate(reqSearchDto.getStartDate(), reqSearchDto.getEndDate())
-                                .and(containWordInAnswer(reqSearchDto.getSearchWord()))
+                                .and(containWordInAnswer(reqSearchDto.getSearchWord())
+                                        .and(isEqualMember(memberId)))
                 )
                 .orderBy(retrospect.writeDate.desc())
                 .offset(reqSearchDto.getOffset())
                 .limit(reqSearchDto.getLimit())
                 .fetch();
+    }
+
+
+    public Integer countLeftRetrospect(ReqSearchDto reqSearchDto, Long memberId) {
+
+        return queryFactory
+                .selectDistinct(retrospect.retrospectId)
+                .from(retrospect)
+                .join(retrospect.retrospectContents, retrospectContent)
+                .where(
+                        betweenDate(reqSearchDto.getStartDate(), reqSearchDto.getEndDate())
+                                .and(containWordInAnswer(reqSearchDto.getSearchWord())
+                                        .and(isEqualMember(memberId)))
+                )
+                .orderBy(retrospect.writeDate.desc())
+                .offset(reqSearchDto.getOffset() + reqSearchDto.getLimit())
+                .limit(reqSearchDto.getLimit())
+                .fetch()
+                .size();
+    }
+
+    private BooleanBuilder isEqualMember(Long memberId) {
+        if(memberId != null) return new BooleanBuilder(retrospect.member.memberId.eq(memberId));
+        else return new BooleanBuilder();
     }
 
     private BooleanBuilder containWordInAnswer(String word) {

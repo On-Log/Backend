@@ -18,6 +18,7 @@ public enum ErrorCode {
     FORBIDDEN(false, 403, "해당 요청에 대한 권한이 존재하지 않습니다."),
 
     TOO_MANY_REQUEST(false,410, "잠시후에 다시 요청해주세요."),
+    TOO_MANY_DUPLICATED_REQUEST(false,411, "잠시후에 다시 요청해주세요."),
 
     // Validation
     INVALID_INPUT_VALUE(false, 455, "잘못된 입력값입니다."),
@@ -59,8 +60,11 @@ public enum ErrorCode {
     RETROSPECT_ALREADY_EXIST(false,491,"이미 요청한 날짜에 작성한 회고가 존재합니다."),
     RETROSPECT_ALL_DONE(false,492,"이번 달에 작성할 수 있는 모든 회고를 작성했습니다."),
     RETROSPECT_TIME_DONE(false,493,"회고 작성 및 수정은 회고일 당일 11시 59분까지만 가능합니다"),
-    GOAL_NOT_FOUND(false,494,"해당 회고 목적은 존재하지 않습니다.");
-
+    GOAL_NOT_FOUND(false,494,"해당 회고 목적은 존재하지 않습니다."),
+    WRONG_CONTENT_SIZE(false,495,"잘못된 회고 답변 개수입니다"),
+    // Sponsor
+    CODE_NOT_FOUND(false,600,"작성하신 코드는 존재하지 않습니다."),
+    CODE_ALREADY_USED(false,601,"작성하신 코드는 이미 사용되었습니다.");
 
     private Boolean isSuccess;
     private int code;

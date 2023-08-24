@@ -14,9 +14,15 @@ include::OnBoarding-API.adoc[]
 
 include::MyPage-API.adoc[]
 
+include::Alarm-API.adoc[]
+
 include::Diary-API.adoc[]
 
 include::Retrospect-API.adoc[]
 
+include::Retrospect-API-V2.adoc[]
+
 include::Search-API.adoc[]
+
+include::Sponsor-API.adoc[]
 

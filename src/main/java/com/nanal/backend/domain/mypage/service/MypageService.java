@@ -1,5 +1,7 @@
 package com.nanal.backend.domain.mypage.service;
 
+import com.nanal.backend.domain.alarm.entity.Alarm;
+import com.nanal.backend.domain.alarm.repository.AlarmRepository;
 import com.nanal.backend.domain.auth.entity.Member;
 import com.nanal.backend.domain.auth.repository.MemberRepository;
 import com.nanal.backend.domain.mypage.repository.FeedbackRepository;
@@ -36,11 +38,7 @@ public class MypageService {
         // socialId 로 유저 조회
         Member member = findMember(socialId);
 
-        return RespGetUserDto.builder()
-                .email(member.getEmail())
-                .nickname(member.getNickname())
-                .retrospectDay(member.getRetrospectDay())
-                .build();
+        return RespGetUserDto.createRespGetUserDto(member);
     }
 
     @Counted("mypage.api.count")
@@ -78,7 +76,7 @@ public class MypageService {
         // socialId 로 유저 조회
         Member member = findMember(socialId);
 
-        Integer serviceLife = member.getServiceLife();
+        long serviceLife = member.getServiceLife();
 
         return RespGetServiceLife.builder()
                 .serviceLife(serviceLife)

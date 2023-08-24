@@ -16,7 +16,7 @@ import java.util.List;
 
 public interface AuthLogRepository extends JpaRepository<AuthLog, Long> {
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     AuthLog save(AuthLog authLog);
 
 //    @Query(value = "SELECT new com.nanal.backend.domain.analysis.dto.resp.DayDto(DAY(al.createdAt), COUNT(DISTINCT al.userEmail)) " +

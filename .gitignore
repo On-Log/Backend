@@ -12,6 +12,8 @@ Dockerfile-dev
 *.yml
 prometheus.yml
 grafana_data
+logs
+pinpoint-agent-2.5.0
 
 ### STS ###
 .apt_generated

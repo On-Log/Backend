@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.DayOfWeek;
+import java.util.Optional;
 
 @Builder
 @AllArgsConstructor
@@ -28,6 +29,8 @@ public class RespGetUserDto {
 
     private String retrospectAlarmTime;
 
+    private String goods;
+
     public static RespGetUserDto createRespGetUserDto(Member member) {
         Alarm alarm = member.getAlarm();
         return RespGetUserDto.builder()
@@ -38,6 +41,7 @@ public class RespGetUserDto {
                 .diaryAlarmTime(alarm.getDiaryTime())
                 .retrospectAlarmActive(alarm.getRetrospectActive())
                 .retrospectAlarmTime(alarm.getRetrospectTime())
+                .goods(member.getGoods() != null ? member.getGoods() : null)
                 .build();
     }
 }

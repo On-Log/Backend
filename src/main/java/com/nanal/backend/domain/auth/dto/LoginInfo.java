@@ -23,16 +23,19 @@ public class LoginInfo {
 
     private Boolean onBoardingCompleted;
 
+    private Boolean isSponsor;
+
     public LoginInfo(String nickname, Token token) {
         this.nickname = nickname;
         this.token = token.getToken();
         this.refreshToken = token.getRefreshToken();
     }
 
-    public LoginInfo(String nickname, Token token, Boolean onBoardingCompleted) {
+    public LoginInfo(String nickname, Token token, Boolean onBoardingCompleted, Boolean isSponsor) {
         this.nickname = nickname;
         this.token = token.getToken();
         this.refreshToken = token.getRefreshToken();
         this.onBoardingCompleted = onBoardingCompleted;
+        this.isSponsor = isSponsor;
     }
 }

@@ -1496,7 +1496,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 366
+Content-Length: 386
 
 {
   "isSuccess" : true,
@@ -1509,7 +1509,8 @@ Content-Length: 366
     "diaryAlarmActive" : true,
     "diaryAlarmTime" : "20:00",
     "retrospectAlarmActive" : true,
-    "retrospectAlarmTime" : "20:00"
+    "retrospectAlarmTime" : "20:00",
+    "goods" : "A"
   }
 }</code></pre>
 </div>
@@ -1580,6 +1581,11 @@ Content-Length: 366
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.retrospectAlarmTime</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회고 알림 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.goods</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">후원 세트 이름</p></td>
 </tr>
 </tbody>
 </table>

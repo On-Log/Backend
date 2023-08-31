@@ -33,7 +33,6 @@ public class MypageService {
     private final FeedbackRepository feedbackRepository;
 
     @Counted("mypage.api.count")
-    @Transactional(readOnly = true)
     public RespGetUserDto getUser(String socialId) {
         // socialId 로 유저 조회
         Member member = findMember(socialId);

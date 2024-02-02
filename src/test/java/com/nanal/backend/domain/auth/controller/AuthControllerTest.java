@@ -45,6 +45,7 @@ class AuthControllerTest extends CommonControllerTest {
                 .token("SERVER_ACCESS_TOKEN")
                 .refreshToken("SERVER_REFRESH_TOKEN")
                 .onBoardingCompleted(true)
+                .isSponsor(true)
                 .build();
 
         given(authService.commonAuth(any(), any())).willReturn(output);
@@ -71,7 +72,8 @@ class AuthControllerTest extends CommonControllerTest {
                                         fieldWithPath("result.nickname").description("유저 닉네임"),
                                         fieldWithPath("result.token").description("서버 접근용 Token"),
                                         fieldWithPath("result.refreshToken").description("서버 접근용 Refresh Token"),
-                                        fieldWithPath("result.onBoardingCompleted").description("온보딩 여부 확인")
+                                        fieldWithPath("result.onBoardingCompleted").description("온보딩 여부 확인"),
+                                        fieldWithPath("result.isSponsor").description("후원자 여부 확인 true : 후원자, false : 후원자 아님")
                                 )
                         )
                 );
@@ -91,6 +93,7 @@ class AuthControllerTest extends CommonControllerTest {
                 .token("SERVER_ACCESS_TOKEN")
                 .refreshToken("SERVER_REFRESH_TOKEN")
                 .onBoardingCompleted(false)
+                .isSponsor(false)
                 .build();
 
         given(authService.commonAuth(any(), any())).willReturn(output);
@@ -117,7 +120,8 @@ class AuthControllerTest extends CommonControllerTest {
                                         fieldWithPath("result.nickname").description("유저 닉네임"),
                                         fieldWithPath("result.token").description("서버 접근용 Token"),
                                         fieldWithPath("result.refreshToken").description("서버 접근용 Refresh Token"),
-                                        fieldWithPath("result.onBoardingCompleted").description("온보딩 여부 확인")
+                                        fieldWithPath("result.onBoardingCompleted").description("온보딩 여부 확인"),
+                                        fieldWithPath("result.isSponsor").description("후원자 여부 확인 true : 후원자, false : 후원자 아님")
                                 )
                         )
                 );
@@ -137,6 +141,7 @@ class AuthControllerTest extends CommonControllerTest {
                 .token("SERVER_ACCESS_TOKEN")
                 .refreshToken("SERVER_REFRESH_TOKEN")
                 .onBoardingCompleted(true)
+                .isSponsor(true)
                 .build();
 
         given(authService.commonAuth(any(), any())).willReturn(output);
@@ -163,7 +168,8 @@ class AuthControllerTest extends CommonControllerTest {
                                         fieldWithPath("result.nickname").description("유저 닉네임"),
                                         fieldWithPath("result.token").description("서버 접근용 Token"),
                                         fieldWithPath("result.refreshToken").description("서버 접근용 Refresh Token"),
-                                        fieldWithPath("result.onBoardingCompleted").description("온보딩 여부 확인")
+                                        fieldWithPath("result.onBoardingCompleted").description("온보딩 여부 확인"),
+                                        fieldWithPath("result.isSponsor").description("후원자 여부 확인 true : 후원자, false : 후원자 아님")
                                 )
                         )
                 );
@@ -183,6 +189,7 @@ class AuthControllerTest extends CommonControllerTest {
                 .token("SERVER_ACCESS_TOKEN")
                 .refreshToken("SERVER_REFRESH_TOKEN")
                 .onBoardingCompleted(false)
+                .isSponsor(false)
                 .build();
 
         given(authService.commonAuth(any(), any())).willReturn(output);
@@ -209,7 +216,8 @@ class AuthControllerTest extends CommonControllerTest {
                                         fieldWithPath("result.nickname").description("유저 닉네임"),
                                         fieldWithPath("result.token").description("서버 접근용 Token"),
                                         fieldWithPath("result.refreshToken").description("서버 접근용 Refresh Token"),
-                                        fieldWithPath("result.onBoardingCompleted").description("온보딩 여부 확인")
+                                        fieldWithPath("result.onBoardingCompleted").description("온보딩 여부 확인"),
+                                        fieldWithPath("result.isSponsor").description("후원자 여부 확인 true : 후원자, false : 후원자 아님")
                                 )
                         )
                 );
@@ -229,6 +237,7 @@ class AuthControllerTest extends CommonControllerTest {
                 .token("SERVER_ACCESS_TOKEN")
                 .refreshToken("SERVER_REFRESH_TOKEN")
                 .onBoardingCompleted(true)
+                .isSponsor(true)
                 .build();
 
         given(authService.commonAuth(any(), any())).willReturn(output);
@@ -255,7 +264,8 @@ class AuthControllerTest extends CommonControllerTest {
                                         fieldWithPath("result.nickname").description("유저 닉네임"),
                                         fieldWithPath("result.token").description("서버 접근용 Token"),
                                         fieldWithPath("result.refreshToken").description("서버 접근용 Refresh Token"),
-                                        fieldWithPath("result.onBoardingCompleted").description("온보딩 여부 확인")
+                                        fieldWithPath("result.onBoardingCompleted").description("온보딩 여부 확인"),
+                                        fieldWithPath("result.isSponsor").description("후원자 여부 확인 true : 후원자, false : 후원자 아님")
                                 )
                         )
                 );
@@ -275,6 +285,7 @@ class AuthControllerTest extends CommonControllerTest {
                 .token("SERVER_ACCESS_TOKEN")
                 .refreshToken("SERVER_REFRESH_TOKEN")
                 .onBoardingCompleted(false)
+                .isSponsor(false)
                 .build();
 
         given(authService.commonAuth(any(), any())).willReturn(output);
@@ -301,7 +312,8 @@ class AuthControllerTest extends CommonControllerTest {
                                         fieldWithPath("result.nickname").description("유저 닉네임"),
                                         fieldWithPath("result.token").description("서버 접근용 Token"),
                                         fieldWithPath("result.refreshToken").description("서버 접근용 Refresh Token"),
-                                        fieldWithPath("result.onBoardingCompleted").description("온보딩 여부 확인")
+                                        fieldWithPath("result.onBoardingCompleted").description("온보딩 여부 확인"),
+                                        fieldWithPath("result.isSponsor").description("후원자 여부 확인 true : 후원자, false : 후원자 아님")
                                 )
                         )
                 );
@@ -321,6 +333,7 @@ class AuthControllerTest extends CommonControllerTest {
                 .token("SERVER_ACCESS_TOKEN")
                 .refreshToken("SERVER_REFRESH_TOKEN")
                 .onBoardingCompleted(true)
+                .isSponsor(true)
                 .build();
 
         given(authService.appleAuth(any(), any())).willReturn(output);
@@ -347,7 +360,8 @@ class AuthControllerTest extends CommonControllerTest {
                                         fieldWithPath("result.nickname").description("유저 닉네임"),
                                         fieldWithPath("result.token").description("서버 접근용 Token"),
                                         fieldWithPath("result.refreshToken").description("서버 접근용 Refresh Token"),
-                                        fieldWithPath("result.onBoardingCompleted").description("온보딩 여부 확인")
+                                        fieldWithPath("result.onBoardingCompleted").description("온보딩 여부 확인"),
+                                        fieldWithPath("result.isSponsor").description("후원자 여부 확인 true : 후원자, false : 후원자 아님")
                                 )
                         )
                 );
@@ -367,6 +381,7 @@ class AuthControllerTest extends CommonControllerTest {
                 .token("SERVER_ACCESS_TOKEN")
                 .refreshToken("SERVER_REFRESH_TOKEN")
                 .onBoardingCompleted(false)
+                .isSponsor(false)
                 .build();
 
         given(authService.appleAuth(any(), any())).willReturn(output);
@@ -393,7 +408,8 @@ class AuthControllerTest extends CommonControllerTest {
                                         fieldWithPath("result.nickname").description("유저 닉네임"),
                                         fieldWithPath("result.token").description("서버 접근용 Token"),
                                         fieldWithPath("result.refreshToken").description("서버 접근용 Refresh Token"),
-                                        fieldWithPath("result.onBoardingCompleted").description("온보딩 여부 확인")
+                                        fieldWithPath("result.onBoardingCompleted").description("온보딩 여부 확인"),
+                                        fieldWithPath("result.isSponsor").description("후원자 여부 확인 true : 후원자, false : 후원자 아님")
                                 )
                         )
                 );

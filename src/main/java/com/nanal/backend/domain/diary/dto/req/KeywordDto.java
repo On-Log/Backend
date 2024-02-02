@@ -22,7 +22,7 @@ public class KeywordDto {
     private String keyword;
 
     @Valid
-    @Size(min = 3, max = 3, message ="emotion 의 개수는 3개여야 합니다.")
+    @Size(min = 1, max = 3, message ="emotion 의 개수는 3개여야 합니다.")
     private List<KeywordEmotionDto> keywordEmotions;
 
     public KeywordDto(Keyword keyword) {
